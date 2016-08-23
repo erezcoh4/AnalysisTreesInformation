@@ -15,16 +15,16 @@ flags = input_flags.get_args()
 
 
 
-Path = "/pnfs/uboone/persistent/users/aschu/MC_BNB_Cosmic"
-FileName = "prodgenie_bnb_nu_cosmic_uboone_v05_08_00_anatree"
-AnafileName = "/uboone/app/users/ecohen/Ana_"+FileName+".root"
+Path            = "/pnfs/uboone/persistent/users/aschu/MC_BNB_Cosmic"
+FileName        = "prodgenie_bnb_nu_cosmic_uboone_v05_08_00_anatree"
+AnafileName     = "/uboone/app/users/ecohen/Ana_"+FileName+".root"
 
-pot_chain = ROOT.TChain("analysistree/pottree")
+pot_chain       = ROOT.TChain("analysistree/pottree")
 pot_chain.Add( Path + "/" + FileName + ".root" )
 pot_chain.Draw("pot>>histoPOT","","goff")
-h = gROOT.FindObject("histoPOT")
-POTtot = h.GetEntries()*h.GetMean()
-POTscaleFactor = 6.6e20 / POTtot
+h               = gROOT.FindObject("histoPOT")
+POTtot          = h.GetEntries()*h.GetMean()
+POTscaleFactor  = 6.6e20 / POTtot
 
 
 in_chain = ROOT.TChain("analysistree/anatree")
@@ -52,6 +52,8 @@ for entry in range(int(flags.evnts_frac*(calc.Nentries))):
     calc.extract_information( entry )
     
     if ( calc.NnuInteractions > 0 ):
+        
+        calc.FillOutTree()
         
         if (flags.verbose > 0 and entry%flags.print_mod == 0):
             calc.PrintData( entry )

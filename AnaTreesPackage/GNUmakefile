@@ -1,6 +1,4 @@
-#
-# This is an example GNUmakefile for my packages
-#
+# AnalysisTreesInformation
 
 # specific names for this package
 DICT  = AnalysisTreesInformation_AnaTreesPackageDict
@@ -27,6 +25,6 @@ OSNAMEMODE      = $(OSNAME)
 include $(LARLITE_BASEDIR)/Makefile/Makefile.${OSNAME}
 
 # call the common GNUmakefile
-include $(LARLITE_BASEDIR)/Makefile/GNUmakefile.CORE
+LDFLAGS += $(shell larlite-config --libs)
 LDFLAGS += -L$(LARLITE_LIBDIR) -lBasicTool_GeoAlgo
 include $(LARLITE_BASEDIR)/Makefile/GNUmakefile.CORE

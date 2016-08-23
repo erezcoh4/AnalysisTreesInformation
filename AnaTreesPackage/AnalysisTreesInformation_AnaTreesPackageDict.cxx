@@ -39,6 +39,7 @@ namespace std {} using namespace std;
 
 // Header files passed as explicit arguments
 #include "GENIEinteraction.h"
+#include "PandoraNuTrack.h"
 #include "cumputeAnaTree.h"
 #include "nuInteraction.h"
 
@@ -59,7 +60,7 @@ namespace ROOT {
       ::cumputeAnaTree *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::cumputeAnaTree));
       static ::ROOT::TGenericClassInfo 
-         instance("cumputeAnaTree", "cumputeAnaTree.h", 32,
+         instance("cumputeAnaTree", "cumputeAnaTree.h", 33,
                   typeid(::cumputeAnaTree), DefineBehavior(ptr, ptr),
                   &cumputeAnaTree_Dictionary, isa_proxy, 4,
                   sizeof(::cumputeAnaTree) );
@@ -558,6 +559,69 @@ namespace ROOT {
 } // end of namespace ROOT for class vector<TLorentzVector>
 
 namespace ROOT {
+   static TClass *vectorlEPandoraNuTrackgR_Dictionary();
+   static void vectorlEPandoraNuTrackgR_TClassManip(TClass*);
+   static void *new_vectorlEPandoraNuTrackgR(void *p = 0);
+   static void *newArray_vectorlEPandoraNuTrackgR(Long_t size, void *p);
+   static void delete_vectorlEPandoraNuTrackgR(void *p);
+   static void deleteArray_vectorlEPandoraNuTrackgR(void *p);
+   static void destruct_vectorlEPandoraNuTrackgR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<PandoraNuTrack>*)
+   {
+      vector<PandoraNuTrack> *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<PandoraNuTrack>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<PandoraNuTrack>", -2, "vector", 457,
+                  typeid(vector<PandoraNuTrack>), DefineBehavior(ptr, ptr),
+                  &vectorlEPandoraNuTrackgR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<PandoraNuTrack>) );
+      instance.SetNew(&new_vectorlEPandoraNuTrackgR);
+      instance.SetNewArray(&newArray_vectorlEPandoraNuTrackgR);
+      instance.SetDelete(&delete_vectorlEPandoraNuTrackgR);
+      instance.SetDeleteArray(&deleteArray_vectorlEPandoraNuTrackgR);
+      instance.SetDestructor(&destruct_vectorlEPandoraNuTrackgR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<PandoraNuTrack> >()));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const vector<PandoraNuTrack>*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlEPandoraNuTrackgR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const vector<PandoraNuTrack>*)0x0)->GetClass();
+      vectorlEPandoraNuTrackgR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlEPandoraNuTrackgR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlEPandoraNuTrackgR(void *p) {
+      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<PandoraNuTrack> : new vector<PandoraNuTrack>;
+   }
+   static void *newArray_vectorlEPandoraNuTrackgR(Long_t nElements, void *p) {
+      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<PandoraNuTrack>[nElements] : new vector<PandoraNuTrack>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlEPandoraNuTrackgR(void *p) {
+      delete ((vector<PandoraNuTrack>*)p);
+   }
+   static void deleteArray_vectorlEPandoraNuTrackgR(void *p) {
+      delete [] ((vector<PandoraNuTrack>*)p);
+   }
+   static void destruct_vectorlEPandoraNuTrackgR(void *p) {
+      typedef vector<PandoraNuTrack> current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class vector<PandoraNuTrack>
+
+namespace ROOT {
    static TClass *vectorlEGENIEinteractiongR_Dictionary();
    static void vectorlEGENIEinteractiongR_TClassManip(TClass*);
    static void *new_vectorlEGENIEinteractiongR(void *p = 0);
@@ -624,6 +688,7 @@ namespace {
   void TriggerDictionaryInitialization_libAnalysisTreesInformation_AnaTreesPackage_Impl() {
     static const char* headers[] = {
 "GENIEinteraction.h",
+"PandoraNuTrack.h",
 "cumputeAnaTree.h",
 "nuInteraction.h",
 0
@@ -655,6 +720,7 @@ class __attribute__((annotate("$clingAutoload$GENIEinteraction.h")))  GENIEinter
 
 #define _BACKWARD_BACKWARD_WARNING_H
 #include "GENIEinteraction.h"
+#include "PandoraNuTrack.h"
 #include "cumputeAnaTree.h"
 #include "nuInteraction.h"
 

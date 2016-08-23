@@ -14,6 +14,7 @@
 #ifndef cumputeAnaTree_H
 #define cumputeAnaTree_H
 #include "../../mySoftware/MySoftwarePackage/myIncludes.h"
+#include "PandoraNuTrack.h"
 #include <ostream>
 #include "TChain.h"
 #include "GeoAlgo.h"
@@ -60,14 +61,20 @@ public:
     void    InitInputTree ();
     void   InitOutputTree ();
     void        InitEntry ();
+    void        InitTrack ();
     
     
     // running
     bool    extract_information (int);
+    bool            FillOutTree ();
     bool    GetTruthInformation ();
     bool    GetGENIEInformation ();
+    void       GetInTimeFlashes ();
+    void     GetPandoraNuTracks ();
+    
     // helpers
     bool        VertexContained ( TVector3 );
+    bool         TrackContained (TVector3 , TVector3 );
     void              PrintData (int);
 
     
@@ -155,6 +162,13 @@ public:
     
     // GeoAlgo
     geoalgo::GeoAlgo geo_algo;
+    
+    
+    std::vector<int> goodflashidx;
+
+    
+    PandoraNuTrack c_track;
+    std::vector<PandoraNuTrack> tracks;
     
     nuInteraction c_nu_interaction;
     std::vector<nuInteraction> nu_interactions;

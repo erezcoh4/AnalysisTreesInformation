@@ -11,13 +11,13 @@ bool cumputeAnaTree::extract_information (int entry){ // main event loop....
     InitEntry();
     InTree -> GetEntry(entry);
 
-    GetTruthInformation();
+    GetInTimeFlashes();
+    GetPandoraNuTracks();
+    if (MCmode) GetTruthInformation();
     
-    if (NnuInteractions>0){
-        OutTree -> Fill();
-    }
     return true;
 }
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TTree * fGENIETree, int fdebug, bool fMCmode){
@@ -139,7 +139,11 @@ void cumputeAnaTree::InitOutputTree(){
     OutTree -> Branch("Ntracks"     ,&Ntracks           ,"Ntracks/I"); // number of contained tracks, not ntracks_pandoraNu...
     
     OutTree -> Branch("nu_interactions"     ,&nu_interactions); // neutrino interactions...
-    OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
+    OutTree -> Branch("tracks"              ,&tracks); // tracks information...
+    
+    if (MCmode){
+        OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
+    }
 
     GENIETree -> Branch("genie_interaction"  ,&genie_interaction); // genie interactions in a seperate tree...
 
@@ -151,11 +155,192 @@ void cumputeAnaTree::InitEntry(){
     
     if (!nu_interactions.empty())       nu_interactions.clear();
     if (!genie_interactions.empty())    genie_interactions.clear();
+    if (!goodflashidx.empty())  goodflashidx.clear();
+    if (!tracks.empty())        tracks.clear();
     
     NnuInteractions = Ntracks = ntracks_pandoraNu = 0;
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::InitTrack(){
+    totaldqdx  = startdqdx = enddqdx = nhits = 0;
+    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::GetInTimeFlashes(){
+    if(debug>3) Printf("GetInTimeFlashes of %d flashes",no_flashes);
+    // get a list of in-time flashes for the event
+    if(no_flashes > 0) {
+        if (!goodflashidx.empty())  goodflashidx.clear();
+        if(debug>3) {SHOW(goodflashidx.size()); Printf("looping in if(no_flashes > 0) on no_flashes");}
+        
+        for(int i=0; i < no_flashes && i < MAX_hits ; i++){
+            if(debug>4) {SHOW3(i,flash_time[i],flash_pe[i]);}
+            if((0.0 < flash_time[i]) && (flash_time[i] < 10.0) && (6.5 < flash_pe[i])){
+                goodflashidx.push_back(i);
+                if(debug>3) {SHOW(i);SHOW(goodflashidx.size());}
+            }
+        }
+    }
+    if(debug>3) {
+        if(!goodflashidx.empty()){
+            PrintLine();
+            SHOW(goodflashidx.size());
+            SHOWstdVector(goodflashidx);
+            PrintLine();
+        }
+    }
+    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::GetPandoraNuTracks(){
+    
+    if (ntracks_pandoraNu==0 || ntracks_pandoraNu>100) return;
+    if(debug>2) Printf("LoopPanNuTracks on %d tracks",ntracks_pandoraNu);
+    
+    
+    
+    // loop over all reconstructed tracks
+    for(Int_t j=0; j < ntracks_pandoraNu && j < MAX_tracks; j++){
+        
+        InitTrack();
+        
+        
+        c_track = PandoraNuTrack(
+                              run                                                                                // run
+                              ,subrun                                                                            // subrun
+                              ,event                                                                             // event
+                              ,trkId_pandoraNu[j]                                                                // track id
+                              ,TVector3(trkstartx_pandoraNu[j], trkstarty_pandoraNu[j], trkstartz_pandoraNu[j])  // start position
+                              ,TVector3(trkendx_pandoraNu[j]  , trkendy_pandoraNu[j]  , trkendz_pandoraNu[j])    // end position
+                              ,trklen_pandoraNu[j]                                                               // track length
+                              ,trktheta_pandoraNu[j]                                                             // theta
+                              ,trkphi_pandoraNu[j]                                                               // phi
+                              );
+        
+        if (!TrackContained( c_track.start_pos   , c_track.end_pos )) continue;
+        Ntracks ++ ;
+        if(debug>3) Printf("created (contained) track %d...",j);
+        
+        // get flash info
+        // compare reconstructed track to list of flashes in beam to find closest
+        float tzcenter = (c_track.start_pos.z() + c_track.end_pos.z())/2.;
+        if(debug>3) Printf("with tzcenter = %.2f, goodflashidx.size() = %lu",tzcenter,goodflashidx.size());
+        
+        if(goodflashidx.size() > 0) {
+            int   minzi    = goodflashidx.at(0);
+            float minzdiff = TMath::Abs(flash_zcenter[minzi] - tzcenter);
+            if(debug>3) {SHOW(minzi);SHOW(minzdiff);}
+            for(size_t k=0; k < goodflashidx.size(); k++)
+            {
+                int   fidx     = goodflashidx.at(k);
+                float fzcenter = flash_zcenter[fidx];
+                if(debug>3) {SHOW(fidx);SHOW(fzcenter);}
+                if(TMath::Abs(fzcenter - tzcenter) < minzdiff)
+                {
+                    minzi    = fidx;
+                    minzdiff = TMath::Abs(fzcenter = tzcenter);
+                }
+            }
+            cftime      = flash_time[minzi];
+            cftimewidth = flash_timewidth[minzi];
+            cfzcenter   = flash_zcenter[minzi];
+            cfzwidth    = flash_zwidth[minzi];
+            cfycenter   = flash_ycenter[minzi];
+            cfywidth    = flash_ywidth[minzi];
+            cftotalpe   = flash_pe[minzi];
+            cfdistance  = tzcenter - cfzcenter;
+        }
+        else {
+            cftime = cftimewidth = cfzcenter = cfzwidth = cfycenter = cfywidth = cftotalpe = cfdistance = -9999;
+        }
+        c_track.SetFlashInfo(cftime , cftimewidth , cfzcenter , cfzwidth , cfycenter , cfywidth , cftotalpe , cfdistance);
+        if(debug>3) Printf("Set Flash Info...");
+        
+        
+        // get cosmic scores
+        c_track.SetCosScores( trkcosmicscore_tagger_pandoraNu[j][0] , trkcosmicscore_containmenttagger_pandoraNu[j][0] );
+        // get pid info
+        c_track.Set_pid_info( trkpidpida_pandoraNu[j][trkpidbestplane_pandoraNu[j]] , trkpidchi_pandoraNu[j][trkpidbestplane_pandoraNu[j]] );
+        
+        
+        // get dqdx info: loop over range from end of track to find start and end
+        int   rmin[3] , rmax[3];
+        if(debug>3) Printf("before for(Int_t fr=0; fr<3;fr++) ...");
+        for(Int_t fr=0; fr<3;fr++) {
+            
+            if(ntrkhits_pandoraNu[j][fr] >= 0) {
+                
+                nhits     += ntrkhits_pandoraNu[j][fr];
+                rmin[fr]   = rmax[fr]   = trkresrg_pandoraNu[j][fr][0];
+                totaldqdx += trkdqdx_pandoraNu[j][fr][0];
+                int minidx = 0 , maxidx = 0;
+                
+                for(Int_t ridx=0; ridx < ntrkhits_pandoraNu[j][fr]; ridx++) {
+                    if(trkresrg_pandoraNu[j][fr][ridx] < rmin[fr] && trkdqdx_pandoraNu[j][fr][ridx] != 0) {
+                        rmin[fr] = trkresrg_pandoraNu[j][fr][ridx];
+                        minidx   = ridx;
+                    }
+                    if(trkresrg_pandoraNu[j][fr][ridx] > rmax[fr]) {
+                        rmax[fr] = trkresrg_pandoraNu[j][fr][ridx];
+                        maxidx   = ridx;
+                    }
+                    totaldqdx += trkdqdx_pandoraNu[j][fr][ridx];
+                }
+                if(maxidx >= 3) {
+                    startdqdx   += (trkdqdx_pandoraNu[j][fr][maxidx] + trkdqdx_pandoraNu[j][fr][maxidx-1]
+                                    + trkdqdx_pandoraNu[j][fr][maxidx-2]);
+                    enddqdx     += (trkdqdx_pandoraNu[j][fr][minidx] + trkdqdx_pandoraNu[j][fr][minidx+1]
+                                    + trkdqdx_pandoraNu[j][fr][minidx+2]);
+                } else {
+                    startdqdx   += trkdqdx_pandoraNu[j][fr][maxidx];
+                    enddqdx     += trkdqdx_pandoraNu[j][fr][minidx];
+                }
+            }
+        }
+        if(debug>3) Printf("after for(Int_t fr=0; fr<3;fr++) ...");
+        c_track.Set_dqdx( startdqdx , enddqdx , totaldqdx , nhits );
+        if(debug>3) Printf("Set dq/dx ...");
+        c_track.CreateROIs();
+        if(debug>3) Printf("Created ROIs...");
+        c_track.Calorimetry();
+        if(debug>3) Printf("made some Calorimetry ...");
+        c_track.Straightness();
+        if(debug>3) Printf("calculated the Straightness of the track ...");
+        c_track.Momentum();
+        if(debug>3) Printf("calculated the Momentum of the track ...");
+        
+        // if its MC, plug also MC information
+        if(MCmode){
+            if(debug>3) Printf("plugging also MC information:");
+            bool FoundMCtrack = false;
+            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
+                if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
+                if(TrackId[ig4] == trkg4id_pandoraNu[j]){
+                    // lets start with only the MC pdg code, for training purposes
+                    if(debug>3) Printf("truth pdg is: %d",pdg[ig4]);
+                    FoundMCtrack = true;
+                    c_track.SetMCpdgCode(pdg[ig4]);
+                }
+            }
+            if (!FoundMCtrack) {
+                if(debug>3) Printf("could not find g4 information for this track");
+                c_track.SetMCpdgCode(-9999);
+            }
+        }
+        else {
+            if(debug>3) Printf("this is data, so no MC information");
+            c_track.SetMCpdgCode(-9999);
+        }
+        
+        
+        tracks.push_back(c_track);
+        if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",tracks.size());
+    }
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetTruthInformation(){
@@ -213,9 +398,6 @@ bool cumputeAnaTree::GetTruthInformation(){
     return true;
 }
 
-
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetGENIEInformation(){
     if (debug > 3) Printf("getting GENIE information");
@@ -252,18 +434,6 @@ bool cumputeAnaTree::GetGENIEInformation(){
     return true;
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::VertexContained(TVector3 v){
     
@@ -272,6 +442,23 @@ bool cumputeAnaTree::VertexContained(TVector3 v){
     if( ( v.x() < 3.45 )    | ( v.x() > 249.8 ) )   return false;
     if( ( v.y() < -110.53 ) | ( v.y() > 112.47 ) )  return false;
     if( ( v.z() < 5.1 )     | ( v.z() > 1031.9 ) )  return false;
+    return true;
+    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::TrackContained(TVector3 start , TVector3 end){
+    
+    if( ! VertexContained( start ) )   return false;
+    if( ! VertexContained( end ) )      return false;
+    return true;
+    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::FillOutTree (){
+    
+    OutTree -> Fill();
     return true;
     
 }
@@ -290,6 +477,11 @@ void cumputeAnaTree::PrintData(int entry){
         for (auto genie_interaction: genie_interactions) {
         genie_interaction.Print();
     }
+    if(!tracks.empty())
+        for (auto t: tracks) {
+        t.Print();
+    }
+
     EndEventBlock();
     
 }
