@@ -7,9 +7,9 @@
     
     option="select muon-proton scattering":
     ---------------------------------------
-    Look for (µ,µ'p) scattering with the topology of 3 tracks sharing one vertex where one of them is a proton and the others are muons, using calorimetry information:
+    Look for (mu,mu'p) scattering with the topology of 3 tracks sharing one vertex where one of them is a proton and the others are muons, using calorimetry information:
     there is a variable called 'trkpidpdg' (3 for each track, one per plane)
-    These (µ,µ'p) events are to be used for testing the GBDT classification
+    These (mu,mu'p) events are to be used for testing the GBDT classification
 
 '''
 
