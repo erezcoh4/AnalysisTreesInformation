@@ -226,19 +226,20 @@ void PandoraNuTrack::Print(){
     SHOW3(run , subrun , event);
     SHOWTVector3(start_pos);
     SHOWTVector3(end_pos);
-    SHOW(length);
-    SHOW(momentum);
+    PrintPhys(length,"cm");
+    PrintPhys(momentum,"MeV/c");
     SHOW(distlenratio);
-    SHOW(theta);
-    SHOW(phi);
-    SHOW(start_dqdx);
-    SHOW(end_dqdx);
-    SHOW(tot_dqdx);
+    PrintPhys(theta,"radians");
+    PrintPhys(phi,"radians");
+    PrintPhys(start_dqdx,"ADC/cm");
+    PrintPhys(end_dqdx,"ADC/cm");
+    PrintPhys(tot_dqdx,"ADC/cm");
     SHOW(MCpdgCode);
     SHOW3( cosmicscore, coscontscore , pidpida )
-    PrintBox(roi[0]);
-    PrintBox(roi[1]);
-    PrintBox(roi[2]);
+    for (int plane = 0 ; plane < 3; plane++) {
+        PrintPhys( CalorimetPDG[plane] , Form(" for plane %d",plane) );
+        PrintBox(roi[plane]);
+    }
     cout << "\033[33m" << NNeighborTracks << " neighboring tracks" ;
     for (size_t i = 0 ; i < NNeighborTracks ; i++ ){
         cout

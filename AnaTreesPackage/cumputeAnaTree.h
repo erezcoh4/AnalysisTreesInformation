@@ -99,13 +99,13 @@ public:
     Int_t       Nentries    , entry     , nhits;
     Int_t       Ntracks     , NnuInteractions   ;
     Int_t       trkg4id_pandoraNu[MAX_tracks]   , TrackId[MAX_tracks];
+    Int_t       trkpidpdg[MAX_tracks][3];
     Int_t       no_hits     , no_flashes;
     Int_t       mcevts_truth;               //number of neutrino interactions in the spill
     Int_t       nuPDG_truth[kMaxTruth];     //neutrino PDG code (nue=12; anti-nue=-12; numu=14; anti-numu=-14; nutau=16; anti-nutau=-16)
     Int_t       ccnc_truth[kMaxTruth];      //neutrino interaction type: 0=Charged current (CC), 1=Neutral current (NC)
     Int_t       mode_truth[kMaxTruth];      //neutrino nucleus 0=Quasi-elastic or Elastic, 1=Resonant (RES), 2=DIS, 3=Coherent production
     Int_t       hitnuc_truth[kMaxTruth];    //neutrino scattering off of which nucleon (proton or neutron); holds the pdg of the nucleon
-
     
     // MC information
     Int_t       geant_list_size         , pdg[MAX_tracks];

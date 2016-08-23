@@ -63,6 +63,10 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("trkpidpida_pandoraNu"                           , &trkpidpida_pandoraNu);
     InTree -> SetBranchAddress("trkpidbestplane_pandoraNu"                      , &trkpidbestplane_pandoraNu);
 
+    InTree -> SetBranchAddress("trkpidpdg"                                      , &trkpidpdg);
+
+    
+    
     InTree -> SetBranchAddress("no_hits"                                        , &no_hits);
     InTree -> SetBranchAddress("hit_plane"                                      , &hit_plane);
     InTree -> SetBranchAddress("hit_wire"                                       , &hit_wire);
@@ -312,7 +316,9 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         if(debug>3) Printf("calculated the Straightness of the track ...");
         c_track.Momentum();
         if(debug>3) Printf("calculated the Momentum of the track ...");
-        
+        c_track.SetCalorimetryPDG( trkpidpdg[j] );
+        if(debug>3) Printf("set track pid pdg ...");
+
         // if its MC, plug also MC information
         if(MCmode){
             if(debug>3) Printf("plugging also MC information:");
@@ -467,7 +473,7 @@ bool cumputeAnaTree::FillOutTree (){
 void cumputeAnaTree::PrintData(int entry){
     
     PrintLine();
-    printf("\t[%.1f%%]",(float)entry/Nentries);
+    printf("\t[%.1f%%]\t",100.*(float)entry/Nentries);
     SHOW(entry);
     SHOW3(run , subrun , event);
     if(!nu_interactions.empty())
