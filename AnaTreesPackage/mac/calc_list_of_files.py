@@ -39,11 +39,11 @@ if flags.verbose>4: print files
 
 in_chain = ROOT.TChain("analysistree/anatree");
 
-for i in range(int(files_fraction*len(files))):
+for i in range(int(flags.files_frac*len(files))):
     if flags.verbose>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
     if float(os.path.getsize(files[i])/1048576) > 0.1 :
         in_chain.Add(files[i])
-if flags.verbose>0: print "input chain entries from",int(files_fraction*len(files)),"files: ", in_chain.GetEntries()
+if flags.verbose>0: print "input chain entries from",int(flags.files_frac*len(files)),"files: ", in_chain.GetEntries()
 
 
 Nentries    = in_chain.GetEntries()
@@ -57,7 +57,7 @@ GENIETree   = ROOT.TTree("GENIETree","genie interactions")
 
 calc = cumputeAnaTree( in_chain , OutTree , GENIETree , flags.verbose )
 
-for entry in range(int(evts_fraction*(Nentries))):
+for entry in range(int(flags.evnts_frac*(Nentries))):
         
     calc.extract_information( entry )
         
