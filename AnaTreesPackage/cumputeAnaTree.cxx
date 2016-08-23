@@ -467,6 +467,7 @@ bool cumputeAnaTree::FillOutTree (){
 void cumputeAnaTree::PrintData(int entry){
     
     PrintLine();
+    printf("\t[%.1f%%]",(float)entry/Nentries);
     SHOW(entry);
     SHOW3(run , subrun , event);
     if(!nu_interactions.empty())
