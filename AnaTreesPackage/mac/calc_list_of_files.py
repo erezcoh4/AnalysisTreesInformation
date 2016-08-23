@@ -29,21 +29,21 @@ AnafileName     = AnaPath + "/Ana_" + ListType + "_" + ListName + "_" + datetime
 tools           = AnaTreeTools()
 
 
-if debug>0: print "\nreading list of files: " + ListsPath + "/" + ListType + "/" + ListName + ".list"
+if flags.verbose>0: print "\nreading list of files: " + ListsPath + "/" + ListType + "/" + ListName + ".list"
 
 with open( ListsPath + "/" + ListType + "/" + ListName + ".list" ) as f:
     files = f.read().splitlines()
 
-if debug>4: print files
+if flags.verbose>4: print files
 
 
 in_chain = ROOT.TChain("analysistree/anatree");
 
 for i in range(int(files_fraction*len(files))):
-    if debug>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
+    if flags.verbose>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
     if float(os.path.getsize(files[i])/1048576) > 0.1 :
         in_chain.Add(files[i])
-if debug>0: print "input chain entries from",int(files_fraction*len(files)),"files: ", in_chain.GetEntries()
+if flags.verbose>0: print "input chain entries from",int(files_fraction*len(files)),"files: ", in_chain.GetEntries()
 
 
 Nentries    = in_chain.GetEntries()
@@ -55,7 +55,7 @@ GENIETree   = ROOT.TTree("GENIETree","genie interactions")
 
 
 
-calc = cumputeAnaTree( in_chain , OutTree , GENIETree , debug )
+calc = cumputeAnaTree( in_chain , OutTree , GENIETree , flags.verbose )
 
 for entry in range(int(evts_fraction*(Nentries))):
         
