@@ -63,7 +63,7 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("trkpidpida_pandoraNu"                           , &trkpidpida_pandoraNu);
     InTree -> SetBranchAddress("trkpidbestplane_pandoraNu"                      , &trkpidbestplane_pandoraNu);
 
-    InTree -> SetBranchAddress("trkpidpdg"                                      , &trkpidpdg);
+    InTree -> SetBranchAddress("trkpidpdg_pandoraNu"                            , &trkpidpdg_pandoraNu);
 
     
     
@@ -316,7 +316,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         if(debug>3) Printf("calculated the Straightness of the track ...");
         c_track.Momentum();
         if(debug>3) Printf("calculated the Momentum of the track ...");
-        c_track.SetCalorimetryPDG( trkpidpdg[j] );
+        c_track.SetCalorimetryPDG( trkpidpdg_pandoraNu[j] );
         if(debug>3) Printf("set track pid pdg ...");
 
         // if its MC, plug also MC information

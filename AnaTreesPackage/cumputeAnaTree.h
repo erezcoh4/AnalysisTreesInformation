@@ -99,7 +99,7 @@ public:
     Int_t       Nentries    , entry     , nhits;
     Int_t       Ntracks     , NnuInteractions   ;
     Int_t       trkg4id_pandoraNu[MAX_tracks]   , TrackId[MAX_tracks];
-    Int_t       trkpidpdg[MAX_tracks][3];
+    Int_t       trkpidpdg_pandoraNu[MAX_tracks][3];
     Int_t       no_hits     , no_flashes;
     Int_t       mcevts_truth;               //number of neutrino interactions in the spill
     Int_t       nuPDG_truth[kMaxTruth];     //neutrino PDG code (nue=12; anti-nue=-12; numu=14; anti-numu=-14; nutau=16; anti-nutau=-16)
