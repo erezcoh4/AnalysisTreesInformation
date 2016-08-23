@@ -9,7 +9,8 @@
 #pragma link off all classes;
 #pragma link off all functions;
 
-
+#pragma link C++ struct box+;
+#pragma link C++ class PandoraNuTrack+;
 #pragma link C++ class cumputeAnaTree+;
 #pragma link C++ class nuInteraction+;
 #pragma link C++ class GENIEinteraction+;

@@ -143,9 +143,9 @@ void cumputeAnaTree::InitOutputTree(){
     
     if (MCmode){
         OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
+        GENIETree -> Branch("genie_interaction"  ,&genie_interaction); // genie interactions in a seperate tree...
     }
 
-    GENIETree -> Branch("genie_interaction"  ,&genie_interaction); // genie interactions in a seperate tree...
 
     if(debug>1) cout << "cumputeAnaTree output-tree ready (" << OutTree -> GetTitle() << ")" << endl;
 }

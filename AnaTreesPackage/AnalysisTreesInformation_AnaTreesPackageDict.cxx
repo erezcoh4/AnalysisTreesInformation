@@ -46,6 +46,96 @@ namespace std {} using namespace std;
 // Header files passed via #pragma extra_include
 
 namespace ROOT {
+   static TClass *box_Dictionary();
+   static void box_TClassManip(TClass*);
+   static void *new_box(void *p = 0);
+   static void *newArray_box(Long_t size, void *p);
+   static void delete_box(void *p);
+   static void deleteArray_box(void *p);
+   static void destruct_box(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::box*)
+   {
+      ::box *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::box));
+      static ::ROOT::TGenericClassInfo 
+         instance("box", "PandoraNuTrack.h", 30,
+                  typeid(::box), DefineBehavior(ptr, ptr),
+                  &box_Dictionary, isa_proxy, 4,
+                  sizeof(::box) );
+      instance.SetNew(&new_box);
+      instance.SetNewArray(&newArray_box);
+      instance.SetDelete(&delete_box);
+      instance.SetDeleteArray(&deleteArray_box);
+      instance.SetDestructor(&destruct_box);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::box*)
+   {
+      return GenerateInitInstanceLocal((::box*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::box*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *box_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const ::box*)0x0)->GetClass();
+      box_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void box_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   static TClass *PandoraNuTrack_Dictionary();
+   static void PandoraNuTrack_TClassManip(TClass*);
+   static void *new_PandoraNuTrack(void *p = 0);
+   static void *newArray_PandoraNuTrack(Long_t size, void *p);
+   static void delete_PandoraNuTrack(void *p);
+   static void deleteArray_PandoraNuTrack(void *p);
+   static void destruct_PandoraNuTrack(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::PandoraNuTrack*)
+   {
+      ::PandoraNuTrack *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::PandoraNuTrack));
+      static ::ROOT::TGenericClassInfo 
+         instance("PandoraNuTrack", "PandoraNuTrack.h", 67,
+                  typeid(::PandoraNuTrack), DefineBehavior(ptr, ptr),
+                  &PandoraNuTrack_Dictionary, isa_proxy, 4,
+                  sizeof(::PandoraNuTrack) );
+      instance.SetNew(&new_PandoraNuTrack);
+      instance.SetNewArray(&newArray_PandoraNuTrack);
+      instance.SetDelete(&delete_PandoraNuTrack);
+      instance.SetDeleteArray(&deleteArray_PandoraNuTrack);
+      instance.SetDestructor(&destruct_PandoraNuTrack);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::PandoraNuTrack*)
+   {
+      return GenerateInitInstanceLocal((::PandoraNuTrack*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::PandoraNuTrack*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *PandoraNuTrack_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const ::PandoraNuTrack*)0x0)->GetClass();
+      PandoraNuTrack_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void PandoraNuTrack_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
    static TClass *cumputeAnaTree_Dictionary();
    static void cumputeAnaTree_TClassManip(TClass*);
    static void *new_cumputeAnaTree(void *p = 0);
@@ -179,6 +269,48 @@ namespace ROOT {
    }
 
 } // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_box(void *p) {
+      return  p ? new(p) ::box : new ::box;
+   }
+   static void *newArray_box(Long_t nElements, void *p) {
+      return p ? new(p) ::box[nElements] : new ::box[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_box(void *p) {
+      delete ((::box*)p);
+   }
+   static void deleteArray_box(void *p) {
+      delete [] ((::box*)p);
+   }
+   static void destruct_box(void *p) {
+      typedef ::box current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::box
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_PandoraNuTrack(void *p) {
+      return  p ? new(p) ::PandoraNuTrack : new ::PandoraNuTrack;
+   }
+   static void *newArray_PandoraNuTrack(Long_t nElements, void *p) {
+      return p ? new(p) ::PandoraNuTrack[nElements] : new ::PandoraNuTrack[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_PandoraNuTrack(void *p) {
+      delete ((::PandoraNuTrack*)p);
+   }
+   static void deleteArray_PandoraNuTrack(void *p) {
+      delete [] ((::PandoraNuTrack*)p);
+   }
+   static void destruct_PandoraNuTrack(void *p) {
+      typedef ::PandoraNuTrack current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::PandoraNuTrack
 
 namespace ROOT {
    // Wrappers around operator new
@@ -708,6 +840,8 @@ R"DICTFWDDCLS(
 #pragma clang diagnostic ignored "-Wignored-attributes"
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 extern int __Cling_Autoloading_Map;
+struct __attribute__((annotate("$clingAutoload$PandoraNuTrack.h")))  box;
+class __attribute__((annotate("$clingAutoload$PandoraNuTrack.h")))  PandoraNuTrack;
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  cumputeAnaTree;
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  nuInteraction;
 class __attribute__((annotate("$clingAutoload$GENIEinteraction.h")))  GENIEinteraction;
@@ -728,6 +862,8 @@ class __attribute__((annotate("$clingAutoload$GENIEinteraction.h")))  GENIEinter
 )DICTPAYLOAD";
     static const char* classesHeaders[]={
 "GENIEinteraction", payloadCode, "@",
+"PandoraNuTrack", payloadCode, "@",
+"box", payloadCode, "@",
 "cumputeAnaTree", payloadCode, "@",
 "nuInteraction", payloadCode, "@",
 nullptr};
