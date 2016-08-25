@@ -29,20 +29,21 @@ public:
 
     track_vertex (){}
     ~track_vertex(){}
-    track_vertex (Int_t fvertex_id , Int_t ftrack_id , TString flocation_in_track , TVector3 fposition , Int_t fCalorimetryPDG );
+    track_vertex (Int_t fvertex_id , Int_t ftrack_id , TString flocation_in_track , TVector3 fposition , Int_t fCalorimetryPDG[3] );
 
     void        SetVertexID (Int_t fvertex_id)              {vertex_id = fvertex_id;};
     void         SetTrackID (Int_t ftrack_id)               {track_id = ftrack_id;};
     void SetLocationInTrack (TString flocation_in_track)    {location_in_track = flocation_in_track;};
     void        SetPosition (TVector3 fposition)            {position = fposition;};
-    void  SetCalorimetryPDG (Int_t fCalorimetryPDG[3])      {for (int i = 0 ; i < 3 ; i++ ) track_CalorimetryPDG[i] = fCalorimetryPDG[i]; };
+    void  SetCalorimetryPDG (Int_t fCalorimetryPDG[3]);
+    
     
     void SetDistancesFromVertices ( std::vector<track_vertex> other_vertices );
     void                    Print ();
     
     Int_t       vertex_id     ,  track_id;
-    Int_t       track_CalorimetryPDG[3];
-    TString     location_in_track;
+    Int_t       track_CalorimetryPDG[3] , CalorimetryID;
+    TString     location_in_track ;
     
     
     TVector3    position;

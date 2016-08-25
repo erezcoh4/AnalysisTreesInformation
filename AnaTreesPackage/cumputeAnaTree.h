@@ -76,7 +76,7 @@ public:
     void     GetPandoraNuTracks ();
     void   CollectTrackVertices ();
     void     FindMutualVertices ();
-
+    void     FindMuonScattering ();
     
     // helpers
     bool        VertexContained ( TVector3 );
@@ -93,6 +93,7 @@ public:
 
     int         debug;  // 0 - quiet, 1 - major functionality, 2 - print out all sorts of shit
     bool        MCmode;
+    bool        foundMuonScattering;
     
     Short_t     trkId_pandoraNu[MAX_tracks] , ntrkhits_pandoraNu[MAX_tracks][3]     , trkncosmictags_tagger_pandoraNu[MAX_tracks];
     Short_t     trkcosmictype_tagger_pandoraNu[MAX_tracks][10]  ; //, trkncosmictags_containmenttagger_pandoraNu[MAX_tracks]; DELETE!
@@ -165,6 +166,8 @@ public:
     Int_t    genie_ND[40];            //number of daughters of the GENIE particle
     Int_t    genie_mother[40];        //mother trackID of the GENIE particle
     
+    
+
     
     // GeoAlgo
     geoalgo::GeoAlgo geo_algo;

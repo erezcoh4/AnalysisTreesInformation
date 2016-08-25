@@ -16,21 +16,38 @@
 
 #include <iostream>
 #include <track_vertex.h>
-#define min_distance_from_vertex 5 // in [cm] - this is the minimal distance between vertices that allows them to be defined as mutual vertices 
+#define min_distance_from_vertex 5 // in [cm] - this is the minimal distance between vertices that allows them to be defined as mutual vertices
 
 /**
    \class mutual_vertex
    User defined class mutual_vertex ... these comments are used to generate
    doxygen documentation!
  */
-class mutual_vertex : public track_vertex{
+class mutual_vertex : public track_vertex {
 
 public:
 
-  mutual_vertex(){}
-  ~mutual_vertex(){}
-    mutual_vertex( track_vertex , track_vertex );
+    mutual_vertex (){}
+    ~mutual_vertex (){}
+    mutual_vertex ( Int_t f_vertex_id ){ SetVertexID(f_vertex_id); }
+    mutual_vertex ( track_vertex , track_vertex );
 
+    void          SetPosition ();
+    bool include_track_vertex ( track_vertex );
+    void        AddTracVertex ( track_vertex );
+    void  SetMutualVertexInfo ();
+    void    SetVertexTopology ();
+    void                Print ();
+
+    
+    
+    TVector3    position;
+    Int_t       N_tracks_vertices;
+    Int_t       Np  , Nmu   , Npi   , Ne    , Ngamma;
+    TString     vertex_topology;
+    
+    std::vector<track_vertex> tracks_vertices;
+    
 };
 
 #endif

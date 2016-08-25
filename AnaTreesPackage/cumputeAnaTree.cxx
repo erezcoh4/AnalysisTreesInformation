@@ -21,6 +21,8 @@ bool cumputeAnaTree::extract_information (int entry){ // main event loop....
     
     FindMutualVertices  ();
 
+    FindMuonScattering    ();
+    
     return true;
 }
 
@@ -374,22 +376,29 @@ void cumputeAnaTree::CollectTrackVertices(){
     }
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::FindMutualVertices(){
-    for (auto track_vertex_i : tracks_vertices) {
-        for ( auto track_vertex_j : tracks_vertices ) {
-            if ( track_vertex_i.vertex_id != track_vertex_j.vertex_id ) {
+    
+    c_mutual_vertex = mutual_vertex( mutual_vertices.size() + 1 );
+    
+    for (auto track_vertex_i : tracks_vertices) { // loop over vertices i
+        
+        for ( auto track_vertex_j : tracks_vertices ) { // loop over vertices j
+            
+            // and take interest if they are not already included in a mutual vertex and they are not track vertex j
+            
+            if (( track_vertex_i.vertex_id != track_vertex_j.vertex_id ) && (!c_mutual_vertex.include_track_vertex(track_vertex_j)) ){
+                
+                // if these vertices are close enough, collect them together into a mutual vertex
                 if (( track_vertex_i.position - track_vertex_j.position ).Mag() < min_distance_from_vertex ) {
+                    
                     c_mutual_vertex = mutual_vertex ( track_vertex_i , track_vertex_j );
+                    
                 }
             }
-        }
-    }
+        } // loop over vertices j
+    } // loop over vertices i
 }
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetTruthInformation(){
@@ -504,6 +513,19 @@ bool cumputeAnaTree::TrackContained(TVector3 start , TVector3 end){
     
 }
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::FindMuonScattering(){
+    foundMuonScattering = false;
+    for (auto c_mutual_vertex: mutual_vertices) {
+        if (c_mutual_vertex.vertex_topology == "2 muons" || c_mutual_vertex.vertex_topology == "2 muons 1 protons" || c_mutual_vertex.vertex_topology == "2 muons 2 protons") {
+            foundMuonScattering = true;
+        }
+    }
+}
+
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::FillOutTree (){
     
@@ -519,28 +541,38 @@ void cumputeAnaTree::PrintData(int entry){
     printf("\t[%.1f%%]\t",100.*(float)entry/Nentries);
     SHOW(entry);
     SHOW3(run , subrun , event);
-    if(!nu_interactions.empty())
+    if(!nu_interactions.empty()){
+        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" << "neutrino interactions" << "\033[30m" << endl;
         for (auto nu_interaction: nu_interactions) {
-        nu_interaction.Print();
+            nu_interaction.Print();
+        }
     }
-    if(!genie_interactions.empty())
+    if(!genie_interactions.empty()){
+        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" << "genie interactions" << "\033[30m" << endl;
         for (auto genie_interaction: genie_interactions) {
-        genie_interaction.Print();
+            genie_interaction.Print();
+        }
     }
-    if(!tracks.empty())
-    for (auto t: tracks) {
-        t.Print();
+    if(!tracks.empty()){
+        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" <<  "reconstructed tracks" << "\033[30m" << endl;
+        
+        for (auto t: tracks) {
+            t.Print();
+        }
     }
-    if(!tracks_vertices.empty())
-    for (auto v: tracks_vertices) {
-        v.Print();
+    if(!tracks_vertices.empty()){
+        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" <<  "tracks vertices" << "\033[30m" << endl;
+        
+        for (auto v: tracks_vertices) {
+            v.Print();
+        }
     }
-    if(!mutual_vertices.empty())
-    for (auto v: mutual_vertices) {
-        v.Print();
+    if(!mutual_vertices.empty()){
+        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" <<  "mutual vertices" << "\033[30m" << endl;
+        for (auto v: mutual_vertices) {
+            v.Print();
+        }
     }
-
-    
     
     EndEventBlock();
     

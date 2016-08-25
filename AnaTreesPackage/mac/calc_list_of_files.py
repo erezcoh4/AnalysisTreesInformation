@@ -60,13 +60,15 @@ calc = cumputeAnaTree( in_chain , OutTree , GENIETree , flags.verbose )
 for entry in range(int(flags.evnts_frac*(Nentries))):
         
     calc.extract_information( entry )
+    
+    if (flags.verbose > 0 and entry%flags.print_mod == 0):
         
-    if ( flags.option=="select muon-proton scattering" ):
-        
+        calc.PrintData( entry )
+
+    if ( flags.option=="select muon-proton scattering" and calc.foundMuonScattering ):
+    
         calc.FillOutTree()
 
-        if (flags.verbose > 0 and entry%flags.print_mod == 0):
-            calc.PrintData( entry )
 
 
 
