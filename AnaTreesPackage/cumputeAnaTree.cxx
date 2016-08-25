@@ -542,33 +542,33 @@ void cumputeAnaTree::PrintData(int entry){
     SHOW(entry);
     SHOW3(run , subrun , event);
     if(!nu_interactions.empty()){
-        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" << "neutrino interactions" << "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n" << "neutrino interactions" << "xxxxxxxxxxxxxx\n"<< "\033[30m" << endl;
         for (auto nu_interaction: nu_interactions) {
             nu_interaction.Print();
         }
     }
     if(!genie_interactions.empty()){
-        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" << "genie interactions" << "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n" << "genie interactions" << "xxxxxxxxxxxxxx\n"<< "\033[30m" << endl;
         for (auto genie_interaction: genie_interactions) {
             genie_interaction.Print();
         }
     }
     if(!tracks.empty()){
-        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" <<  "reconstructed tracks" << "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n" <<  "reconstructed tracks" << "xxxxxxxxxxxxxx\n"<< "\033[30m" << endl;
         
         for (auto t: tracks) {
             t.Print();
         }
     }
     if(!tracks_vertices.empty()){
-        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" <<  "tracks vertices" << "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n" <<  "tracks vertices" << "xxxxxxxxxxxxxx\n"<< "\033[30m" << endl;
         
         for (auto v: tracks_vertices) {
             v.Print();
         }
     }
     if(!mutual_vertices.empty()){
-        cout << "\033[36m" << "xxxxxxxxxxxxxx\n" <<  "mutual vertices" << "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n" <<  "mutual vertices" << "xxxxxxxxxxxxxx\n"<< "\033[30m" << endl;
         for (auto v: mutual_vertices) {
             v.Print();
         }
