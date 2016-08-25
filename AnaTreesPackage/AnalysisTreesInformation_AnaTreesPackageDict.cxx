@@ -152,7 +152,7 @@ namespace ROOT {
       ::cumputeAnaTree *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::cumputeAnaTree));
       static ::ROOT::TGenericClassInfo 
-         instance("cumputeAnaTree", "cumputeAnaTree.h", 36,
+         instance("cumputeAnaTree", "cumputeAnaTree.h", 37,
                   typeid(::cumputeAnaTree), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &cumputeAnaTree_Dictionary, isa_proxy, 4,
                   sizeof(::cumputeAnaTree) );

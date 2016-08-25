@@ -24,7 +24,8 @@
 #include "mutual_vertex.h"
 
 
-#define MAX_tracks 1000
+#define MAX_tracks 100
+#define MAX_cosmic_tracks 100
 #define MAX_hits 50000
 #define kMaxTruth 10
 /**
@@ -73,6 +74,7 @@ public:
     bool    GetTruthInformation ();
     bool    GetGENIEInformation ();
     void       GetInTimeFlashes ();
+    void GetPandoraCosmicTracks ();
     void     GetPandoraNuTracks ();
     void   CollectTrackVertices ();
     void     FindMutualVertices ();
@@ -95,16 +97,22 @@ public:
     bool        MCmode;
     bool        foundMuonScattering;
     
+    Short_t     ntracks_pandoraNu ;
     Short_t     trkId_pandoraNu[MAX_tracks] , ntrkhits_pandoraNu[MAX_tracks][3]     , trkncosmictags_tagger_pandoraNu[MAX_tracks];
-    Short_t     trkcosmictype_tagger_pandoraNu[MAX_tracks][10]  ; //, trkncosmictags_containmenttagger_pandoraNu[MAX_tracks]; DELETE!
+    Short_t     trkcosmictype_tagger_pandoraNu[MAX_tracks][10]  ;
     Short_t     trkcosmictype_containmenttagger_pandoraNu[MAX_tracks][10]           , trkpidbestplane_pandoraNu[MAX_tracks];
+    
+    Short_t     ntracks_pandoraCosmic;
+    Short_t     trkId_pandoraCosmic[MAX_cosmic_tracks] , ntrkhits_pandoraCosmic[MAX_cosmic_tracks][3]     , trkncosmictags_tagger_pandoraCosmic[MAX_cosmic_tracks];
+    Short_t     trkcosmictype_tagger_pandoraCosmic[MAX_cosmic_tracks][10]  ;
+    Short_t     trkcosmictype_containmenttagger_pandoraCosmic[MAX_tracks][10]           , trkpidbestplane_pandoraCosmic[MAX_tracks];
+    
     Short_t     hit_trkid[MAX_hits]         , hit_trkKey[MAX_hits]                  , hit_plane[MAX_hits]       , hit_wire[MAX_hits];
-    Short_t     ntracks_pandoraNu;
     
     
     Int_t       run         , subrun    , event , primary ;
     Int_t       Nentries    , entry     , nhits;
-    Int_t       Ntracks     , NnuInteractions   ;
+    Int_t       Ntracks     , NnuInteractions   , Ncosmictracks;
     Int_t       trkg4id_pandoraNu[MAX_tracks]   , TrackId[MAX_tracks];
     Int_t       trkpidpdg_pandoraNu[MAX_tracks][3];
     Int_t       no_hits     , no_flashes;
@@ -125,8 +133,19 @@ public:
     Float_t     trkdqdx_pandoraNu[MAX_tracks][3][MAX_hits]                      , trkresrg_pandoraNu[MAX_tracks][3][MAX_hits] ;
     Float_t     trkcosmicscore_tagger_pandoraNu[MAX_tracks][10] , trkcosmicscore_containmenttagger_pandoraNu[MAX_tracks][10];
     Float_t     trkpidchi_pandoraNu[MAX_tracks][3]  , trkpidpida_pandoraNu[MAX_tracks][3]   , flash_time[MAX_hits]  ;
+    
     Float_t     flash_timewidth[MAX_hits] , flash_pe[MAX_hits];
     Float_t     flash_ycenter[MAX_hits]   , flash_ywidth[MAX_hits]    , flash_zcenter[MAX_hits]   , flash_zwidth[MAX_hits];
+    
+    
+    Int_t       trkg4id_pandoraCosmic[MAX_cosmic_tracks]  ;
+    Int_t       trkpidpdg_pandoraCosmic[MAX_cosmic_tracks][3];
+    Float_t     trklen_pandoraCosmic[MAX_cosmic_tracks]                 , trkstartx_pandoraCosmic[MAX_cosmic_tracks]            , trkstarty_pandoraCosmic[MAX_cosmic_tracks];
+    Float_t     trkstartz_pandoraCosmic[MAX_cosmic_tracks]              , trkendx_pandoraCosmic[MAX_cosmic_tracks]              , trkendy_pandoraCosmic[MAX_cosmic_tracks];
+    Float_t     trkendz_pandoraCosmic[MAX_cosmic_tracks]                , trktheta_pandoraCosmic[MAX_cosmic_tracks]             , trkphi_pandoraCosmic[MAX_cosmic_tracks];
+    Float_t     trkdqdx_pandoraCosmic[MAX_cosmic_tracks][3][MAX_hits]   , trkresrg_pandoraCosmic[MAX_cosmic_tracks][3][MAX_hits] ;
+    Float_t     trkcosmicscore_tagger_pandoraCosmic[MAX_cosmic_tracks][10] , trkcosmicscore_containmenttagger_pandoraCosmic[MAX_cosmic_tracks][10];
+    Float_t     trkpidchi_pandoraCosmic[MAX_cosmic_tracks][3]  , trkpidpida_pandoraCosmic[MAX_cosmic_tracks][3]  ;
     
     
     
@@ -178,6 +197,9 @@ public:
     
     PandoraNuTrack c_track;
     std::vector<PandoraNuTrack> tracks;
+
+    PandoraNuTrack c_cosmic_track;
+    std::vector<PandoraNuTrack> cosmic_tracks;
     
     nuInteraction c_nu_interaction;
     std::vector<nuInteraction> nu_interactions;
