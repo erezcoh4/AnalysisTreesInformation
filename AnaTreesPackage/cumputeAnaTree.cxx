@@ -11,10 +11,16 @@ bool cumputeAnaTree::extract_information (int entry){ // main event loop....
     InitEntry();
     InTree -> GetEntry(entry);
 
-    GetInTimeFlashes();
-    GetPandoraNuTracks();
+    GetInTimeFlashes    ();
+    
+    GetPandoraNuTracks  ();
+    
     if (MCmode) GetTruthInformation();
     
+    CollectTrackVertices();
+    
+    FindMutualVertices  ();
+
     return true;
 }
 
@@ -159,8 +165,10 @@ void cumputeAnaTree::InitEntry(){
     
     if (!nu_interactions.empty())       nu_interactions.clear();
     if (!genie_interactions.empty())    genie_interactions.clear();
-    if (!goodflashidx.empty())  goodflashidx.clear();
-    if (!tracks.empty())        tracks.clear();
+    if (!goodflashidx.empty())          goodflashidx.clear();
+    if (!tracks.empty())                tracks.clear();
+    if (!tracks_vertices.empty())       tracks_vertices.clear();
+    if (!mutual_vertices.empty())       mutual_vertices.clear();
     
     NnuInteractions = Ntracks = ntracks_pandoraNu = 0;
 }
@@ -348,6 +356,41 @@ void cumputeAnaTree::GetPandoraNuTracks(){
     }
 }
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::CollectTrackVertices(){
+    
+    // (1) collect all start AND end points of all pandoraNu tracks vertices
+    // since we can not rely on pandoraNu to know where is the starting and
+    // ending position of the track, we have to do it on our own
+    for (auto t:tracks) {
+        tracks_vertices.push_back( track_vertex(-(100 + t.track_id) , t.track_id , "start" , t.start_pos , t.CalorimetryPDG ) );
+        tracks_vertices.push_back( track_vertex( (100 + t.track_id) , t.track_id , "end"   , t.end_pos   , t.CalorimetryPDG ) );
+    }
+    
+    // (2) compute the distance of each vertex from all other vertices
+    for (auto & c_track_vertex : tracks_vertices) {
+        c_track_vertex.SetDistancesFromVertices ( tracks_vertices );
+    }
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::FindMutualVertices(){
+    for (auto track_vertex_i : tracks_vertices) {
+        for ( auto track_vertex_j : tracks_vertices ) {
+            if ( track_vertex_i.vertex_id != track_vertex_j.vertex_id ) {
+                if (( track_vertex_i.position - track_vertex_j.position ).Mag() < min_distance_from_vertex ) {
+                    c_mutual_vertex = mutual_vertex ( track_vertex_i , track_vertex_j );
+                }
+            }
+        }
+    }
+}
+
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetTruthInformation(){
     
@@ -485,10 +528,20 @@ void cumputeAnaTree::PrintData(int entry){
         genie_interaction.Print();
     }
     if(!tracks.empty())
-        for (auto t: tracks) {
+    for (auto t: tracks) {
         t.Print();
     }
+    if(!tracks_vertices.empty())
+    for (auto v: tracks_vertices) {
+        v.Print();
+    }
+    if(!mutual_vertices.empty())
+    for (auto v: mutual_vertices) {
+        v.Print();
+    }
 
+    
+    
     EndEventBlock();
     
 }

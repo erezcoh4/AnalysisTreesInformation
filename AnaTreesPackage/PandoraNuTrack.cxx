@@ -237,7 +237,7 @@ void PandoraNuTrack::Print(){
     SHOW(MCpdgCode);
     SHOW3( cosmicscore, coscontscore , pidpida )
     for (int plane = 0 ; plane < 3; plane++) {
-        PrintPhys( CalorimetPDG[plane] , Form(" for plane %d",plane) );
+        PrintPhys( CalorimetryPDG[plane] , Form(" for plane %d",plane) );
         PrintBox(roi[plane]);
     }
     cout << "\033[33m" << NNeighborTracks << " neighboring tracks" ;

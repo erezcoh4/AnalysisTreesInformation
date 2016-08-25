@@ -20,6 +20,9 @@
 #include "GeoAlgo.h"
 #include "nuInteraction.h"
 #include "GENIEinteraction.h"
+#include "track_vertex.h"
+#include "mutual_vertex.h"
+
 
 #define MAX_tracks 1000
 #define MAX_hits 50000
@@ -71,6 +74,9 @@ public:
     bool    GetGENIEInformation ();
     void       GetInTimeFlashes ();
     void     GetPandoraNuTracks ();
+    void   CollectTrackVertices ();
+    void     FindMutualVertices ();
+
     
     // helpers
     bool        VertexContained ( TVector3 );
@@ -175,6 +181,16 @@ public:
     
     GENIEinteraction genie_interaction;
     std::vector<GENIEinteraction> genie_interactions;
+
+
+    track_vertex c_track_vertex;
+    std::vector<track_vertex> tracks_vertices;
+
+    mutual_vertex c_mutual_vertex;
+    std::vector<mutual_vertex> mutual_vertices;
+
+
+
 };
 
 #endif

@@ -15,8 +15,12 @@
 #pragma link C++ class nuInteraction+;
 #pragma link C++ class GENIEinteraction+;
 
+#pragma link C++ class track_vertex+;
+#pragma link C++ class mutual_vertex+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
+
+
 
 
 
