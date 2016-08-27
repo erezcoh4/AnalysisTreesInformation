@@ -197,7 +197,7 @@ void cumputeAnaTree::InitEntry(){
     if (!nu_interactions.empty())       nu_interactions.clear();
     if (!genie_interactions.empty())    genie_interactions.clear();
     if (!goodflashidx.empty())          goodflashidx.clear();
-    if (!cosmictracks.empty())          cosmic_tracks.clear();
+    if (!cosmic_tracks.empty())         cosmic_tracks.clear();
     if (!tracks.empty())                tracks.clear();
     if (!tracks_vertices.empty())       tracks_vertices.clear();
     if (!mutual_vertices.empty())       mutual_vertices.clear();
@@ -540,7 +540,7 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::CollectTrackVertices(){
-        
+    
     // (1) collect all start AND end points of all pandoraNu tracks vertices
     // since we can not rely on pandoraNu to know where is the starting and
     // ending position of the track, we have to do it on our own
