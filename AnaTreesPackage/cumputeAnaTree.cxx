@@ -539,7 +539,7 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::CollectTrackVertices(){
-    
+    if (!tracks_vertices.empty())   tracks_vertices.clear();
     // (1) collect all start AND end points of all pandoraNu tracks vertices
     // since we can not rely on pandoraNu to know where is the starting and
     // ending position of the track, we have to do it on our own
