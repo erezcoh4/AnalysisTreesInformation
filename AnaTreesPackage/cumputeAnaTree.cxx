@@ -588,6 +588,7 @@ void cumputeAnaTree::FindMutualVertices(){
         
         // plug this mutual vertex into the mutual-vertices vector only if it is indeed mutual - i.e. it includes at least two tracks
         if (c_mutual_vertex.N_tracks_vertices > 1 ) {
+            c_mutual_vertex.SetVertexTopology();
             mutual_vertices.push_back( c_mutual_vertex );
         }
         
@@ -736,40 +737,40 @@ void cumputeAnaTree::PrintData(int entry){
     SHOW(entry);
     SHOW3(run , subrun , event);
     if(!nu_interactions.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << nu_interactions.size() << " neutrino interactions\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << nu_interactions.size() << " neutrino interactions\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
         for (auto nu_interaction: nu_interactions) {
             nu_interaction.Print();
         }
     }
     if(!genie_interactions.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << genie_interactions.size() << " genie interactions\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << genie_interactions.size() << " genie interactions\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
         for (auto genie_interaction: genie_interactions) {
             genie_interaction.Print();
         }
     }
     if(!cosmic_tracks.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << cosmic_tracks.size() << " pandoraCosmic tracks\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << cosmic_tracks.size() << " pandoraCosmic tracks\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
         
         for (auto t: cosmic_tracks) {
             t.Print();
         }
     }
     if(!tracks.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
         
         for (auto t: tracks) {
             t.Print();
         }
     }
     if(!tracks_vertices.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks_vertices.size() << " tracks vertices\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks_vertices.size() << " tracks vertices\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
         
         for (auto v: tracks_vertices) {
             v.Print();
         }
     }
     if(!mutual_vertices.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << mutual_vertices.size() << " mutual vertices\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[30m" << endl;
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << mutual_vertices.size() << " mutual vertices\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
         for (auto v: mutual_vertices) {
             v.Print();
         }
