@@ -93,9 +93,10 @@ public:
     // variables
     TTree       * InTree    , * OutTree , * GENIETree;
 
-    int         debug;  // 0 - quiet, 1 - major functionality, 2 - print out all sorts of shit
+    int         debug;  // 0 - quiet, 1 - major functionality, > 2 - print out all sorts of shit
     bool        MCmode;
     bool        foundMuonScattering;
+    bool        track_already_included;
     
     Short_t     ntracks_pandoraNu ;
     Short_t     trkId_pandoraNu[MAX_tracks] , ntrkhits_pandoraNu[MAX_tracks][3]     , trkncosmictags_tagger_pandoraNu[MAX_tracks];

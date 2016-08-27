@@ -561,45 +561,56 @@ void cumputeAnaTree::FindMutualVertices(){
     for (auto track_vertex_i : tracks_vertices) { // loop over vertices i
 
         if (debug>3) Printf("checking if track_vertex_i.track_id = %d is in mutual_vertices",track_vertex_i.track_id);
+        
         // skip this step if we have already included this track vertex in one of the previous loop steps
+        track_already_included = false;
         for (auto m_v : mutual_vertices) {
             if (m_v.include_track(track_vertex_i.track_id)) {
-                continue;
+                track_already_included = true;
+//                continue;
             }
         }
-        if (debug>3) Printf("track_id = %d was not in mutual_vertices",track_vertex_i.track_id);
-        for (auto v: mutual_vertices) {
-            v.Print();
+        
+        
+        if (track_already_included) {
+            continue;
         }
-
-        
-
-        // create a new mutual-vertex. Its id = incremented from the previous mutual vertex that was saved
-        c_mutual_vertex = mutual_vertex( mutual_vertices.size() + 1 , track_vertex_i );
-        
-        for ( auto track_vertex_j : tracks_vertices ) { // loop over vertices j
+        else {
             
-            // and take interest if they are not already included in a mutual vertex and they are not track vertex j
+            SHOW(track_already_included);
+            if (debug>3) Printf("track_id = %d was not in mutual_vertices",track_vertex_i.track_id);
+            for (auto v: mutual_vertices) {
+                v.Print();
+            }
             
-            if (    ( track_vertex_i.track_id != track_vertex_j.track_id )
-                &&  ( !c_mutual_vertex.include_track(track_vertex_j.track_id) ) ){
+            
+            
+            // create a new mutual-vertex. Its id = incremented from the previous mutual vertex that was saved
+            c_mutual_vertex = mutual_vertex( mutual_vertices.size() + 1 , track_vertex_i );
+            
+            for ( auto track_vertex_j : tracks_vertices ) { // loop over vertices j
                 
-                // if these vertices are close enough, collect them together into a mutual vertex
+                // and take interest if they are not already included in a mutual vertex and they are not track vertex j
                 
-                if (( c_mutual_vertex.position - track_vertex_j.position ).Mag() < min_distance_from_vertex ) {
+                if (    ( track_vertex_i.track_id != track_vertex_j.track_id )
+                    &&  ( !c_mutual_vertex.include_track(track_vertex_j.track_id) ) ){
                     
-                    c_mutual_vertex.AddTrackVertex (  track_vertex_j );
+                    // if these vertices are close enough, collect them together into a mutual vertex
                     
+                    if (( c_mutual_vertex.position - track_vertex_j.position ).Mag() < min_distance_from_vertex ) {
+                        
+                        c_mutual_vertex.AddTrackVertex (  track_vertex_j );
+                        
+                    }
                 }
+            } // loop over vertices j
+            
+            // plug this mutual vertex into the mutual-vertices vector only if it is indeed mutual - i.e. it includes at least two tracks
+            if (c_mutual_vertex.N_tracks_vertices > 1 ) {
+                c_mutual_vertex.SetVertexTopology();
+                mutual_vertices.push_back( c_mutual_vertex );
             }
-        } // loop over vertices j
-        
-        // plug this mutual vertex into the mutual-vertices vector only if it is indeed mutual - i.e. it includes at least two tracks
-        if (c_mutual_vertex.N_tracks_vertices > 1 ) {
-            c_mutual_vertex.SetVertexTopology();
-            mutual_vertices.push_back( c_mutual_vertex );
         }
-        
     } // loop over vertices i
 }
 
