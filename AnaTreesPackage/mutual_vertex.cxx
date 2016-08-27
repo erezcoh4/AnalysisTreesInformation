@@ -109,9 +109,8 @@ void mutual_vertex::Print(){
     SHOW( vertex_id );
     SHOWTVector3( position );
     
-    for (auto c_track_vertex: tracks_vertices) {
-        c_track_vertex.Print();
-    }
+    //    Printf("track vertices:") for (auto c_track_vertex: tracks_vertices) c_track_vertex.Print();
+    
     SHOW3( Np  , Nmu   , Npi);
     if (Ne>0 || Ngamma>0) {
         SHOW ( Ne );
