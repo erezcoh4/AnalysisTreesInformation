@@ -5,13 +5,11 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-mutual_vertex::mutual_vertex( track_vertex t_vertex_i , track_vertex t_vertex_j ){
+mutual_vertex::mutual_vertex( Int_t vertex_id , track_vertex t_vertex ){
     
-    N_tracks_vertices = 2;
+    N_tracks_vertices = 1;
     
-    tracks_vertices.push_back(t_vertex_i);
-    tracks_vertices.push_back(t_vertex_j);
-    
+    tracks_vertices.push_back(t_vertex);
     
     SetMutualVertexInfo();
     
@@ -29,7 +27,7 @@ bool mutual_vertex::include_track_vertex ( track_vertex t_v ){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void mutual_vertex::AddTracVertex( track_vertex t_vertex ){
+void mutual_vertex::AddTrackVertex( track_vertex t_vertex ){
     
     N_tracks_vertices++;
     

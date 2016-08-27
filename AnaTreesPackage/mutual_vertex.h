@@ -30,11 +30,11 @@ public:
     mutual_vertex (){}
     ~mutual_vertex (){}
     mutual_vertex ( Int_t f_vertex_id ){ SetVertexID(f_vertex_id); }
-    mutual_vertex ( track_vertex , track_vertex );
+    mutual_vertex ( Int_t , track_vertex );
 
     void          SetPosition ();
     bool include_track_vertex ( track_vertex );
-    void        AddTracVertex ( track_vertex );
+    void        AddTrackVertex ( track_vertex );
     void  SetMutualVertexInfo ();
     void    SetVertexTopology ();
     void                Print ();
