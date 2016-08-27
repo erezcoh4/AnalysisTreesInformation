@@ -567,7 +567,6 @@ void cumputeAnaTree::FindMutualVertices(){
         for (auto m_v : mutual_vertices) {
             if (m_v.include_track(track_vertex_i.track_id)) {
                 track_already_included = true;
-//                continue;
             }
         }
         
@@ -576,13 +575,6 @@ void cumputeAnaTree::FindMutualVertices(){
             continue;
         }
         else {
-            
-            SHOW(track_already_included);
-            if (debug>3) Printf("track_id = %d was not in mutual_vertices",track_vertex_i.track_id);
-            for (auto v: mutual_vertices) {
-                v.Print();
-            }
-            
             
             
             // create a new mutual-vertex. Its id = incremented from the previous mutual vertex that was saved
