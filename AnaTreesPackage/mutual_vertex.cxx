@@ -10,7 +10,7 @@ mutual_vertex::mutual_vertex( Int_t fvertex_id , track_vertex t_vertex ){
     N_tracks_vertices = 1;
     SetVertexID( fvertex_id );
     tracks_vertices.push_back(t_vertex);
-    
+    tracks_id.push_back(t_vertex.track_id);
     SetMutualVertexInfo();
     
 }
@@ -30,9 +30,8 @@ bool mutual_vertex::include_track_vertex ( track_vertex t_v ){
 void mutual_vertex::AddTrackVertex( track_vertex t_vertex ){
     
     N_tracks_vertices++;
-    
     tracks_vertices.push_back(t_vertex);
-    
+    tracks_id.push_back(t_vertex.track_id);
     SetMutualVertexInfo();
     
 }
@@ -108,7 +107,7 @@ void mutual_vertex::Print(){
     SHOWTVector3( position );
     
     //    Printf("track vertices:") for (auto c_track_vertex: tracks_vertices) c_track_vertex.Print();
-    
+    SHOWstdVector(tracks_id);
     SHOW3( Np  , Nmu   , Npi);
     if (Ne>0 || Ngamma>0) {
         SHOW ( Ne );

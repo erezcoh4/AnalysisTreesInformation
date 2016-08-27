@@ -2,7 +2,7 @@
     
     usage:
     ------
-    python calc_single_file.py --DataType=EXTBNB --worker=uboone -p1 -v2 --option="select muon-proton scattering" -ff=0.01 -evf=0.1
+    python mac/calc_list_of_files.py --DataType=EXTBNB --worker=uboone -p1 -v2 --option="select muon-proton scattering" -ff=0.01 -evf=0.1
     
     
     option="select muon-proton scattering":
