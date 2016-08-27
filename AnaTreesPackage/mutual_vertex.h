@@ -33,8 +33,9 @@ public:
     mutual_vertex ( Int_t , track_vertex );
 
     void          SetPosition ();
+//    void          SetVertexID ( Int_t fvertex_id ) {vertex_id = fvertex_id;};
     bool include_track_vertex ( track_vertex );
-    void        AddTrackVertex ( track_vertex );
+    void       AddTrackVertex ( track_vertex );
     void  SetMutualVertexInfo ();
     void    SetVertexTopology ();
     void                Print ();
@@ -43,6 +44,7 @@ public:
     
     TVector3    position;
     Int_t       N_tracks_vertices;
+//    Int_t       vertex_id;
     Int_t       Np  , Nmu   , Npi   , Ne    , Ngamma;
     TString     vertex_topology;
     

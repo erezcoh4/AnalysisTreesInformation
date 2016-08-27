@@ -5,10 +5,10 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-mutual_vertex::mutual_vertex( Int_t vertex_id , track_vertex t_vertex ){
+mutual_vertex::mutual_vertex( Int_t fvertex_id , track_vertex t_vertex ){
     
     N_tracks_vertices = 1;
-    
+    SetVertexID( fvertex_id );
     tracks_vertices.push_back(t_vertex);
     
     SetMutualVertexInfo();
