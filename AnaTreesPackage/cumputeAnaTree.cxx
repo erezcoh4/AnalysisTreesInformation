@@ -599,6 +599,7 @@ void cumputeAnaTree::FindMutualVertices(){
             
             // plug this mutual vertex into the mutual-vertices vector only if it is indeed mutual - i.e. it includes at least two tracks
             if (c_mutual_vertex.N_tracks_vertices > 1 ) {
+                c_mutual_vertex.CreateROIs();
                 c_mutual_vertex.SetVertexTopology();
                 mutual_vertices.push_back( c_mutual_vertex );
             }

@@ -16,7 +16,9 @@
 
 #include <iostream>
 #include <track_vertex.h>
-#define min_distance_from_vertex 10 // in [cm] - this is the minimal distance between vertices that allows them to be defined as mutual vertices
+#include "LArUtil/GeometryHelper.h"
+
+#define min_distance_from_vertex 5 // in [cm] - this is the minimal distance between vertices that allows them to be defined as mutual vertices
 
 /**
    \class mutual_vertex
@@ -37,18 +39,25 @@ public:
     void       AddTrackVertex ( track_vertex );
     void  SetMutualVertexInfo ();
     void    SetVertexTopology ();
+    void           CreateROIs ();
     void                Print ();
 
     
     
     TVector3    position;
+    
     Int_t       N_tracks_vertices;
-    Int_t       Np  , Nmu   , Npi   , Ne    , Ngamma;
+    Int_t       Np      , Nmu   , Npi   , Ne    , Ngamma;
+    Float_t     dxmax   , dymax , dzmax;
+    
+    
     TString     vertex_topology;
     
     std::vector<Int_t>          tracks_id;
     std::vector<track_vertex>   tracks_vertices;
     
+    
+    box         roi[3];
 };
 
 #endif

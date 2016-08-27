@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include "../../mySoftware/MySoftwarePackage/myIncludes.h"
-
+#include "PandoraNuTrack.h"
 
 /**
    \class track_vertex
@@ -46,7 +46,7 @@ public:
     TString     location_in_track ;
     
     
-    TVector3    position;
+    TVector3    position    , position_of_same_track_other_vertex;
     
     
     std::vector<Float_t>    distance_from_vertex;   // distance from all other track_vertices in this event

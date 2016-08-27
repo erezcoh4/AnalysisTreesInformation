@@ -23,7 +23,11 @@ void track_vertex::SetDistancesFromVertices ( std::vector<track_vertex> all_vert
     if (!distance_from_vertex.empty()) distance_from_vertex.clear();
     
     for (auto vertex : all_vertices_in_this_event) {
-        
+
+        if ( track_id == vertex.track_id && vertex_id != vertex.vertex_id ){
+            position_of_same_track_other_vertex = vertex.position; // its the other vertex from the same track
+        }
+
         if ( track_id == vertex.track_id ){
             distance_from_vertex.push_back ( 99999 ); // its a vertex from the same track. plugging such a default value saves computation time in other routines
         }

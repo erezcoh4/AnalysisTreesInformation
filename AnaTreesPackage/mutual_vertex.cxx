@@ -44,12 +44,27 @@ void mutual_vertex::SetMutualVertexInfo(){
     
     Np = Nmu = Npi = Ne = Ngamma = 0;
     
+    
     // average position over all tracks vertices that contribute to this mutual vertex
     position = TVector3();
+    
+    // for ROIs, the maximal distance form the mutual vertex would be the maximal x/y/z position of the longest track associated with this vertex
+    dxmax = dymax = dzmax = 0;
     
     for (auto c_track_vertex: tracks_vertices) {
         
         position += c_track_vertex.position;
+        
+        if (fabs(c_track_vertex.position_of_same_track_other_vertex.x() - position.x()) > dxmax) {
+            dxmax = c_track_vertex.position_of_same_track_other_vertex.x() - position.x();
+        }
+        if (fabs(c_track_vertex.position_of_same_track_other_vertex.y() - position.y()) > dymax) {
+            dymax = c_track_vertex.position_of_same_track_other_vertex.y() - position.y();
+        }
+        if (fabs(c_track_vertex.position_of_same_track_other_vertex.z() - position.z()) > dzmax) {
+            dzmax = c_track_vertex.position_of_same_track_other_vertex.z() - position.z();
+        }
+        
         
         switch (c_track_vertex.CalorimetryID) {
                 
@@ -100,6 +115,38 @@ void mutual_vertex::SetVertexTopology(){
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void mutual_vertex::CreateROIs(){
+    
+    // load GeometryHelper utility
+    auto geomHelper = ::larutil::GeometryHelper::GetME();
+    
+    double start_xyz[3] = { position.x() - dxmax , position.y() - dymax , position.z() - dzmax };
+    double end_xyz[3]   = { position.x() + dxmax , position.y() + dymax , position.z() + dzmax };
+    
+    // shift in time-axis due to the truncation of the waveforms
+    // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
+    double time_shift =  802;
+    
+    
+    for (int plane = 0; plane < 3; plane++){
+        
+        // geoHelper is a set of utility functions that help with geometric stuff..
+        auto const& start_projection2D = geomHelper->Point_3Dto2D(start_xyz, plane);
+        auto const& end_projection2D = geomHelper->Point_3Dto2D(end_xyz, plane);
+        
+        int start_wire = (int) ( start_projection2D.w / geomHelper->WireToCm() );
+        int start_time = (int) ( start_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        
+        // 802: shift in time-axis due to the truncation of the waveforms
+        // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
+        int end_wire = (int) ( end_projection2D.w / geomHelper->WireToCm() );
+        int end_time = (int) ( end_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        roi[plane] = box( start_wire , start_time , end_wire , end_time );
+        
+    }
+    
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void mutual_vertex::Print(){
@@ -115,6 +162,10 @@ void mutual_vertex::Print(){
         SHOW( Ngamma );
     }
     SHOW(vertex_topology);
+    for (int plane = 0 ; plane < 3; plane++) {
+        PrintBox(roi[plane]);
+    }
+
     PrintLine();
 }
 

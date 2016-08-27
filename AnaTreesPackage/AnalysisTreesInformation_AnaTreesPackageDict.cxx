@@ -332,7 +332,7 @@ namespace ROOT {
       ::mutual_vertex *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::mutual_vertex));
       static ::ROOT::TGenericClassInfo 
-         instance("mutual_vertex", "mutual_vertex.h", 26,
+         instance("mutual_vertex", "mutual_vertex.h", 28,
                   typeid(::mutual_vertex), DefineBehavior(ptr, ptr),
                   &mutual_vertex_Dictionary, isa_proxy, 4,
                   sizeof(::mutual_vertex) );
