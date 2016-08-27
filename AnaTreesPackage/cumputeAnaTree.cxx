@@ -713,7 +713,7 @@ bool cumputeAnaTree::TrackContained(TVector3 start , TVector3 end){
 void cumputeAnaTree::FindMuonScattering(){
     foundMuonScattering = false;
     for (auto c_mutual_vertex: mutual_vertices) {
-        if (c_mutual_vertex.vertex_topology == "2 muons" || c_mutual_vertex.vertex_topology == "2 muons 1 protons" || c_mutual_vertex.vertex_topology == "2 muons 2 protons") {
+        if ( c_mutual_vertex.Nmu >= 2 ) {
             foundMuonScattering = true;
         }
     }
