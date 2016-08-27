@@ -567,7 +567,7 @@ void cumputeAnaTree::FindMutualVertices(){
                 continue;
             }
         }
-        if (debug>3) Printf("track_id = %d was in mutual_vertices",track_vertex_i.track_id);
+        if (debug>3) Printf("track_id = %d was not in mutual_vertices",track_vertex_i.track_id);
         for (auto v: mutual_vertices) {
             v.Print();
         }
