@@ -48,8 +48,11 @@ void mutual_vertex::SetMutualVertexInfo(){
     
     // average position over all tracks vertices that contribute to this mutual vertex
     position = TVector3();
+    
     for (auto c_track_vertex: tracks_vertices) {
+        
         position += c_track_vertex.position;
+        
         switch (c_track_vertex.CalorimetryID) {
                 
             case 2212: // p

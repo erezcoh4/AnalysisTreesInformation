@@ -24,11 +24,11 @@ void track_vertex::SetDistancesFromVertices ( std::vector<track_vertex> all_vert
     
     for (auto vertex : all_vertices_in_this_event) {
         
-        if ( this->vertex_id == vertex.vertex_id ){
-            distance_from_vertex.push_back ( 9999 ); // its the same vertex. plugging such a default value saves computation time in other routines
+        if ( vertex_id == vertex.vertex_id ){
+            distance_from_vertex.push_back ( 99999 ); // its the same vertex. plugging such a default value saves computation time in other routines
         }
         else {
-            distance_from_vertex.push_back ( (this->position - vertex.position ).Mag() );
+            distance_from_vertex.push_back ( (position - vertex.position ).Mag() );
         }
         
         
