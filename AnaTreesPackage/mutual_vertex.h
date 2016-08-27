@@ -16,7 +16,7 @@
 
 #include <iostream>
 #include <track_vertex.h>
-#define min_distance_from_vertex 20 // in [cm] - this is the minimal distance between vertices that allows them to be defined as mutual vertices
+#define min_distance_from_vertex 10 // in [cm] - this is the minimal distance between vertices that allows them to be defined as mutual vertices
 
 /**
    \class mutual_vertex
