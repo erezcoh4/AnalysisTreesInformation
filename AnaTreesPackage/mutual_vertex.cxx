@@ -19,7 +19,7 @@ mutual_vertex::mutual_vertex( Int_t fvertex_id , track_vertex t_vertex ){
 bool mutual_vertex::include_track_vertex ( track_vertex t_v ){
     
     for (auto c_track_vertex: tracks_vertices) {
-        if (c_track_vertex.vertex_id == t_v.vertex_id) return true;
+        if (c_track_vertex.track_id == t_v.track_id) return true;
     }
     
     return false;

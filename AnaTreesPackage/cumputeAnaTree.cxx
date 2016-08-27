@@ -574,7 +574,8 @@ void cumputeAnaTree::FindMutualVertices(){
             
             // and take interest if they are not already included in a mutual vertex and they are not track vertex j
             
-            if (( track_vertex_i.track_id != track_vertex_j.track_id ) && ( !c_mutual_vertex.include_track_vertex(track_vertex_j) ) ){
+            if (    ( track_vertex_i.track_id != track_vertex_j.track_id )
+                &&  ( !c_mutual_vertex.include_track_vertex(track_vertex_j) ) ){
                 
                 // if these vertices are close enough, collect them together into a mutual vertex
                 
