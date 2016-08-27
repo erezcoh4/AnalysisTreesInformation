@@ -33,7 +33,8 @@ public:
     mutual_vertex ( Int_t , track_vertex );
 
     void          SetPosition ();
-    bool include_track_vertex ( track_vertex );
+//    bool include_track_vertex ( track_vertex ); // deprecated
+    bool        include_track ( Int_t ftrack_id );
     void       AddTrackVertex ( track_vertex );
     void  SetMutualVertexInfo ();
     void    SetVertexTopology ();

@@ -16,14 +16,27 @@ mutual_vertex::mutual_vertex( Int_t fvertex_id , track_vertex t_vertex ){
 }
 
 
-bool mutual_vertex::include_track_vertex ( track_vertex t_v ){
+// deprecated
+//bool mutual_vertex::include_track_vertex ( track_vertex t_v ){
+//    
+//    for (auto c_track_vertex: tracks_vertices) {
+//        if (c_track_vertex.track_id == t_v.track_id) return true;
+//    }
+//    
+//    return false;
+//    
+//}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool mutual_vertex::include_track ( Int_t ftrack_id ){
     
-    for (auto c_track_vertex: tracks_vertices) {
-        if (c_track_vertex.track_id == t_v.track_id) return true;
+    for (auto t_id: tracks_id) {
+        if (t_id == ftrack_id) {
+            return true;
+        }
     }
-    
     return false;
-    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
