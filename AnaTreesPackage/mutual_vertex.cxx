@@ -93,12 +93,10 @@ void mutual_vertex::SetVertexTopology(){
     // try to use the most basic analysis-trees infromation we've collected to determine event topology
     vertex_topology = "";
     vertex_topology += Form("%d muons",Nmu);
-    vertex_topology += Form(" %d protons",Np);
-    vertex_topology += Form(" %d pions",Npi);
-    if (Ne>0 || Ngamma>0) {
-        vertex_topology += Form(" %d electrons",Ne);
-        vertex_topology += Form(" %d photons",Ngamma);
-    }
+    if (Np > 0)     vertex_topology += Form(" %d protons",Np);
+    if (Npi > 0)    vertex_topology += Form(" %d pions",Npi);
+    if (Ne > 0)     vertex_topology += Form(" %d electrons",Ne);
+    if (Ngamma > 0) vertex_topology += Form(" %d photons",Ngamma);
 }
 
 
