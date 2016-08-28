@@ -6,8 +6,14 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-track_vertex::track_vertex(Int_t fvertex_id , Int_t ftrack_id , TString flocation_in_track , TVector3 fposition , Int_t fCalorimetryPDG[3] , box ftrack_ROIs[3] ){
+track_vertex::track_vertex(Int_t frun, Int_t fsubrun, Int_t fevent,
+                           Int_t ftrack_id, Int_t fvertex_id,
+                           TString flocation_in_track, TVector3 fposition,
+                           Int_t fCalorimetryPDG[3], box ftrack_ROIs[3] ){
     
+    SetRun              (frun);
+    SetSubrun           (fsubrun);
+    SetEvent            (fevent);
     SetVertexID         (fvertex_id);
     SetTrackID          (ftrack_id);
     SetLocationInTrack  (flocation_in_track);
@@ -81,6 +87,7 @@ void track_vertex::SetROIs(box ftrack_ROIs[3]){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void track_vertex::Print(){
     
+    SHOW3( run , subrun , event );
     SHOW3( vertex_id , track_id , location_in_track );
     SHOWTVector3( position );
     SHOWstdVector(distance_from_vertex);

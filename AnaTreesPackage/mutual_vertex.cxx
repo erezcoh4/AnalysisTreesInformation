@@ -8,7 +8,12 @@
 mutual_vertex::mutual_vertex( Int_t fvertex_id , track_vertex t_vertex ){
     
     N_tracks_vertices = 1;
-    SetVertexID( fvertex_id );
+    
+    SetRun              ( t_vertex.run );
+    SetSubrun           ( t_vertex.subrun );
+    SetEvent            ( t_vertex.event );
+    SetVertexID         ( fvertex_id );
+    
     tracks_vertices.push_back( t_vertex );
     tracks_id.push_back( t_vertex.track_id );
     for (int plane = 0 ; plane < 3 ; plane++) {
@@ -148,6 +153,7 @@ void mutual_vertex::CreateROIs(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void mutual_vertex::Print(){
     
+    SHOW3( run , subrun , event );
     SHOW( vertex_id );
     SHOWTVector3( position );
     

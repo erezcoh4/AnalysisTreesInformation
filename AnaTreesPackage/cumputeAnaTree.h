@@ -43,8 +43,8 @@ public:
     ~cumputeAnaTree(){}
     
     // construct w/ input and output TTree-s
-    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,  TTree * fGENIETree, int fdebug=0, bool fMCmode=false);
-    cumputeAnaTree (TChain * fInChain, TTree * fOutTree, TTree * fGENIETree, int fdebug=0, bool fMCmode=false){cumputeAnaTree((TTree*) fInChain, fOutTree, fGENIETree, fdebug,fMCmode);};
+    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,  TTree * fGENIETree, TString fCSVFileName, int fdebug=0, bool fMCmode=false);
+    cumputeAnaTree (TChain * fInChain, TTree * fOutTree, TTree * fGENIETree, TString fCSVFileName, int fdebug=0, bool fMCmode=false){cumputeAnaTree((TTree*) fInChain, fOutTree, fGENIETree, fCSVFileName, fdebug, fMCmode);};
     
     
     
@@ -54,6 +54,7 @@ public:
     void        SetInTree (TTree * tree)    {InTree = tree;};
     void       SetOutTree (TTree * tree)    {OutTree = tree;};
     void     SetGENIETree (TTree * tree)    {GENIETree = tree;};
+    void   SetCSVFileName (TString name)    {CSVFileName = name;};
     void         SetDebug (int _debug)      {debug = _debug;};
     void        SetMCMode (bool _mc_mode)   {MCmode = _mc_mode;};
     
@@ -64,6 +65,7 @@ public:
     // initializations
     void    InitInputTree ();
     void   InitOutputTree ();
+    void    InitOutputCSV ();
     void        InitEntry ();
     void        InitTrack ();
     
@@ -79,6 +81,7 @@ public:
     void   CollectTrackVertices ();
     void     FindMutualVertices ();
     void     FindMuonScattering ();
+    void        WriteTracks2CSV ();
     
     // helpers
     bool        VertexContained ( TVector3 );
@@ -187,6 +190,10 @@ public:
     Int_t    genie_mother[40];        //mother trackID of the GENIE particle
     
     
+    
+    TString  CSVFileName    , CSVHeader;
+    ofstream    csvfile;
+
 
     
     // GeoAlgo

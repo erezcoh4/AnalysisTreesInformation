@@ -25,7 +25,9 @@ ListType        = "GOOD" + flags.DataType
 ListName        = "filesana"
 ListsPath       = "/pnfs/uboone/persistent/users/aschu/devel/v05_11_01/hadd"
 AnaPath         = "/uboone/data/users/ecohen/AnalysisTreeData" if flags.worker=="uboone" else ""
-AnafileName     = AnaPath + "/Ana_" + ListType + "_" + ListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
+AnafileName     = AnaPath + "/ROOTFiles/Ana_" + ListType + "_" + ListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
+CSVfileName     = AnaPath + "/CSVFiles/features_" + ListType + "_" + ListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
+MCmode          = True if flags.DataType=='MC' else False
 tools           = AnaTreeTools()
 
 
@@ -55,7 +57,7 @@ GENIETree   = ROOT.TTree("GENIETree","genie interactions")
 
 
 
-calc = cumputeAnaTree( in_chain , OutTree , GENIETree , flags.verbose )
+calc = cumputeAnaTree( in_chain , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
 
 for entry in range(int(flags.evnts_frac*(Nentries))):
         
@@ -68,6 +70,8 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
     if ( flags.option=="select muon-proton scattering" and calc.foundMuonScattering ):
     
         calc.FillOutTree()
+        calc.WriteTracks2CSV()
+
 
 
 
@@ -75,6 +79,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
 
 
 print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
+print "wrote csv file with %d tracks (%.2f MB):\n"%(counter,float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
 
 
 GENIETree.Write()

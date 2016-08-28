@@ -31,15 +31,17 @@ bool cumputeAnaTree::extract_information (int entry){ // main event loop....
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TTree * fGENIETree, int fdebug, bool fMCmode){
+cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TTree * fGENIETree, TString fCSVFileName, int fdebug, bool fMCmode){
     
     SetInTree(fInTree);
     SetOutTree(fOutTree);
     SetGENIETree(fGENIETree);
+    SetCSVFileName (fCSVFileName);
     SetDebug(fdebug);
     SetMCMode(fMCmode);
     InitInputTree();
     InitOutputTree();
+    InitOutputCSV();
     
 }
 
@@ -189,6 +191,21 @@ void cumputeAnaTree::InitOutputTree(){
 
 
     if(debug>1) cout << "cumputeAnaTree output-tree ready (" << OutTree -> GetTitle() << ")" << endl;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::InitOutputCSV(){
+    
+    csvfile.open(CSVFileName);
+    
+    CSVHeader =
+    TString("run,subrun,event")
+    +TString(",U_start_wire,U_start_time,U_end_wire,U_end_time")
+    +TString(",V_start_wire,V_start_time,V_end_wire,V_end_time")
+    +TString(",Y_start_wire,Y_start_time,Y_end_wire,Y_end_time");
+    
+    csvfile << CSVHeader << endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -544,11 +561,12 @@ void cumputeAnaTree::CollectTrackVertices(){
     // since we can not rely on pandoraNu to know where is the starting and
     // ending position of the track, we have to do it on our own
     for (auto t:cosmic_tracks) {
-        tracks_vertices.push_back( track_vertex(-(100 + t.track_id) , t.track_id , "start" , t.start_pos , t.CalorimetryPDG , t.roi ) );
-        tracks_vertices.push_back( track_vertex( (100 + t.track_id) , t.track_id , "end"   , t.end_pos   , t.CalorimetryPDG , t.roi ) );
+        tracks_vertices.push_back( track_vertex( run , subrun , event , -(100 + t.track_id) , t.track_id , "start" , t.start_pos , t.CalorimetryPDG , t.roi ) );
+        tracks_vertices.push_back( track_vertex( run , subrun , event ,  (100 + t.track_id) , t.track_id , "end"   , t.end_pos   , t.CalorimetryPDG , t.roi ) );
     }
     
     // (2) compute the distance of each vertex from all other vertices
+    // its not really important, since this routine is prformed elsewhere and in another manner
     for (auto & c_track_vertex : tracks_vertices) {
         c_track_vertex.SetDistancesFromVertices ( tracks_vertices );
     }
@@ -731,14 +749,34 @@ void cumputeAnaTree::FindMuonScattering(){
     }
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::FillOutTree (){
     
     OutTree -> Fill();
     return true;
     
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::WriteTracks2CSV(){
+    
+    // run              , subrun            , event
+    // U_start_wire     , U_start_time      , U_end_wire  , U_end_time
+    // V_start_wire     , V_start_time      , V_end_wire  , V_end_time
+    // Y_start_wire     , Y_start_time      , Y_end_wire  , Y_end_time
+    
+    
+    for (auto m_v:mutual_vertices){
+        csvfile
+        << m_v.run                       << "," << m_v.subrun             << "," << m_v.event
+        << "," << m_v.roi[0].start_wire  << "," << m_v.roi[0].start_time  << "," << m_v.roi[0].end_wire    << "," << m_v.roi[0].end_time
+        << "," << m_v.roi[1].start_wire  << "," << m_v.roi[1].start_time  << "," << m_v.roi[1].end_wire    << "," << m_v.roi[1].end_time
+        << "," << m_v.roi[2].start_wire  << "," << m_v.roi[2].start_time  << "," << m_v.roi[2].end_wire    << "," << m_v.roi[2].end_time
+        << endl;
+        
+        if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
+    };
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
