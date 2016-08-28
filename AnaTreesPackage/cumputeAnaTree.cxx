@@ -200,10 +200,10 @@ void cumputeAnaTree::InitOutputCSV(){
     csvfile.open(CSVFileName);
     
     CSVHeader =
-    TString("run,subrun,event")
-    +TString(",U_start_wire,U_start_time,U_end_wire,U_end_time")
-    +TString(",V_start_wire,V_start_time,V_end_wire,V_end_time")
-    +TString(",Y_start_wire,Y_start_time,Y_end_wire,Y_end_time");
+    TString("run subrun event ")
+    +TString("U_start_wire U_start_time U_end_wire U_end_time ")
+    +TString("V_start_wire V_start_time V_end_wire V_end_time ")
+    +TString("Y_start_wire Y_start_time Y_end_wire Y_end_time ");
     
     csvfile << CSVHeader << endl;
 }
@@ -769,10 +769,10 @@ void cumputeAnaTree::WriteTracks2CSV(){
     
     for (auto m_v:mutual_vertices){
         csvfile
-        << m_v.run                       << "," << m_v.subrun             << "," << m_v.event
-        << "," << m_v.roi[0].start_wire  << "," << m_v.roi[0].start_time  << "," << m_v.roi[0].end_wire    << "," << m_v.roi[0].end_time
-        << "," << m_v.roi[1].start_wire  << "," << m_v.roi[1].start_time  << "," << m_v.roi[1].end_wire    << "," << m_v.roi[1].end_time
-        << "," << m_v.roi[2].start_wire  << "," << m_v.roi[2].start_time  << "," << m_v.roi[2].end_wire    << "," << m_v.roi[2].end_time
+        << m_v.run                       << " " << m_v.subrun             << " " << m_v.event
+        << " " << m_v.roi[0].start_wire  << " " << m_v.roi[0].start_time  << " " << m_v.roi[0].end_wire    << " " << m_v.roi[0].end_time
+        << " " << m_v.roi[1].start_wire  << " " << m_v.roi[1].start_time  << " " << m_v.roi[1].end_wire    << " " << m_v.roi[1].end_time
+        << " " << m_v.roi[2].start_wire  << " " << m_v.roi[2].start_time  << " " << m_v.roi[2].end_wire    << " " << m_v.roi[2].end_time
         << endl;
         
         if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
