@@ -79,7 +79,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
 
 
 print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
-print "wrote csv file with %d tracks (%.2f MB):\n"%(counter,float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
+print "wrote csv file with (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
 
 
 GENIETree.Write()
