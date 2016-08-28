@@ -20,8 +20,6 @@ mutual_vertex::mutual_vertex( Int_t fvertex_id , track_vertex t_vertex ){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool mutual_vertex::include_track ( Int_t ftrack_id ){
-    Printf("looking for track %d in",ftrack_id);
-    SHOWstdVector(tracks_id);
     for (auto t_id: tracks_id) {
         if (t_id == ftrack_id) {
             return true;

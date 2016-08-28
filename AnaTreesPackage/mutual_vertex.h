@@ -18,7 +18,7 @@
 #include <track_vertex.h>
 #include "LArUtil/GeometryHelper.h"
 
-#define min_distance_from_vertex 5 // in [cm] - this is the minimal distance between vertices that allows them to be defined as mutual vertices
+#define min_distance_from_vertex 3 // in [cm] - this is the minimal distance between vertices that allows them to be defined as mutual vertices
 
 /**
    \class mutual_vertex
