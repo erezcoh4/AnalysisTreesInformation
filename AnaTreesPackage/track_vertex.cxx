@@ -6,13 +6,14 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-track_vertex::track_vertex(Int_t fvertex_id , Int_t ftrack_id , TString flocation_in_track , TVector3 fposition , Int_t fCalorimetryPDG[3] ){
+track_vertex::track_vertex(Int_t fvertex_id , Int_t ftrack_id , TString flocation_in_track , TVector3 fposition , Int_t fCalorimetryPDG[3] , box ftrack_ROIs[3] ){
     
     SetVertexID         (fvertex_id);
     SetTrackID          (ftrack_id);
     SetLocationInTrack  (flocation_in_track);
     SetPosition         (fposition);
     SetCalorimetryPDG   (fCalorimetryPDG);
+    SetROIs             (ftrack_ROIs);
 }
 
 
@@ -62,6 +63,21 @@ void track_vertex::SetCalorimetryPDG (Int_t fCalorimetryPDG[3]){
     
 }
 
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void track_vertex::SetROIs(box ftrack_ROIs[3]){
+    
+    for (int i = 0 ; i < 3 ; i++ ) {
+        track_ROIs[i] = ftrack_ROIs[i];
+    }
+    
+}
+
+
+
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void track_vertex::Print(){
     
@@ -70,6 +86,7 @@ void track_vertex::Print(){
     SHOWstdVector(distance_from_vertex);
     for (int plane = 0 ; plane < 3; plane++) {
         PrintPhys( track_CalorimetryPDG[plane] , Form(" for plane %d",plane) );
+        PrintBox( track_ROIs[plane] );
     }
     SHOW(CalorimetryID);
     PrintLine();

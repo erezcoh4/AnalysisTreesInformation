@@ -9,8 +9,11 @@ mutual_vertex::mutual_vertex( Int_t fvertex_id , track_vertex t_vertex ){
     
     N_tracks_vertices = 1;
     SetVertexID( fvertex_id );
-    tracks_vertices.push_back(t_vertex);
-    tracks_id.push_back(t_vertex.track_id);
+    tracks_vertices.push_back( t_vertex );
+    tracks_id.push_back( t_vertex.track_id );
+    for (int plane = 0 ; plane < 3 ; plane++) {
+        tracks_ROIs[plane].push_back( t_vertex.track_ROIs[plane] );
+    }
     SetMutualVertexInfo();
     
 }
@@ -31,8 +34,12 @@ bool mutual_vertex::include_track ( Int_t ftrack_id ){
 void mutual_vertex::AddTrackVertex( track_vertex t_vertex ){
     
     N_tracks_vertices++;
-    tracks_vertices.push_back(t_vertex);
-    tracks_id.push_back(t_vertex.track_id);
+    tracks_vertices.push_back( t_vertex );
+    tracks_id.push_back( t_vertex.track_id );
+    for (int plane = 0 ; plane < 3 ; plane++) {
+        tracks_ROIs[plane].push_back( t_vertex.track_ROIs[plane] );
+    }
+
     SetMutualVertexInfo();
     
 }
@@ -48,22 +55,10 @@ void mutual_vertex::SetMutualVertexInfo(){
     // average position over all tracks vertices that contribute to this mutual vertex
     position = TVector3();
     
-    // for ROIs, the maximal distance form the mutual vertex would be the maximal x/y/z position of the longest track associated with this vertex
-    dxmax = dymax = dzmax = 0;
     
     for (auto c_track_vertex: tracks_vertices) {
         
         position += c_track_vertex.position;
-        
-        if (fabs(c_track_vertex.position_of_same_track_other_vertex.x() - position.x()) > dxmax) {
-            dxmax = c_track_vertex.position_of_same_track_other_vertex.x() - position.x();
-        }
-        if (fabs(c_track_vertex.position_of_same_track_other_vertex.y() - position.y()) > dymax) {
-            dymax = c_track_vertex.position_of_same_track_other_vertex.y() - position.y();
-        }
-        if (fabs(c_track_vertex.position_of_same_track_other_vertex.z() - position.z()) > dzmax) {
-            dzmax = c_track_vertex.position_of_same_track_other_vertex.z() - position.z();
-        }
         
         
         switch (c_track_vertex.CalorimetryID) {
@@ -117,33 +112,37 @@ void mutual_vertex::SetVertexTopology(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void mutual_vertex::CreateROIs(){
-    
-    // load GeometryHelper utility
+
     auto geomHelper = ::larutil::GeometryHelper::GetME();
-    
-    double start_xyz[3] = { position.x() - dxmax , position.y() - dymax , position.z() - dzmax };
-    double end_xyz[3]   = { position.x() + dxmax , position.y() + dymax , position.z() + dzmax };
-    
-    // shift in time-axis due to the truncation of the waveforms
-    // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
     double time_shift =  802;
-    
-    
+    double xyz[3] = {position.x() , position.y() , position.z() };
     for (int plane = 0; plane < 3; plane++){
         
-        // geoHelper is a set of utility functions that help with geometric stuff..
-        auto const& start_projection2D = geomHelper->Point_3Dto2D(start_xyz, plane);
-        auto const& end_projection2D = geomHelper->Point_3Dto2D(end_xyz, plane);
+        // create an initial roi around the vertex
+        auto const& projection2D = geomHelper->Point_3Dto2D( xyz, plane );
+        int wire = (int) ( projection2D.w / geomHelper->WireToCm() );
+        int time = (int) ( projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        roi[plane] = box( wire-10 , time-10 , wire+10 , time+10 );
         
-        int start_wire = (int) ( start_projection2D.w / geomHelper->WireToCm() );
-        int start_time = (int) ( start_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
-        
-        // 802: shift in time-axis due to the truncation of the waveforms
-        // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
-        int end_wire = (int) ( end_projection2D.w / geomHelper->WireToCm() );
-        int end_time = (int) ( end_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
-        roi[plane] = box( start_wire , start_time , end_wire , end_time );
-        
+        // increase the roi to fit the roi of the longest track (in the same plane)
+        for (auto t_rois: tracks_ROIs[plane]) {
+            
+            if ( t_rois.start_wire < roi[plane].start_wire ){
+                roi[plane].start_wire = t_rois.start_wire;
+            }
+            if ( roi[plane].end_wire < t_rois.end_wire ){
+                roi[plane].end_wire = t_rois.end_wire;
+            }
+            
+            if ( t_rois.start_time < roi[plane].start_time ){
+                roi[plane].start_time = t_rois.start_time;
+            }
+            if ( roi[plane].end_time < t_rois.end_time ){
+                roi[plane].end_time = t_rois.end_time;
+            }
+            
+        }
+
     }
     
 }

@@ -48,13 +48,13 @@ public:
     
     Int_t       N_tracks_vertices;
     Int_t       Np      , Nmu   , Npi   , Ne    , Ngamma;
-    Float_t     dxmax   , dymax , dzmax;
     
     
     TString     vertex_topology;
     
     std::vector<Int_t>          tracks_id;
     std::vector<track_vertex>   tracks_vertices;
+    std::vector<box>            tracks_ROIs[3];
     
     
     box         roi[3];

@@ -544,8 +544,8 @@ void cumputeAnaTree::CollectTrackVertices(){
     // since we can not rely on pandoraNu to know where is the starting and
     // ending position of the track, we have to do it on our own
     for (auto t:cosmic_tracks) {
-        tracks_vertices.push_back( track_vertex(-(100 + t.track_id) , t.track_id , "start" , t.start_pos , t.CalorimetryPDG ) );
-        tracks_vertices.push_back( track_vertex( (100 + t.track_id) , t.track_id , "end"   , t.end_pos   , t.CalorimetryPDG ) );
+        tracks_vertices.push_back( track_vertex(-(100 + t.track_id) , t.track_id , "start" , t.start_pos , t.CalorimetryPDG , t.roi ) );
+        tracks_vertices.push_back( track_vertex( (100 + t.track_id) , t.track_id , "end"   , t.end_pos   , t.CalorimetryPDG , t.roi ) );
     }
     
     // (2) compute the distance of each vertex from all other vertices

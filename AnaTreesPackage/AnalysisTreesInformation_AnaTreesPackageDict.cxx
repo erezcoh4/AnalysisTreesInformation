@@ -825,6 +825,69 @@ namespace ROOT {
 } // end of namespace ROOT for class vector<float>
 
 namespace ROOT {
+   static TClass *vectorlEboxgR_Dictionary();
+   static void vectorlEboxgR_TClassManip(TClass*);
+   static void *new_vectorlEboxgR(void *p = 0);
+   static void *newArray_vectorlEboxgR(Long_t size, void *p);
+   static void delete_vectorlEboxgR(void *p);
+   static void deleteArray_vectorlEboxgR(void *p);
+   static void destruct_vectorlEboxgR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<box>*)
+   {
+      vector<box> *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<box>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<box>", -2, "vector", 457,
+                  typeid(vector<box>), DefineBehavior(ptr, ptr),
+                  &vectorlEboxgR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<box>) );
+      instance.SetNew(&new_vectorlEboxgR);
+      instance.SetNewArray(&newArray_vectorlEboxgR);
+      instance.SetDelete(&delete_vectorlEboxgR);
+      instance.SetDeleteArray(&deleteArray_vectorlEboxgR);
+      instance.SetDestructor(&destruct_vectorlEboxgR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<box> >()));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const vector<box>*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlEboxgR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const vector<box>*)0x0)->GetClass();
+      vectorlEboxgR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlEboxgR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlEboxgR(void *p) {
+      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<box> : new vector<box>;
+   }
+   static void *newArray_vectorlEboxgR(Long_t nElements, void *p) {
+      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<box>[nElements] : new vector<box>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlEboxgR(void *p) {
+      delete ((vector<box>*)p);
+   }
+   static void deleteArray_vectorlEboxgR(void *p) {
+      delete [] ((vector<box>*)p);
+   }
+   static void destruct_vectorlEboxgR(void *p) {
+      typedef vector<box> current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class vector<box>
+
+namespace ROOT {
    static TClass *vectorlETVector3gR_Dictionary();
    static void vectorlETVector3gR_TClassManip(TClass*);
    static void *new_vectorlETVector3gR(void *p = 0);
