@@ -71,7 +71,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
     if ( flags.option=="select muon-proton scattering" and calc.foundMuonScattering ):
     
         calc.FillOutTree()
-        calc.WriteTracks2CSV()
+        calc.Write2CSV()
 
 
 
