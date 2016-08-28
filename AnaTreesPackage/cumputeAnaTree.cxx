@@ -561,8 +561,8 @@ void cumputeAnaTree::CollectTrackVertices(){
     // since we can not rely on pandoraNu to know where is the starting and
     // ending position of the track, we have to do it on our own
     for (auto t:cosmic_tracks) {
-        tracks_vertices.push_back( track_vertex( run , subrun , event , -(100 + t.track_id) , t.track_id , "start" , t.start_pos , t.CalorimetryPDG , t.roi ) );
-        tracks_vertices.push_back( track_vertex( run , subrun , event ,  (100 + t.track_id) , t.track_id , "end"   , t.end_pos   , t.CalorimetryPDG , t.roi ) );
+        tracks_vertices.push_back( track_vertex( run , subrun , event , t.track_id , -(100 + t.track_id) , "start" , t.start_pos , t.CalorimetryPDG , t.roi ) );
+        tracks_vertices.push_back( track_vertex( run , subrun , event , t.track_id ,  (100 + t.track_id) , "end"   , t.end_pos   , t.CalorimetryPDG , t.roi ) );
     }
     
     // (2) compute the distance of each vertex from all other vertices
@@ -759,7 +759,7 @@ bool cumputeAnaTree::FillOutTree (){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void cumputeAnaTree::WriteTracks2CSV(){
+void cumputeAnaTree::Write2CSV(){
     
     // run              , subrun            , event
     // U_start_wire     , U_start_time      , U_end_wire  , U_end_time

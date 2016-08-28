@@ -81,7 +81,7 @@ public:
     void   CollectTrackVertices ();
     void     FindMutualVertices ();
     void     FindMuonScattering ();
-    void        WriteTracks2CSV ();
+    void              Write2CSV ();
     
     // helpers
     bool        VertexContained ( TVector3 );
