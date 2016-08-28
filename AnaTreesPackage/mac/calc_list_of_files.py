@@ -14,7 +14,8 @@
 '''
 
 import ROOT , os , sys, larlite , datetime
-sys.path.insert(0, '../../mySoftware/MySoftwarePackage/mac')
+sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/mySoftware/MySoftwarePackage/mac')
+sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/mySoftware/MySoftwarePackage/mac')
 from ROOT import cumputeAnaTree , AnaTreeTools
 import input_flags
 flags = input_flags.get_args()
