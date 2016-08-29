@@ -69,7 +69,7 @@ calc = cumputeAnaTree( in_chain , OutTree , GENIETree , CSVfileName , flags.verb
     choose from a list of events
     e.g. if we want to choose from events with a classified proton of score > XXYY
 '''
-if flags.variable="AddEventsList":
+if flags.variable=="AddEventsList":
     
     import csv
     
