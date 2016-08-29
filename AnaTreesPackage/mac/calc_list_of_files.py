@@ -13,7 +13,7 @@
 
 '''
 
-import ROOT , os , sys, larlite , datetime
+import ROOT , os , sys, larlite , datetime , pandas as pd
 sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/mySoftware/MySoftwarePackage/mac')
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/mySoftware/MySoftwarePackage/mac')
 from ROOT import cumputeAnaTree , AnaTreeTools
@@ -22,19 +22,23 @@ flags = input_flags.get_args()
 
 
 
-ListType        = "GOOD" + flags.DataType
-ListName        = "filesana"
-ListsPath       = "/pnfs/uboone/persistent/users/aschu/devel/v05_11_01/hadd"
+FilesListType   = "GOOD" + flags.DataType
+FilesListName   = "filesana"
+FilesListsPath  = "/pnfs/uboone/persistent/users/aschu/devel/v05_11_01/hadd"
+
+EventsListName  = "passedGBDT_extBNB_AnalysisTrees_cosmic_trained_only_on_mc_score_0.99"
+EventsListsPath = "/uboone/app/users/ecohen/AnalysisTreesAna/PassedGBDTFiles"
+
 AnaPath         = "/uboone/data/users/ecohen/AnalysisTreeData" if flags.worker=="uboone" else ""
-AnafileName     = AnaPath + "/ROOTFiles/Ana_" + ListType + "_" + ListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
-CSVfileName     = AnaPath + "/CSVFiles/features_" + ListType + "_" + ListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
+AnafileName     = AnaPath + "/ROOTFiles/Ana_" + FilesListType + "_" + FilesListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
+CSVfileName     = AnaPath + "/CSVFiles/features_" + FilesListType + "_" + FilesListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
 MCmode          = True if flags.DataType=='MC' else False
 tools           = AnaTreeTools()
 
 
-if flags.verbose>0: print "\nreading list of files: " + ListsPath + "/" + ListType + "/" + ListName + ".list"
+if flags.verbose>0: print "\nreading list of files: " + FilesListsPath + "/" + FilesListType + "/" + FilesListName + ".list"
 
-with open( ListsPath + "/" + ListType + "/" + ListName + ".list" ) as f:
+with open( FilesListsPath + "/" + FilesListType + "/" + FilesListName + ".list" ) as f:
     files = f.read().splitlines()
 
 if flags.verbose>4: print files
@@ -60,31 +64,48 @@ GENIETree   = ROOT.TTree("GENIETree","genie interactions")
 
 calc = cumputeAnaTree( in_chain , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
 
-for entry in range(int(flags.evnts_frac*(Nentries))):
-        
-    calc.extract_information( entry )
+
+'''
+    choose from a list of events
+    e.g. if we want to choose from events with a classified proton of score > XXYY
+'''
+if AddEventsList:
     
-    if (flags.verbose > 0 and flags.verbose < 6 and entry%flags.print_mod == 0):
-        
-        calc.PrintData( entry )
-
-    if ( flags.option=="select muon-proton scattering" and calc.foundMuonScattering ):
+    import csv
     
-        calc.FillOutTree()
-        calc.Write2CSV()
+    with open(EventsListsPath+"/"+EventsListName+".csv", 'rb') as csvfile:
+        spamreader = csv.reader(csvfile, delimiter=' ', quotechar='|')
+        for row in spamreader:
+            print ', '.join(row)
+    calc.LoadListOfEvents( EventsListName )
 
 
-
-
-
-
-
-print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
-print "wrote csv file with (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
-
-
-GENIETree.Write()
-OutTree.Write()
-OutFile.Close()
-
-
+#
+#for entry in range(int(flags.evnts_frac*(Nentries))):
+#        
+#    calc.extract_information( entry )
+#    
+#    if (flags.verbose > 0 and flags.verbose < 6 and entry%flags.print_mod == 0):
+#        
+#        calc.PrintData( entry )
+#
+#    if ( flags.option=="select muon-proton scattering" and calc.foundMuonScattering ):
+#    
+#        calc.FillOutTree()
+#        calc.Write2CSV()
+#
+#
+#
+#
+#
+#
+#
+#print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
+#print "wrote csv file with (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
+#
+#
+#GENIETree.Write()
+#OutTree.Write()
+#OutFile.Close()
+#
+#
