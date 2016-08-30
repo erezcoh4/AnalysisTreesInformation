@@ -5,12 +5,6 @@
     python mac/calc_list_of_files.py --DataType=EXTBNB --worker=uboone -p1 -v2 --option=mu-p-vertex -var=AddEventsList -ff=0.01 -evf=0.1
     
     
-    option="select muon-proton scattering":
-    ---------------------------------------
-    Look for (mu,mu'p) scattering with the topology of 3 tracks sharing one vertex where one of them is a proton and the others are muons, using calorimetry information:
-    there is a variable called 'trkpidpdg_pandoraNu' (3 for each track, one per plane)
-    These (mu,mu'p) events are to be used for testing the GBDT classification
-
 '''
 
 import ROOT , os , sys, larlite , datetime
@@ -109,7 +103,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
     
     calc.GetEntry( entry )
 
-    if (flags.verbose>2 and calc.run>6000): print calc.run,calc.subrun,calc.event
+    if (flags.verbose>2): print calc.run,calc.subrun,calc.event
     
     if flags.variable=="AddEventsList":
 

@@ -781,7 +781,7 @@ Float_t cumputeAnaTree::TrkVtxDistance ( Int_t ivtx , Int_t itrk ){
     
     // pandoraNu vertices
     TVector3 vtx_position = TVector3( vtxx_pandoraNu[ivtx] , vtxy_pandoraNu[ivtx] , vtxz_pandoraNu[ivtx] );
-    Float_t dis_vtx_start , dis_vtx_end;
+    Float_t dis_vtx_start = 1000 , dis_vtx_end = 1000;
     for ( auto track : tracks ) {
         if ( track.track_id == itrk ) {
             dis_vtx_start = (track.start_pos - vtx_position).Mag();

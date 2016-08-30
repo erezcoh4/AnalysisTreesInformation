@@ -17,8 +17,10 @@
 
 #pragma link C++ class track_vertex+;
 #pragma link C++ class mutual_vertex+;
+#pragma link C++ class ImportantTools+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
+
 
 
 

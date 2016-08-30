@@ -39,6 +39,7 @@ namespace std {} using namespace std;
 
 // Header files passed as explicit arguments
 #include "GENIEinteraction.h"
+#include "ImportantTools.h"
 #include "PandoraNuTrack.h"
 #include "cumputeAnaTree.h"
 #include "mutual_vertex.h"
@@ -363,6 +364,51 @@ namespace ROOT {
 } // end of namespace ROOT
 
 namespace ROOT {
+   static TClass *ImportantTools_Dictionary();
+   static void ImportantTools_TClassManip(TClass*);
+   static void *new_ImportantTools(void *p = 0);
+   static void *newArray_ImportantTools(Long_t size, void *p);
+   static void delete_ImportantTools(void *p);
+   static void deleteArray_ImportantTools(void *p);
+   static void destruct_ImportantTools(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::ImportantTools*)
+   {
+      ::ImportantTools *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::ImportantTools));
+      static ::ROOT::TGenericClassInfo 
+         instance("ImportantTools", "ImportantTools.h", 29,
+                  typeid(::ImportantTools), DefineBehavior(ptr, ptr),
+                  &ImportantTools_Dictionary, isa_proxy, 4,
+                  sizeof(::ImportantTools) );
+      instance.SetNew(&new_ImportantTools);
+      instance.SetNewArray(&newArray_ImportantTools);
+      instance.SetDelete(&delete_ImportantTools);
+      instance.SetDeleteArray(&deleteArray_ImportantTools);
+      instance.SetDestructor(&destruct_ImportantTools);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::ImportantTools*)
+   {
+      return GenerateInitInstanceLocal((::ImportantTools*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::ImportantTools*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *ImportantTools_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const ::ImportantTools*)0x0)->GetClass();
+      ImportantTools_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void ImportantTools_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
    // Wrappers around operator new
    static void *new_box(void *p) {
       return  p ? new(p) ::box : new ::box;
@@ -508,6 +554,27 @@ namespace ROOT {
       ((current_t*)p)->~current_t();
    }
 } // end of namespace ROOT for class ::mutual_vertex
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_ImportantTools(void *p) {
+      return  p ? new(p) ::ImportantTools : new ::ImportantTools;
+   }
+   static void *newArray_ImportantTools(Long_t nElements, void *p) {
+      return p ? new(p) ::ImportantTools[nElements] : new ::ImportantTools[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_ImportantTools(void *p) {
+      delete ((::ImportantTools*)p);
+   }
+   static void deleteArray_ImportantTools(void *p) {
+      delete [] ((::ImportantTools*)p);
+   }
+   static void destruct_ImportantTools(void *p) {
+      typedef ::ImportantTools current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::ImportantTools
 
 namespace ROOT {
    static TClass *vectorlEtrack_vertexgR_Dictionary();
@@ -1143,6 +1210,7 @@ namespace {
   void TriggerDictionaryInitialization_libAnalysisTreesInformation_AnaTreesPackage_Impl() {
     static const char* headers[] = {
 "GENIEinteraction.h",
+"ImportantTools.h",
 "PandoraNuTrack.h",
 "cumputeAnaTree.h",
 "mutual_vertex.h",
@@ -1172,6 +1240,7 @@ class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  nuInteractio
 class __attribute__((annotate("$clingAutoload$GENIEinteraction.h")))  GENIEinteraction;
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  track_vertex;
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  mutual_vertex;
+class __attribute__((annotate("$clingAutoload$ImportantTools.h")))  ImportantTools;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
 
@@ -1181,6 +1250,7 @@ class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  mutual_verte
 
 #define _BACKWARD_BACKWARD_WARNING_H
 #include "GENIEinteraction.h"
+#include "ImportantTools.h"
 #include "PandoraNuTrack.h"
 #include "cumputeAnaTree.h"
 #include "mutual_vertex.h"
@@ -1191,6 +1261,7 @@ class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  mutual_verte
 )DICTPAYLOAD";
     static const char* classesHeaders[]={
 "GENIEinteraction", payloadCode, "@",
+"ImportantTools", payloadCode, "@",
 "PandoraNuTrack", payloadCode, "@",
 "box", payloadCode, "@",
 "cumputeAnaTree", payloadCode, "@",
