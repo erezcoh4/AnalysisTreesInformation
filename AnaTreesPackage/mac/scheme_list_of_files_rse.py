@@ -47,7 +47,6 @@ OutFile     = ROOT.TFile(SchemedfileName,"recreate")
 OutTree     = tools.SchemeTreeRSEList ( in_chain , EventsListsPath + "/" + EventsListName + ".csv" )
 
 print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(SchemedfileName)/1048576.0)) + SchemedfileName
-print "wrote csv file with (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
 
 OutTree.Write()
 OutFile.Close()
