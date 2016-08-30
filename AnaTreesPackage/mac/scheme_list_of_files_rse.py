@@ -44,7 +44,7 @@ if flags.verbose>0: print "input chain entries from",int(flags.files_frac*len(fi
 
 
 OutFile     = ROOT.TFile(SchemedfileName,"recreate")
-OutTree     = tools.SchemeTreeRSEList ( in_chain , EventsListsPath )
+OutTree     = tools.SchemeTreeRSEList ( in_chain , EventsListsPath + "/" + EventsListName + ".csv" )
 
 print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
 print "wrote csv file with (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
