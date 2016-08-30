@@ -6,12 +6,8 @@
 
 // main event loop
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::extract_information (int entry){ // main event loop....
+bool cumputeAnaTree::extract_information (){ // main event loop....
     
-    InitEntry();
-    
-    InTree -> GetEntry(entry);
-
     GetInTimeFlashes();
     
     GetPandoraNuTracks();
@@ -19,12 +15,11 @@ bool cumputeAnaTree::extract_information (int entry){ // main event loop....
     GetPandoraCosmicTracks();
     
     if (MCmode) GetTruthInformation();
-    
-    CollectTrackVertices();
-    
-    FindMutualVertices();
 
-    FindMuonScattering();
+    // if we want to collect vertices, these should be uncommented out
+    //    CollectTrackVertices();
+    //    FindMutualVertices();
+    //    FindMuonScattering();
     
     return true;
 }
@@ -48,10 +43,12 @@ cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TTree * fGENI
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::InitInputTree(){
     
+    // event info
     InTree -> SetBranchAddress("run"                                            , &run);
     InTree -> SetBranchAddress("subrun"                                         , &subrun);
     InTree -> SetBranchAddress("event"                                          , &event);
 
+    // pandoraNu
     InTree -> SetBranchAddress("ntracks_pandoraNu"                              , &ntracks_pandoraNu);
     InTree -> SetBranchAddress("trkId_pandoraNu"                                , &trkId_pandoraNu);
     InTree -> SetBranchAddress("trklen_pandoraNu"                               , &trklen_pandoraNu);
@@ -66,7 +63,6 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("ntrkhits_pandoraNu"                             , &ntrkhits_pandoraNu);
     InTree -> SetBranchAddress("trkdqdx_pandoraNu"                              , &trkdqdx_pandoraNu);
     InTree -> SetBranchAddress("trkresrg_pandoraNu"                             , &trkresrg_pandoraNu);
-
     InTree -> SetBranchAddress("trkncosmictags_tagger_pandoraNu"                , &trkncosmictags_tagger_pandoraNu);
     InTree -> SetBranchAddress("trkcosmicscore_tagger_pandoraNu"                , &trkcosmicscore_tagger_pandoraNu);
     InTree -> SetBranchAddress("trkcosmictype_tagger_pandoraNu"                 , &trkcosmictype_tagger_pandoraNu);
@@ -75,10 +71,34 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("trkpidchi_pandoraNu"                            , &trkpidchi_pandoraNu);
     InTree -> SetBranchAddress("trkpidpida_pandoraNu"                           , &trkpidpida_pandoraNu);
     InTree -> SetBranchAddress("trkpidbestplane_pandoraNu"                      , &trkpidbestplane_pandoraNu);
-
     InTree -> SetBranchAddress("trkpidpdg_pandoraNu"                            , &trkpidpdg_pandoraNu);
 
     
+    // optical info
+    InTree -> SetBranchAddress("no_hits"                                        , &no_hits);
+    InTree -> SetBranchAddress("hit_plane"                                      , &hit_plane);
+    InTree -> SetBranchAddress("hit_wire"                                       , &hit_wire);
+    InTree -> SetBranchAddress("hit_trkid"                                      , &hit_trkid);
+    InTree -> SetBranchAddress("hit_trkKey"                                     , &hit_trkKey);
+    InTree -> SetBranchAddress("no_flashes"                                     , &no_flashes);
+    InTree -> SetBranchAddress("flash_time"                                     , &flash_time);
+    InTree -> SetBranchAddress("flash_timewidth"                                , &flash_timewidth);
+    InTree -> SetBranchAddress("flash_pe"                                       , &flash_pe);
+    InTree -> SetBranchAddress("flash_ycenter"                                  , &flash_ycenter);
+    InTree -> SetBranchAddress("flash_ywidth"                                   , &flash_ywidth);
+    InTree -> SetBranchAddress("flash_zcenter"                                  , &flash_zcenter);
+    InTree -> SetBranchAddress("flash_zwidth"                                   , &flash_zwidth);
+    
+    
+    // vertex
+    InTree -> SetBranchAddress("nvtx_pandoraNu"                                  , &nvtx_pandoraNu);
+    InTree -> SetBranchAddress("vtxx_pandoraNu"                                  , &vtxx_pandoraNu);
+    InTree -> SetBranchAddress("vtxy_pandoraNu"                                  , &vtxy_pandoraNu);
+    InTree -> SetBranchAddress("vtxz_pandoraNu"                                  , &vtxz_pandoraNu);
+
+    
+    
+    // pandoraCosmic
     InTree -> SetBranchAddress("ntracks_pandoraCosmic"                          , &ntracks_pandoraCosmic);
     InTree -> SetBranchAddress("trkId_pandoraCosmic"                            , &trkId_pandoraCosmic);
     InTree -> SetBranchAddress("trklen_pandoraCosmic"                           , &trklen_pandoraCosmic);
@@ -93,7 +113,6 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("ntrkhits_pandoraCosmic"                         , &ntrkhits_pandoraCosmic);
     InTree -> SetBranchAddress("trkdqdx_pandoraCosmic"                          , &trkdqdx_pandoraCosmic);
     InTree -> SetBranchAddress("trkresrg_pandoraCosmic"                         , &trkresrg_pandoraCosmic);
-    
     InTree -> SetBranchAddress("trkncosmictags_tagger_pandoraCosmic"            , &trkncosmictags_tagger_pandoraCosmic);
     InTree -> SetBranchAddress("trkcosmicscore_tagger_pandoraCosmic"            , &trkcosmicscore_tagger_pandoraCosmic);
     InTree -> SetBranchAddress("trkcosmictype_tagger_pandoraCosmic"             , &trkcosmictype_tagger_pandoraCosmic);
@@ -102,27 +121,18 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("trkpidchi_pandoraCosmic"                        , &trkpidchi_pandoraCosmic);
     InTree -> SetBranchAddress("trkpidpida_pandoraCosmic"                       , &trkpidpida_pandoraCosmic);
     InTree -> SetBranchAddress("trkpidbestplane_pandoraCosmic"                  , &trkpidbestplane_pandoraCosmic);
-    
     InTree -> SetBranchAddress("trkpidpdg_pandoraCosmic"                        , &trkpidpdg_pandoraCosmic);
     
     
-    InTree -> SetBranchAddress("no_hits"                                        , &no_hits);
-    InTree -> SetBranchAddress("hit_plane"                                      , &hit_plane);
-    InTree -> SetBranchAddress("hit_wire"                                       , &hit_wire);
-
-    InTree -> SetBranchAddress("hit_trkid"                                      , &hit_trkid);
-    InTree -> SetBranchAddress("hit_trkKey"                                     , &hit_trkKey);
-
-    InTree -> SetBranchAddress("no_flashes"                                     , &no_flashes);
-    InTree -> SetBranchAddress("flash_time"                                     , &flash_time);
-    InTree -> SetBranchAddress("flash_timewidth"                                , &flash_timewidth);
-    InTree -> SetBranchAddress("flash_pe"                                       , &flash_pe);
-    InTree -> SetBranchAddress("flash_ycenter"                                  , &flash_ycenter);
-    InTree -> SetBranchAddress("flash_ywidth"                                   , &flash_ywidth);
-    InTree -> SetBranchAddress("flash_zcenter"                                  , &flash_zcenter);
-    InTree -> SetBranchAddress("flash_zwidth"                                   , &flash_zwidth);
+    // vertex
+    InTree -> SetBranchAddress("nvtx_pandoraCosmic"                             , &nvtx_pandoraCosmic);
+    InTree -> SetBranchAddress("vtxx_pandoraCosmic"                             , &vtxx_pandoraCosmic);
+    InTree -> SetBranchAddress("vtxy_pandoraCosmic"                             , &vtxy_pandoraCosmic);
+    InTree -> SetBranchAddress("vtxz_pandoraCosmic"                             , &vtxz_pandoraCosmic);
+    
 
 
+    
     if (MCmode) {
         
         if (debug>1)  Printf ("\n\nrunning on MC mode...\n\n");
@@ -206,6 +216,12 @@ void cumputeAnaTree::InitOutputCSV(){
     +TString("Y_start_wire Y_start_time Y_end_wire Y_end_time ");
     
     csvfile << CSVHeader << endl;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::GetEntry (int entry){
+    InitEntry();
+    InTree -> GetEntry(entry);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -748,6 +764,24 @@ void cumputeAnaTree::FindMuonScattering(){
         }
     }
 }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+Float_t cumputeAnaTree::TrkVtxDistance ( Int_t ivtx , Int_t itrk ){
+    
+    // pandoraNu vertices
+    TVector3 vtx_position = TVector3( vtxx_pandoraNu[ivtx] , vtxy_pandoraNu[ivtx] , vtxz_pandoraNu[ivtx] );
+    Float_t dis_vtx_start , dis_vtx_end;
+    for ( auto track : tracks ) {
+        if ( track.track_id == itrk ) {
+            dis_vtx_start = (track.start_pos - vtx_position).Mag();
+            dis_vtx_end   = (track.end_pos - vtx_position).Mag();
+            break;
+        }
+    }
+    return std::min( dis_vtx_start , dis_vtx_end );
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::FillOutTree (){
