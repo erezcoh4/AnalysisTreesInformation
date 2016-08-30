@@ -21,7 +21,7 @@ EventsListName  = "mu_p_score_%.2f_intersection"%proton_score
 EventsListsPath = "/uboone/data/users/ecohen/Lists/muon_proton_intersection"
 
 SchemedPath     = "/uboone/data/users/ecohen/AnalysisTreeData"
-AnafileName     = AnaPath + "/SchemedFiles/" + FilesListType + "_" + FilesListName + "_" + EventsListName + ".root"
+SchemedfileName= SchemedPath + "/SchemedFiles/" + FilesListType + "_" + FilesListName + "_" + EventsListName + ".root"
 
 tools           = ImportantTools()
 
@@ -43,7 +43,7 @@ for i in range(int(flags.files_frac*len(files))):
 if flags.verbose>0: print "input chain entries from",int(flags.files_frac*len(files)),"files: ", in_chain.GetEntries()
 
 
-OutFile     = ROOT.TFile(AnafileName,"recreate")
+OutFile     = ROOT.TFile(SchemedfileName,"recreate")
 OutTree     = tools.SchemeTreeRSEList ( in_chain , EventsListsPath )
 
 print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
