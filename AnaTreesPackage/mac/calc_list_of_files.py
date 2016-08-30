@@ -109,26 +109,26 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
     
     calc.GetEntry( entry )
     
-    if flags.variable=="AddEventsList":
-        
-        do_continue , ivtx_nuselection , itrk_GBDTprotons = search(calc.run,calc.subrun,calc.event)
-        
-        if (do_continue and flags.verbose>1):   print "found r-%d/s-%d/e-%d, extracting information...."%(calc.run,calc.subrun,calc.event)
-
-    if do_continue:
-
-        calc.extract_information()
-    
-        if (flags.verbose > 0 and flags.verbose < 6 and entry%flags.print_mod == 0):
-        
-            calc.PrintData( entry )
-
-        if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTprotons ) < min_trk_vtx_distance ):
-            
-            if (flags.verbose>1):   print "track %d is closer to vertex %d than 5 cm! saving the event..."%( ivtx_nuselection , itrk_GBDTprotons )
-
-            calc.FillOutTree()
-            calc.Write2CSV()
+#    if flags.variable=="AddEventsList":
+#        
+#        do_continue , ivtx_nuselection , itrk_GBDTprotons = search(calc.run,calc.subrun,calc.event)
+#        
+#        if (do_continue and flags.verbose>1):   print "\n\n\nfound r-%d/s-%d/e-%d, extracting information....\n\n\n\n"%(calc.run,calc.subrun,calc.event)
+#
+#    if do_continue:
+#
+#        calc.extract_information()
+#    
+#        if (flags.verbose > 0 and flags.verbose < 6 and entry%flags.print_mod == 0):
+#        
+#            calc.PrintData( entry )
+#
+#        if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTprotons ) < min_trk_vtx_distance ):
+#            
+#            if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTprotons )
+#
+#            calc.FillOutTree()
+#            calc.Write2CSV()
 
 
 
