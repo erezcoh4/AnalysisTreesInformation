@@ -1,10 +1,7 @@
 '''
-    
     usage:
     ------
     python mac/scheme_list_of_files_rse.py --DataType=EXTBNB -wuboone -v2 -ff=0.01 -evf=0.1
-    
-    
 '''
 
 import ROOT , os , sys, larlite , datetime
@@ -22,6 +19,9 @@ FilesListsPath  = "/pnfs/uboone/persistent/users/aschu/devel/v05_11_01/hadd"
 proton_score    = 0.90
 EventsListName  = "mu_p_score_%.2f_intersection"%proton_score
 EventsListsPath = "/uboone/data/users/ecohen/Lists/muon_proton_intersection"
+
+SchemedPath     = "/uboone/data/users/ecohen/AnalysisTreeData"
+AnafileName     = AnaPath + "/SchemedFiles/" + FilesListType + "_" + FilesListName + "_" + EventsListName + ".root"
 
 tools           = ImportantTools()
 
