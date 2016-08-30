@@ -111,16 +111,16 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
 
     if (flags.verbose>2): print calc.run,calc.subrun,calc.event
     
-#    if flags.variable=="AddEventsList":
-#        
-#        do_continue , ivtx_nuselection , itrk_GBDTprotons = search(calc.run,calc.subrun,calc.event)
-#        
-#        if (do_continue and flags.verbose>1):   print "\n\n\nfound r-%d/s-%d/e-%d, extracting information....\n\n\n\n"%(calc.run,calc.subrun,calc.event)
+    if flags.variable=="AddEventsList":
+
+        do_continue , ivtx_nuselection , itrk_GBDTprotons = search(calc.run,calc.subrun,calc.event)
+
+        if (do_continue and flags.verbose>1):   print "\n\n\nfound r-%d/s-%d/e-%d, extracting information....\n\n\n\n"%(calc.run,calc.subrun,calc.event)
+
+    if do_continue:
+
+        calc.extract_information()
 #
-#    if do_continue:
-#
-#        calc.extract_information()
-#    
 #        if (flags.verbose > 0 and flags.verbose < 6 and entry%flags.print_mod == 0):
 #        
 #            calc.PrintData( entry )
