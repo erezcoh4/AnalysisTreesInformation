@@ -108,6 +108,8 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
     do_continue = True
     
     calc.GetEntry( entry )
+
+    if (flags.verbose>2): print calc.run,calc.subrun,calc.event
     
 #    if flags.variable=="AddEventsList":
 #        
