@@ -40,7 +40,7 @@ public:
     TTree* SchemeTreeRSEList ( TTree * , TString  );
     
     TTree* SchemeTreeRSEList ( TChain * chain , TString rse_file_name )
-    {return SchemeTreeRSEList ( (TTree *)chain ,  rse_file_name )};
+    {return SchemeTreeRSEList ( (TTree *)chain ,  rse_file_name );};
     
     std::map < int , std::map < int , int > > LoadRSEMap( TString, bool DoCheck = false);
 
