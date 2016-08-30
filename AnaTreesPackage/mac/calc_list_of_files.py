@@ -121,7 +121,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
 
         calc.extract_information()
 
-        if (flags.verbose > 0 and flags.verbose < 6 and entry%flags.print_mod == 0):
+        if (flags.verbose > 0 and flags.verbose < 7 and entry%flags.print_mod == 0):
         
             calc.PrintData( entry )
 
