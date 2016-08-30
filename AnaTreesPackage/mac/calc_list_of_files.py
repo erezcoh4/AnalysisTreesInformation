@@ -109,7 +109,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
     
     calc.GetEntry( entry )
 
-    if (flags.verbose>2): print calc.run,calc.subrun,calc.event
+    if (flags.verbose>2 and calc.run>6000): print calc.run,calc.subrun,calc.event
     
 #    if flags.variable=="AddEventsList":
 #
