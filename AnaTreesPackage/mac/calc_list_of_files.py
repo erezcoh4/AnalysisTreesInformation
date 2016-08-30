@@ -113,7 +113,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
         
         do_continue , ivtx_nuselection , itrk_GBDTprotons = search(calc.run,calc.subrun,calc.event)
         
-        if (flags.verbose>1):   print "found r-%d/s-%d/e-%d, extracting information...."%(calc.run,calc.subrun,calc.event)
+        if (do_continue and flags.verbose>1):   print "found r-%d/s-%d/e-%d, extracting information...."%(calc.run,calc.subrun,calc.event)
 
     if do_continue:
 
