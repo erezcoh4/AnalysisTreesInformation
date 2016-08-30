@@ -21,6 +21,8 @@ TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName)
         
         InTree->GetEntry(i);
         
+        std::cout << "checking " << run << " " << subrun << " " << event << std::endl;
+        
         //Search run
         auto run_iter = RSEMap.find(run);
         if(run_iter == RSEMap.end()) {
@@ -41,6 +43,7 @@ TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName)
         if (event_number == event){
             OutTree->Fill();
             Printf("filled output tree with run-%d subrun-%d event-%d",run,subrun,event);
+            SHOW(OutTree->GetEntries());
         }
     }
     
@@ -68,7 +71,7 @@ std::map < int , std::map < int , int > > ImportantTools::LoadRSEMap( TString RS
     // check
     if (DoCheck) {
         for(auto it : RSEMap) {
-            std::cout << "run"  << it.first ;
+            std::cout << "run "  << it.first ;
             for(auto inner_it : it.second ) {
                 std::cout  << ", subrun " << inner_it.first;
                 std::cout  << ", event " << inner_it.second;
