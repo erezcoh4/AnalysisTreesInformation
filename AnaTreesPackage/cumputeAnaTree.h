@@ -83,6 +83,7 @@ public:
     void   CollectTrackVertices ();
     void     FindMutualVertices ();
     void     FindMuonScattering ();
+    void      CreateNuSelVtxROI (Int_t);
     void              Write2CSV ();
     
     // helpers
@@ -235,7 +236,7 @@ public:
     
     
 
-
+    box NuSelVtxROI[3];
     
     // GeoAlgo
     geoalgo::GeoAlgo geo_algo;

@@ -111,39 +111,39 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
 
     if (flags.verbose>2): print calc.run,calc.subrun,calc.event
     
-    if flags.variable=="AddEventsList":
-
-        do_continue , ivtx_nuselection , itrk_GBDTprotons = search(calc.run,calc.subrun,calc.event)
-
-        if (do_continue and flags.verbose>1):   print "\n\n\nfound r-%d/s-%d/e-%d, extracting information....\n\n\n\n"%(calc.run,calc.subrun,calc.event)
-
-    if do_continue:
-
-        calc.extract_information()
+#    if flags.variable=="AddEventsList":
 #
-#        if (flags.verbose > 0 and flags.verbose < 6 and entry%flags.print_mod == 0):
-#        
-#            calc.PrintData( entry )
+#        do_continue , ivtx_nuselection , itrk_GBDTprotons = search(calc.run,calc.subrun,calc.event)
 #
-#        if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTprotons ) < min_trk_vtx_distance ):
-#            
-#            if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTprotons )
+#        if (do_continue and flags.verbose>1):   print "\n\n\nfound r-%d/s-%d/e-%d, extracting information....\n\n\n\n"%(calc.run,calc.subrun,calc.event)
 #
-#            calc.FillOutTree()
-#            calc.Write2CSV()
-
-
-
-
-
-
-
-print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
-print "wrote csv file with (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
-
-
-GENIETree.Write()
-OutTree.Write()
-OutFile.Close()
+#    if do_continue:
+#
+#        calc.extract_information()
+##
+##        if (flags.verbose > 0 and flags.verbose < 6 and entry%flags.print_mod == 0):
+##        
+##            calc.PrintData( entry )
+##
+##        if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTprotons ) < min_trk_vtx_distance ):
+##            
+##            if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTprotons )
+##            calc.CreateROI( ivtx_nuselection )
+##            calc.FillOutTree()
+##            calc.Write2CSV()
+#
+#
+#
+#
+#
+#
+#
+#print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
+#print "wrote csv file with (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
+#
+#
+#GENIETree.Write()
+#OutTree.Write()
+#OutFile.Close()
 
 

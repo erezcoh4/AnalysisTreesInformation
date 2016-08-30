@@ -736,7 +736,7 @@ bool cumputeAnaTree::GetGENIEInformation(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::VertexContained(TVector3 v){
     
-    if (debug>2) {Printf("checking if contained: "); SHOW3(v.x(),v.y(),v.z());}
+    if (debug>4) {Printf("checking if contained: "); SHOW3(v.x(),v.y(),v.z());}
     // check if contained
     if( ( v.x() < 3.45 )    | ( v.x() > 249.8 ) )   return false;
     if( ( v.y() < -110.53 ) | ( v.y() > 112.47 ) )  return false;
@@ -784,12 +784,52 @@ Float_t cumputeAnaTree::TrkVtxDistance ( Int_t ivtx , Int_t itrk ){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::CreateNuSelVtxROI( Int_t ivtx ){
+    
+    TVector3 vtx_position = TVector3( vtxx_pandoraNu[ivtx] , vtxy_pandoraNu[ivtx] , vtxz_pandoraNu[ivtx] );
+    
+    
+    // load GeometryHelper utility
+    auto geomHelper = ::larutil::GeometryHelper::GetME();
+    
+    double start_xyz[3] = {vtx_position.x() + 20 , vtx_position.y() + 20 , vtx_position.z() + 20 };
+    double end_xyz[3]   = {vtx_position.x() + 20 , vtx_position.y() - 20 , vtx_position.z() - 20 };
+    
+    // shift in time-axis due to the truncation of the waveforms
+    // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
+    double time_shift =  802;
+    
+    
+    for (int plane = 0; plane < 3; plane++){
+        
+        // geoHelper is a set of utility functions that help with geometric stuff..
+        auto const& start_projection2D = geomHelper->Point_3Dto2D(start_xyz, plane);
+        auto const& end_projection2D = geomHelper->Point_3Dto2D(end_xyz, plane);
+        
+        int start_wire = (int) ( start_projection2D.w / geomHelper->WireToCm() );
+        int start_time = (int) ( start_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        
+        // 802: shift in time-axis due to the truncation of the waveforms
+        // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
+        int end_wire = (int) ( end_projection2D.w / geomHelper->WireToCm() );
+        int end_time = (int) ( end_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        NuSelVtxROI[plane] = box( start_wire , start_time , end_wire , end_time );
+        
+    }
+    
+
+    
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::FillOutTree (){
     
     OutTree -> Fill();
     return true;
     
 }
+
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -801,16 +841,20 @@ void cumputeAnaTree::Write2CSV(){
     // Y_start_wire     , Y_start_time      , Y_end_wire  , Y_end_time
     
     
-    for (auto m_v:mutual_vertices){
-        csvfile
-        << m_v.run                       << " " << m_v.subrun             << " " << m_v.event
-        << " " << m_v.roi[0].start_wire  << " " << m_v.roi[0].start_time  << " " << m_v.roi[0].end_wire    << " " << m_v.roi[0].end_time
-        << " " << m_v.roi[1].start_wire  << " " << m_v.roi[1].start_time  << " " << m_v.roi[1].end_wire    << " " << m_v.roi[1].end_time
-        << " " << m_v.roi[2].start_wire  << " " << m_v.roi[2].start_time  << " " << m_v.roi[2].end_wire    << " " << m_v.roi[2].end_time
-        << endl;
-        
-        if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
-    };
+    
+    
+    if(!mutual_vertices.empty()){
+        for (auto m_v:mutual_vertices){
+            csvfile
+            << m_v.run                       << " " << m_v.subrun             << " " << m_v.event
+            << " " << m_v.roi[0].start_wire  << " " << m_v.roi[0].start_time  << " " << m_v.roi[0].end_wire    << " " << m_v.roi[0].end_time
+            << " " << m_v.roi[1].start_wire  << " " << m_v.roi[1].start_time  << " " << m_v.roi[1].end_wire    << " " << m_v.roi[1].end_time
+            << " " << m_v.roi[2].start_wire  << " " << m_v.roi[2].start_time  << " " << m_v.roi[2].end_wire    << " " << m_v.roi[2].end_time
+            << endl;
+            
+            if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
+        }
+    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
