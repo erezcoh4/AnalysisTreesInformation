@@ -21,6 +21,8 @@ TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName)
         
         InTree->GetEntry(i);
         
+        if (i % (InTree->GetEntries() / 20) == 0) Printf("\t[%.1f%%]",100.*(float)i/InTree->GetEntries());
+        
         // std::cout << "checking " << run << " " << subrun << " " << event << std::endl;
         
         //Search run
