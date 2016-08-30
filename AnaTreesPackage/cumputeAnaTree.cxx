@@ -246,17 +246,27 @@ void cumputeAnaTree::InitTrack(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetInTimeFlashes(){
+    
     if(debug>3) Printf("GetInTimeFlashes of %d flashes",no_flashes);
+    
     // get a list of in-time flashes for the event
     if(no_flashes > 0) {
+        
         if (!goodflashidx.empty())  goodflashidx.clear();
-        if(debug>3) {SHOW(goodflashidx.size()); Printf("looping in if(no_flashes > 0) on no_flashes");}
+        
+        if(debug>3) { SHOW(goodflashidx.size()); Printf("looping in if(no_flashes > 0) on no_flashes"); }
         
         for(int i=0; i < no_flashes && i < MAX_hits ; i++){
-            if(debug>4) {SHOW3(i,flash_time[i],flash_pe[i]);}
-            if((0.0 < flash_time[i]) && (flash_time[i] < 10.0) && (6.5 < flash_pe[i])){
-                goodflashidx.push_back(i);
-                if(debug>3) {SHOW(i);SHOW(goodflashidx.size());}
+            
+            if(debug>4) SHOW3( i , flash_time[i] , flash_pe[i] );
+            
+            if( (0.0 < flash_time[i]) && (flash_time[i] < 10.0) && (6.5 < flash_pe[i]) ){
+                goodflashidx.push_back( i );
+                if(debug>3) { SHOW3( i , goodflashidx.size() , goodflashidx.back() ); }
+            }
+            
+            if ( 10.0 < flash_time[i] ) {
+                break;
             }
         }
     }
