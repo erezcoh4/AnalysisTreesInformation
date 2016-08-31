@@ -852,6 +852,12 @@ void cumputeAnaTree::Write2CSV(){
     // V_start_wire     , V_start_time      , V_end_wire  , V_end_time
     // Y_start_wire     , Y_start_time      , Y_end_wire  , Y_end_time
     
+    csvfile
+    << run                               << " " << subrun                     << " " << event
+    << " " << NuSelVtxROI[0].start_wire  << " " << NuSelVtxROI[0].start_time  << " " << NuSelVtxROI[0].end_wire    << " " << NuSelVtxROI[0].end_time
+    << " " << NuSelVtxROI[1].start_wire  << " " << NuSelVtxROI[1].start_time  << " " << NuSelVtxROI[1].end_wire    << " " << NuSelVtxROI[1].end_time
+    << " " << NuSelVtxROI[2].start_wire  << " " << NuSelVtxROI[2].start_time  << " " << NuSelVtxROI[2].end_wire    << " " << NuSelVtxROI[2].end_time
+    << endl;
     
     
     
