@@ -52,8 +52,8 @@ if flags.variable=="AddEventsList":
 def search(run,subrun,event):
     for e in EventsList:
         if e['run'] == run and e['subrun'] == subrun and e['event'] == event:
-            return True , e['ivtx-nuselection'], e['itrk-GBDTprotons']
-    return False , -1 , -1
+            return True , e['ivtx-NuSel'], e['itrk-NuSelMuon'], e['itrk-GBDTproton']
+    return False , -1 , -1 , -1
 
 
 InFile      = ROOT.TFile(SchemedfileName)
@@ -92,7 +92,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
     
     if flags.variable=="AddEventsList":
 
-        do_continue , ivtx_nuselection , itrk_GBDTprotons = search(calc.run,calc.subrun,calc.event)
+        do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search(calc.run,calc.subrun,calc.event)
 
         if (do_continue and flags.verbose>1):   print "\n\n\nfound r-%d/s-%d/e-%d, extracting information....\n\n\n\n"%(calc.run,calc.subrun,calc.event)
 
@@ -107,9 +107,9 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
         if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTprotons ) < min_trk_vtx_distance ):
             
             if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTprotons )
-            calc.CreateNuSelVtxROI( ivtx_nuselection )
+            calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton  )
             calc.FillOutTree()
-            calc.Write2CSV()
+            calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
 
 
 Nevents = OutTree.GetEntries()

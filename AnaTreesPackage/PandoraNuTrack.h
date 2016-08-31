@@ -135,10 +135,10 @@ public:
     Float_t     length      , theta     , phi , distlenratio , momentum;
     Float_t     start_dqdx  , end_dqdx  , tot_dqdx , avg_dqdx;
     Float_t     dqdx_diff   , dqdx_ratio;
-    Float_t     pidpida     ,  pidchi   , cosmicscore   , coscontscore;
-    Float_t     cftime      , cftimewidth , cfzcenter , cfzwidth, cfycenter , cfywidth  , cftotalpe , cfdistance;
+    Float_t     pidpida     , pidchi    , cosmicscore   , coscontscore;
+    Float_t     cftime      , cftimewidth   , cfzcenter , cfzwidth, cfycenter , cfywidth  , cftotalpe , cfdistance;
     
-    TString     TopBottDir  , ForBackDir , LefRghtDir;
+    TString     TopBottDir  , ForBackDir    , LefRghtDir;
 
     
     box         roi[3];

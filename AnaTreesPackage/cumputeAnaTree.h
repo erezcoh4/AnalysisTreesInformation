@@ -83,13 +83,13 @@ public:
     void   CollectTrackVertices ();
     void     FindMutualVertices ();
     void     FindMuonScattering ();
-    void      CreateNuSelVtxROI (Int_t);
-    void              Write2CSV ();
+    void             CreateROIs ( Int_t, Int_t, Int_t );
+    void              Write2CSV ( Int_t, Int_t, Int_t  );
     
     // helpers
     bool        VertexContained ( TVector3 );
-    bool         TrackContained (TVector3 , TVector3 );
-    void              PrintData (int);
+    bool         TrackContained ( TVector3 , TVector3 );
+    void              PrintData ( int);
     Float_t      TrkVtxDistance ( Int_t ivtx , Int_t itrk ) ;
     
     
@@ -235,8 +235,7 @@ public:
     
     
     
-
-    box NuSelVtxROI[3];
+    box ROItrk_NuSelMuon[3] , ROItrk_GBDTproton[3] , mu_p_VtxROI[3];
     
     // GeoAlgo
     geoalgo::GeoAlgo geo_algo;

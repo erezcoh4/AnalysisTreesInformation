@@ -211,9 +211,16 @@ void cumputeAnaTree::InitOutputCSV(){
     
     CSVHeader =
     TString("run subrun event ")
-    +TString("U_start_wire U_start_time U_end_wire U_end_time ")
-    +TString("V_start_wire V_start_time V_end_wire V_end_time ")
-    +TString("Y_start_wire Y_start_time Y_end_wire Y_end_time ");
+    +TString("ivtx itrk_NuSelMuon itrk_GBDTproton ")
+    +TString("muon-U_start_wire muon-U_start_time muon-U_end_wire muon-U_end_time ")
+    +TString("muon-V_start_wire muon-V_start_time muon-V_end_wire muon-V_end_time ")
+    +TString("muon-Y_start_wire muon-Y_start_time muon-Y_end_wire muon-Y_end_time ");
+    +TString("proton-U_start_wire proton-U_start_time proton-U_end_wire proton-U_end_time ")
+    +TString("proton-V_start_wire proton-V_start_time proton-V_end_wire proton-V_end_time ")
+    +TString("proton-Y_start_wire proton-Y_start_time proton-Y_end_wire proton-Y_end_time ");
+    +TString("vertex-U_start_wire vertex-U_start_time vertex-U_end_wire vertex-U_end_time ")
+    +TString("vertex-V_start_wire vertex-V_start_time vertex-V_end_wire vertex-V_end_time ")
+    +TString("vertex-Y_start_wire vertex-Y_start_time vertex-Y_end_wire vertex-Y_end_time ");
     
     csvfile << CSVHeader << endl;
 }
@@ -796,36 +803,59 @@ Float_t cumputeAnaTree::TrkVtxDistance ( Int_t ivtx , Int_t itrk ){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void cumputeAnaTree::CreateNuSelVtxROI( Int_t ivtx ){
+void cumputeAnaTree::CreateROIs( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
     
     TVector3 vtx_position = TVector3( vtxx_pandoraNu[ivtx] , vtxy_pandoraNu[ivtx] , vtxz_pandoraNu[ivtx] );
     
+    for (auto t:tracks) {
+        if (t.track_id == itrk_NuSelMuon)   for (int plane = 0 ; plane < 3 ; plane++ )  ROItrk_NuSelMuon[plane] = t.roi[plane];
+        if (t.track_id == itrk_GBDTproton)  for (int plane = 0 ; plane < 3 ; plane++ )  ROItrk_GBDTproton[plane] = t.roi[plane];
+    }
     
-    // load GeometryHelper utility
-    auto geomHelper = ::larutil::GeometryHelper::GetME();
     
-    double start_xyz[3] = {vtx_position.x() + 20 , vtx_position.y() + 20 , vtx_position.z() + 20 };
-    double end_xyz[3]   = {vtx_position.x() + 20 , vtx_position.y() - 20 , vtx_position.z() - 20 };
-    
-    // shift in time-axis due to the truncation of the waveforms
-    // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
-    double time_shift =  802;
+    auto    geomHelper = ::larutil::GeometryHelper::GetME();
+    double  vtx_xyz[3] = {vtx_position.x() , vtx_position.y() , vtx_position.z() - 20 };
+    double  time_shift =  802;
     
     
     for (int plane = 0; plane < 3; plane++){
         
         // geoHelper is a set of utility functions that help with geometric stuff..
-        auto const& start_projection2D = geomHelper->Point_3Dto2D(start_xyz, plane);
-        auto const& end_projection2D = geomHelper->Point_3Dto2D(end_xyz, plane);
+        auto const& projection2D = geomHelper->Point_3Dto2D(vtx_xyz, plane);
+        int wire = (int) ( projection2D.w / geomHelper->WireToCm() );
+        int time = (int) ( projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        int start_wire = wire, start_time = time, end_wire = wire, end_time = time;
+
+        // start-wire and start-time
+        if ( start_wire > ROItrk_GBDTproton[plane].start_wire ){
+            start_wire = ROItrk_GBDTproton[plane].start_wire;
+        }
+        if ( start_wire > ROItrk_NuSelMuon[plane].start_wire ){
+            start_wire = ROItrk_NuSelMuon[plane].start_wire;
+        }
+        if ( start_time > ROItrk_GBDTproton[plane].start_time ){
+            start_time = ROItrk_GBDTproton[plane].start_time;
+        }
+        if ( start_time > ROItrk_NuSelMuon[plane].start_time ){
+            start_time = ROItrk_NuSelMuon[plane].start_time;
+        }
         
-        int start_wire = (int) ( start_projection2D.w / geomHelper->WireToCm() );
-        int start_time = (int) ( start_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        // end-wire and end-time
+        if ( end_wire < ROItrk_GBDTproton[plane].end_wire ){
+            end_wire = ROItrk_GBDTproton[plane].end_wire;
+        }
+        if ( end_wire < ROItrk_NuSelMuon[plane].end_wire ){
+            end_wire = ROItrk_NuSelMuon[plane].end_wire;
+        }
+        if ( end_time < ROItrk_GBDTproton[plane].end_time ){
+            end_time = ROItrk_GBDTproton[plane].end_time;
+        }
+        if ( end_time < ROItrk_NuSelMuon[plane].end_time ){
+            end_time = ROItrk_NuSelMuon[plane].end_time;
+        }
         
-        // 802: shift in time-axis due to the truncation of the waveforms
-        // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
-        int end_wire = (int) ( end_projection2D.w / geomHelper->WireToCm() );
-        int end_time = (int) ( end_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
-        NuSelVtxROI[plane] = box( start_wire , start_time , end_wire , end_time );
+        
+        mu_p_VtxROI[plane] = box( start_wire , start_time , end_wire , end_time );
         
     }
     
@@ -845,18 +875,27 @@ bool cumputeAnaTree::FillOutTree (){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void cumputeAnaTree::Write2CSV(){
+void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
     
     // run              , subrun            , event
-    // U_start_wire     , U_start_time      , U_end_wire  , U_end_time
-    // V_start_wire     , V_start_time      , V_end_wire  , V_end_time
-    // Y_start_wire     , Y_start_time      , Y_end_wire  , Y_end_time
+    // ivtx             , itrk_NuSelMuon    , itrk_GBDTproton
+    // ROI for muon
+    // ROI for proton
+    // ROI for vertex
+
     
     csvfile
-    << run                               << " " << subrun                     << " " << event
-    << " " << NuSelVtxROI[0].start_wire  << " " << NuSelVtxROI[0].start_time  << " " << NuSelVtxROI[0].end_wire    << " " << NuSelVtxROI[0].end_time
-    << " " << NuSelVtxROI[1].start_wire  << " " << NuSelVtxROI[1].start_time  << " " << NuSelVtxROI[1].end_wire    << " " << NuSelVtxROI[1].end_time
-    << " " << NuSelVtxROI[2].start_wire  << " " << NuSelVtxROI[2].start_time  << " " << NuSelVtxROI[2].end_wire    << " " << NuSelVtxROI[2].end_time
+    << run                                      << " " << subrun                            << " " << event
+    << " " << ivtx                              << " " << itrk_NuSelMuon                    << " " << itrk_GBDTproton
+    << " " << ROItrk_NuSelMuon[0].start_wire    << " " << ROItrk_NuSelMuon[0].start_time    << " " << ROItrk_NuSelMuon[0].end_wire      << " " << ROItrk_NuSelMuon[0].end_time
+    << " " << ROItrk_NuSelMuon[1].start_wire    << " " << ROItrk_NuSelMuon[1].start_time    << " " << ROItrk_NuSelMuon[1].end_wire      << " " << ROItrk_NuSelMuon[1].end_time
+    << " " << ROItrk_NuSelMuon[2].start_wire    << " " << ROItrk_NuSelMuon[2].start_time    << " " << ROItrk_NuSelMuon[2].end_wire      << " " << ROItrk_NuSelMuon[2].end_time
+    << " " << ROItrk_GBDTproton[0].start_wire   << " " << ROItrk_GBDTproton[0].start_time   << " " << ROItrk_GBDTproton[0].end_wire     << " " << ROItrk_GBDTproton[0].end_time
+    << " " << ROItrk_GBDTproton[1].start_wire   << " " << ROItrk_GBDTproton[1].start_time   << " " << ROItrk_GBDTproton[1].end_wire     << " " << ROItrk_GBDTproton[1].end_time
+    << " " << ROItrk_GBDTproton[2].start_wire   << " " << ROItrk_GBDTproton[2].start_time   << " " << ROItrk_GBDTproton[2].end_wire     << " " << ROItrk_GBDTproton[2].end_time
+    << " " << mu_p_VtxROI[0].start_wire         << " " << mu_p_VtxROI[0].start_time         << " " << mu_p_VtxROI[0].end_wire           << " " << mu_p_VtxROI[0].end_time
+    << " " << mu_p_VtxROI[1].start_wire         << " " << mu_p_VtxROI[1].start_time         << " " << mu_p_VtxROI[1].end_wire           << " " << mu_p_VtxROI[1].end_time
+    << " " << mu_p_VtxROI[2].start_wire         << " " << mu_p_VtxROI[2].start_time         << " " << mu_p_VtxROI[2].end_wire           << " " << mu_p_VtxROI[2].end_time
     << endl;
     
     
