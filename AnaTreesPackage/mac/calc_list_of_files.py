@@ -2,7 +2,7 @@
     
     usage:
     ------
-    python mac/calc_list_of_files.py --DataType=EXTBNB --worker=uboone -p1 -v2 --option=mu-p-vertex -var=AddEventsList -evf=0.1
+    python mac/calc_list_of_files.py --DataType=EXTBNB -wuboone -p1 -v2 --option=mu-p-vertex -var=AddEventsList -evf=0.1
     
     
 '''
@@ -104,7 +104,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
         
             calc.PrintData( entry )
 
-        if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTprotons ) < min_trk_vtx_distance ):
+        if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ):
             
             if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTprotons )
             calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton  )
