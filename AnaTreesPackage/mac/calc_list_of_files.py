@@ -2,7 +2,7 @@
     
     usage:
     ------
-    python mac/calc_list_of_files.py --DataType=EXTBNB --worker=uboone -p1 -v2 --option=mu-p-vertex -var=AddEventsList -ff=0.01 -evf=0.1
+    python mac/calc_list_of_files.py --DataType=EXTBNB --worker=uboone -p1 -v2 --option=mu-p-vertex -var=AddEventsList -evf=0.1
     
     
 '''
@@ -21,14 +21,17 @@ FilesListName   = "filesana"
 FilesListsPath  = "/pnfs/uboone/persistent/users/aschu/devel/v05_11_01/hadd"
 
 proton_score    = 0.90
-EventsListName  = "mu_p_score_%.2f_intersection"%proton_score
+EventsListType  = "mu_p_score_%.2f_intersection"%proton_score
 EventsListsPath = "/uboone/data/users/ecohen/Lists/muon_proton_intersection"
+EventsListName  = EventsListsPath + "/" + EventsListType + ".csv"
+
+SchemedPath     = "/uboone/data/users/ecohen/AnalysisTreeData"
+SchemedfileName= SchemedPath + "/SchemedFiles/" + FilesListType + "_" + FilesListName + "_" + EventsListName + ".root"
 
 AnaPath         = "/uboone/data/users/ecohen/AnalysisTreeData"
 AnafileName     = AnaPath + "/ROOTFiles/Ana_" + FilesListType + "_" + FilesListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
 CSVfileName     = AnaPath + "/CSVFiles/features_" + FilesListType + "_" + FilesListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
 MCmode          = True if flags.DataType=='MC' else False
-tools           = AnaTreeTools()
 
 
 
@@ -36,24 +39,15 @@ if flags.worker=="erez":
     EventsListsPath = "/Users/erezcohen/Desktop/uBoone/Lists/muon_proton_intersection"
 
 
-
-
-'''
-    choose from a list of events
-    e.g. if we want to choose from events with a classified proton of score > XXYY
-'''
-
 if flags.variable=="AddEventsList":
     
-    if flags.verbose>0: print "\nadding list of events: " + EventsListsPath+"/"+EventsListName+".csv"
+    if flags.verbose>0: print "\nadding list of events:\n" + EventsListName
     import csv
-    
-    with open(EventsListsPath+"/"+EventsListName+".csv", 'rb') as csvfile:
+    with open( EventsListName , 'rb') as csvfile:
         reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
         header = next(reader)
         EventsList = [dict(zip(header, map(int, row))) for row in reader]
-
-    print EventsList
+    if flags.verbose>3: print EventsList
 
 def search(run,subrun,event):
     for e in EventsList:
@@ -62,29 +56,17 @@ def search(run,subrun,event):
     return False , -1 , -1
 
 
+InFile      = ROOT.TFile(SchemedfileName)
+InTree      = InFile.Get("anatree")
+Nentries    = InTree.GetEntries()
 
-
-
-
-
-if flags.verbose>0: print "\nreading list of files: " + FilesListsPath + "/" + FilesListType + "/" + FilesListName + ".list"
-
-with open( FilesListsPath + "/" + FilesListType + "/" + FilesListName + ".list" ) as f:
-    files = f.read().splitlines()
-
-if flags.verbose>4: print files
-
-
-in_chain = ROOT.TChain("analysistree/anatree");
-
-for i in range(int(flags.files_frac*len(files))):
-    if flags.verbose>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
-    if float(os.path.getsize(files[i])/1048576) > 0.1 :
-        in_chain.Add(files[i])
-if flags.verbose>0: print "input chain entries from",int(flags.files_frac*len(files)),"files: ", in_chain.GetEntries()
-
-
-Nentries    = in_chain.GetEntries()
+#in_chain = ROOT.TChain("analysistree/anatree");
+#for i in range(int(flags.files_frac*len(files))):
+#    if flags.verbose>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
+#    if float(os.path.getsize(files[i])/1048576) > 0.1 :
+#        in_chain.Add(files[i])
+#if flags.verbose>0: print "input chain entries from",int(flags.files_frac*len(files)),"files: ", in_chain.GetEntries()
+#Nentries    = in_chain.GetEntries()
 
 
 OutFile     = ROOT.TFile(AnafileName,"recreate")
@@ -93,7 +75,8 @@ GENIETree   = ROOT.TTree("GENIETree","genie interactions")
 
 
 
-calc = cumputeAnaTree( in_chain , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
+#calc = cumputeAnaTree( in_chain , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
+calc = cumputeAnaTree( InTree , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
 
 
 

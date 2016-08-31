@@ -2,6 +2,11 @@
     usage:
     ------
     python mac/scheme_list_of_files_rse.py --DataType=EXTBNB -wuboone -v2 -ff=0.01 -evf=0.1
+    
+    This functionallity schemes (big) analysis trees
+    and returns a tree containing only entries with a Run/Subrun/Event
+    of a given list (RSE map)
+
 '''
 
 import ROOT , os , sys, larlite , datetime

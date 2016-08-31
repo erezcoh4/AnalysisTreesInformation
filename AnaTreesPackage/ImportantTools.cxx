@@ -7,6 +7,9 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName){
     
+    // This functionallity schemes (big) analysis trees
+    // and returns a tree containing only entries with a Run/Subrun/Event
+    // of a given list (RSE map)
     std::map < int , std::map < int , int > > RSEMap = LoadRSEMap( RSEfileName , true );
     
     // scheme tree to contain only events from RSE list
