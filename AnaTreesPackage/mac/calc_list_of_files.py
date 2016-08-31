@@ -26,7 +26,7 @@ EventsListsPath = "/uboone/data/users/ecohen/Lists/muon_proton_intersection"
 EventsListName  = EventsListsPath + "/" + EventsListType + ".csv"
 
 SchemedPath     = "/uboone/data/users/ecohen/AnalysisTreeData"
-SchemedfileName= SchemedPath + "/SchemedFiles/" + FilesListType + "_" + FilesListName + "_" + EventsListName + ".root"
+SchemedfileName= SchemedPath + "/SchemedFiles/" + FilesListType + "_" + FilesListName + "_" + EventsListType + ".root"
 
 AnaPath         = "/uboone/data/users/ecohen/AnalysisTreeData"
 AnafileName     = AnaPath + "/ROOTFiles/Ana_" + FilesListType + "_" + FilesListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
