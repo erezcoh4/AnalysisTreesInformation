@@ -790,7 +790,7 @@ Float_t cumputeAnaTree::TrkVtxDistance ( Int_t ivtx , Int_t itrk ){
         }
     }
     Float_t d = std::min( dis_vtx_start , dis_vtx_end );
-    if (debug > 4) Printf("track %d distacne from vertex %d is %.2f cm", itrk , ivtx , d );
+    if (debug > 2) Printf("track %d distacne from vertex %d is %.2f cm", itrk , ivtx , d );
     return d;
 }
 

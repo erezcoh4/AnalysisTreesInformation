@@ -14,7 +14,7 @@ from ROOT import cumputeAnaTree , AnaTreeTools
 import input_flags
 flags = input_flags.get_args()
 
-min_trk_vtx_distance = 5 # [cm]
+min_trk_vtx_distance = 10 # [cm]
 
 FilesListType   = "GOOD" + flags.DataType
 FilesListName   = "filesana"
@@ -30,7 +30,7 @@ SchemedfileName= SchemedPath + "/SchemedFiles/" + FilesListType + "_" + FilesLis
 
 AnaPath         = "/uboone/data/users/ecohen/AnalysisTreeData"
 AnafileName     = AnaPath + "/ROOTFiles/Ana_" + FilesListType + "_" + FilesListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
-CSVfileName     = AnaPath + "/CSVFiles/features_" + FilesListType + "_" + FilesListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".root"
+CSVfileName     = AnaPath + "/CSVFiles/features_" + FilesListType + "_" + FilesListName + "_" + datetime.datetime.now().strftime("%Y%B%d") + ".csv"
 MCmode          = True if flags.DataType=='MC' else False
 
 
@@ -56,9 +56,9 @@ def search(run,subrun,event):
     return False , -1 , -1
 
 
-#InFile      = ROOT.TFile(SchemedfileName)
-#InTree      = InFile.Get("anatree")
-#Nentries    = InTree.GetEntries()
+InFile      = ROOT.TFile(SchemedfileName)
+InTree      = InFile.Get("anatree")
+Nentries    = InTree.GetEntries()
 
 #in_chain = ROOT.TChain("analysistree/anatree");
 #for i in range(int(flags.files_frac*len(files))):
@@ -67,9 +67,9 @@ def search(run,subrun,event):
 #        in_chain.Add(files[i])
 #if flags.verbose>0: print "input chain entries from",int(flags.files_frac*len(files)),"files: ", in_chain.GetEntries()
 
-in_chain = ROOT.TChain("anatree")
-in_chain.Add(SchemedfileName)
-Nentries    = in_chain.GetEntries()
+#in_chain    = ROOT.TChain("anatree")
+#in_chain.Add(SchemedfileName)
+#Nentries    = in_chain.GetEntries()
 
 OutFile     = ROOT.TFile(AnafileName,"recreate")
 OutTree     = ROOT.TTree("anaTree","physical variables per event")
@@ -77,8 +77,8 @@ GENIETree   = ROOT.TTree("GENIETree","genie interactions")
 
 
 
-calc = cumputeAnaTree( in_chain , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
-#calc = cumputeAnaTree( InTree , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
+#calc = cumputeAnaTree( in_chain , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
+calc = cumputeAnaTree( InTree , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
 
 
 
