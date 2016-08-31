@@ -106,7 +106,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
 
         if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ):
             
-            if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTprotons )
+            if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTproton )
             calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton  )
             calc.FillOutTree()
             calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
