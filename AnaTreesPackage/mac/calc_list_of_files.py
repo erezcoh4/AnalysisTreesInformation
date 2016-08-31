@@ -112,12 +112,13 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
             calc.Write2CSV()
 
 
-print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
-print "wrote csv file with (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
-
+Nevents = OutTree.GetEntries*(
 
 GENIETree.Write()
 OutTree.Write()
 OutFile.Close()
 
+
+print "wrote root file (%d events , %.2f MB):\n"%(Nevents,float(os.path.getsize(AnafileName)/1048576.0)) + AnafileName
+print "wrote csv file (%.2f MB):\n"%(float(os.path.getsize(CSVfileName)/1048576.0)) + CSVfileName
 
