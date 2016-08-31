@@ -112,7 +112,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
             calc.Write2CSV()
 
 
-Nevents = OutTree.GetEntries*(
+Nevents = OutTree.GetEntries()
 
 GENIETree.Write()
 OutTree.Write()
