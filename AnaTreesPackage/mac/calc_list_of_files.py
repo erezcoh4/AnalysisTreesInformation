@@ -60,16 +60,6 @@ InFile      = ROOT.TFile(SchemedfileName)
 InTree      = InFile.Get("anatree")
 Nentries    = InTree.GetEntries()
 
-#in_chain = ROOT.TChain("analysistree/anatree");
-#for i in range(int(flags.files_frac*len(files))):
-#    if flags.verbose>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
-#    if float(os.path.getsize(files[i])/1048576) > 0.1 :
-#        in_chain.Add(files[i])
-#if flags.verbose>0: print "input chain entries from",int(flags.files_frac*len(files)),"files: ", in_chain.GetEntries()
-
-#in_chain    = ROOT.TChain("anatree")
-#in_chain.Add(SchemedfileName)
-#Nentries    = in_chain.GetEntries()
 
 OutFile     = ROOT.TFile(AnafileName,"recreate")
 OutTree     = ROOT.TTree("anaTree","physical variables per event")
@@ -77,7 +67,6 @@ GENIETree   = ROOT.TTree("GENIETree","genie interactions")
 
 
 
-#calc = cumputeAnaTree( in_chain , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
 calc = cumputeAnaTree( InTree , OutTree , GENIETree , CSVfileName , flags.verbose , MCmode )
 
 
@@ -104,7 +93,7 @@ for entry in range(int(flags.evnts_frac*(Nentries))):
         
             calc.PrintData( entry )
 
-        if ( flags.option=="mu-p-vertex" and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ):
+        if ( flags.option=="mu-p-vertex" and itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ):
             
             if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTproton )
             calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton  )
