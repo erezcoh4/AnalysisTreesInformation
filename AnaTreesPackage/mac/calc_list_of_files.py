@@ -3,7 +3,7 @@
     usage:
     ------
     python mac/calc_list_of_files.py --DataType=EXTBNB -wuboone -p1 -v2 --option=mu-p-vertex -var=AddEventsList -evf=0.1
-    
+    last eddited: Sep-2/2016
     
 '''
 
