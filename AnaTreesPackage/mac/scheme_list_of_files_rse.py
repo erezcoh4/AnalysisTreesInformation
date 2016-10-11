@@ -48,8 +48,8 @@ for i in range(int(flags.files_frac*len(files))):
 if flags.verbose>0: print "input chain entries from",int(flags.files_frac*len(files)),"files: ", in_chain.GetEntries()
 
 
-OutFile     = ROOT.TFile(SchemedfileName,"recreate")
-OutTree     = tools.SchemeTreeRSEList ( in_chain , EventsListsPath + "/" + EventsListName + ".csv" )
+OutFile = ROOT.TFile(SchemedfileName,"recreate")
+OutTree = tools.SchemeTreeRSEList ( in_chain , EventsListsPath + "/" + EventsListName + ".csv" )
 
 print "wrote root file (%d events , %.2f MB):\n"%(OutTree.GetEntries(),float(os.path.getsize(SchemedfileName)/1048576.0)) + SchemedfileName
 
