@@ -107,7 +107,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
 
     in_chain = get_analysistrees_chain(files)
     OutFile = ROOT.TFile( SchemedResultFileName , "recreate" )
-    OutTree = it.SchemeTreeRSEList( in_chain , IntersectionListName )
+    OutTree = it.SchemeTreeRSEList( in_chain , IntersectionListName , flags.verbose )
 
     OutTree.Write()
     OutFile.Close()

@@ -47,7 +47,7 @@ if flags.option=="intersect GBDT protons with Sel2 muons" or 'intersect' in flag
 # (5) scheme all AnalysisTrees to a smaller file containing only the events we are interested in
 # -------------------------------------------------------------------
 if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
-    if flags.verbose: print "scheme analysis trees events"
+    if flags.verbose: print_important( "scheme analysis trees events" )
     scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
 
 
