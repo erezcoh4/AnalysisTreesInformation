@@ -86,93 +86,6 @@ def search_rse( RSE , EventsList ):
     return False , -1 , -1 , -1
 
 
-# -------------------------
-def extract_anatrees_tracks_information_from_files_list( DataType , AddEventsList=False , EventsListName="" ):
-    
-    # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT
-    
-    ListName    = DataType + "_AnalysisTrees"
-    MCmode      = True if 'MC' in flags.DataType else False
-
-    FeaturesFileName = tracks_features_file_name( ListName )
-    TracksAnaFileName = tracks_anafile_name( ListName )
-
-    # CONTINUE HERE! ADD EVENTS LIST
-    if AddEventsList:
-    
-        if flags.verbose: print_filename ( EventsListName , "adding list of events:" )
-        import csv
-        with open( EventsListName , 'rb') as csvfile:
-            reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
-            header = next(reader)
-            EventsList = [dict(zip(header, map(int, row))) for row in reader]
-        if flags.verbose>3: print EventsList
-
-
-
-    files       = read_files_from_a_list( ListName )
-    in_chain    = get_analysistrees_chain(files)
-    Nentries    = in_chain.GetEntries()
-    Nreduced    = int(flags.evnts_frac*(Nentries))
-    OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
-    OutTree     = ROOT.TTree("GBDTTree","physical variables per event")
-    TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
-    GENIETree   = ROOT.TTree("GENIETree","genie interactions")
-    calc = cumputeAnaTree( InTree, OutTree, FeaturesFileName, flags.verbose, MCmode, GENIETree )
-
-#    counter = 0
-#    for entry in range(Nreduced):
-#    
-#        calc.get_bdt_tools( entry )
-#    
-#        if calc.Ntracks>0:
-#            counter += calc.Ntracks
-#        
-#            if (entry%flags.print_mod == 0):
-#                calc.PrintData( entry )
-#    
-#            calc.WriteTracks2CSV()
-#
-#        if flags.verbose>3: print "added %d contained tracks (%d total)"%(calc.Ntracks,counter)
-#
-#    if flags.verbose>0: print "read %d events,%d tracks"%Nreduced,OutTree.GetEntries())
-#    TracksTree.Write()
-#    OutTree.Write()
-#    OutFile.Close()
-
-    for entry in range(Nreduced):
-    
-        do_continue = True
-        calc.GetEntry( entry )
-        entry_rse = [calc.run,calc.subrun,calc.event]
-        if flags.verbose>2: print entry_rse
-    
-        if flags.variable=="AddEventsList":
-        
-            do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse )
-            if (do_continue and flags.verbose>1):   print_important("found r-%d/s-%d/e-%d, extracting information....\n"%(calc.run,calc.subrun,calc.event))
-
-    if do_continue:
-        
-        calc.extract_information()
-        
-        if (flags.verbose > 0 and flags.verbose < 7 and entry%flags.print_mod == 0):
-            
-            calc.PrintData( entry )
-        
-        if ( flags.option=="mu-p-vertex" and itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ):
-            
-            if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTproton )
-            calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton  )
-            calc.FillOutTree()
-            calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-
-
-    print "wrote csv file with %d tracks (%.2f MB):\n"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) + FeaturesFileName
-    print "wrote root file  (%.2f MB):\n"%float(os.path.getsize(AnafileName)/1048576.0) + AnafileName
-
-
-
 
 # -------------------------
 def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_score ):
@@ -229,6 +142,103 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     
     OutTree.Write()
     OutFile.Close()
+
+
+
+
+# -------------------------
+def extract_anatrees_tracks_information_from_files_list( DataType, Option, AddEventsList=False , EventsListName="" ):
+    # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT
+    
+    ListName    = DataType + "_AnalysisTrees"
+    MCmode      = True if 'MC' in flags.DataType else False
+    
+    FeaturesFileName = tracks_features_file_name( ListName )
+    TracksAnaFileName = tracks_anafile_name( ListName )
+    
+    files       = read_files_from_a_list( ListName )
+    in_chain    = get_analysistrees_chain(files)
+    
+    extract_anatrees_tracks_information( in_chain , Option, AddEventsList , EventsListName )
+
+
+# -------------------------
+def extract_anatrees_tracks_information_from_a_files( InputFileName, Option, AddEventsList=False , EventsListName="" ):
+    
+    MCmode = True if 'MC' in InputFileName else False
+    in_chain = ROOT.TChain("analysistree/anatree")
+    in_chain.Add( InputFileName )
+    extract_anatrees_tracks_information( in_chain , Option, AddEventsList , EventsListName )
+
+
+# -------------------------
+def extract_anatrees_tracks_information( in_chain , Option, AddEventsList=False , EventsListName="" ):
+
+    min_trk_vtx_distance = 10 # [cm], this distance needs to be studied wisely
+    if Option != 'extract all tracks information' and Option != 'find common muon-proton vertices':
+        print "options:"
+        print "\t extract all tracks information"
+        print "\t find common muon-proton vertices"
+        exit(0)
+
+
+    Nentries    = in_chain.GetEntries()
+    Nreduced    = int(flags.evnts_frac*(Nentries))
+    OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
+    OutTree     = ROOT.TTree("GBDTTree","physical variables per event")
+    TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
+    GENIETree   = ROOT.TTree("GENIETree","genie interactions")
+    
+    calc = cumputeAnaTree( InTree, OutTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
+    
+    if AddEventsList:
+        import csv
+        if flags.verbose: print_filename( EventsListName , "adding list of R/S/E from" )
+        with open( EventsListName , 'rb') as csvfile:
+            reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
+            header = next(reader)
+            rse_events_list = [dict(zip(header, map(int, row))) for row in reader]
+        if flags.verbose>3: print rse_events_list
+
+
+    for entry in range(Nreduced):
+        
+        do_continue = True
+        calc.GetEntry( entry )
+        entry_rse = [calc.run,calc.subrun,calc.event]; if flags.verbose>2: print entry_rse
+        
+        if AddEventsList:
+            
+            do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse , rse_events_list )
+            if (do_continue and flags.verbose>1): print_important("found r-%d/s-%d/e-%d, extracting information....\n"%entry_rse)
+    
+        if do_continue:
+            
+            calc.extract_information()
+            
+            if (flags.verbose and entry%flags.print_mod==0):
+                
+                calc.PrintData( entry )
+            
+            if Option=="extract all tracks information":
+                
+                do_continue = True
+            
+            if Option=="find common muon-proton vertices":
+                
+                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance )
+            
+            if do_continue:
+                
+                calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+                calc.FillOutTree()
+                calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+
+    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB):\n"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
+    print_filename( AnafileName , "wrote root file  (%.2f MB):\n"%float(os.path.getsize(AnafileName)/1048576.0) )
+
+
+
 
 
 

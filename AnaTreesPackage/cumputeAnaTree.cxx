@@ -232,7 +232,7 @@ void cumputeAnaTree::InitOutputCSV(){
         
     }
 
-    else if (option == "find commoc muon-proton vertices"){
+    else if (option == "find common muon-proton vertices"){
         
         CSVHeader =
         TString("run subrun event ")
@@ -251,7 +251,7 @@ void cumputeAnaTree::InitOutputCSV(){
         std::cerr
         << "no csv-header! options are\n"
         << "(1) extract all tracks information"      << "\n"
-        << "(2) find commoc muon-proton vertices"    << "\n";
+        << "(2) find common muon-proton vertices"    << "\n";
     }
     csvfile << CSVHeader << endl;
 }
@@ -938,7 +938,7 @@ void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GB
     }
     
     
-    else if (option == "find commoc muon-proton vertices"){
+    else if (option == "find common muon-proton vertices"){
         // R/S/E
         // ivtx / itrk_NuSelMuon / itrk_GBDTproton
         // ROI for muon

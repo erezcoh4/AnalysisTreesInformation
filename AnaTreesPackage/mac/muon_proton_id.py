@@ -9,10 +9,10 @@ from anatrees_tools import *
 '''
 
 
-
 TracksListName          = "BNB_5e19POT"
 GBDTmodelName           = "BNB_TrainedOn_only_MC_BNB"
 p_score                 = 0.99
+
 
 
 
@@ -20,17 +20,13 @@ p_score                 = 0.99
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
     print_important( "extract tracks information from MC AnalysisTrees" )
-    extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" )
-    extract_anatrees_tracks_information_from_files_list( "MC_BNB" )
+    extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" )
+    extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" )
 
 
 
 # (2) train, build, test the GBDT models
 # -------------------------------------------------------------------
-if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
-    print_important( "extract tracks information from MC AnalysisTrees" )
-    extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" )
-
 
 
 
@@ -38,21 +34,22 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA' in flags.option:
     print_important( "extract tracks information from AnalysisTrees" )
-    
+    extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" , "extract all tracks information")
 
 
-# (2) Classify proton tracks
+
+# (4) Classify proton tracks
 # -------------------------------------------------------------------
 
 
 
 
-# (3) Select events with a muon from neutrino interaction using Sel2
+# (5) Select events with a muon from neutrino interaction using Sel2
 # -------------------------------------------------------------------
 
 
 
-# (4) intersect GBDT protons list with Sel2 muons
+# (6) intersect GBDT protons list with Sel2 muons
 # -------------------------------------------------------------------
 if flags.option=="intersect GBDT protons with Sel2 muons" or 'intersect' in flags.option:
     
@@ -60,20 +57,26 @@ if flags.option=="intersect GBDT protons with Sel2 muons" or 'intersect' in flag
 
 
 
-# (5) scheme all AnalysisTrees to a smaller file containing only the events we are interested in
+
+# (7) scheme all AnalysisTrees to a smaller file containing only the events we are interested in
 # -------------------------------------------------------------------
 if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
     if flags.verbose: print_important( "scheme analysis trees events" )
     scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
 
 
-# (6) loop over the schemed AnalysisTrees file, and for each event check if the selected muon and the classified proton track are close enough
+
+# (8) loop over the schemed AnalysisTrees file, and for each event check if the selected muon and the classified proton track are close enough
 # -------------------------------------------------------------------
-if flags.option=="loop over muon-proton candidates" or 'loop' in flags.option:
-    print "loop"
+if flags.option=="loop over muon-proton candidates" or 'loop_mu_p' in flags.option:
+    print_important( "loop over muon-proton candidates, check closeness" )
+    SchemedResultFileName = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
+    IntersectionListName = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName , TracksListName , p_score )
+    extract_anatrees_tracks_information_from_a_files( SchemedResultFileName , "find common muon-proton vertices" , AddEventsList=True , EventsListName=IntersectionListName)
 
 
-# (7) filter out from art-file intersected events
+
+# (9) filter out from art-file intersected events
 # -------------------------------------------------------------------
 #   (A) scp <intersecte_list.csv> $uboone
 #
@@ -84,10 +87,13 @@ if flags.option=="loop over muon-proton candidates" or 'loop' in flags.option:
 
 
 
-# (8) create ROI images
+# (10) create ROI images
 # -------------------------------------------------------------------
 
 
 
-# (9) perform analysis
+# (11) perform analysis
 # -------------------------------------------------------------------
+
+
+
