@@ -100,7 +100,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     # output: schemed analysis trees file
     SchemedResultFileName   = schemed_anatrees_file_name( AnalysisTreesListName , IntersectionListName )
     it = ImportantTools()
-
+    if flags.verbose: print "got input and output file names"
     with open( AnalysisTreesListName ) as f:
         files = f.read().splitlines()
     if flags.verbose>4: print "shceming files: ",files
