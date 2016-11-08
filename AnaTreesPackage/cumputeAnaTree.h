@@ -44,8 +44,14 @@ public:
     ~cumputeAnaTree(){}
     
     // construct w/ input and output TTree-s
-    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,  TTree * fGENIETree, TString fCSVFileName, int fdebug=0, bool fMCmode=false);
-    cumputeAnaTree (TChain * fInChain, TTree * fOutTree, TTree * fGENIETree, TString fCSVFileName, int fdebug=0, bool fMCmode=false){cumputeAnaTree((TTree*) fInChain, fOutTree, fGENIETree, fCSVFileName, fdebug, fMCmode);};
+    cumputeAnaTree (TTree * fInTree, TTree * fOutTree, TString fCSVFileName,
+                    TString foption="extract all tracks information", int fdebug=0,
+                    bool fMCmode=false, TTree * fGENIETree = nullptr);
+    
+    cumputeAnaTree (TChain * fInChain, TTree * fOutTree, TString fCSVFileName,
+                    TString foption="extract all tracks information", int fdebug=0,
+                    bool fMCmode=false, TTree * fGENIETree = nullptr)
+    {cumputeAnaTree((TTree*) fInChain, fOutTree, fCSVFileName, foption, fdebug, fMCmode, fGENIETree);};
     
     
     
@@ -58,6 +64,7 @@ public:
     void   SetCSVFileName (TString name)    {CSVFileName = name;};
     void         SetDebug (int _debug)      {debug = _debug;};
     void        SetMCMode (bool _mc_mode)   {MCmode = _mc_mode;};
+    void        SetOption (TString foption) {option = foption;};
     
     // getters
     TTree*          GetInTree (){return InTree;};
@@ -99,7 +106,7 @@ public:
     // variables
     
     TTree       * InTree    , * OutTree , * GENIETree;
-    TString     CSVFileName    , CSVHeader;
+    TString     CSVFileName , option    , CSVHeader;
     ofstream    csvfile;
 
     int         debug;  // 0 - quiet, 1 - major functionality, > 2 - print out all sorts of shit

@@ -26,14 +26,17 @@ bool cumputeAnaTree::extract_information (){ // main event loop....
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TTree * fGENIETree, TString fCSVFileName, int fdebug, bool fMCmode){
+cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TString fCSVFileName,
+                               TString foption, int fdebug,
+                               bool fMCmode, TTree * fGENIETree){
     
     SetInTree(fInTree);
     SetOutTree(fOutTree);
-    SetGENIETree(fGENIETree);
     SetCSVFileName (fCSVFileName);
+    SetOption(foption);
     SetDebug(fdebug);
     SetMCMode(fMCmode);
+    if (MCmode) SetGENIETree(fGENIETree);
     InitInputTree();
     InitOutputTree();
     InitOutputCSV();
@@ -209,19 +212,47 @@ void cumputeAnaTree::InitOutputCSV(){
     
     csvfile.open(CSVFileName);
     
-    CSVHeader =
-    TString("run subrun event ")
-    +TString("ivtx itrk_NuSelMuon itrk_GBDTproton ")
-    +TString("muon-U_start_wire muon-U_start_time muon-U_end_wire muon-U_end_time ")
-    +TString("muon-V_start_wire muon-V_start_time muon-V_end_wire muon-V_end_time ")
-    +TString("muon-Y_start_wire muon-Y_start_time muon-Y_end_wire muon-Y_end_time ");
-    +TString("proton-U_start_wire proton-U_start_time proton-U_end_wire proton-U_end_time ")
-    +TString("proton-V_start_wire proton-V_start_time proton-V_end_wire proton-V_end_time ")
-    +TString("proton-Y_start_wire proton-Y_start_time proton-Y_end_wire proton-Y_end_time ");
-    +TString("vertex-U_start_wire vertex-U_start_time vertex-U_end_wire vertex-U_end_time ")
-    +TString("vertex-V_start_wire vertex-V_start_time vertex-V_end_wire vertex-V_end_time ")
-    +TString("vertex-Y_start_wire vertex-Y_start_time vertex-Y_end_wire vertex-Y_end_time ");
-    
+    if (option == "extract all tracks information"){
+        
+        CSVHeader =
+        TString("run subrun event trackid ")
+        +TString("flip nhits length ")
+        +TString("startx starty startz ")
+        +TString("endx endy endz ")
+        +TString("theta phi distlenratio ")
+        +TString("startdqdx enddqdx ")
+        +TString("dqdxdiff dqdxratio totaldqdx averagedqdx ")
+        +TString("cosmicscore coscontscore pidpida pidchi ")
+        +TString("cftime cftimewidth cfzcenter cfzwidth ")
+        +TString("cfycenter cfywidth cftotalpe cfdistance ")
+        +TString("MCpdgCode ")
+        +TString("U_start_wire U_start_time U_end_wire U_end_time ")
+        +TString("V_start_wire V_start_time V_end_wire V_end_time ")
+        +TString("Y_start_wire Y_start_time Y_end_wire Y_end_time ");
+        
+    }
+
+    else if (option == "find commoc muon-proton vertices"){
+        
+        CSVHeader =
+        TString("run subrun event ")
+        +TString("ivtx itrk_NuSelMuon itrk_GBDTproton ")
+        +TString("muon-U_start_wire muon-U_start_time muon-U_end_wire muon-U_end_time ")
+        +TString("muon-V_start_wire muon-V_start_time muon-V_end_wire muon-V_end_time ")
+        +TString("muon-Y_start_wire muon-Y_start_time muon-Y_end_wire muon-Y_end_time ");
+        +TString("proton-U_start_wire proton-U_start_time proton-U_end_wire proton-U_end_time ")
+        +TString("proton-V_start_wire proton-V_start_time proton-V_end_wire proton-V_end_time ")
+        +TString("proton-Y_start_wire proton-Y_start_time proton-Y_end_wire proton-Y_end_time ");
+        +TString("vertex-U_start_wire vertex-U_start_time vertex-U_end_wire vertex-U_end_time ")
+        +TString("vertex-V_start_wire vertex-V_start_time vertex-V_end_wire vertex-V_end_time ")
+        +TString("vertex-Y_start_wire vertex-Y_start_time vertex-Y_end_wire vertex-Y_end_time ");
+    }
+    else {
+        std::cerr
+        << "no csv-header! options are\n"
+        << "(1) extract all tracks information"      << "\n"
+        << "(2) find commoc muon-proton vertices"    << "\n";
+    }
     csvfile << CSVHeader << endl;
 }
 
@@ -877,40 +908,85 @@ bool cumputeAnaTree::FillOutTree (){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
     
-    // run              , subrun            , event
-    // ivtx             , itrk_NuSelMuon    , itrk_GBDTproton
-    // ROI for muon
-    // ROI for proton
-    // ROI for vertex
-
-    
-    csvfile
-    << run                                      << " " << subrun                            << " " << event
-    << " " << ivtx                              << " " << itrk_NuSelMuon                    << " " << itrk_GBDTproton
-    << " " << ROItrk_NuSelMuon[0].start_wire    << " " << ROItrk_NuSelMuon[0].start_time    << " " << ROItrk_NuSelMuon[0].end_wire      << " " << ROItrk_NuSelMuon[0].end_time
-    << " " << ROItrk_NuSelMuon[1].start_wire    << " " << ROItrk_NuSelMuon[1].start_time    << " " << ROItrk_NuSelMuon[1].end_wire      << " " << ROItrk_NuSelMuon[1].end_time
-    << " " << ROItrk_NuSelMuon[2].start_wire    << " " << ROItrk_NuSelMuon[2].start_time    << " " << ROItrk_NuSelMuon[2].end_wire      << " " << ROItrk_NuSelMuon[2].end_time
-    << " " << ROItrk_GBDTproton[0].start_wire   << " " << ROItrk_GBDTproton[0].start_time   << " " << ROItrk_GBDTproton[0].end_wire     << " " << ROItrk_GBDTproton[0].end_time
-    << " " << ROItrk_GBDTproton[1].start_wire   << " " << ROItrk_GBDTproton[1].start_time   << " " << ROItrk_GBDTproton[1].end_wire     << " " << ROItrk_GBDTproton[1].end_time
-    << " " << ROItrk_GBDTproton[2].start_wire   << " " << ROItrk_GBDTproton[2].start_time   << " " << ROItrk_GBDTproton[2].end_wire     << " " << ROItrk_GBDTproton[2].end_time
-    << " " << mu_p_VtxROI[0].start_wire         << " " << mu_p_VtxROI[0].start_time         << " " << mu_p_VtxROI[0].end_wire           << " " << mu_p_VtxROI[0].end_time
-    << " " << mu_p_VtxROI[1].start_wire         << " " << mu_p_VtxROI[1].start_time         << " " << mu_p_VtxROI[1].end_wire           << " " << mu_p_VtxROI[1].end_time
-    << " " << mu_p_VtxROI[2].start_wire         << " " << mu_p_VtxROI[2].start_time         << " " << mu_p_VtxROI[2].end_wire           << " " << mu_p_VtxROI[2].end_time
-    << endl;
-    
-    
-    
-    if(!mutual_vertices.empty()){
-        for (auto m_v:mutual_vertices){
+    if (option == "extract all tracks information"){
+        for (auto t:tracks){
             csvfile
-            << m_v.run                       << " " << m_v.subrun             << " " << m_v.event
-            << " " << m_v.roi[0].start_wire  << " " << m_v.roi[0].start_time  << " " << m_v.roi[0].end_wire    << " " << m_v.roi[0].end_time
-            << " " << m_v.roi[1].start_wire  << " " << m_v.roi[1].start_time  << " " << m_v.roi[1].end_wire    << " " << m_v.roi[1].end_time
-            << " " << m_v.roi[2].start_wire  << " " << m_v.roi[2].start_time  << " " << m_v.roi[2].end_wire    << " " << m_v.roi[2].end_time
+            << t.run                    << " " << t.subrun
+            << " " << t.event           << " " << t.track_id
+            << " " << t.is_flipped      << " " << t.nhits           << " " << t.length
+            << " " << t.start_pos.x()   << " " << t.start_pos.y()   << " " << t.start_pos.z()
+            << " " << t.end_pos.x()     << " " << t.end_pos.y()     << " " << t.end_pos.z()
+            << " " << t.theta           << " " << t.phi             << " " << t.distlenratio
+            << " " << t.start_dqdx      << " " << t.end_dqdx
+            << " " << t.dqdx_diff       << " " << t.dqdx_ratio
+            << " " << t.tot_dqdx        << " " << t.avg_dqdx
+            << " " << t.cosmicscore     << " " << t.coscontscore
+            << " " << t.pidpida         << " " << t.pidchi
+            << " " << t.cftime          << " " << t.cftimewidth
+            << " " << t.cfzcenter       << " " << t.cfzwidth
+            << " " << t.cfycenter       << " " << t.cfywidth
+            << " " << t.cftotalpe       << " " << t.cfdistance
+            << " " << t.MCpdgCode
+            << " " << t.roi[0].start_wire  << " " << t.roi[0].start_time
+            << " " << t.roi[0].end_wire    << " " << t.roi[0].end_time
+            << " " << t.roi[1].start_wire  << " " << t.roi[1].start_time
+            << " " << t.roi[1].end_wire    << " " << t.roi[1].end_time
+            << " " << t.roi[2].start_wire  << " " << t.roi[2].start_time
+            << " " << t.roi[2].end_wire    << " " << t.roi[2].end_time
             << endl;
-            
-            if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
         }
+    }
+    
+    
+    else if (option == "find commoc muon-proton vertices"){
+        // R/S/E
+        // ivtx / itrk_NuSelMuon / itrk_GBDTproton
+        // ROI for muon
+        // ROI for proton
+        // ROI for vertex
+        
+        csvfile
+        << run          << " " << subrun            << " " << event
+        << " " << ivtx  << " " << itrk_NuSelMuon    << " " << itrk_GBDTproton
+        << " " << ROItrk_NuSelMuon[0].start_wire    << " " << ROItrk_NuSelMuon[0].start_time
+        << " " << ROItrk_NuSelMuon[0].end_wire      << " " << ROItrk_NuSelMuon[0].end_time
+        << " " << ROItrk_NuSelMuon[1].start_wire    << " " << ROItrk_NuSelMuon[1].start_time
+        << " " << ROItrk_NuSelMuon[1].end_wire      << " " << ROItrk_NuSelMuon[1].end_time
+        << " " << ROItrk_NuSelMuon[2].start_wire    << " " << ROItrk_NuSelMuon[2].start_time
+        << " " << ROItrk_NuSelMuon[2].end_wire      << " " << ROItrk_NuSelMuon[2].end_time
+        << " " << ROItrk_GBDTproton[0].start_wire   << " " << ROItrk_GBDTproton[0].start_time
+        << " " << ROItrk_GBDTproton[0].end_wire     << " " << ROItrk_GBDTproton[0].end_time
+        << " " << ROItrk_GBDTproton[1].start_wire   << " " << ROItrk_GBDTproton[1].start_time
+        << " " << ROItrk_GBDTproton[1].end_wire     << " " << ROItrk_GBDTproton[1].end_time
+        << " " << ROItrk_GBDTproton[2].start_wire   << " " << ROItrk_GBDTproton[2].start_time
+        << " " << ROItrk_GBDTproton[2].end_wire     << " " << ROItrk_GBDTproton[2].end_time
+        << " " << mu_p_VtxROI[0].start_wire         << " " << mu_p_VtxROI[0].start_time
+        << " " << mu_p_VtxROI[0].end_wire           << " " << mu_p_VtxROI[0].end_time
+        << " " << mu_p_VtxROI[1].start_wire         << " " << mu_p_VtxROI[1].start_time
+        << " " << mu_p_VtxROI[1].end_wire           << " " << mu_p_VtxROI[1].end_time
+        << " " << mu_p_VtxROI[2].start_wire         << " " << mu_p_VtxROI[2].start_time
+        << " " << mu_p_VtxROI[2].end_wire           << " " << mu_p_VtxROI[2].end_time
+        << endl;
+        
+        
+        if(!mutual_vertices.empty()){
+            for (auto m_v:mutual_vertices){
+                csvfile
+                << m_v.run                       << " " << m_v.subrun             << " " << m_v.event
+                << " " << m_v.roi[0].start_wire  << " " << m_v.roi[0].start_time
+                << " " << m_v.roi[0].end_wire    << " " << m_v.roi[0].end_time
+                << " " << m_v.roi[1].start_wire  << " " << m_v.roi[1].start_time
+                << " " << m_v.roi[1].end_wire    << " " << m_v.roi[1].end_time
+                << " " << m_v.roi[2].start_wire  << " " << m_v.roi[2].start_time
+                << " " << m_v.roi[2].end_wire    << " " << m_v.roi[2].end_time
+                << endl;
+                
+                if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
+            }
+        }
+    }
+    else {
+        Printf("nothing to write to csv file...");
     }
 }
 

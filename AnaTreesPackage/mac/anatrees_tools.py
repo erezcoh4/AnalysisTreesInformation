@@ -45,9 +45,135 @@ def schemed_anatrees_file_name( anatrees_list_name , scheming_name ):
     return schemed_anatrees_path + "/" + anatrees_list_name + "_" + scheming_name + ".root"
 
 
+# -------------------------
+def tracks_features_file_name( ListName ):
+    return featuresfiles_path + "/" + "features_" + ListName + ".csv"
+
+# -------------------------
+def tracks_anafile_name( ListName ):
+    return anafiles_path + "/" + "Tracks_" + ListName + ".root"
+
+
 
 
 # methods
+# -------------------------
+def read_files_from_a_list( ListName ):
+    if flags.verbose: print "\nreading list of files..."
+    with open( lists_path + "/" + ListName + ".list") as f:
+        files = f.read().splitlines()
+    if flags.verbose>4: print files
+    return files
+
+
+# -------------------------
+def get_analysistrees_chain(files):
+    chain = ROOT.TChain("analysistree/anatree")
+    for i in range(int(flags.files_frac*len(files))):
+        if flags.verbose>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
+        if float(os.path.getsize(files[i])/1048576) > 0.1 :
+            chain.Add(files[i])
+    if flags.verbose: print "input chain entries from ",int(flags.files_frac*len(files))," files: ",chain.GetEntries()
+    return chain
+
+
+# -------------------------
+def search_rse( RSE , EventsList ):
+    run,subrun,event = RSE[0],RSE[1],RSE[2]
+    for e in EventsList:
+        if e['run'] == run and e['subrun'] == subrun and e['event'] == event:
+            return True , e['ivtx-NuSel'], e['itrk-NuSelMuon'], e['itrk-GBDTproton']
+    return False , -1 , -1 , -1
+
+
+# -------------------------
+def extract_anatrees_tracks_information_from_files_list( DataType , AddEventsList=False , EventsListName="" ):
+    
+    # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT
+    
+    ListName    = DataType + "_AnalysisTrees"
+    MCmode      = True if 'MC' in flags.DataType else False
+
+    FeaturesFileName = tracks_features_file_name( ListName )
+    TracksAnaFileName = tracks_anafile_name( ListName )
+
+    # CONTINUE HERE! ADD EVENTS LIST
+    if AddEventsList:
+    
+        if flags.verbose: print_filename ( EventsListName , "adding list of events:" )
+        import csv
+        with open( EventsListName , 'rb') as csvfile:
+            reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
+            header = next(reader)
+            EventsList = [dict(zip(header, map(int, row))) for row in reader]
+        if flags.verbose>3: print EventsList
+
+
+
+    files       = read_files_from_a_list( ListName )
+    in_chain    = get_analysistrees_chain(files)
+    Nentries    = in_chain.GetEntries()
+    Nreduced    = int(flags.evnts_frac*(Nentries))
+    OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
+    OutTree     = ROOT.TTree("GBDTTree","physical variables per event")
+    TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
+    GENIETree   = ROOT.TTree("GENIETree","genie interactions")
+    calc = cumputeAnaTree( InTree, OutTree, FeaturesFileName, flags.verbose, MCmode, GENIETree )
+
+#    counter = 0
+#    for entry in range(Nreduced):
+#    
+#        calc.get_bdt_tools( entry )
+#    
+#        if calc.Ntracks>0:
+#            counter += calc.Ntracks
+#        
+#            if (entry%flags.print_mod == 0):
+#                calc.PrintData( entry )
+#    
+#            calc.WriteTracks2CSV()
+#
+#        if flags.verbose>3: print "added %d contained tracks (%d total)"%(calc.Ntracks,counter)
+#
+#    if flags.verbose>0: print "read %d events,%d tracks"%Nreduced,OutTree.GetEntries())
+#    TracksTree.Write()
+#    OutTree.Write()
+#    OutFile.Close()
+
+    for entry in range(Nreduced):
+    
+        do_continue = True
+        calc.GetEntry( entry )
+        entry_rse = [calc.run,calc.subrun,calc.event]
+        if flags.verbose>2: print entry_rse
+    
+        if flags.variable=="AddEventsList":
+        
+            do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse )
+            if (do_continue and flags.verbose>1):   print_important("found r-%d/s-%d/e-%d, extracting information....\n"%(calc.run,calc.subrun,calc.event))
+
+    if do_continue:
+        
+        calc.extract_information()
+        
+        if (flags.verbose > 0 and flags.verbose < 7 and entry%flags.print_mod == 0):
+            
+            calc.PrintData( entry )
+        
+        if ( flags.option=="mu-p-vertex" and itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ):
+            
+            if (flags.verbose>1):   print "\n\n\ntrack %d is closer to vertex %d than 5 cm! saving the event...\n\n\n"%( ivtx_nuselection , itrk_GBDTproton )
+            calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton  )
+            calc.FillOutTree()
+            calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+
+
+    print "wrote csv file with %d tracks (%.2f MB):\n"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) + FeaturesFileName
+    print "wrote root file  (%.2f MB):\n"%float(os.path.getsize(AnafileName)/1048576.0) + AnafileName
+
+
+
+
 # -------------------------
 def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_score ):
     import csv, pandas as pd
@@ -76,17 +202,6 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
 
 
 
-# -------------------------
-def get_analysistrees_chain(files):
-    chain = ROOT.TChain("analysistree/anatree")
-    for i in range(int(flags.files_frac*len(files))):
-        if flags.verbose>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
-        if float(os.path.getsize(files[i])/1048576) > 0.1 :
-            chain.Add(files[i])
-    if flags.verbose: print "input chain entries from ",int(flags.files_frac*len(files))," files: ",chain.GetEntries()
-    return chain
-
-
 
 
 
@@ -103,10 +218,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     # output: schemed analysis trees file
     SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     it = ImportantTools()
-    if flags.verbose: print "got input and output file names"
-    with open( AnalysisTreesListName ) as f:
-        files = f.read().splitlines()
-    if flags.verbose>4: print "shceming files: ",files
+    files = read_files_from_a_list( AnalysisTreesListName )
 
     in_chain = get_analysistrees_chain(files)
     OutFile = ROOT.TFile( SchemedResultFileName , "recreate" )

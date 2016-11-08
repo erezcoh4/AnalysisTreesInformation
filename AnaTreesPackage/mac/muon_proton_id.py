@@ -5,7 +5,7 @@ from anatrees_tools import *
     python $AnalysisTreesAna/mac/muon_proton_id.py --DataType=BNB --option=intersect
     options: 
         intersect   {"intersect GBDT protons with Sel2 muons"}
-        scheme      {"scheme analysis trees events"} --DataType=BNB -wuboone -v2 -ff=0.01 -evf=0.1
+        scheme      {"scheme analysis trees events"} --DataType=BNB -wuboone -v2 -ff=0.01
 '''
 
 
@@ -16,11 +16,28 @@ p_score                 = 0.99
 
 
 
-
-# (1) extract all tracks information from analysis trees to classify proton tracks
+# (1) extract all tracks information from BNB-MC and COSMIC-MC analysis trees to train GBDTs
 # -------------------------------------------------------------------
-if flags.option=="extract tracks information from AnalysisTrees" or 'extract' in flags.option:
-    print "extract"
+if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
+    print_important( "extract tracks information from MC AnalysisTrees" )
+    extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" )
+    extract_anatrees_tracks_information_from_files_list( "MC_BNB" )
+
+
+
+# (2) train, build, test the GBDT models
+# -------------------------------------------------------------------
+if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
+    print_important( "extract tracks information from MC AnalysisTrees" )
+    extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" )
+
+
+
+
+# (3) extract all tracks information from analysis trees to classify proton tracks
+# -------------------------------------------------------------------
+if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA' in flags.option:
+    print_important( "extract tracks information from AnalysisTrees" )
     
 
 
