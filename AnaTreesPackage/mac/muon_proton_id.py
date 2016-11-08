@@ -3,8 +3,10 @@ from gbdt_tools import *
 '''
     usage:
     ------
-    python mac/muon_proton_id.py --DataType=BNB --option=merge
-    options: intersect {"intersect GBDT protons with Sel2 muons"}
+    python $AnalysisTreesAna/mac/muon_proton_id.py --DataType=BNB --option=intersect
+    options: 
+        intersect   {"intersect GBDT protons with Sel2 muons"}
+        scheme      {"scheme analysis trees events"} --DataType=BNB -wuboone -v2 -ff=0.01 -evf=0.1
 '''
 
 
@@ -45,6 +47,7 @@ if flags.option=="intersect GBDT protons with Sel2 muons" or 'intersect' in flag
 # -------------------------------------------------------------------
 if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
     
+    scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
 
 
 # (6) loop over the schemed AnalysisTrees file, and for each event check if the selected muon and the classified proton track are close enough
