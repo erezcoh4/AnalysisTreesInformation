@@ -148,11 +148,11 @@ void PandoraNuTrack::CreateROIs(){
         
         int start_wire = (int) ( start_projection2D.w / geomHelper->WireToCm() );
         int start_time = (int) ( start_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
-        
         // 802: shift in time-axis due to the truncation of the waveforms
         // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
         int end_wire = (int) ( end_projection2D.w / geomHelper->WireToCm() );
         int end_time = (int) ( end_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        
         roi[plane] = box( start_wire , start_time , end_wire , end_time );
         
     }
