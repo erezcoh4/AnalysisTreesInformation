@@ -38,8 +38,8 @@ def Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ):
 
 
 # -------------------------
-def schemed_anatrees_file_name( DataType ):
-    return schemed_anatrees_path + "/GOOD" + DataType + "_filesana_" + EventsListName + ".root"
+def schemed_anatrees_file_name( anatrees_list_name , scheming_name ):
+    return schemed_anatrees_path + "/" + anatrees_list_name + "_" + scheming_name + ".root"
 
 
 
@@ -94,9 +94,11 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     and returns a tree containing only entries with a Run/Subrun/Event
     of a given list (RSE map)
     '''
-    AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list" # input analysis trees
-    IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) # input mu-p list
-    SchemedResultFileName   = schemed_anatrees_file_name( flags.DataType )  # output schemed analysis trees file
+    # input: (1) analysis trees, (2) mu-p list
+    AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
+    IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score )
+    # output: schemed analysis trees file
+    SchemedResultFileName   = schemed_anatrees_file_name( AnalysisTreesListName , IntersectionListName )
     it = ImportantTools()
 
     with open( AnalysisTreesListName ) as f:
