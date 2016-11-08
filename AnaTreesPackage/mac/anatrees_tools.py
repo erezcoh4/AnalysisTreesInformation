@@ -98,7 +98,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score )
     # output: schemed analysis trees file
-    SchemedResultFileName   = schemed_anatrees_file_name( AnalysisTreesListName , IntersectionListName )
+    SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     it = ImportantTools()
     if flags.verbose: print "got input and output file names"
     with open( AnalysisTreesListName ) as f:
