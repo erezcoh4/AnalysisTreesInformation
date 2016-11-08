@@ -75,13 +75,13 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
 
 # -------------------------
 def get_analysistrees_chain(files):
-    in_chain = ROOT.TChain("analysistree/anatree")
+    chain = ROOT.TChain("analysistree/anatree")
     for i in range(int(flags.files_frac*len(files))):
         if flags.verbose>1: print "file %d size is %.2f MB"%(i,float(os.path.getsize(files[i])/1048576))
         if float(os.path.getsize(files[i])/1048576) > 0.1 :
-            in_chain.Add(files[i])
-    if flags.verbose: print "input chain entries from ",int(flags.files_frac*len(files))," files: ",in_chain.GetEntries()
-    return in_chain
+            chain.Add(files[i])
+    if flags.verbose: print "input chain entries from ",int(flags.files_frac*len(files))," files: ",chain.GetEntries()
+    return chain
 
 
 
