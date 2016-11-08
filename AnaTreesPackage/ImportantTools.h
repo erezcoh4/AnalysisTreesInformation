@@ -37,10 +37,10 @@ public:
   ~ImportantTools(){}
     
     
-    TTree* SchemeTreeRSEList ( TTree * , TString  );
+    TTree* SchemeTreeRSEList ( TTree * , TString , Int_t );
     
-    TTree* SchemeTreeRSEList ( TChain * chain , TString rse_file_name )
-    {return SchemeTreeRSEList ( (TTree *)chain ,  rse_file_name );};
+    TTree* SchemeTreeRSEList ( TChain * chain , TString rse_file_name , Int_t fdebug )
+    {return SchemeTreeRSEList ( (TTree *)chain ,  rse_file_name , fdebug );};
     
     std::map < int , std::map < int , int > > LoadRSEMap( TString, bool DoCheck = false);
 

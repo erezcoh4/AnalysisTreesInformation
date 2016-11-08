@@ -5,7 +5,7 @@
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName){
+TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName , Int_t debug ){
     
     // This functionallity schemes (big) analysis trees
     // and returns a tree containing only entries with a Run/Subrun/Event
@@ -31,7 +31,7 @@ TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName)
         //Search run
         auto run_iter = RSEMap.find(run);
         if(run_iter == RSEMap.end()) {
-            // std::cout << " run " << run << " not found..." << std::endl;
+            if ( debug > 2 ) std::cout << " run " << run << " not found..." << std::endl;
             continue;
         }
         // Grab run-map's value (i.e. subrun map)
@@ -39,7 +39,7 @@ TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName)
         //Search sub run
         auto subrun_iter = subrun_map.find(subrun);
         if(subrun_iter == subrun_map.end()) {
-            // std::cout << " subrun " << subrun << " not found..." << std::endl;
+            if ( debug > 2 ) std::cout << " subrun " << subrun << " not found..." << std::endl;
             continue;
         }
         // Grab subrun-map's value (i.e. event number)
