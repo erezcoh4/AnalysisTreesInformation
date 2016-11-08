@@ -21,6 +21,7 @@ p_score                 = 0.99
 # (1) extract all tracks information from analysis trees to classify proton tracks
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from AnalysisTrees" or 'extract' in flags.option:
+    print "extract"
     
 
 
@@ -53,7 +54,7 @@ if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
 # (6) loop over the schemed AnalysisTrees file, and for each event check if the selected muon and the classified proton track are close enough
 # -------------------------------------------------------------------
 if flags.option=="loop over muon-proton candidates" or 'loop' in flags.option:
-
+    print "loop"
 
 
 # (7) filter out from art-file intersected events
