@@ -34,7 +34,10 @@ def Sel2muons_list_name():
 # -------------------------
 def Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ):
     classification_name = TracksListName + "_" + GBDTmodelName
-    return "Sel2muons_"+classification_name+"_pscore_%.2f_intersection.csv"%p_score
+    return "Sel2muons_"+classification_name+"_pscore_%.2f_intersection"%p_score
+
+def Sel2muons_intersection_list_csv_name( GBDTmodelName, TracksListName, p_score ):
+    return Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + ".csv"
 
 
 # -------------------------
@@ -58,7 +61,7 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
     df_Sel2mu = pd.read_csv( Sel2muListName , delimiter=' ' )
     df_intersection = pd.merge(df_GBDTp, df_Sel2mu, how='inner', on=['run', 'subrun','event'])
     
-    IntersectionListName = mu_p_intersection_path + "/" + Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName ,p_score )
+    IntersectionListName = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName ,p_score )
     df_intersection = df_intersection.rename(columns={ 'trkindex[ivtx][itrk]':'itrk-NuSelMuon',
                                              'ivtx':'ivtx-NuSel', 'trackid':'itrk-GBDTproton'} )
     df_intersection[['run','subrun','event',
@@ -96,7 +99,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     '''
     # input: (1) analysis trees, (2) mu-p list
     AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
-    IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score )
+    IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName , p_score )
     # output: schemed analysis trees file
     SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     it = ImportantTools()
@@ -109,10 +112,11 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     OutFile = ROOT.TFile( SchemedResultFileName , "recreate" )
     OutTree = it.SchemeTreeRSEList( in_chain , IntersectionListName , flags.verbose )
 
-    OutTree.Write()
-    OutFile.Close()
     if flags.verbose:
         print_filename(SchemedResultFileName , "wrote schemed file (%d events, %.2f MB):"%(OutTree.GetEntries(),float(os.path.getsize(SchemedResultFileName)/1048576.0)))
+    
+    OutTree.Write()
+    OutFile.Close()
 
 
 
