@@ -13,7 +13,8 @@ from ROOT import ImportantTools
 
 neutrinoSel2_path       = lists_path + "/NeutrinoSelection2"
 mu_p_intersection_path  = lists_path + "/muon_proton_intersection"
-schemed_anatrees_path   = main_path  + "/Schemed_AnaTrees" # ToDo: Generate this directory!
+schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
+
 
 
 
@@ -95,7 +96,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     '''
     AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list" # input analysis trees
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) # input mu-p list
-    SchemedResultFileName   = schemed_anatrees_file_name( flags.DataType )  # output schemed analysis trees file 
+    SchemedResultFileName   = schemed_anatrees_file_name( flags.DataType )  # output schemed analysis trees file
     it = ImportantTools()
 
     with open( AnalysisTreesListName ) as f:
