@@ -227,7 +227,7 @@ def extract_anatrees_tracks_information( in_chain , Option, AddEventsList=False 
             
             if Option=="find common muon-proton vertices":
                 
-                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance )
+                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
             
             if do_continue:
                 
