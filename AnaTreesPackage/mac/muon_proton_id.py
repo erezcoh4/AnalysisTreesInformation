@@ -2,10 +2,11 @@ from anatrees_tools import *
 '''
     usage:
     ------
-    python $AnalysisTreesAna/mac/muon_proton_id.py --DataType=BNB --option=intersect
+    python $AnalysisTreesAna/mac/muon_proton_id.py --DataType=BNB --option=<intersect>
     options: 
         intersect   {"intersect GBDT protons with Sel2 muons"}
-        scheme      {"scheme analysis trees events"} --DataType=BNB -wuboone -v2 -ff=0.01
+        scheme      {"scheme analysis trees events"} --DataType=BNB -ff=0.01
+        find_mu_p   {"find common muon-proton vertices"} --DataType=BNB
 '''
 
 
@@ -68,8 +69,8 @@ if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
 
 # (8) loop over the schemed AnalysisTrees file, and for each event check if the selected muon and the classified proton track are close enough
 # -------------------------------------------------------------------
-if flags.option=="loop over muon-proton candidates" or 'loop_mu_p' in flags.option:
-    print_important( "loop over muon-proton candidates, check closeness" )
+if flags.option=="find common muon-proton vertices" or 'loop_mu_p' in flags.option:
+    print_important( "find common muon-proton vertices" )
     SchemedResultFileName = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     IntersectionListName = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName , TracksListName , p_score )
     extract_anatrees_tracks_information_from_a_files( SchemedResultFileName , "find common muon-proton vertices" , AddEventsList=True , EventsListName=IntersectionListName)
