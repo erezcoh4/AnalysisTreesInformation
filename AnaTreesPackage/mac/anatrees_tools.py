@@ -6,6 +6,9 @@ from gbdt_tools import *
 from ROOT import ImportantTools , cumputeAnaTree
 
 
+# globals
+# -------------------------
+min_trk_vtx_distance = 10 # [cm], this distance needs to be studied wisely
 
 
 # paths
@@ -36,8 +39,13 @@ def Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ):
     classification_name = TracksListName + "_" + GBDTmodelName
     return "Sel2muons_"+classification_name+"_pscore_%.2f_intersection"%p_score
 
+# -------------------------
 def Sel2muons_intersection_list_csv_name( GBDTmodelName, TracksListName, p_score ):
     return Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + ".csv"
+
+# -------------------------
+def good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score ):
+    return Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + "_mindistance_%dcm.csv"%min_trk_vtx_distance
 
 
 # -------------------------
@@ -52,6 +60,7 @@ def tracks_features_file_name( ListName ):
 # -------------------------
 def tracks_anafile_name( ListName ):
     return anafiles_path + "/" + "Tracks_" + ListName + ".root"
+
 
 
 
@@ -169,18 +178,23 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
 
 
 # -------------------------
-def extract_anatrees_tracks_information( in_chain, Option, MCmode=False, AddEventsList=False, EventsListName="", AnaTreesListName="" ):
+def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
+                                        AddEventsList=False,
+                                        EventsListName="", AnaTreesListName="", mupRSEFileName="" ):
 
-    FeaturesFileName = tracks_features_file_name( AnaTreesListName )
-    TracksAnaFileName = tracks_anafile_name( AnaTreesListName )
 
-    min_trk_vtx_distance = 10 # [cm], this distance needs to be studied wisely
     if Option != 'extract all tracks information' and Option != 'find common muon-proton vertices':
         print "options:"
         print "\t extract all tracks information"
         print "\t find common muon-proton vertices"
         exit(0)
 
+    FeaturesFileName    = tracks_features_file_name( AnaTreesListName )
+    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName )
+
+    if Option=="find common muon-proton vertices":
+        output_rse_file = open( mupRSEFileName )
+        output_rse_file.write( "run subrun event\n" )
 
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
@@ -201,7 +215,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False, AddEven
         if flags.verbose>3: print rse_events_list
 
     counter = 0
-
+    
     for entry in range(Nreduced):
         
         do_continue = True
@@ -236,10 +250,14 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False, AddEven
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 calc.FillOutTree()
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+                output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
 
     print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
     print_filename( TracksAnaFileName , "wrote root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
 
+    if Option=="find common muon-proton vertices":
+        print_filename( mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
+        output_rse_file.close()
 
 
 
