@@ -198,7 +198,6 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
 
     if Option=="find common muon-proton vertices":
         output_rse_file = open( mupRSEFileName , "w" )
-        output_rse_file.write( "run subrun event\n" )
 
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
