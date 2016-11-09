@@ -21,8 +21,8 @@ p_score                 = 0.99
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
     print_important( "extract tracks information from MC AnalysisTrees" )
-    extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" )
-    extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" )
+    extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , MCmode = True )
+    extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , MCmode = True )
 
 
 
@@ -76,11 +76,12 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
     mupRSEFileName          = good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score  )
     extract_anatrees_tracks_information_from_a_file( flags.DataType ,
                                                     SchemedResultFileName ,
-                                                    "find common muon-proton vertices" ,
-                                                    TreeName="anatree" ,
-                                                    AddEventsList=True ,
-                                                    EventsListName=IntersectionListName ,
-                                                    mupRSEFileName=mupRSEFileName )
+                                                    Option = "find common muon-proton vertices" ,
+                                                    MCmode = False,
+                                                    TreeName = "anatree",
+                                                    AddEventsList = True,
+                                                    EventsListName = IntersectionListName,
+                                                    mupRSEFileName = mupRSEFileName )
 
 
 

@@ -155,11 +155,11 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
 
 
 # -------------------------
-def extract_anatrees_tracks_information_from_files_list( DataType, Option, AddEventsList=False , EventsListName="" ):
+def extract_anatrees_tracks_information_from_files_list( DataType, Option,
+                                                        MCmode=False, AddEventsList=False , EventsListName="" ):
     # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT
     
     AnaTreesListName = DataType + "_AnalysisTrees"
-    MCmode      = True if 'MC' in flags.DataType else False
     files       = read_files_from_a_list( AnaTreesListName )
     in_chain    = get_analysistrees_chain(files)
     
@@ -168,13 +168,13 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option, AddEv
 
 # -------------------------
 def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Option,
+                                                    MCmode=False,
                                                     TreeName="analysistree/anatree",
                                                     AddEventsList=False ,
                                                     EventsListName="",
                                                     mupRSEFileName="" ):
     
     AnaTreesListName = DataType + "_AnalysisTrees"
-    MCmode = True if 'MC' in InputFileName else False
     in_chain = ROOT.TChain( TreeName )
     in_chain.Add( InputFileName )
     extract_anatrees_tracks_information( in_chain, Option, MCmode, AddEventsList, EventsListName , AnaTreesListName , mupRSEFileName )
