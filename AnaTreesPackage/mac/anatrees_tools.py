@@ -3,7 +3,7 @@ sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/GBDTprotons/GBDTpro
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 from uboone_tools import *
 from gbdt_tools import *
-from ROOT import ImportantTools
+from ROOT import ImportantTools , cumputeAnaTree
 
 
 
