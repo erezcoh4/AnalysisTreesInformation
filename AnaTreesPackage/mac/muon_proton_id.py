@@ -73,7 +73,7 @@ if flags.option=="find common muon-proton vertices" or 'loop_mu_p' in flags.opti
     print_important( "find common muon-proton vertices" )
     SchemedResultFileName = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     IntersectionListName = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName , TracksListName , p_score )
-    extract_anatrees_tracks_information_from_a_files( SchemedResultFileName , "find common muon-proton vertices" , AddEventsList=True , EventsListName=IntersectionListName)
+    extract_anatrees_tracks_information_from_a_file( SchemedResultFileName , "find common muon-proton vertices" , AddEventsList=True , EventsListName=IntersectionListName)
 
 
 

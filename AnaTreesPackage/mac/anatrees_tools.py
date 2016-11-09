@@ -163,7 +163,7 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option, AddEv
 
 
 # -------------------------
-def extract_anatrees_tracks_information_from_a_files( InputFileName, Option, AddEventsList=False , EventsListName="" ):
+def extract_anatrees_tracks_information_from_a_file( InputFileName, Option, AddEventsList=False , EventsListName="" ):
     
     MCmode = True if 'MC' in InputFileName else False
     in_chain = ROOT.TChain("analysistree/anatree")
@@ -205,7 +205,8 @@ def extract_anatrees_tracks_information( in_chain , Option, AddEventsList=False 
         
         do_continue = True
         calc.GetEntry( entry )
-        entry_rse = [calc.run,calc.subrun,calc.event]; if flags.verbose>2: print entry_rse
+        entry_rse = [calc.run,calc.subrun,calc.event]
+        if flags.verbose>2: print entry_rse
         
         if AddEventsList:
             
