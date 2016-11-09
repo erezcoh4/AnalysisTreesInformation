@@ -105,7 +105,7 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
                                              'ivtx':'ivtx-NuSel', 'trackid':'itrk-GBDTproton'} )
     df_intersection[['run','subrun','event',
                     'ivtx-NuSel','itrk-NuSelMuon',
-                    'itrk-GBDTproton']].to_csv(IntersectionListName, sep=' ', header=False, index=False )
+                    'itrk-GBDTproton']].to_csv(IntersectionListName, sep=' ', header=True, index=False )
     print_filename( IntersectionListName , "wrote Sel2/GBDTprotons intersection list name:")
     print_important( "scp %s $uboone:~/"%IntersectionListName )
     print_line()
@@ -132,7 +132,6 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     it = ImportantTools()
     files = read_files_from_a_list( AnalysisTreesListName )
-
     in_chain = get_analysistrees_chain(files)
     OutFile = ROOT.TFile( SchemedResultFileName , "recreate" )
     OutTree = it.SchemeTreeRSEList( in_chain , IntersectionListName , flags.verbose )
@@ -212,7 +211,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False, AddEven
         if AddEventsList:
             
             do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse , rse_events_list )
-            if (do_continue and flags.verbose>1): print_important("found r-%d/s-%d/e-%d, extracting information....\n"%entry_rse)
+            if (do_continue and flags.verbose>1): print_important("found r-%d/s-%d/e-%d, extracting information....\n"%(calc.run,calc.subrun,calc.event))
     
         if do_continue:
             
