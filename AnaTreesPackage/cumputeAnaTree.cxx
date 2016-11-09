@@ -17,10 +17,11 @@ bool cumputeAnaTree::extract_information (){ // main event loop....
     if (MCmode) GetTruthInformation();
 
     // if we want to collect vertices, these should be uncommented out
-    //    CollectTrackVertices();
-    //    FindMutualVertices();
-    //    FindMuonScattering();
-    
+    else if (option == "find common muon-proton vertices"){
+        CollectTrackVertices();
+        FindMutualVertices();
+        FindMuonScattering();
+    }
     return true;
 }
 
