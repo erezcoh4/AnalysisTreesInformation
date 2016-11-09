@@ -200,6 +200,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False, AddEven
             rse_events_list = [dict(zip(header, map(int, row))) for row in reader]
         if flags.verbose>3: print rse_events_list
 
+    counter = 0
 
     for entry in range(Nreduced):
         
@@ -231,6 +232,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False, AddEven
             
             if do_continue:
                 
+                counter = counter+1
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 calc.FillOutTree()
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
