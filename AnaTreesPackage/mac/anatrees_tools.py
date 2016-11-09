@@ -189,7 +189,7 @@ def extract_anatrees_tracks_information( in_chain, Option, AddEventsList=False, 
     TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
     GENIETree   = ROOT.TTree("GENIETree","genie interactions")
     
-    calc = cumputeAnaTree( InTree, OutTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
+    calc = cumputeAnaTree( in_chain, OutTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
     
     if AddEventsList:
         import csv
