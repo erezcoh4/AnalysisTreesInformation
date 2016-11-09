@@ -238,7 +238,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False, AddEven
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
 
     print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB):\n"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
-    print_filename( AnafileName , "wrote root file  (%.2f MB):\n"%float(os.path.getsize(AnafileName)/1048576.0) )
+    print_filename( TracksAnaFileName , "wrote root file  (%.2f MB):\n"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
 
 
 
