@@ -203,11 +203,10 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
     Nreduced    = int(flags.evnts_frac*(Nentries))
     if flags.verbose: print_important( "starting run on %d events"%Nreduced )
     OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
-    OutTree     = ROOT.TTree("GBDTTree","physical variables per event")
     TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
     GENIETree   = ROOT.TTree("GENIETree","genie interactions")
     
-    calc = cumputeAnaTree( in_chain, OutTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
+    calc = cumputeAnaTree( in_chain, TracksTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
     
     if AddEventsList:
         import csv
@@ -253,7 +252,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
                 
                 counter = counter+1
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-                calc.FillOutTree()
+                calc.FillTracksTree()
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 
                 if Option=="find common muon-proton vertices":
@@ -269,7 +268,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
 
 
     if MCmode: GENIETree.Write()
-    OutTree.Write()
+    TracksTree.Write()
     OutFile.Close()
 
 
