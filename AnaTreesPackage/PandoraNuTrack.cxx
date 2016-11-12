@@ -245,7 +245,12 @@ void PandoraNuTrack::Print(){
     PrintPhys(tot_dqdx,"ADC/cm");
     SHOW(MCpdgCode);
     SHOW3( cosmicscore, coscontscore , pidpida )
+    
     for (int plane = 0 ; plane < 3; plane++) {
+        Printf("Calorimetry, plane %d:",plane);
+        for (size_t trkhit=0; trkhit < track_length[plane].size(); trkhit++) {
+            SHOW2( track_length[plane].at(trkhit) ,  dEdx[plane].at(trkhit) );
+        }
         PrintPhys( CalorimetryPDG[plane] , Form(" for plane %d",plane) );
         PrintBox(roi[plane]);
     }
