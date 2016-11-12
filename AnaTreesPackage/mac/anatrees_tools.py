@@ -242,6 +242,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
             if Option=="extract all tracks information":
                 
                 do_continue = True
+                ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = 0 , 0 , 0
             
             if Option=="find common muon-proton vertices":
                 
