@@ -252,7 +252,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
                 
                 counter = counter+1
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-                calc.FillTracksTree()
+                calc.FillOutTree()
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 
                 if Option=="find common muon-proton vertices":
