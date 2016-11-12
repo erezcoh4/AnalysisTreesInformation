@@ -4,6 +4,8 @@ from anatrees_tools import *
     ------
     python $AnalysisTreesAna/mac/muon_proton_id.py --DataType=BNB --option=<intersect>
     options: 
+        extractMC   {"extract tracks information from MC AnalysisTrees"}
+        extractDATA {"extract tracks information from AnalysisTrees"} --DataType=BNB -ff=0.01 -evf=0.01
         intersect   {"intersect GBDT protons with Sel2 muons"}
         scheme      {"scheme analysis trees events"} --DataType=BNB -ff=0.01
         find_mu_p   {"find common muon-proton vertices"} --DataType=BNB
