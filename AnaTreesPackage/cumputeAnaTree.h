@@ -92,7 +92,8 @@ public:
     void     FindMuonScattering ();
     void             CreateROIs ( Int_t, Int_t, Int_t );
     void              Write2CSV ( Int_t, Int_t, Int_t  );
-    
+    void    GetEnergyDeposition ( int j );
+
     // helpers
     bool        VertexContained ( TVector3 );
     bool         TrackContained ( TVector3 , TVector3 );
@@ -157,14 +158,19 @@ public:
     Float_t     trklen_pandoraNu[MAX_tracks]        , trkstartx_pandoraNu[MAX_tracks]       , trkstarty_pandoraNu[MAX_tracks];
     Float_t     trkstartz_pandoraNu[MAX_tracks]     , trkendx_pandoraNu[MAX_tracks]         , trkendy_pandoraNu[MAX_tracks];
     Float_t     trkendz_pandoraNu[MAX_tracks]       , trktheta_pandoraNu[MAX_tracks]        , trkphi_pandoraNu[MAX_tracks];
-    Float_t     trkdqdx_pandoraNu[MAX_tracks][3][2000];
-    Float_t     trkresrg_pandoraNu[MAX_tracks][3][2000];
+    
+    // x/y/z positions
+    Float_t     trkxyz_pandoraNu[MAX_tracks][3][2000][3];
+    // calorimetery
+    Float_t     trkdqdx_pandoraNu[MAX_tracks][3][2000]  ,   trkdedx_pandoraNu[MAX_tracks][3][2000] , trkresrg_pandoraNu[MAX_tracks][3][2000]; // (dE/dx in MeV/cm)
+    
+    // tagging
     Float_t     trkcosmicscore_tagger_pandoraNu[MAX_tracks][10];
     Float_t     trkcosmicscore_containmenttagger_pandoraNu[MAX_tracks][10];
     Float_t     trkpidchi_pandoraNu[MAX_tracks][3]  , trkpidpida_pandoraNu[MAX_tracks][3]       , flash_time[MAX_hits]  ;
     
     Float_t     flash_timewidth[MAX_hits] , flash_pe[MAX_hits];
-    Float_t     flash_ycenter[MAX_hits]   , flash_ywidth[MAX_hits]    , flash_zcenter[MAX_hits]   , flash_zwidth[MAX_hits];
+    Float_t     flash_ycenter[MAX_hits]   , flash_ywidth[MAX_hits]    , flash_zcenter[MAX_hits] , flash_zwidth[MAX_hits];
     
     // vertex information
     Short_t     nvtx_pandoraNu;
@@ -190,10 +196,16 @@ public:
     Float_t     trklen_pandoraCosmic[MAX_cosmic_tracks]                 , trkstartx_pandoraCosmic[MAX_cosmic_tracks]                , trkstarty_pandoraCosmic[MAX_cosmic_tracks];
     Float_t     trkstartz_pandoraCosmic[MAX_cosmic_tracks]              , trkendx_pandoraCosmic[MAX_cosmic_tracks]                  , trkendy_pandoraCosmic[MAX_cosmic_tracks];
     Float_t     trkendz_pandoraCosmic[MAX_cosmic_tracks]                , trktheta_pandoraCosmic[MAX_cosmic_tracks]                 , trkphi_pandoraCosmic[MAX_cosmic_tracks];
+    
+    // calorimetry
     Float_t     trkdqdx_pandoraCosmic[MAX_cosmic_tracks][3][2000]   , trkresrg_pandoraCosmic[MAX_cosmic_tracks][3][2000]    ;
+    Float_t     trkdedx_pandoraCosmic[MAX_cosmic_tracks][3][2000]    ;
+    
+    // tagging
     Float_t     trkcosmicscore_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
     Float_t     trkcosmicscore_containmenttagger_pandoraCosmic[MAX_cosmic_tracks][10];
     Float_t     trkpidchi_pandoraCosmic[MAX_cosmic_tracks][3]           , trkpidpida_pandoraCosmic[MAX_cosmic_tracks][3]  ;
+    
     
     // vertex information
     
@@ -243,6 +255,12 @@ public:
     
     
     box ROItrk_NuSelMuon[3] , ROItrk_GBDTproton[3] , mu_p_VtxROI[3];
+    
+    // energy deposition
+    std::vector <Float_t> track_length[3], dEdx[3];
+    std::vector <TVector3> TrkPos[3];
+    Float_t Nhits[3];
+
     
     // GeoAlgo
     geoalgo::GeoAlgo geo_algo;

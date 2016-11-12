@@ -65,7 +65,6 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("trktheta_pandoraNu"                             , &trktheta_pandoraNu);
     InTree -> SetBranchAddress("trkphi_pandoraNu"                               , &trkphi_pandoraNu);
     InTree -> SetBranchAddress("ntrkhits_pandoraNu"                             , &ntrkhits_pandoraNu);
-    InTree -> SetBranchAddress("trkdqdx_pandoraNu"                              , &trkdqdx_pandoraNu);
     InTree -> SetBranchAddress("trkresrg_pandoraNu"                             , &trkresrg_pandoraNu);
     InTree -> SetBranchAddress("trkncosmictags_tagger_pandoraNu"                , &trkncosmictags_tagger_pandoraNu);
     InTree -> SetBranchAddress("trkcosmicscore_tagger_pandoraNu"                , &trkcosmicscore_tagger_pandoraNu);
@@ -77,6 +76,11 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("trkpidbestplane_pandoraNu"                      , &trkpidbestplane_pandoraNu);
     InTree -> SetBranchAddress("trkpidpdg_pandoraNu"                            , &trkpidpdg_pandoraNu);
 
+    // calorimetery
+    InTree -> SetBranchAddress("trkxyz_pandoraNu"                               , &trkxyz_pandoraNu);
+    InTree -> SetBranchAddress("trkdqdx_pandoraNu"                              , &trkdqdx_pandoraNu);
+    InTree -> SetBranchAddress("trkdedx_pandoraNu"                              , &trkdedx_pandoraNu);
+    
     
     // optical info
     InTree -> SetBranchAddress("no_hits"                                        , &no_hits);
@@ -429,6 +433,9 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         if(debug>3) Printf("after for(Int_t fr=0; fr<3;fr++) ...");
         c_track.Set_dqdx( startdqdx , enddqdx , totaldqdx , nhits );
         if(debug>3) Printf("Set dq/dx ...");
+ 
+        GetEnergyDeposition( j );
+        
         c_track.CreateROIs();
         if(debug>3) Printf("Created ROIs...");
         c_track.Calorimetry();
@@ -468,6 +475,36 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",tracks.size());
     }
 }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::GetEnergyDeposition( int j ){
+    if(debug>3) Printf("starting GetEnergyDeposition...");
+    
+    for(Int_t plane=0; plane<3;plane++) {
+        
+        if (!track_length[plane].empty())   track_length[plane].clear();
+        if (!dEdx[plane].empty())           dEdx[plane].clear();
+        if (!TrkPos[plane].empty())         TrkPos[plane].clear();
+        
+        Nhits[plane] = ntrkhits_pandoraNu[j][plane];
+        if( Nhits[plane] ) {
+
+            Int_t trkhit = 0;
+            TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
+
+            for(Int_t trkhit=1; trkhit < Nhits[plane] ; trkhit++) {
+                TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
+                dEdx[plane].push_back( trkdedx_pandoraNu[j][plane][trkhit] ); // in [MeV/cm]
+                track_length[plane].push_back( (TrkPos[plane].at(trkhit) - TrkPos[plane].at(trkhit-1)).Mag() );
+            }
+        }
+    }
+    c_track.Set_dEdx( track_length , dEdx );
+    if(debug>3) Printf("got dE/dx ...");
+
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetPandoraCosmicTracks(){

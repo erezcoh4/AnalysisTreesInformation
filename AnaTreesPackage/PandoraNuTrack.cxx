@@ -95,6 +95,15 @@ void PandoraNuTrack::Set_dqdx (Float_t fstart_dqdx, Float_t fend_dqdx, Float_t f
 
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PandoraNuTrack::Set_dEdx (std::vector <Float_t> * ftrack_length, std::vector <Float_t> * fdEdx ){
+    for (int plane = 0; plane < 3; plane++) {
+        track_length[plane] = ftrack_length[plane];
+        dEdx[plane] = fdEdx[plane];
+    }
+}
+
+
 
 
 
