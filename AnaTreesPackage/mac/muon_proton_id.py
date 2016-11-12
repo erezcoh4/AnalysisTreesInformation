@@ -28,7 +28,7 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
 
 # (2) train, build, test the GBDT models
 # -------------------------------------------------------------------
-
+# use GBDTprotons/GBDTprotonsPackage
 
 
 # (3) extract all tracks information from analysis trees to classify proton tracks
@@ -41,12 +41,15 @@ if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA
 
 # (4) Classify proton tracks
 # -------------------------------------------------------------------
+# use GBDTprotons/GBDTprotonsPackage
 
 
 
 
 # (5) Select events with a muon from neutrino interaction using Sel2
 # -------------------------------------------------------------------
+# use neutrinoEventSelection
+# [https://github.com/erezcoh4/neutrinoEventsSelection]
 
 
 
@@ -87,10 +90,7 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
 
 # (9) filter out from art-file intersected events
 # -------------------------------------------------------------------
-#   (A) scp <intersecte_list.csv> $uboone
-#
-#   (B) lar -c $my_fcl_files/my_argofilter.fcl -S <files-list>
-#
+#   lar -c $my_fcl_files/my_argofilter.fcl -S <files-list>
 #   BNB art-files list:
 #   /uboone/app/users/ecohen/AnalysisTreesAna/lists/ArtFilesLists/prod_bnb_reco_neutrino2016_beamfilter_goodruns_v5.lis
 
