@@ -254,7 +254,10 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 calc.FillOutTree()
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-                output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
+                
+                if Option=="find common muon-proton vertices":
+                    
+                    output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
 
     print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
     print_filename( TracksAnaFileName , "wrote root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )

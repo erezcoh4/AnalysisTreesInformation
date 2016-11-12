@@ -496,11 +496,12 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
             for(Int_t trkhit=1; trkhit < Nhits[plane] ; trkhit++) {
                 TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
                 dEdx[plane].push_back( trkdedx_pandoraNu[j][plane][trkhit] ); // in [MeV/cm]
-                track_length[plane].push_back( (TrkPos[plane].at(trkhit) - TrkPos[plane].at(trkhit-1)).Mag() );
+                track_dx[plane].push_back( (TrkPos[plane].at(trkhit) - TrkPos[plane].at(trkhit-1)).Mag() );
+                track_length[plane].push_back( track_length[plane].back() + track_dx[plane].back()  );
             }
         }
     }
-    c_track.Set_dEdx( track_length , dEdx );
+    c_track.Set_dEdx( track_dx , track_length , dEdx );
     if(debug>3) Printf("got dE/dx ...");
 
 }
