@@ -492,6 +492,9 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
 
             Int_t trkhit = 0;
             TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
+            dEdx[plane].push_back( 0 ); // in [MeV/cm]
+            track_dx[plane].push_back( 0 ); // in [cm]
+            track_length[plane].push_back( 0 ); // in [cm]
 
             for(Int_t trkhit=1; trkhit < Nhits[plane] ; trkhit++) {
                 TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
