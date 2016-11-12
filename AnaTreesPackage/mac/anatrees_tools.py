@@ -268,6 +268,9 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
         output_rse_file.close()
 
 
+    if MCmode: GENIETree.Write()
+    OutTree.Write()
+    OutFile.Close()
 
 
 
