@@ -103,8 +103,21 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
 
 
 
-# (11) perform analysis
+# (11) analyze
 # -------------------------------------------------------------------
+if flags.option=="analyze tracks file" or 'analyze' in flags.option:
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

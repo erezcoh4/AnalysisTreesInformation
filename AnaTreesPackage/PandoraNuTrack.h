@@ -25,7 +25,6 @@
 using namespace std;
 
 #define PrintBox(box) cout << "\033[34m" << #box << ": (" << box.start_wire << "," << box.start_time << ") => (" << box.end_wire << "," << box.end_time << ")" << "\033[0m" << endl;
-#define TracsMinDistance 10 // [cm]
 
 struct box {
     
@@ -119,8 +118,9 @@ public:
     Float_t       GetLength (){return length;};
     Float_t        GetTheta (){return theta;};
     Float_t          GetPhi (){return phi;};
+    std::vector<Float_t> GetTrackLengthVector (int plane) {return track_length[plane];};
+    std::vector<Float_t> GetTrack_dEdxVector  (int plane) {return dEdx[plane];};
     
-        
         
         
 

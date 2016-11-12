@@ -38,6 +38,7 @@
 namespace std {} using namespace std;
 
 // Header files passed as explicit arguments
+#include "AnalyzeTracksFile.h"
 #include "GENIEinteraction.h"
 #include "ImportantTools.h"
 #include "PandoraNuTrack.h"
@@ -63,7 +64,7 @@ namespace ROOT {
       ::box *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::box));
       static ::ROOT::TGenericClassInfo 
-         instance("box", "PandoraNuTrack.h", 30,
+         instance("box", "PandoraNuTrack.h", 29,
                   typeid(::box), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &box_Dictionary, isa_proxy, 4,
                   sizeof(::box) );
@@ -108,7 +109,7 @@ namespace ROOT {
       ::PandoraNuTrack *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::PandoraNuTrack));
       static ::ROOT::TGenericClassInfo 
-         instance("PandoraNuTrack", "PandoraNuTrack.h", 67,
+         instance("PandoraNuTrack", "PandoraNuTrack.h", 66,
                   typeid(::PandoraNuTrack), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &PandoraNuTrack_Dictionary, isa_proxy, 4,
                   sizeof(::PandoraNuTrack) );
@@ -409,6 +410,47 @@ namespace ROOT {
 } // end of namespace ROOT
 
 namespace ROOT {
+   static TClass *AnalyzeTracksFile_Dictionary();
+   static void AnalyzeTracksFile_TClassManip(TClass*);
+   static void delete_AnalyzeTracksFile(void *p);
+   static void deleteArray_AnalyzeTracksFile(void *p);
+   static void destruct_AnalyzeTracksFile(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::AnalyzeTracksFile*)
+   {
+      ::AnalyzeTracksFile *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::AnalyzeTracksFile));
+      static ::ROOT::TGenericClassInfo 
+         instance("AnalyzeTracksFile", "AnalyzeTracksFile.h", 26,
+                  typeid(::AnalyzeTracksFile), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &AnalyzeTracksFile_Dictionary, isa_proxy, 4,
+                  sizeof(::AnalyzeTracksFile) );
+      instance.SetDelete(&delete_AnalyzeTracksFile);
+      instance.SetDeleteArray(&deleteArray_AnalyzeTracksFile);
+      instance.SetDestructor(&destruct_AnalyzeTracksFile);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::AnalyzeTracksFile*)
+   {
+      return GenerateInitInstanceLocal((::AnalyzeTracksFile*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::AnalyzeTracksFile*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *AnalyzeTracksFile_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const ::AnalyzeTracksFile*)0x0)->GetClass();
+      AnalyzeTracksFile_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void AnalyzeTracksFile_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
    // Wrappers around operator new
    static void *new_box(void *p) {
       return  p ? new(p) ::box : new ::box;
@@ -575,6 +617,20 @@ namespace ROOT {
       ((current_t*)p)->~current_t();
    }
 } // end of namespace ROOT for class ::ImportantTools
+
+namespace ROOT {
+   // Wrapper around operator delete
+   static void delete_AnalyzeTracksFile(void *p) {
+      delete ((::AnalyzeTracksFile*)p);
+   }
+   static void deleteArray_AnalyzeTracksFile(void *p) {
+      delete [] ((::AnalyzeTracksFile*)p);
+   }
+   static void destruct_AnalyzeTracksFile(void *p) {
+      typedef ::AnalyzeTracksFile current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::AnalyzeTracksFile
 
 namespace ROOT {
    static TClass *vectorlEtrack_vertexgR_Dictionary();
@@ -1209,6 +1265,7 @@ namespace ROOT {
 namespace {
   void TriggerDictionaryInitialization_libAnalysisTreesInformation_AnaTreesPackage_Impl() {
     static const char* headers[] = {
+"AnalyzeTracksFile.h",
 "GENIEinteraction.h",
 "ImportantTools.h",
 "PandoraNuTrack.h",
@@ -1233,14 +1290,15 @@ namespace {
 #pragma clang diagnostic ignored "-Wignored-attributes"
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 extern int __Cling_Autoloading_Map;
-struct __attribute__((annotate("$clingAutoload$PandoraNuTrack.h")))  box;
-class __attribute__((annotate("$clingAutoload$PandoraNuTrack.h")))  PandoraNuTrack;
+struct __attribute__((annotate("$clingAutoload$AnalyzeTracksFile.h")))  box;
+class __attribute__((annotate("$clingAutoload$AnalyzeTracksFile.h")))  PandoraNuTrack;
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  cumputeAnaTree;
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  nuInteraction;
 class __attribute__((annotate("$clingAutoload$GENIEinteraction.h")))  GENIEinteraction;
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  track_vertex;
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  mutual_vertex;
 class __attribute__((annotate("$clingAutoload$ImportantTools.h")))  ImportantTools;
+class __attribute__((annotate("$clingAutoload$AnalyzeTracksFile.h")))  AnalyzeTracksFile;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
 #line 1 "libAnalysisTreesInformation_AnaTreesPackage dictionary payload"
@@ -1250,6 +1308,7 @@ class __attribute__((annotate("$clingAutoload$ImportantTools.h")))  ImportantToo
 #endif
 
 #define _BACKWARD_BACKWARD_WARNING_H
+#include "AnalyzeTracksFile.h"
 #include "GENIEinteraction.h"
 #include "ImportantTools.h"
 #include "PandoraNuTrack.h"
@@ -1261,6 +1320,7 @@ class __attribute__((annotate("$clingAutoload$ImportantTools.h")))  ImportantToo
 #undef  _BACKWARD_BACKWARD_WARNING_H
 )DICTPAYLOAD";
     static const char* classesHeaders[]={
+"AnalyzeTracksFile", payloadCode, "@",
 "GENIEinteraction", payloadCode, "@",
 "ImportantTools", payloadCode, "@",
 "PandoraNuTrack", payloadCode, "@",

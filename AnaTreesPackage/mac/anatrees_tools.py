@@ -3,7 +3,14 @@ sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/GBDTprotons/GBDTpro
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 from uboone_tools import *
 from gbdt_tools import *
-from ROOT import ImportantTools , cumputeAnaTree
+from larlite import *
+from ROOT import PandoraNuTrack
+print 'imported  pandoraNuTrack...'
+from ROOT import cumputeAnaTree
+print 'imported   cumputeAnaTree...'
+from ROOT import ImportantTools
+print 'imported   ImportantTools...'
+from ROOT import AnalyzeTracksFile
 
 
 # globals
