@@ -201,6 +201,7 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
 
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
+    if flags.verbose: print_important( "starting run on %d events"%Nreduced )
     OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
     OutTree     = ROOT.TTree("GBDTTree","physical variables per event")
     TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
