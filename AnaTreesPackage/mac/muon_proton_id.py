@@ -23,7 +23,7 @@ p_score                 = 0.99
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
     print_important( "extract tracks information from MC AnalysisTrees" )
-    extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , MCmode = True )
+    # extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , MCmode = True )
     extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , MCmode = True )
 
 
