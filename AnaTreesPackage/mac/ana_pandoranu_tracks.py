@@ -60,6 +60,8 @@ if flags.option=="write hits features to csv file" or 'hits' in flags.option:
 # -------------------------------------------------------------------
 if flags.option=="dEdx profile for tracks" or 'dEdx' in flags.option:
     
+    print_important( "ipynb notebooks/plot_dEdx_profile.ipynb")
+    
     hits = pd.read_csv(hits_file_name, dtype={'track_length':np.float32,'dEdx':np.float32})
     H = np.histogram2d( hits.track_length , hits.dEdx )
     im = plt.imshow(H,interpolation='none', cmap='hot_r',origin='lower')#, extent=extent)

@@ -484,6 +484,7 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
     for(Int_t plane=0; plane<3;plane++) {
         
         if (!track_length[plane].empty())   track_length[plane].clear();
+        if (!track_dx[plane].empty())       track_dx[plane].clear();
         if (!dEdx[plane].empty())           dEdx[plane].clear();
         if (!TrkPos[plane].empty())         TrkPos[plane].clear();
         
