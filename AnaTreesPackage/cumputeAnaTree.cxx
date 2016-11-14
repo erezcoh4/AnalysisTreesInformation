@@ -481,6 +481,8 @@ void cumputeAnaTree::GetPandoraNuTracks(){
 void cumputeAnaTree::GetEnergyDeposition( int j ){
     if(debug>3) Printf("starting GetEnergyDeposition...");
     
+    SHOW3(ntrkhits_pandoraNu[j][0],ntrkhits_pandoraNu[j][1],ntrkhits_pandoraNu[j][2]);
+    
     for(Int_t plane=0; plane<3;plane++) {
         
         if (!track_length[plane].empty())   track_length[plane].clear();

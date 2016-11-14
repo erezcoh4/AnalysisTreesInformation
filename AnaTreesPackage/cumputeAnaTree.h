@@ -167,7 +167,7 @@ public:
     // tagging
     Float_t     trkcosmicscore_tagger_pandoraNu[MAX_tracks][10];
     Float_t     trkcosmicscore_containmenttagger_pandoraNu[MAX_tracks][10];
-    Float_t     trkpidchi_pandoraNu[MAX_tracks][3]  , trkpidpida_pandoraNu[MAX_tracks][3]       , flash_time[MAX_hits]  ;
+    Float_t     trkpidchi_pandoraNu[MAX_tracks][3]      , trkpidpida_pandoraNu[MAX_tracks][3]       , flash_time[MAX_hits]  ;
     
     Float_t     flash_timewidth[MAX_hits] , flash_pe[MAX_hits];
     Float_t     flash_ycenter[MAX_hits]   , flash_ywidth[MAX_hits]    , flash_zcenter[MAX_hits] , flash_zwidth[MAX_hits];
@@ -198,8 +198,8 @@ public:
     Float_t     trkendz_pandoraCosmic[MAX_cosmic_tracks]                , trktheta_pandoraCosmic[MAX_cosmic_tracks]                 , trkphi_pandoraCosmic[MAX_cosmic_tracks];
     
     // calorimetry
-    Float_t     trkdqdx_pandoraCosmic[MAX_cosmic_tracks][3][2000]   , trkresrg_pandoraCosmic[MAX_cosmic_tracks][3][2000]    ;
-    Float_t     trkdedx_pandoraCosmic[MAX_cosmic_tracks][3][2000]    ;
+    Float_t     trkdqdx_pandoraCosmic[MAX_cosmic_tracks][3][2000]       , trkresrg_pandoraCosmic[MAX_cosmic_tracks][3][2000]    ;
+    Float_t     trkdedx_pandoraCosmic[MAX_cosmic_tracks][3][2000]       ;
     
     // tagging
     Float_t     trkcosmicscore_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
