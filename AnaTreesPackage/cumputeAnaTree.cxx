@@ -507,13 +507,57 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
 //            }
 //        }
 //    }
+    if (!track_length_U.empty())   track_length_U.clear();
+    if (!track_dx_U.empty())       track_dx_U.clear();
+    if (!dEdx_U.empty())           dEdx_U.clear();
+    if (!TrkPos_U.empty())         TrkPos_U.clear();
+    
+    Int_t Nhits_U = ntrkhits_pandoraNu[j][2];
+    if( Nhits_U ) {
+        
+        Int_t trkhit = 0;
+        TrkPos_U.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
+        dEdx_U.push_back( 0 ); // in [MeV/cm]
+        track_dx_U.push_back( 0 ); // in [cm]
+        track_length_U.push_back( 0 ); // in [cm]
+        
+        for(Int_t trkhit=1; trkhit < Nhits_U ; trkhit++) {
+            TrkPos_U.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
+            dEdx_U.push_back( trkdedx_pandoraNu[j][2][trkhit] ); // in [MeV/cm]
+            track_dx_U.push_back( (TrkPos_U.at(trkhit) - TrkPos_U.at(trkhit-1)).Mag() );
+            track_length_U.push_back( track_length_U.back() + track_dx_U.back()  );
+        }
+    }
+    
+    if (!track_length_V.empty())   track_length_V.clear();
+    if (!track_dx_V.empty())       track_dx_V.clear();
+    if (!dEdx_V.empty())           dEdx_V.clear();
+    if (!TrkPos_V.empty())         TrkPos_V.clear();
+    
+    Int_t Nhits_V = ntrkhits_pandoraNu[j][2];
+    if( Nhits_V ) {
+        
+        Int_t trkhit = 0;
+        TrkPos_V.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
+        dEdx_V.push_back( 0 ); // in [MeV/cm]
+        track_dx_V.push_back( 0 ); // in [cm]
+        track_length_V.push_back( 0 ); // in [cm]
+        
+        for(Int_t trkhit=1; trkhit < Nhits_V ; trkhit++) {
+            TrkPos_V.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
+            dEdx_V.push_back( trkdedx_pandoraNu[j][2][trkhit] ); // in [MeV/cm]
+            track_dx_V.push_back( (TrkPos_V.at(trkhit) - TrkPos_V.at(trkhit-1)).Mag() );
+            track_length_V.push_back( track_length_V.back() + track_dx_V.back()  );
+        }
+    }
+    
     if (!track_length_Y.empty())   track_length_Y.clear();
     if (!track_dx_Y.empty())       track_dx_Y.clear();
     if (!dEdx_Y.empty())           dEdx_Y.clear();
     if (!TrkPos_Y.empty())         TrkPos_Y.clear();
     
-    Nhits[2] = ntrkhits_pandoraNu[j][2];
-    if( Nhits[2] ) {
+    Int_t Nhits_Y = ntrkhits_pandoraNu[j][2];
+    if( Nhits_Y ) {
         
         Int_t trkhit = 0;
         TrkPos_Y.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
@@ -521,7 +565,7 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
         track_dx_Y.push_back( 0 ); // in [cm]
         track_length_Y.push_back( 0 ); // in [cm]
         
-        for(Int_t trkhit=1; trkhit < Nhits[2] ; trkhit++) {
+        for(Int_t trkhit=1; trkhit < Nhits_Y ; trkhit++) {
             TrkPos_Y.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
             dEdx_Y.push_back( trkdedx_pandoraNu[j][2][trkhit] ); // in [MeV/cm]
             track_dx_Y.push_back( (TrkPos_Y.at(trkhit) - TrkPos_Y.at(trkhit-1)).Mag() );
@@ -529,7 +573,7 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
         }
     }
 
-    c_track.Set_dEdx( track_dx_Y , track_length_Y , dEdx_Y );
+    c_track.Set_dEdx( track_dx_U , track_length_U , dEdx_U , track_dx_V , track_length_V , dEdx_V , track_dx_Y , track_length_Y , dEdx_Y );
     if(debug>3) Printf("got dE/dx ...");
 
 }

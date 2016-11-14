@@ -259,8 +259,10 @@ public:
     // energy deposition
     //    std::vector <Float_t> track_dx[3], track_length[3], dEdx[3];
     //    std::vector <TVector3> TrkPos[3];
-    std::vector <Float_t> track_dx_Y, track_length_Y, dEdx_Y;
-    std::vector <TVector3> TrkPos_Y;
+    std::vector <Float_t>   track_dx_U  , track_length_U    , dEdx_U;
+    std::vector <Float_t>   track_dx_V  , track_length_V    , dEdx_V;
+    std::vector <Float_t>   track_dx_Y  , track_length_Y    , dEdx_Y;
+    std::vector <TVector3>  TrkPos_U    , TrkPos_V      , TrkPos_Y;
 
     Float_t Nhits[3];
 

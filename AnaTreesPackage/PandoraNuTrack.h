@@ -109,7 +109,9 @@ public:
     
     void   AddNeighborTrack ( Int_t , Float_t , Float_t );
 //    void           Set_dEdx (std::vector<Float_t>* , std::vector<Float_t>* , std::vector<Float_t>* );
-    void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> );
+    void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
+                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
+                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> );
 
     
     
@@ -147,6 +149,8 @@ public:
     
     // dE/dx
 //    std::vector <Float_t> track_dx[3], track_length[3], dEdx[3];
+    std::vector <Float_t> track_dx_U, track_length_U, dEdx_U;
+    std::vector <Float_t> track_dx_V, track_length_V, dEdx_V;
     std::vector <Float_t> track_dx_Y, track_length_Y, dEdx_Y;
 
     
