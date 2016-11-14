@@ -481,8 +481,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
 void cumputeAnaTree::GetEnergyDeposition( int j ){
     if(debug>3) Printf("starting GetEnergyDeposition...");
     
-    SHOW3(ntrkhits_pandoraNu[j][0],ntrkhits_pandoraNu[j][1],ntrkhits_pandoraNu[j][2]);
-    
+//    SHOW3(ntrkhits_pandoraNu[j][0],ntrkhits_pandoraNu[j][1],ntrkhits_pandoraNu[j][2]);
 //    for(Int_t plane=0; plane<3;plane++) {
 //        
 //        if (!track_length[plane].empty())   track_length[plane].clear();
@@ -512,18 +511,18 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
     if (!dEdx_U.empty())           dEdx_U.clear();
     if (!TrkPos_U.empty())         TrkPos_U.clear();
     
-    Int_t Nhits_U = ntrkhits_pandoraNu[j][2];
+    Int_t Nhits_U = ntrkhits_pandoraNu[j][0];
     if( Nhits_U ) {
         
         Int_t trkhit = 0;
-        TrkPos_U.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
+        TrkPos_U.push_back( TVector3( trkxyz_pandoraNu[j][0][trkhit][0] , trkxyz_pandoraNu[j][0][trkhit][1] , trkxyz_pandoraNu[j][0][trkhit][2] ) );
         dEdx_U.push_back( 0 ); // in [MeV/cm]
         track_dx_U.push_back( 0 ); // in [cm]
         track_length_U.push_back( 0 ); // in [cm]
         
         for(Int_t trkhit=1; trkhit < Nhits_U ; trkhit++) {
-            TrkPos_U.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
-            dEdx_U.push_back( trkdedx_pandoraNu[j][2][trkhit] ); // in [MeV/cm]
+            TrkPos_U.push_back( TVector3( trkxyz_pandoraNu[j][0][trkhit][0] , trkxyz_pandoraNu[j][0][trkhit][1] , trkxyz_pandoraNu[j][0][trkhit][2] ) );
+            dEdx_U.push_back( trkdedx_pandoraNu[j][0][trkhit] ); // in [MeV/cm]
             track_dx_U.push_back( (TrkPos_U.at(trkhit) - TrkPos_U.at(trkhit-1)).Mag() );
             track_length_U.push_back( track_length_U.back() + track_dx_U.back()  );
         }
@@ -534,18 +533,18 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
     if (!dEdx_V.empty())           dEdx_V.clear();
     if (!TrkPos_V.empty())         TrkPos_V.clear();
     
-    Int_t Nhits_V = ntrkhits_pandoraNu[j][2];
+    Int_t Nhits_V = ntrkhits_pandoraNu[j][1];
     if( Nhits_V ) {
         
         Int_t trkhit = 0;
-        TrkPos_V.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
+        TrkPos_V.push_back( TVector3( trkxyz_pandoraNu[j][1][trkhit][0] , trkxyz_pandoraNu[j][1][trkhit][1] , trkxyz_pandoraNu[j][1][trkhit][2] ) );
         dEdx_V.push_back( 0 ); // in [MeV/cm]
         track_dx_V.push_back( 0 ); // in [cm]
         track_length_V.push_back( 0 ); // in [cm]
         
         for(Int_t trkhit=1; trkhit < Nhits_V ; trkhit++) {
-            TrkPos_V.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
-            dEdx_V.push_back( trkdedx_pandoraNu[j][2][trkhit] ); // in [MeV/cm]
+            TrkPos_V.push_back( TVector3( trkxyz_pandoraNu[j][1][trkhit][0] , trkxyz_pandoraNu[j][1][trkhit][1] , trkxyz_pandoraNu[j][1][trkhit][2] ) );
+            dEdx_V.push_back( trkdedx_pandoraNu[j][1][trkhit] ); // in [MeV/cm]
             track_dx_V.push_back( (TrkPos_V.at(trkhit) - TrkPos_V.at(trkhit-1)).Mag() );
             track_length_V.push_back( track_length_V.back() + track_dx_V.back()  );
         }
