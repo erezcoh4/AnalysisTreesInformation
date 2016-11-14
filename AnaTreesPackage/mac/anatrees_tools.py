@@ -75,7 +75,7 @@ def tracks_anafile_name( ListName ):
 # methods
 # -------------------------
 def read_files_from_a_list( ListName ):
-    if flags.verbose: print "\nreading list of files..."
+    if flags.verbose: print_filename(ListName,"reading list of files...")
     with open( lists_path + "/analysis_trees/" + ListName + ".list") as f:
         files = f.read().splitlines()
     if flags.verbose>4: print files

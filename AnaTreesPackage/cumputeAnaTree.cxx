@@ -483,31 +483,53 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
     
     SHOW3(ntrkhits_pandoraNu[j][0],ntrkhits_pandoraNu[j][1],ntrkhits_pandoraNu[j][2]);
     
-    for(Int_t plane=0; plane<3;plane++) {
+//    for(Int_t plane=0; plane<3;plane++) {
+//        
+//        if (!track_length[plane].empty())   track_length[plane].clear();
+//        if (!track_dx[plane].empty())       track_dx[plane].clear();
+//        if (!dEdx[plane].empty())           dEdx[plane].clear();
+//        if (!TrkPos[plane].empty())         TrkPos[plane].clear();
+//        
+//        Nhits[plane] = ntrkhits_pandoraNu[j][plane];
+//        if( Nhits[plane] ) {
+//
+//            Int_t trkhit = 0;
+//            TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
+//            dEdx[plane].push_back( 0 ); // in [MeV/cm]
+//            track_dx[plane].push_back( 0 ); // in [cm]
+//            track_length[plane].push_back( 0 ); // in [cm]
+//
+//            for(Int_t trkhit=1; trkhit < Nhits[plane] ; trkhit++) {
+//                TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
+//                dEdx[plane].push_back( trkdedx_pandoraNu[j][plane][trkhit] ); // in [MeV/cm]
+//                track_dx[plane].push_back( (TrkPos[plane].at(trkhit) - TrkPos[plane].at(trkhit-1)).Mag() );
+//                track_length[plane].push_back( track_length[plane].back() + track_dx[plane].back()  );
+//            }
+//        }
+//    }
+    if (!track_length_Y.empty())   track_length_Y.clear();
+    if (!track_dx_Y.empty())       track_dx_Y.clear();
+    if (!dEdx_Y.empty())           dEdx_Y.clear();
+    if (!TrkPos_Y.empty())         TrkPos_Y.clear();
+    
+    Nhits[2] = ntrkhits_pandoraNu[j][2];
+    if( Nhits[2] ) {
         
-        if (!track_length[plane].empty())   track_length[plane].clear();
-        if (!track_dx[plane].empty())       track_dx[plane].clear();
-        if (!dEdx[plane].empty())           dEdx[plane].clear();
-        if (!TrkPos[plane].empty())         TrkPos[plane].clear();
+        Int_t trkhit = 0;
+        TrkPos_Y.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
+        dEdx_Y.push_back( 0 ); // in [MeV/cm]
+        track_dx_Y.push_back( 0 ); // in [cm]
+        track_length_Y.push_back( 0 ); // in [cm]
         
-        Nhits[plane] = ntrkhits_pandoraNu[j][plane];
-        if( Nhits[plane] ) {
-
-            Int_t trkhit = 0;
-            TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
-            dEdx[plane].push_back( 0 ); // in [MeV/cm]
-            track_dx[plane].push_back( 0 ); // in [cm]
-            track_length[plane].push_back( 0 ); // in [cm]
-
-            for(Int_t trkhit=1; trkhit < Nhits[plane] ; trkhit++) {
-                TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
-                dEdx[plane].push_back( trkdedx_pandoraNu[j][plane][trkhit] ); // in [MeV/cm]
-                track_dx[plane].push_back( (TrkPos[plane].at(trkhit) - TrkPos[plane].at(trkhit-1)).Mag() );
-                track_length[plane].push_back( track_length[plane].back() + track_dx[plane].back()  );
-            }
+        for(Int_t trkhit=1; trkhit < Nhits[2] ; trkhit++) {
+            TrkPos_Y.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
+            dEdx_Y.push_back( trkdedx_pandoraNu[j][2][trkhit] ); // in [MeV/cm]
+            track_dx_Y.push_back( (TrkPos_Y.at(trkhit) - TrkPos_Y.at(trkhit-1)).Mag() );
+            track_length_Y.push_back( track_length_Y.back() + track_dx_Y.back()  );
         }
     }
-    c_track.Set_dEdx( track_dx , track_length , dEdx );
+
+    c_track.Set_dEdx( track_dx_Y , track_length_Y , dEdx_Y );
     if(debug>3) Printf("got dE/dx ...");
 
 }

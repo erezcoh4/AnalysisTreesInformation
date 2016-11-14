@@ -108,7 +108,8 @@ public:
     void       SetFlashInfo (Float_t fcftime, Float_t fcftimewidth, Float_t fcfzcenter, Float_t fcfzwidth, Float_t fcfycenter, Float_t fcfywidth, Float_t fcftotalpe, Float_t fcfdistance);
     
     void   AddNeighborTrack ( Int_t , Float_t , Float_t );
-    void           Set_dEdx (std::vector<Float_t>* , std::vector<Float_t>* , std::vector<Float_t>* );
+//    void           Set_dEdx (std::vector<Float_t>* , std::vector<Float_t>* , std::vector<Float_t>* );
+    void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> );
 
     
     
@@ -118,8 +119,8 @@ public:
     Float_t       GetLength (){return length;};
     Float_t        GetTheta (){return theta;};
     Float_t          GetPhi (){return phi;};
-    std::vector<Float_t> GetTrackLengthVector (int plane) {return track_length[plane];};
-    std::vector<Float_t> GetTrack_dEdxVector  (int plane) {return dEdx[plane];};
+//    std::vector<Float_t> GetTrackLengthVector (int plane) {return track_length[plane];};
+//    std::vector<Float_t> GetTrack_dEdxVector  (int plane) {return dEdx[plane];};
     
         
         
@@ -145,7 +146,8 @@ public:
     box         roi[3];
     
     // dE/dx
-    std::vector <Float_t> track_dx[3], track_length[3], dEdx[3];
+//    std::vector <Float_t> track_dx[3], track_length[3], dEdx[3];
+    std::vector <Float_t> track_dx_Y, track_length_Y, dEdx_Y;
 
     
     // tracks which are closer than TracsMinDistance, at the same event, are labled as 'neighbor-tracks'
