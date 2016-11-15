@@ -22,7 +22,7 @@ p_score                 = 0.99
 # (1) extract all tracks information from BNB-MC and COSMIC-MC analysis trees to train GBDTs
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
-    splitjobs_files = 10 # splitting ti jobs: 0-10, 10-20, 20-30,....
+    splitjobs_files = 1000 # splitting ti jobs: 0-10, 10-20, 20-30,....
     first_anatree_file = flags.run
     last_anatree_file = first_anatree_file + splitjobs_files
     print_important( "extract tracks information from MC AnalysisTrees" )
