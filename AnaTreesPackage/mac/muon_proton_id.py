@@ -24,7 +24,7 @@ p_score                 = 0.99
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
     print_important( "extract tracks information from MC AnalysisTrees" )
     # extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , MCmode = True )
-    extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , MCmode = True )
+    extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
 
 
 
@@ -36,8 +36,10 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
 # (3) extract all tracks information from analysis trees to classify proton tracks
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA' in flags.option:
-    print_important( "extract tracks information from AnalysisTrees" )
-    extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" , "extract all tracks information")
+    first_anatree_file = 0
+    last_anatree_file = 10
+    print_important( "extract tracks information from AnalysisTrees (files %d-%d)"%(first_anatree_file,last_anatree_file) )
+    extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" , "extract all tracks information" , first_anatree_file , last_anatree_file )
 
 
 

@@ -12,16 +12,19 @@ bool cumputeAnaTree::extract_information (){ // main event loop....
     
     GetPandoraNuTracks();
 
-    GetPandoraCosmicTracks();
+    // GetPandoraCosmicTracks();
     
-    if (MCmode) GetTruthInformation();
+    if (MCmode){
+        GetTruthInformation();
+    }
 
     // if we want to collect vertices, these should be uncommented out
-    else if (option == "find common muon-proton vertices"){
+    if (option == "find common muon-proton vertices"){
         CollectTrackVertices();
         FindMutualVertices();
         FindMuonScattering();
     }
+    
     return true;
 }
 

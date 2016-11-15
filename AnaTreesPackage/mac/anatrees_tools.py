@@ -74,10 +74,12 @@ def tracks_anafile_name( ListName ):
 
 # methods
 # -------------------------
-def read_files_from_a_list( ListName ):
-    if flags.verbose: print_filename(ListName,"reading list of files...")
+def read_files_from_a_list( ListName , first_anatree_file , last_anatree_file ):
+    # returns the files
+    if flags.verbose: print_filename(ListName,"reading list of files (collecting files %d to %d)..."%(first_anatree_file , last_anatree_file))
     with open( lists_path + "/analysis_trees/" + ListName + ".list") as f:
         files = f.read().splitlines()
+        files = files[ first_anatree_file : last_anatree_file ]
     if flags.verbose>4: print files
     return files
 
@@ -163,11 +165,12 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
 
 # -------------------------
 def extract_anatrees_tracks_information_from_files_list( DataType, Option,
+                                                        first_anatree_file , last_anatree_file ,
                                                         MCmode=False, AddEventsList=False , EventsListName="" ):
     # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT
     
     AnaTreesListName = DataType + "_AnalysisTrees"
-    files       = read_files_from_a_list( AnaTreesListName )
+    files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file )
     in_chain    = get_analysistrees_chain(files)
     
     extract_anatrees_tracks_information( in_chain , Option, MCmode, AddEventsList , EventsListName , AnaTreesListName )
@@ -189,7 +192,9 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
 
 
 # -------------------------
-def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
+def extract_anatrees_tracks_information( in_chain, Option,
+                                        first_anatree_file, last_anatree_file,
+                                        MCmode=False,
                                         AddEventsList=False,
                                         EventsListName="", AnaTreesListName="", mupRSEFileName="" ):
 
@@ -274,7 +279,9 @@ def extract_anatrees_tracks_information( in_chain, Option, MCmode=False,
         output_rse_file.close()
 
 
-    if MCmode: GENIETree.Write()
+    if MCmode:
+        GENIETree.Write()
+
     TracksTree.Write()
     OutFile.Close()
 
