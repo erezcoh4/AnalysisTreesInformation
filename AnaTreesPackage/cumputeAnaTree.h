@@ -25,8 +25,8 @@
 
 
 #define MAX_vertices 20
-#define MAX_tracks 100
-#define MAX_cosmic_tracks 500
+#define MAX_tracks 1000
+//#define MAX_cosmic_tracks 500
 #define MAX_hits 50000
 #define kMaxTruth 10
 /**
@@ -127,7 +127,7 @@ public:
 
     
     // PandoraNu
-    
+    // -------------------------------------------------------
     Short_t     ntracks_pandoraNu;
     Short_t     trkId_pandoraNu[MAX_tracks] ;
     Short_t     ntrkhits_pandoraNu[MAX_tracks][3];
@@ -181,38 +181,39 @@ public:
 
     
     
-    // PandoraCosmic
-    Short_t     ntracks_pandoraCosmic;
-    Short_t     trkId_pandoraCosmic[MAX_cosmic_tracks];
-    Short_t     ntrkhits_pandoraCosmic[MAX_cosmic_tracks][3];
-    Short_t     trkncosmictags_tagger_pandoraCosmic[MAX_cosmic_tracks];
-    Short_t     trkcosmictype_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
-    Short_t     trkcosmictype_containmenttagger_pandoraCosmic[MAX_tracks][10] ;
-    Short_t     trkpidbestplane_pandoraCosmic[MAX_tracks];
-    
-    Int_t       trkg4id_pandoraCosmic[MAX_cosmic_tracks]  ;
-    Int_t       trkpidpdg_pandoraCosmic[MAX_cosmic_tracks][3];
-    
-    Float_t     trklen_pandoraCosmic[MAX_cosmic_tracks]                 , trkstartx_pandoraCosmic[MAX_cosmic_tracks]                , trkstarty_pandoraCosmic[MAX_cosmic_tracks];
-    Float_t     trkstartz_pandoraCosmic[MAX_cosmic_tracks]              , trkendx_pandoraCosmic[MAX_cosmic_tracks]                  , trkendy_pandoraCosmic[MAX_cosmic_tracks];
-    Float_t     trkendz_pandoraCosmic[MAX_cosmic_tracks]                , trktheta_pandoraCosmic[MAX_cosmic_tracks]                 , trkphi_pandoraCosmic[MAX_cosmic_tracks];
-    
-    // calorimetry
-    Float_t     trkdqdx_pandoraCosmic[MAX_cosmic_tracks][3][2000]       , trkresrg_pandoraCosmic[MAX_cosmic_tracks][3][2000]    ;
-    Float_t     trkdedx_pandoraCosmic[MAX_cosmic_tracks][3][2000]       ;
-    
-    // tagging
-    Float_t     trkcosmicscore_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
-    Float_t     trkcosmicscore_containmenttagger_pandoraCosmic[MAX_cosmic_tracks][10];
-    Float_t     trkpidchi_pandoraCosmic[MAX_cosmic_tracks][3]           , trkpidpida_pandoraCosmic[MAX_cosmic_tracks][3]  ;
-    
-    
-    // vertex information
-    
-    Short_t     nvtx_pandoraCosmic;
-    Float_t     vtxx_pandoraCosmic[MAX_vertices];     //the X location (in cm) for a given vertex
-    Float_t     vtxy_pandoraCosmic[MAX_vertices];     //the Y location (in cm) for a given vertex
-    Float_t     vtxz_pandoraCosmic[MAX_vertices];     //the Z location (in cm) for a given vertex
+    //    // PandoraCosmic
+    //    // -------------------------------------------------------
+    //    Short_t     ntracks_pandoraCosmic;
+    //    Short_t     trkId_pandoraCosmic[MAX_cosmic_tracks];
+    //    Short_t     ntrkhits_pandoraCosmic[MAX_cosmic_tracks][3];
+    //    Short_t     trkncosmictags_tagger_pandoraCosmic[MAX_cosmic_tracks];
+    //    Short_t     trkcosmictype_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
+    //    Short_t     trkcosmictype_containmenttagger_pandoraCosmic[MAX_tracks][10] ;
+    //    Short_t     trkpidbestplane_pandoraCosmic[MAX_tracks];
+    //
+    //    Int_t       trkg4id_pandoraCosmic[MAX_cosmic_tracks]  ;
+    //    Int_t       trkpidpdg_pandoraCosmic[MAX_cosmic_tracks][3];
+    //
+    //    Float_t     trklen_pandoraCosmic[MAX_cosmic_tracks]                 , trkstartx_pandoraCosmic[MAX_cosmic_tracks]                , trkstarty_pandoraCosmic[MAX_cosmic_tracks];
+    //    Float_t     trkstartz_pandoraCosmic[MAX_cosmic_tracks]              , trkendx_pandoraCosmic[MAX_cosmic_tracks]                  , trkendy_pandoraCosmic[MAX_cosmic_tracks];
+    //    Float_t     trkendz_pandoraCosmic[MAX_cosmic_tracks]                , trktheta_pandoraCosmic[MAX_cosmic_tracks]                 , trkphi_pandoraCosmic[MAX_cosmic_tracks];
+    //
+    //    // calorimetry
+    //    Float_t     trkdqdx_pandoraCosmic[MAX_cosmic_tracks][3][2000]       , trkresrg_pandoraCosmic[MAX_cosmic_tracks][3][2000]    ;
+    //    Float_t     trkdedx_pandoraCosmic[MAX_cosmic_tracks][3][2000]       ;
+    //
+    //    // tagging
+    //    Float_t     trkcosmicscore_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
+    //    Float_t     trkcosmicscore_containmenttagger_pandoraCosmic[MAX_cosmic_tracks][10];
+    //    Float_t     trkpidchi_pandoraCosmic[MAX_cosmic_tracks][3]           , trkpidpida_pandoraCosmic[MAX_cosmic_tracks][3]  ;
+    //
+    //
+    //    // vertex information
+    //
+    //    Short_t     nvtx_pandoraCosmic;
+    //    Float_t     vtxx_pandoraCosmic[MAX_vertices];     //the X location (in cm) for a given vertex
+    //    Float_t     vtxy_pandoraCosmic[MAX_vertices];     //the Y location (in cm) for a given vertex
+    //    Float_t     vtxz_pandoraCosmic[MAX_vertices];     //the Z location (in cm) for a given vertex
     
     
     
@@ -257,8 +258,6 @@ public:
     box ROItrk_NuSelMuon[3] , ROItrk_GBDTproton[3] , mu_p_VtxROI[3];
     
     // energy deposition
-    //    std::vector <Float_t> track_dx[3], track_length[3], dEdx[3];
-    //    std::vector <TVector3> TrkPos[3];
     std::vector <Float_t>   track_dx_U  , track_length_U    , dEdx_U;
     std::vector <Float_t>   track_dx_V  , track_length_V    , dEdx_V;
     std::vector <Float_t>   track_dx_Y  , track_length_Y    , dEdx_Y;
