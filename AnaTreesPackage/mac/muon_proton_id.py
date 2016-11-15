@@ -22,6 +22,9 @@ p_score                 = 0.99
 # (1) extract all tracks information from BNB-MC and COSMIC-MC analysis trees to train GBDTs
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
+    splitjobs_files = 10 # splitting ti jobs: 0-10, 10-20, 20-30,....
+    first_anatree_file = flags.run
+    last_anatree_file = first_anatree_file + splitjobs_files
     print_important( "extract tracks information from MC AnalysisTrees" )
     # extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , MCmode = True )
     extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
@@ -36,8 +39,7 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
 # (3) extract all tracks information from analysis trees to classify proton tracks
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA' in flags.option:
-    splitjobs_files = 1000
-#    first_anatree_file = 0 # splitting ti jobs: 0-10, 10-20, 20-30, 30-40....
+    splitjobs_files = 1000 # splitting ti jobs: 0-1000, 1000-2000, 2000-3000, ....
     first_anatree_file = flags.run
     last_anatree_file = first_anatree_file + splitjobs_files
     print_important( "extract tracks information from AnalysisTrees (files %d-%d)"%(first_anatree_file,last_anatree_file) )
