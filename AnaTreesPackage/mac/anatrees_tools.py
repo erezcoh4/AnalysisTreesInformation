@@ -179,7 +179,7 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option,
     files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file )
     in_chain    = get_analysistrees_chain(files)
     
-    extract_anatrees_tracks_information( in_chain , Option, first_anatree_file , last_anatree_file
+    extract_anatrees_tracks_information( in_chain , Option, first_anatree_file , last_anatree_file, 
                                         MCmode, AddEventsList , EventsListName , AnaTreesListName )
 
 
