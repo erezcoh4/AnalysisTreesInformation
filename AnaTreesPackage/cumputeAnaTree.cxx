@@ -457,7 +457,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
             for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
                 if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
                 if(TrackId[ig4] == trkg4id_pandoraNu[j]){
-                    // lets start with only the MC pdg code, for training purposes
+                    // pdg code, for training and testing purposes
                     if(debug>3) Printf("truth pdg is: %d",pdg[ig4]);
                     FoundMCtrack = true;
                     c_track.SetMCpdgCode(pdg[ig4]);
