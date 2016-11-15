@@ -61,12 +61,18 @@ def schemed_anatrees_file_name( anatrees_list_name , scheming_name ):
 
 
 # -------------------------
-def tracks_features_file_name( ListName ):
-    return featuresfiles_path + "/" + "features_" + ListName + ".csv"
+def tracks_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0):
+    if first_anatree_file==last_anatree_file:
+        return featuresfiles_path + "/" + "features_" + ListName + ".csv"
+    else:
+        return featuresfiles_path + "/" + "features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
 
 # -------------------------
 def tracks_anafile_name( ListName ):
-    return anafiles_path + "/" + "Tracks_" + ListName + ".root"
+    if first_anatree_file==last_anatree_file:
+        return anafiles_path + "/" + "Tracks_" + ListName + ".root"
+    else:
+        return anafiles_path + "/" + "Tracks_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
 
 
 
@@ -173,7 +179,8 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option,
     files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file )
     in_chain    = get_analysistrees_chain(files)
     
-    extract_anatrees_tracks_information( in_chain , Option, MCmode, AddEventsList , EventsListName , AnaTreesListName )
+    extract_anatrees_tracks_information( in_chain , Option, first_anatree_file , last_anatree_file
+                                        MCmode, AddEventsList , EventsListName , AnaTreesListName )
 
 
 # -------------------------
@@ -193,7 +200,7 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
 
 # -------------------------
 def extract_anatrees_tracks_information( in_chain, Option,
-                                        first_anatree_file, last_anatree_file,
+                                        first_anatree_file=0, last_anatree_file=1,
                                         MCmode=False,
                                         AddEventsList=False,
                                         EventsListName="", AnaTreesListName="", mupRSEFileName="" ):
@@ -205,8 +212,8 @@ def extract_anatrees_tracks_information( in_chain, Option,
         print "\t find common muon-proton vertices"
         exit(0)
 
-    FeaturesFileName    = tracks_features_file_name( AnaTreesListName )
-    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName )
+    FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName first_anatree_file , last_anatree_file )
 
     if Option=="find common muon-proton vertices":
         output_rse_file = open( mupRSEFileName , "w" )
