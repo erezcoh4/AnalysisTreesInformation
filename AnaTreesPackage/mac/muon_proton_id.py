@@ -36,7 +36,10 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
 # (3) extract all tracks information from analysis trees to classify proton tracks
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA' in flags.option:
-    first_anatree_file , last_anatree_file = 0 , 10 # splitting ti jobs: 0-10, 10-20, 20-30, 30-40....
+    splitjobs_files = 100
+#    first_anatree_file = 0 # splitting ti jobs: 0-10, 10-20, 20-30, 30-40....
+    first_anatree_file = flags.run
+    last_anatree_file = first_anatree_file + splitjobs_files
     print_important( "extract tracks information from AnalysisTrees (files %d-%d)"%(first_anatree_file,last_anatree_file) )
     extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" , "extract all tracks information" , first_anatree_file , last_anatree_file )
 
