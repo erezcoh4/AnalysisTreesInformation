@@ -179,7 +179,7 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option,
     files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file )
     in_chain    = get_analysistrees_chain(files)
     
-    extract_anatrees_tracks_information( in_chain , Option, first_anatree_file , last_anatree_file, 
+    extract_anatrees_tracks_information( in_chain , Option, first_anatree_file , last_anatree_file,
                                         MCmode, AddEventsList , EventsListName , AnaTreesListName )
 
 
@@ -213,7 +213,7 @@ def extract_anatrees_tracks_information( in_chain, Option,
         exit(0)
 
     FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName first_anatree_file , last_anatree_file )
+    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
 
     if Option=="find common muon-proton vertices":
         output_rse_file = open( mupRSEFileName , "w" )
