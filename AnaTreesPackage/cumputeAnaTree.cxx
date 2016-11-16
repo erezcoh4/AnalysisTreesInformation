@@ -575,7 +575,7 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
         Int_t trkhit = 0;
         TrkPos_Y.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
         dEdx_Y.push_back( 0 ); // in [MeV/cm]
-        Edep_V.push_back( 0 ); // in [MeV]
+        Edep_Y.push_back( 0 ); // in [MeV]
         track_dx_Y.push_back( 0 ); // in [cm]
         track_length_Y.push_back( 0 ); // in [cm]
         

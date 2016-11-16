@@ -104,10 +104,12 @@ void PandoraNuTrack::Set_dEdx (std::vector <Float_t> ftrack_dx_U, std::vector <F
     track_length_U = ftrack_length_U;
     dEdx_U = fdEdx_U;
     Edep_U = fEdep_U;
+    
     track_dx_V = ftrack_dx_V;
     track_length_V = ftrack_length_V;
     dEdx_V = fdEdx_V;
     Edep_V = fEdep_V;
+    
     track_dx_Y = ftrack_dx_Y;
     track_length_Y = ftrack_length_Y;
     dEdx_Y = fdEdx_Y;
