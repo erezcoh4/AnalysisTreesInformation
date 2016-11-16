@@ -2,16 +2,24 @@ from anatrees_tools import *
 '''
     usage:
     ------
-    python mac/ana_pandoranu_tracks.py --option=hits
+    python mac/ana_pandoranu_tracks.py --option=hits --DataType=MC_BNB
+    
     options: 
         hits        {"write hits features to csv file"}
         dEdx        {"dEdx profile for tracks"}
 '''
 
+
+
+TracksListName = flags.DataType # MC_BNB , BNB_5e19POT
+
+
 features_pandoranu_track_hits = ['run','subrun','event',
                                  'track_id','plane',
                                  'hit','track_length','dEdx',
-                                 'MCpdgCode','pscore']
+                                 'MCpdgCode',
+                                 'mscore_p','mscore_max']
+
 hits_file_name      = anafiles_path + "/hits_data.csv"
 dEdx_figure_name    = anafiles_path + "/plots/dEdx.pdf"
 
@@ -20,40 +28,43 @@ dEdx_figure_name    = anafiles_path + "/plots/dEdx.pdf"
 if flags.option=="write hits features to csv file" or 'hits' in flags.option:
     tracks_counter , hits_counter = 0 , 0
     hits_df = pd.DataFrame(columns=features_pandoranu_track_hits)
-    ana_pandoranu = AnalyzeTracksFile( anafiles_path , "BNB_5e19POT" , flags.verbose )
+    if flags.verbose: print "starting to AnalyzeTracksFile from file ",TracksListName
+    ana_pandoranu = AnalyzeTracksFile( anafiles_path , TracksListName , flags.verbose )
     
-    # ToDo: filter out events that we are interested in.
+    # For Data filter out events that we are interested in.
     # for example, consider only classified proton tracks
     Nentries = ana_pandoranu.GetEntries()
-    for i in range(Nentries):
+    Nreduced = int(flags.evnts_frac*Nentries)
+    if flags.verbose: print "processing %d tracks"%Nreduced
+
+    for i in range(Nreduced):
         
-        if flags.verbose and i%(Nentries/5)==0: print "[ %.0f"%(100*float(i)/Nentries),"%]"
+        if flags.verbose and (i%(Nreduced/100)==0): print "[ %.0f"%(100*float(i)/Nreduced),"%]"
         tracks = ana_pandoranu.GetEventTracks(i)
         
-        for track in tracks:
-            
-            tracks_counter = tracks_counter + 1
-            
-            for plane in range(3):
-                
-                track_length = track.GetTrackLengthVector( plane )
-                track_dEdx = track.GetTrack_dEdxVector( plane )
-                
-                for hit in range(track_dEdx.size()):
-                    
-                    hits_counter = hits_counter + 1
-                    
-                    hit_df = pd.DataFrame({'run':track.run,'subrun':track.subrun,'event':track.event,
-                                          'track_id':track.track_id,
-                                          'plane':plane,
-                                          'hit':hit,
-                                          'track_length':track_length.at(hit),
-                                          'dEdx':track_dEdx.at(hit)}
-                                          , index = [hits_counter])
-                    hits_df = hits_df.append( hit_df )
+#        for track in tracks:
+#            
+#            tracks_counter = tracks_counter + 1
+#            track_length_Y = track.GetTrackLengthVector(2)
+#            track_dEdx_Y = track.GetTrack_dEdxVector(2)
+#            
+#            for hit in range(track_dEdx_Y.size()):
+#                
+#                hits_counter = hits_counter + 1
+#                hit_df = pd.DataFrame({'run':track.run,'subrun':track.subrun,'event':track.event,
+#                                      'track_id':track.track_id,
+#                                      'plane':2,
+#                                      'hit':hit,
+#                                      'track_length':track_length_Y.at(hit),
+#                                      'dEdx':track_dEdx_Y.at(hit),
+#                                      'MCpdgCode':track.MCpdgCode }
+#                                      , index = [hits_counter])
+#                hits_df = hits_df.append( hit_df )
+#    
+#        stream_dataframe_to_file( hits_df , hits_file_name )
 
-    hits_df.to_csv( hits_file_name )
-    print_filename( hits_file_name , "wrote hits file for %d tracks, %d hits (3 planes)"%(ana_pandoranu.GetEntries(),hits_counter) )
+#    hits_df.to_csv( hits_file_name )
+#    print_filename( hits_file_name ,"%d tracks, %d Y-plane hits"%(Nreduced,hits_counter) )
 
 
 

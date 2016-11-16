@@ -28,7 +28,7 @@ class AnalyzeTracksFile{
 public:
     
     /// Default constructor
-    AnalyzeTracksFile( TString fPath, TString fName = "BNB_5e19POT" , Int_t fdebug = 0 );
+    AnalyzeTracksFile( TString fPath, TString fName , Int_t fdebug = 0 );
     ~AnalyzeTracksFile(){ TracksFile->Close(); }
     
     

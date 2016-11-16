@@ -109,9 +109,9 @@ public:
     
     void   AddNeighborTrack ( Int_t , Float_t , Float_t );
 //    void           Set_dEdx (std::vector<Float_t>* , std::vector<Float_t>* , std::vector<Float_t>* );
-    void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
-                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
-                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> );
+    void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
+                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
+                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>  );
 
     
     
@@ -123,8 +123,40 @@ public:
     Float_t          GetPhi (){return phi;};
 //    std::vector<Float_t> GetTrackLengthVector (int plane) {return track_length[plane];};
 //    std::vector<Float_t> GetTrack_dEdxVector  (int plane) {return dEdx[plane];};
+    std::vector<Float_t> GetTrackLengthVector (int plane)
+    {
+        switch (plane) {
+            case 0:
+                return track_length_U;
+                break;
+            case 1:
+                return track_length_V;
+                break;
+            case 2:
+                return track_length_Y;
+                break;
+            default:
+                return track_length_Y;
+                break;
+        }};
+    std::vector<Float_t> GetTrack_dEdxVector  (int plane) {
+        switch (plane) {
+            case 0:
+                return dEdx_U;
+                break;
+            case 1:
+                return dEdx_V;
+                break;
+            case 2:
+                return dEdx_Y;
+                break;
+            default:
+                return dEdx_Y;
+                break;
+        }};
+
     
-        
+    
         
 
     
@@ -149,9 +181,9 @@ public:
     
     // dE/dx
 //    std::vector <Float_t> track_dx[3], track_length[3], dEdx[3];
-    std::vector <Float_t> track_dx_U, track_length_U, dEdx_U;
-    std::vector <Float_t> track_dx_V, track_length_V, dEdx_V;
-    std::vector <Float_t> track_dx_Y, track_length_Y, dEdx_Y;
+    std::vector <Float_t> track_dx_U, track_length_U, dEdx_U , Edep_U;
+    std::vector <Float_t> track_dx_V, track_length_V, dEdx_V , Edep_V;
+    std::vector <Float_t> track_dx_Y, track_length_Y, dEdx_Y , Edep_Y;
 
     
     // tracks which are closer than TracsMinDistance, at the same event, are labled as 'neighbor-tracks'

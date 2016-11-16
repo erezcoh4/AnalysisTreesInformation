@@ -91,9 +91,9 @@ void PandoraNuTrack::Set_dqdx (Float_t fstart_dqdx, Float_t fend_dqdx, Float_t f
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //void PandoraNuTrack::Set_dEdx (std::vector <Float_t> * ftrack_dx, std::vector <Float_t> * ftrack_length, std::vector <Float_t> * fdEdx ){
-void PandoraNuTrack::Set_dEdx (std::vector <Float_t> ftrack_dx_U, std::vector <Float_t> ftrack_length_U, std::vector <Float_t> fdEdx_U,
-                               std::vector <Float_t> ftrack_dx_V, std::vector <Float_t> ftrack_length_V, std::vector <Float_t> fdEdx_V,
-                               std::vector <Float_t> ftrack_dx_Y, std::vector <Float_t> ftrack_length_Y, std::vector <Float_t> fdEdx_Y){
+void PandoraNuTrack::Set_dEdx (std::vector <Float_t> ftrack_dx_U, std::vector <Float_t> ftrack_length_U, std::vector <Float_t> fdEdx_U, std::vector <Float_t> fEdep_U,
+                               std::vector <Float_t> ftrack_dx_V, std::vector <Float_t> ftrack_length_V, std::vector <Float_t> fdEdx_V, std::vector <Float_t> fEdep_V,
+                               std::vector <Float_t> ftrack_dx_Y, std::vector <Float_t> ftrack_length_Y, std::vector <Float_t> fdEdx_Y, std::vector <Float_t> fEdep_Y){
 
 //    for (int plane = 0; plane < 3; plane++) {
 //        track_dx[plane] = ftrack_dx[plane];
@@ -103,12 +103,15 @@ void PandoraNuTrack::Set_dEdx (std::vector <Float_t> ftrack_dx_U, std::vector <F
     track_dx_U = ftrack_dx_U;
     track_length_U = ftrack_length_U;
     dEdx_U = fdEdx_U;
+    Edep_U = fEdep_U;
     track_dx_V = ftrack_dx_V;
     track_length_V = ftrack_length_V;
     dEdx_V = fdEdx_V;
+    Edep_V = fEdep_V;
     track_dx_Y = ftrack_dx_Y;
     track_length_Y = ftrack_length_Y;
     dEdx_Y = fdEdx_Y;
+    Edep_Y = fEdep_Y;
 
 }
 
