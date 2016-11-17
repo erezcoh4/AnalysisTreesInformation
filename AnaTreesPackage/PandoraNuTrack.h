@@ -100,15 +100,24 @@ public:
     void       Set_tot_dqdx (Float_t dqdx)  {tot_dqdx = dqdx;};
     void       Set_avg_dqdx (Float_t dqdx)  {avg_dqdx = dqdx;};
     void          Set_nhits (Int_t n)       {nhits = n;};
-    void       SetCosScores (Float_t fcscore, Float_t fccscore) {cosmicscore = fcscore; coscontscore = fccscore;};
-    void       Set_pid_info (Float_t fpida, Float_t fchi)       {pidpida = fpida; pidchi = fchi;};
     void       SetMCpdgCode (Int_t _mcpdg)  {MCpdgCode = _mcpdg;};
     void  SetCalorimetryPDG (Int_t _pdg[3]) {for (int i=0 ; i < 3 ; i++ ) CalorimetryPDG[i] = _pdg[i];};
+    
+    void       SetCosScores (Float_t fcscore, Float_t fccscore)
+    {cosmicscore = fcscore; coscontscore = fccscore;};
+    
+    void       Set_pid_info (Float_t fpida, Float_t fchi)
+    {pidpida = fpida; pidchi = fchi;};
+    
+    void     SetTrackPurity (Float_t fpurtruth_U, Float_t fpurtruth_V, Float_t fpurtruth_Y)
+    { purtruth_U = fpurtruth_U; purtruth_V = fpurtruth_V; purtruth_Y = fpurtruth_Y ;};
+
     void           Set_dqdx (Float_t, Float_t, Float_t, Int_t);
     void       SetFlashInfo (Float_t fcftime, Float_t fcftimewidth, Float_t fcfzcenter, Float_t fcfzwidth, Float_t fcfycenter, Float_t fcfywidth, Float_t fcftotalpe, Float_t fcfdistance);
     
+    
+    
     void   AddNeighborTrack ( Int_t , Float_t , Float_t );
-//    void           Set_dEdx (std::vector<Float_t>* , std::vector<Float_t>* , std::vector<Float_t>* );
     void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
                              std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
                              std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>  );
@@ -121,8 +130,6 @@ public:
     Float_t       GetLength (){return length;};
     Float_t        GetTheta (){return theta;};
     Float_t          GetPhi (){return phi;};
-//    std::vector<Float_t> GetTrackLengthVector (int plane) {return track_length[plane];};
-//    std::vector<Float_t> GetTrack_dEdxVector  (int plane) {return dEdx[plane];};
     std::vector<Float_t> GetTrackLengthVector (int plane)
     {
         switch (plane) {
@@ -173,14 +180,13 @@ public:
     Float_t     dqdx_diff   , dqdx_ratio;
     Float_t     pidpida     , pidchi    , cosmicscore   , coscontscore;
     Float_t     cftime      , cftimewidth   , cfzcenter , cfzwidth, cfycenter , cfywidth  , cftotalpe , cfdistance;
-    
+    Float_t     purtruth_U  , purtruth_V    , purtruth_Y;
     TString     TopBottDir  , ForBackDir    , LefRghtDir;
 
     
     box         roi[3];
     
     // dE/dx
-//    std::vector <Float_t> track_dx[3], track_length[3], dEdx[3];
     std::vector <Float_t> track_dx_U, track_length_U, dEdx_U , Edep_U;
     std::vector <Float_t> track_dx_V, track_length_V, dEdx_V , Edep_V;
     std::vector <Float_t> track_dx_Y, track_length_Y, dEdx_Y , Edep_Y;

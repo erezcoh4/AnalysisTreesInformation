@@ -148,9 +148,12 @@ void cumputeAnaTree::InitInputTree(){
         
         if (debug>1)  Printf ("\n\nrunning on MC mode...\n\n");
         InTree -> SetBranchAddress("geant_list_size"                            , &geant_list_size);
-        InTree -> SetBranchAddress("trkg4id_pandoraCosmic"                      , &trkg4id_pandoraNu);
+        InTree -> SetBranchAddress("trkg4id_pandoraNu"                          , &trkg4id_pandoraNu);
         InTree -> SetBranchAddress("TrackId"                                    , &TrackId);
         InTree -> SetBranchAddress("pdg"                                        , &pdg);
+        // purity
+        InTree -> SetBranchAddress("trkpurtruth"                                , &trkpurtruth);
+
         
         InTree -> SetBranchAddress("mcevts_truth"                               , &mcevts_truth);
         InTree -> SetBranchAddress("nuPDG_truth"                                , &nuPDG_truth);
@@ -472,7 +475,9 @@ void cumputeAnaTree::GetPandoraNuTracks(){
             if(debug>3) Printf("this is data, so no MC information");
             c_track.SetMCpdgCode(-9999);
         }
-        
+        // purity in each plane
+        c_track.SetTrackPurity(trkpurtruth[j][0] , trkpurtruth[j][1] , trkpurtruth[j][2]);
+
         
         tracks.push_back(c_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",tracks.size());
