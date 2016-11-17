@@ -180,7 +180,11 @@ public:
     Float_t     dqdx_diff   , dqdx_ratio;
     Float_t     pidpida     , pidchi    , cosmicscore   , coscontscore;
     Float_t     cftime      , cftimewidth   , cfzcenter , cfzwidth, cfycenter , cfywidth  , cftotalpe , cfdistance;
+    // The trkpurtruth - purity variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
     Float_t     purtruth_U  , purtruth_V    , purtruth_Y;
+    
+    
+    
     TString     TopBottDir  , ForBackDir    , LefRghtDir;
 
     
