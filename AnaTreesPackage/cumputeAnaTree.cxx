@@ -464,7 +464,6 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     if(debug>3) Printf("truth pdg is: %d",pdg[ig4]);
                     FoundMCtrack = true;
                     c_track.SetMCpdgCode(pdg[ig4]);
-                    SHOW3(trkpurtruth[ig4][0] , trkpurtruth[ig4][1] , trkpurtruth[j][2]);
                 }
             }
             if (!FoundMCtrack) {
@@ -472,13 +471,12 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                 c_track.SetMCpdgCode(-9999);
             }
             // purity in each plane
-            SHOW3(trkpurtruth[j][0] , trkpurtruth[j][1] , trkpurtruth[j][2]);
-            
             c_track.SetTrackPurity(trkpurtruth[j][0] , trkpurtruth[j][1] , trkpurtruth[j][2]);
         }
         else {
             if(debug>3) Printf("this is data, so no MC information");
             c_track.SetMCpdgCode(-9999);
+            c_track.SetTrackPurity(-9999,-9999,-9999);
         }
 
         
