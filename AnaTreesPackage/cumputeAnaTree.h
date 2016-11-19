@@ -151,7 +151,7 @@ public:
     Int_t       mode_truth[kMaxTruth];      //neutrino nucleus 0=Quasi-elastic or Elastic, 1=Resonant (RES), 2=DIS, 3=Coherent production
     Int_t       hitnuc_truth[kMaxTruth];    //neutrino scattering off of which nucleon (proton or neutron); holds the pdg of the nucleon
 
-    Int_t       trkpurtruth[MAX_tracks][3]; // The trkpurtruth variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
+    Float_t     trkpurtruth[MAX_tracks][3]; // The trkpurtruth variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
     
     
     Float_t     startdqdx , enddqdx     , totaldqdx;

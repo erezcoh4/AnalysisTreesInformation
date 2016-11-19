@@ -464,7 +464,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     if(debug>3) Printf("truth pdg is: %d",pdg[ig4]);
                     FoundMCtrack = true;
                     c_track.SetMCpdgCode(pdg[ig4]);
-                    SHOW3(trkpurtruth[ig4][0] , trkpurtruth[ig4][1] , trkpurtruth[ig4][2]);
+                    SHOW3(trkpurtruth[ig4][0] , trkpurtruth[ig4][1] , trkpurtruth[j][2]);
                 }
             }
             if (!FoundMCtrack) {
