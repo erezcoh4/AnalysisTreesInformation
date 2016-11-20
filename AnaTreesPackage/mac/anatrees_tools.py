@@ -159,7 +159,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     print_filename( AnalysisTreesListName , "input: (1) analysis trees ")
     # input: (2) intersected mu-p list
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName , p_score )
-    print_filename( IntersectionListName , "input (2): intersected Sel2/GBDTprotons lists (%d tracks)"%len(df_intersection))
+    print_filename( IntersectionListName , "input (2): intersected Sel2/GBDTprotons lists ")
     
     # output: schemed analysis trees file
     SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
