@@ -33,11 +33,10 @@ schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 # list names and file names
 # -------------------------
-def Sel2muons_list_name():
-    
-    if flags.DataType == "BNB":
+def Sel2muons_list_name(DataType = "BNB_5e19POT"):
+    if DataType == "BNB_5e19POT":
         neutrinoSel2_list_name = "BeamOnData_pandoraNu_pandoraNu.csv"
-    elif flags.DataType == "EXTBNB":
+    elif DataType == "EXTBNB":
         neutrinoSel2_list_name = "BeamOffData_pandoraNu_pandoraNu.csv"
     return neutrinoSel2_path + "/" + neutrinoSel2_list_name
 
@@ -118,23 +117,26 @@ def search_rse( RSE , EventsList ):
 def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_score ):
     import csv, pandas as pd
     
-    GBDTpListName   = GBDTprotonsListName( GBDTmodelName, TracksListName, p_score ,'ROIs')
+    # input: (1) proton list
+    GBDTpListName = GBDTclassListName( GBDTmodelName, TracksListName, 'protons', p_score ,'roi')
     print_filename( GBDTpListName , "opening GBDT protons list name:")
-    Sel2muListName  = Sel2muons_list_name()
+    # input: (2) selection2 muons list
+    Sel2muListName  = Sel2muons_list_name( TracksListName )
     print_filename( Sel2muListName , "opening Sel2 muons list name:")
 
     df_GBDTp = pd.read_csv( GBDTpListName , delimiter=' ' )
     df_Sel2mu = pd.read_csv( Sel2muListName , delimiter=' ' )
     df_intersection = pd.merge(df_GBDTp, df_Sel2mu, how='inner', on=['run', 'subrun','event'])
     
+    # output: intesection of (1) and (2)
     IntersectionListName = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName ,p_score )
     df_intersection = df_intersection.rename(columns={ 'trkindex[ivtx][itrk]':'itrk-NuSelMuon',
                                              'ivtx':'ivtx-NuSel', 'trackid':'itrk-GBDTproton'} )
     df_intersection[['run','subrun','event',
                     'ivtx-NuSel','itrk-NuSelMuon',
                     'itrk-GBDTproton']].to_csv(IntersectionListName, sep=' ', header=True, index=False )
-    print_filename( IntersectionListName , "wrote Sel2/GBDTprotons intersection list name:")
-    print_important( "scp %s $uboone:~/"%IntersectionListName )
+    print_filename( IntersectionListName , "intersected Sel2/GBDTprotons lists (%d tracks)"%len(df_intersection))
+    print_important( "more %s \nscp %s $uboone:~/"%(IntersectionListName,IntersectionListName) )
     print_line()
 
 
@@ -152,9 +154,13 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     and returns a tree containing only entries with a Run/Subrun/Event
     of a given list (RSE map)
     '''
-    # input: (1) analysis trees, (2) mu-p list
+    # input: (1) analysis trees
     AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
+    print_filename( AnalysisTreesListName , "input: (1) analysis trees ")
+    # input: (2) intersected mu-p list
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName , p_score )
+    print_filename( IntersectionListName , "input (2): intersected Sel2/GBDTprotons lists (%d tracks)"%len(df_intersection))
+    
     # output: schemed analysis trees file
     SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     it = ImportantTools()

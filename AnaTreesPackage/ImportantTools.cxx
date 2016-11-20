@@ -47,8 +47,10 @@ TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName 
         
         if (event_number == event){
             OutTree->Fill();
-            Printf("filled output tree with run-%d subrun-%d event-%d",run,subrun,event);
-            SHOW(OutTree->GetEntries());
+            if (debug>2) {
+                Printf("filled output tree with run-%d subrun-%d event-%d",run,subrun,event);
+                SHOW(OutTree->GetEntries());
+            }
         }
     }
     

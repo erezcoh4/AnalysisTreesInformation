@@ -2,7 +2,8 @@ from anatrees_tools import *
 '''
     usage:
     ------
-    python $AnalysisTreesAna/mac/muon_proton_id.py --DataType=BNB --option=<intersect>
+    python $AnalysisTreesAna/mac/muon_proton_id.py  --option=intersect
+    
     options: 
         extractMC   {"extract tracks information from MC AnalysisTrees"}
         extractDATA {"extract tracks information from AnalysisTrees"} --DataType=BNB -ff=0.01 -evf=0.01
@@ -13,8 +14,10 @@ from anatrees_tools import *
 
 
 TracksListName          = "BNB_5e19POT"
-GBDTmodelName           = "BNB_TrainedOn_only_MC_BNB"
-p_score                 = 0.99
+GBDTmodelName           = "multi_BNB_TrainedOn_MCBNB_MCCOSMIC"  # options: 'BNB_TrainedOn_only_MC_BNB'
+maxscore                = 'protons'
+p_score                 = 0.9
+
 
 
 
