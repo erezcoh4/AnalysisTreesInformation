@@ -170,7 +170,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     OutTree = it.SchemeTreeRSEList( in_chain , IntersectionListName , flags.verbose )
 
     if flags.verbose:
-        print_filename(SchemedResultFileName , "wrote schemed file (%d events, %.2f MB):"%(OutTree.GetEntries(),float(os.path.getsize(SchemedResultFileName)/1048576.0)))
+        print_filename(SchemedResultFileName , "schemed anatrees file (%d events, %.2f MB):"%(OutTree.GetEntries(),float(os.path.getsize(SchemedResultFileName)/1048576.0)))
     
     OutTree.Write()
     OutFile.Close()
