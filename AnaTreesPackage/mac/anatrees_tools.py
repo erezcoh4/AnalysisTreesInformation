@@ -155,8 +155,8 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     of a given list (RSE map)
     '''
     # input: (1) analysis trees
-    AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
-    print_filename( AnalysisTreesListName , "input: (1) analysis trees ")
+    AnaTreesListName = DataType + "_AnalysisTrees" # AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
+    print_filename( AnaTreesListName , "input: (1) analysis trees ")
     # input: (2) intersected mu-p list
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName , p_score )
     print_filename( IntersectionListName , "input (2): intersected Sel2/GBDTprotons lists ")
@@ -164,7 +164,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     # output: schemed analysis trees file
     SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     it = ImportantTools()
-    files = read_files_from_a_list( AnalysisTreesListName )
+    files = read_files_from_a_list( AnaTreesListName )
     in_chain = get_analysistrees_chain(files)
     OutFile = ROOT.TFile( SchemedResultFileName , "recreate" )
     OutTree = it.SchemeTreeRSEList( in_chain , IntersectionListName , flags.verbose )
