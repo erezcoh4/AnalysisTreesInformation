@@ -155,7 +155,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     of a given list (RSE map)
     '''
     # input: (1) analysis trees
-    AnaTreesListName = DataType + "_AnalysisTrees" # AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
+    AnaTreesListName = flags.DataType + "_AnalysisTrees" # AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
     print_filename( AnaTreesListName , "input: (1) analysis trees ")
     # input: (2) intersected mu-p list
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName , p_score )
