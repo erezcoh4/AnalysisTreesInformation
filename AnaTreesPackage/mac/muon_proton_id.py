@@ -90,7 +90,7 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName , TracksListName , p_score )
     print_filename( IntersectionListName , "mu-p intersection lise" )
     output_mupRSEFileName   = mu_p_intersection_path + "/" + good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score  )
-    print_filename( mupRSEFileName , "output mu-p R/S/E File Name" )
+    print_filename( output_mupRSEFileName , "output mu-p R/S/E File Name" )
     extract_anatrees_tracks_information_from_a_file( flags.DataType ,
                                                     SchemedResultFileName ,
                                                     Option = "find common muon-proton vertices" ,
