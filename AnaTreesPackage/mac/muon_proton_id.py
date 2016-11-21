@@ -87,12 +87,10 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
     print_important( "find common muon-proton vertices" )
     SchemedResultFileName   = schemed_anatrees_file_name( flags.DataType + "_AnalysisTrees" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     print_filename( SchemedResultFileName , "Schemed analysistrees File Name" )
-#    SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName , TracksListName , p_score )
     print_filename( IntersectionListName , "mu-p intersection lise" )
-    mupRSEFileName          = mu_p_intersection_path + "/" + good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score  )
-    print_filename( mupRSEFileName , "mu-p R/S/E File Name" )
-    exit(0)
+    output_mupRSEFileName   = mu_p_intersection_path + "/" + good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score  )
+    print_filename( mupRSEFileName , "output mu-p R/S/E File Name" )
     extract_anatrees_tracks_information_from_a_file( flags.DataType ,
                                                     SchemedResultFileName ,
                                                     Option = "find common muon-proton vertices" ,
@@ -100,7 +98,7 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
                                                     TreeName = "anatree",
                                                     AddEventsList = True,
                                                     EventsListName = IntersectionListName,
-                                                    mupRSEFileName = mupRSEFileName )
+                                                    mupRSEFileName = output_mupRSEFileName )
 
 
 
