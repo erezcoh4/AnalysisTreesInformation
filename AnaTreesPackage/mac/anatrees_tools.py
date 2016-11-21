@@ -163,7 +163,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     print_filename( IntersectionListName , "input (2): intersected Sel2/GBDTprotons lists ")
     
     # output: schemed analysis trees file
-    SchemedResultFileName   = schemed_anatrees_file_name( "GOOD"+flags.DataType+"_filesana.list" , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
+    SchemedResultFileName   = schemed_anatrees_file_name( AnaTreesListName , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     it = ImportantTools()
     files = read_files_from_a_list( AnaTreesListName )
     in_chain = get_analysistrees_chain(files)
