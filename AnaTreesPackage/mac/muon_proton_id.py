@@ -98,7 +98,7 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
                                                     TreeName = "anatree",
                                                     AddEventsList = True,
                                                     EventsListName = IntersectionListName,
-                                                    mupRSEFileName = output_mupRSEFileName )
+                                                    output_mupRSEFileName = output_mupRSEFileName )
 
 
 

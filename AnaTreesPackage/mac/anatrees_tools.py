@@ -199,12 +199,12 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
                                                     TreeName="analysistree/anatree",
                                                     AddEventsList=False ,
                                                     EventsListName="",
-                                                    mupRSEFileName="" ):
+                                                    output_mupRSEFileName="" ):
     
     AnaTreesListName = DataType + "_AnalysisTrees"
     in_chain = ROOT.TChain( TreeName )
     in_chain.Add( InputFileName )
-    extract_anatrees_tracks_information( in_chain, Option, MCmode, AddEventsList, EventsListName , AnaTreesListName , mupRSEFileName )
+    extract_anatrees_tracks_information( in_chain, Option, MCmode, AddEventsList, EventsListName , AnaTreesListName , output_mupRSEFileName )
 
 
 
@@ -213,7 +213,7 @@ def extract_anatrees_tracks_information( in_chain, Option,
                                         first_anatree_file=0, last_anatree_file=1,
                                         MCmode=False,
                                         AddEventsList=False,
-                                        EventsListName="", AnaTreesListName="", mupRSEFileName="" ):
+                                        EventsListName="", AnaTreesListName="", output_mupRSEFileName="" ):
 
 
     if Option != 'extract all tracks information' and Option != 'find common muon-proton vertices':
@@ -226,7 +226,7 @@ def extract_anatrees_tracks_information( in_chain, Option,
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
 
     if Option=="find common muon-proton vertices":
-        output_rse_file = open( mupRSEFileName , "w" )
+        output_rse_file = open( output_mupRSEFileName , "w" )
 
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
@@ -292,7 +292,7 @@ def extract_anatrees_tracks_information( in_chain, Option,
     print_filename( TracksAnaFileName , "wrote root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
 
     if Option=="find common muon-proton vertices":
-        print_filename( mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
+        print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
         output_rse_file.close()
 
 
