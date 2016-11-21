@@ -103,9 +103,6 @@ def get_analysistrees_chain(files):
 
 # -------------------------
 def search_rse( RSE , EventsList ):
-#    if find_rse( RSE , EventsList ):
-#        return True , e['ivtx-NuSel'], e['itrk-NuSelMuon'], e['itrk-GBDTproton']
-#    return False , -1 , -1 , -1
     run,subrun,event = RSE[0],RSE[1],RSE[2]
     for e in EventsList:
         if e['run'] == run and e['subrun'] == subrun and e['event'] == event:
@@ -246,7 +243,6 @@ def extract_anatrees_tracks_information( in_chain, Option,
             rse_events_list = [dict(zip(header, map(int, row))) for row in reader]
         if flags.verbose>3:
             print rse_events_list
-            print rse_events_list['run']
 
 
     counter = 0
