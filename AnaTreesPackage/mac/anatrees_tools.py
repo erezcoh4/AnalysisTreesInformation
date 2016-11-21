@@ -204,7 +204,7 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
     AnaTreesListName = DataType + "_AnalysisTrees"
     in_chain = ROOT.TChain( TreeName )
     in_chain.Add( InputFileName )
-    extract_anatrees_tracks_information( in_chain, Option, MCmode, AddEventsList, EventsListName , AnaTreesListName , output_mupRSEFileName )
+    extract_anatrees_tracks_information( in_chain, Option, 0, 0 , MCmode, AddEventsList, EventsListName , AnaTreesListName , output_mupRSEFileName )
 
 
 
