@@ -22,7 +22,7 @@ roi_map_name    = "features_Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCO
 
 # output: where the images will be generated
 images_name     = "BNB_5e19POT_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_mu_p_intersection_maxdistance_10cm"
-n_max_entries   = -1 if flags.evnts_frac < 1 else int(flags.evnts_frac) # how many images? -1 means we analyze all TTree entries
+n_max_entries   = 1000 if flags.evnts_frac < 1 else int(flags.evnts_frac) # how many images? -1 means we analyze all TTree entries
 
 # create a directory for the new images
 init.create_dir( data_files_path + "/images/" , images_name )
