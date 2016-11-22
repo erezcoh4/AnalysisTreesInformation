@@ -23,7 +23,7 @@ roi_map_name    = "features_Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCO
 images_name     = "BNB_5e19POT_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_mu_p_intersection_maxdistance_10cm"
 
 # create a directory for the new images
-create_dir( data_files_path + "/images/" , images_name )
+init.create_dir( data_files_path + "/images/" , images_name )
 images_path = data_files_path + "/images/" + images_name
 
 
