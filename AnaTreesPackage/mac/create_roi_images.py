@@ -37,7 +37,9 @@ print_important( "output: images at %s"%images_path )
 
 # create the framework
 my_fwk = fmwk.ana_processor()
+print 'adding input file: ' + data_files_path + "/BNB_DATA/larlite_files/" + latlitefilename
 my_fwk.add_input_file( data_files_path + "/BNB_DATA/larlite_files/" + latlitefilename )
+print 'added input file '
 my_fwk.set_io_mode( fmwk.storage_manager.kREAD )
 my_fwk.set_ana_output_file( data_files_path + "/AnaFiles/Ana_%s" % latlitefilename )
 
