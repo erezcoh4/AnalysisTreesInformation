@@ -5,11 +5,8 @@ from uboone_tools import *
 from gbdt_tools import *
 from larlite import *
 from ROOT import PandoraNuTrack
-print 'imported  pandoraNuTrack...'
 from ROOT import cumputeAnaTree
-print 'imported   cumputeAnaTree...'
 from ROOT import ImportantTools
-print 'imported   ImportantTools...'
 from ROOT import AnalyzeTracksFile
 
 
