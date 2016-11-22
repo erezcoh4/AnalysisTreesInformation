@@ -41,7 +41,9 @@ print 'adding input file: ' + data_files_path + "/BNB_DATA/larlite_files/" + lat
 my_fwk.add_input_file( data_files_path + "/BNB_DATA/larlite_files/" + latlitefilename )
 print 'added input file '
 my_fwk.set_io_mode( fmwk.storage_manager.kREAD )
+print 'adding output file: ' + data_files_path + data_files_path + "/AnaFiles/Ana_%s" % latlitefilename
 my_fwk.set_ana_output_file( data_files_path + "/AnaFiles/Ana_%s" % latlitefilename )
+print 'added ouput file '
 
 
 
