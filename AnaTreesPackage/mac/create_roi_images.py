@@ -32,7 +32,7 @@ n_max_entries   = -1 if flags.evnts_frac <= 1 else int(flags.evnts_frac)
 # create a directory for the new images
 init.create_dir( data_files_path + "/images/" , images_name )
 images_path = data_files_path + "/images/" + images_name
-print_important( "output: images at ", images_path )
+print_important( "output: images at %s"%images_path )
 # ---------------------------------------------------------------- #
 
 
