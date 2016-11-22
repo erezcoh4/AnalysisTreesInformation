@@ -112,12 +112,13 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
 
 # (10) create ROI images
 # -------------------------------------------------------------------
+if flags.option=="create ROI images" or 'roi' in flags.option or 'ROI' in flags.option:
+    print_important('python $AnalysisTreesAna/mac/create_roi_images.py -wuboone -v2 -evf=3')
 
 
-
-# (11) analyze
+# (11) further analysis
 # -------------------------------------------------------------------
-
+# ....
 
 
 
