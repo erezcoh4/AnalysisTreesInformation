@@ -118,9 +118,9 @@ public:
     
     
     void   AddNeighborTrack ( Int_t , Float_t , Float_t );
-    void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
-                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
-                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>  );
+    void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
+                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
+                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>  );
 
     
     
@@ -134,16 +134,16 @@ public:
     {
         switch (plane) {
             case 0:
-                return track_length_U;
+                return residual_range_U;
                 break;
             case 1:
-                return track_length_V;
+                return residual_range_V;
                 break;
             case 2:
-                return track_length_Y;
+                return residual_range_Y;
                 break;
             default:
-                return track_length_Y;
+                return residual_range_Y;
                 break;
         }};
     std::vector<Float_t> GetTrack_dEdxVector  (int plane) {
@@ -191,9 +191,9 @@ public:
     box         roi[3];
     
     // dE/dx
-    std::vector <Float_t> track_dx_U, track_length_U, dEdx_U , Edep_U;
-    std::vector <Float_t> track_dx_V, track_length_V, dEdx_V , Edep_V;
-    std::vector <Float_t> track_dx_Y, track_length_Y, dEdx_Y , Edep_Y;
+    std::vector <Float_t> track_dx_U, residual_range_U, dEdx_U , Edep_U, dqdx_U;
+    std::vector <Float_t> track_dx_V, residual_range_V, dEdx_V , Edep_V, dqdx_V;
+    std::vector <Float_t> track_dx_Y, residual_range_Y, dEdx_Y , Edep_Y, dqdx_Y;
 
     
     // tracks which are closer than TracsMinDistance, at the same event, are labled as 'neighbor-tracks'

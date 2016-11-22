@@ -45,7 +45,7 @@ if flags.option=="write hits features to csv file" or 'hits' in flags.option:
 #        for track in tracks:
 #            
 #            tracks_counter = tracks_counter + 1
-#            track_length_Y = track.GetTrackLengthVector(2)
+#            residual_range_Y = track.GetTrackLengthVector(2)
 #            track_dEdx_Y = track.GetTrack_dEdxVector(2)
 #            
 #            for hit in range(track_dEdx_Y.size()):
@@ -55,7 +55,7 @@ if flags.option=="write hits features to csv file" or 'hits' in flags.option:
 #                                      'track_id':track.track_id,
 #                                      'plane':2,
 #                                      'hit':hit,
-#                                      'track_length':track_length_Y.at(hit),
+#                                      'track_length':residual_range_Y.at(hit),
 #                                      'dEdx':track_dEdx_Y.at(hit),
 #                                      'MCpdgCode':track.MCpdgCode }
 #                                      , index = [hits_counter])
