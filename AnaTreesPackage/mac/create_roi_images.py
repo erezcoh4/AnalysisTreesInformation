@@ -14,10 +14,10 @@ from larlite import larlite as fmwk
 '''
 
 # input (1): larlite file
-infilename      = "larlite_BNB_5e19POT_TrainedOn_only_MC_BNB_pscore0.99_3942evts_5nov2016.root"
+infilename      = "larlite_BNB5e19_mu-p_vertex_maxscoredprotons_score_0.9_917evnts_22Nov2016.root"
 
 # input (2): roi map for muon-proton vertices
-roi_map_path    = '/uboone/app/users/ecohen/AnalysisTreesAna/FeaturesFiles/'
+roi_map_path    = featuresfiles_path
 roi_map_name    = "features_Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv"
 
 # output: where the images will be generated
