@@ -2,6 +2,7 @@ import sys
 sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 from uboone_tools import *
+from larlite import larlite as fmwk
 '''
     
     usage:
