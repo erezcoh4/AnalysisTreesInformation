@@ -36,21 +36,25 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
     # ---------------
     # BNB MC
     # ---------------
-    # extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
-    # ---------------
-    # single particle MC
-    # ---------------
-    extract_anatrees_tracks_information_from_files_list( "muminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 395 , MCmode = True ) # 395 files
-    extract_anatrees_tracks_information_from_files_list( "p_0.02-1.5GeV_isotropic" , "extract all tracks information" , 0 , 397 , MCmode = True ) # 397 files
-    extract_anatrees_tracks_information_from_files_list( "piminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 377 , MCmode = True ) # 377 files
+    extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
 
+# single particle MC
+# ---------------
 if flags.option=="extract MC-porotns tracks information from AnalysisTrees" or 'extract_protons' in flags.option:
     print_important( "extract MC-porotns tracks information from AnalysisTrees" )
     extract_anatrees_tracks_information_from_files_list( "p_0.02-1.5GeV_isotropic" , "extract all tracks information" , 0 , 397 , MCmode = True ) # 397 files
 
+# ---------------
 if flags.option=="extract MC-muons tracks information from AnalysisTrees" or 'extract_muons' in flags.option:
     print_important( "extract MC-muons tracks information from AnalysisTrees" )
     extract_anatrees_tracks_information_from_files_list( "muminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 395 , MCmode = True ) # 397 files
+
+
+# ---------------
+if flags.option=="extract MC-pions tracks information from AnalysisTrees" or 'extract_pions' in flags.option:
+    print_important( "extract MC-pions tracks information from AnalysisTrees" )
+    extract_anatrees_tracks_information_from_files_list( "piminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 377 , MCmode = True ) # 397 files
+
 
 # (2) train, build, test the GBDT models
 # -------------------------------------------------------------------
