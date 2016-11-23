@@ -4,23 +4,25 @@ scheme  = TSchemeDATA()
 '''
     usage:
     ------
-    python mac/scheme_analysisTrees_MC_particles.py  --option=low_pida
+    python mac/scheme_analysisTrees_MC_particles.py  --option=purity
     
     '''
 
 
 
-DataName = "MC_BNB"
-#main_path = "/Users/erezcohen/Desktop/uBoone/AnalysisTreesAna"
-#anafiles_path = main_path + "/TracksAnaFiles"
+DataName = "piminus_0-2.0GeV_isotropic"
+# MC_BNB / p_0.02-1.5GeV_isotropic / muminus_0-2.0GeV_isotropic / piminus_0-2.0GeV_isotropic
 
 
 
+if flags.option == 'high_purity':
+    scheme_cut = ROOT.TCut('tracks.purtruth_Y==1')
+    scheme_name = 'high_purity'
 
-if flags.option == 'purity':
-    purity = 0.9999
-    scheme_cut = ROOT.TCut('tracks.purtruth_Y>%f'%purity)
-    scheme_name = 'trkpurity%f'%purity
+if flags.option == 'low_purity':
+    max_purity = 0.5
+    scheme_cut = ROOT.TCut('tracks.purtruth_Y<%f'%max_purity)
+    scheme_name = 'low_purity_%.2f'%max_purity
 
 elif flags.option == 'low_pida':
     pidamax = 1
@@ -33,14 +35,16 @@ elif flags.option == 'high_pida':
     scheme_name = 'pidamin%d'%pidamin
 
 
-particle_names  = ['protons']
+particle_names  = ['pions']
+#    ['protons'
 #                   ,'muons'
-#                   ,'pions'
+#                   ,'pions']
 #                   ,'em']
 
-particle_cuts   = ['tracks.MCpdgCode==2212']
+particle_cuts   = ['MCpdgCode==211 || MCpdgCode==-211 || MCpdgCode==111']
+#    ['tracks.MCpdgCode==2212']
 #                   ,'MCpdgCode==13 || MCpdgCode==-13'
-#                   ,'MCpdgCode==211 || MCpdgCode==-211 || MCpdgCode==111' 
+#                   ,'MCpdgCode==211 || MCpdgCode==-211 || MCpdgCode==111']
 #                   ,'MCpdgCode==11 || MCpdgCode==-11 || MCpdgCode==22']
 
 all_name = "Tracks_" + DataName + "_AnalysisTrees.root"
