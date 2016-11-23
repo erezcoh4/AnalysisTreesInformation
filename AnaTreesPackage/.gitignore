@@ -14,3 +14,5 @@
 *~
 *.pcm
 *.swp
+*Cint.cxx
+*Dict.cxx
