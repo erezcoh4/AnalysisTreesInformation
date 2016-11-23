@@ -48,6 +48,9 @@ if flags.option=="extract MC-porotns tracks information from AnalysisTrees" or '
     print_important( "extract MC-porotns tracks information from AnalysisTrees" )
     extract_anatrees_tracks_information_from_files_list( "p_0.02-1.5GeV_isotropic" , "extract all tracks information" , 0 , 397 , MCmode = True ) # 397 files
 
+if flags.option=="extract MC-muons tracks information from AnalysisTrees" or 'extract_muons' in flags.option:
+    print_important( "extract MC-muons tracks information from AnalysisTrees" )
+    extract_anatrees_tracks_information_from_files_list( "muminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 395 , MCmode = True ) # 397 files
 
 # (2) train, build, test the GBDT models
 # -------------------------------------------------------------------
