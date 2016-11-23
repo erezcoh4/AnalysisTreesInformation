@@ -259,11 +259,13 @@ public:
     
     box ROItrk_NuSelMuon[3] , ROItrk_GBDTproton[3] , mu_p_VtxROI[3];
     
-    // energy deposition
-    std::vector <Float_t>   track_dx_U  , residual_range_U    , dEdx_U , Edep_U , dqdx_U;
-    std::vector <Float_t>   track_dx_V  , residual_range_V    , dEdx_V , Edep_V , dqdx_V;
-    std::vector <Float_t>   track_dx_Y  , residual_range_Y    , dEdx_Y , Edep_Y , dqdx_Y;
-    std::vector <TVector3>  TrkPos_U    , TrkPos_V      , TrkPos_Y;
+    // energy deposition profile
+    std::vector <Float_t>   residual_range[3]    , dEdx[3] , Edep[3] , dqdx[3];
+
+//    std::vector <Float_t>   track_dx_U  , residual_range_U    , dEdx_U , Edep_U , dqdx_U;
+//    std::vector <Float_t>   track_dx_V  , residual_range_V    , dEdx_V , Edep_V , dqdx_V;
+//    std::vector <Float_t>   track_dx_Y  , residual_range_Y    , dEdx_Y , Edep_Y , dqdx_Y;
+//    std::vector <TVector3>  TrkPos_U    , TrkPos_V      , TrkPos_Y;
 
     Float_t Nhits[3];
 

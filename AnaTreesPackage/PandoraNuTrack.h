@@ -122,6 +122,8 @@ public:
                              std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
                              std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>  );
 
+    void    SetCalorimetry_Y (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>   );
+    
     
     
     // getters
