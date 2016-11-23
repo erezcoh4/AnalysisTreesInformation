@@ -177,7 +177,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
 def extract_anatrees_tracks_information_from_files_list( DataType, Option,
                                                         first_anatree_file , last_anatree_file ,
                                                         MCmode=False, AddEventsList=False , EventsListName="" ):
-    # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT
+    # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT / single particles....
     
     AnaTreesListName = DataType + "_AnalysisTrees"
     files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file )
