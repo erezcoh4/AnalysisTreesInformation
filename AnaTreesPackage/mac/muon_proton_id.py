@@ -29,8 +29,20 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
     first_anatree_file = flags.run
     last_anatree_file = first_anatree_file + splitjobs_files
     print_important( "extract tracks information from MC AnalysisTrees" )
+    # ---------------
+    # open cosmic MC
+    # ---------------
     # extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , MCmode = True )
-    extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
+    # ---------------
+    # BNB MC
+    # ---------------
+    # extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
+    # ---------------
+    # single particle MC
+    # ---------------
+    extract_anatrees_tracks_information_from_files_list( "muminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 395 , MCmode = True ) # 395 files
+    extract_anatrees_tracks_information_from_files_list( "p_0.02-1.5GeV_isotropic" , "extract all tracks information" , 0 , 397 , MCmode = True ) # 397 files
+    extract_anatrees_tracks_information_from_files_list( "piminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 377 , MCmode = True ) # 377 files
 
 
 
