@@ -44,6 +44,9 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
     extract_anatrees_tracks_information_from_files_list( "p_0.02-1.5GeV_isotropic" , "extract all tracks information" , 0 , 397 , MCmode = True ) # 397 files
     extract_anatrees_tracks_information_from_files_list( "piminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 377 , MCmode = True ) # 377 files
 
+if flags.option=="extract MC-porotns tracks information from AnalysisTrees" or 'extract_protons' in flags.option:
+    print_important( "extract MC-porotns tracks information from AnalysisTrees" )
+    extract_anatrees_tracks_information_from_files_list( "p_0.02-1.5GeV_isotropic" , "extract all tracks information" , 0 , 397 , MCmode = True ) # 397 files
 
 
 # (2) train, build, test the GBDT models
