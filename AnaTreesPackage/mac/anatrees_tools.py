@@ -316,7 +316,7 @@ def extract_anatrees_tracks_information( in_chain, Option,
 
 
 # ------------------------------------------------------------------------------- #
-def open_csv_generate_writer( row , filename ):
+def open_csv_generate_writer( filename ):
     
     with open(filename, 'w') as csvfile:
         writer = csv.DictWriter(csvfile, fieldnames=results_features)
