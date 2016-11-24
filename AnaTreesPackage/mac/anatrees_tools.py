@@ -24,7 +24,8 @@ schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 
 results_features = ['run', 'subrun' , 'event'
-                    , 'Ntracks']
+                    , 'Ntracks'
+                    , 'track_1' , 'track_2' , 'track_3' , 'track_4' , 'track_5' , 'track_6'  , 'track_7']
 
 
 
