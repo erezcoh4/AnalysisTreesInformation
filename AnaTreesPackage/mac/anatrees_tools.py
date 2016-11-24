@@ -316,17 +316,12 @@ def extract_anatrees_tracks_information( in_chain, Option,
 
 
 # ------------------------------------------------------------------------------- #
-def stream_dataframe_to_csv( row , filename ):
+def open_csv_generate_writer( row , filename ):
     
-    # if file does not exist write header
-    if not os.path.isfile(filename):
-        with open(filename, 'w') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=results_features)
-            writer.writeheader()
-            writer.writerow( row )
-    
-    else: # else it exists so append without writing the header
-        writer.writerow( row )
+    with open(filename, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=results_features)
+        writer.writeheader()
+    return writer
 
 
 
@@ -347,6 +342,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+    writer = open_csv_generate_writer( resutls_file_name )
+
 
     if Option=="find common muon-proton vertices":
         output_rse_file = open( output_mupRSEFileName , "w" )
@@ -411,7 +408,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 
                 tracks = calc.tracks
-                results = {'run':calc.run, 'subrun':calc.subrun , 'event':calc.event }
+                writer.writerow( {'run':calc.run, 'subrun':calc.subrun , 'event':calc.event } )
 #                results = [ calc.run,calc.subrun,calc.event ]
                 stream_dataframe_to_csv( results, resutls_file_name  )
 
