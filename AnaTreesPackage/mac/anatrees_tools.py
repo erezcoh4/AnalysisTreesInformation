@@ -23,6 +23,8 @@ mu_p_intersection_path  = lists_path + "/muon_proton_intersection"
 schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 
+results_features = ['run', 'subrun' , 'event'
+                    , 'Ntracks']
 
 
 
@@ -315,12 +317,17 @@ def extract_anatrees_tracks_information( in_chain, Option,
 
 
 # ------------------------------------------------------------------------------- #
-def stream_dataframe_to_file( df , filename ):
+def stream_dataframe_to_csv( row , filename ):
+    
     # if file does not exist write header
     if not os.path.isfile(filename):
-        df.to_csv(filename,header ='column_names' , index = False)
+        with open(filename, 'w') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=results_features)
+        writer.writeheader()
+        writer.writerow( row )
+    
     else: # else it exists so append without writing the header
-        df.to_csv(filename,mode = 'a', header=False , index = False)
+        writer.writerow( row )
 
 
 
@@ -405,11 +412,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 
                 tracks = calc.tracks
-                results = pd.DataFrame({
-                                       'run':calc.run,'subrun':calc.subrun,'event':calc.event
-                                       ,'Ntracks':int(tracks.size())
-                                       } , index = [counter])
-                stream_dataframe_to_file( results, resutls_file_name  )
+                results = [ calc.run,calc.subrun,calc.event
+                           , int(tracks.size())]
+                stream_dataframe_to_csv( results, resutls_file_name  )
 
 
 
