@@ -322,9 +322,9 @@ def stream_dataframe_to_csv( row , filename ):
     # if file does not exist write header
     if not os.path.isfile(filename):
         with open(filename, 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=results_features)
-        writer.writeheader()
-        writer.writerow( row )
+            writer = csv.DictWriter(csvfile, fieldnames=results_features)
+            writer.writeheader()
+            writer.writerow( row )
     
     else: # else it exists so append without writing the header
         writer.writerow( row )
