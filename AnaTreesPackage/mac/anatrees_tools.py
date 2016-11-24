@@ -318,9 +318,8 @@ def extract_anatrees_tracks_information( in_chain, Option,
 # ------------------------------------------------------------------------------- #
 def open_csv_generate_writer( filename ):
     
-    with open(filename, 'w') as csvfile:
-        writer = csv.DictWriter(csvfile, fieldnames=results_features)
-        writer.writeheader()
+    writer = csv.writer(open(filename, 'wb'))
+    writer = csv.writer(results_features)
     return writer
 
 
@@ -408,8 +407,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 
                 tracks = calc.tracks
+                
+                writer.writerow( [calc.run, 'subrun':calc.subrun , 'event':calc.event] )
+                print "writer.writerow( [calc.run, 'subrun':calc.subrun , 'event':calc.event] )"
                 writer.writerow( {'run':calc.run, 'subrun':calc.subrun , 'event':calc.event } )
-#                results = [ calc.run,calc.subrun,calc.event ]
+                print "writer.writerow( {'run':calc.run, 'subrun':calc.subrun , 'event':calc.event } )"
                 stream_dataframe_to_csv( results, resutls_file_name  )
 
 
