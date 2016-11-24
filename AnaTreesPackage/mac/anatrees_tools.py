@@ -319,7 +319,7 @@ def extract_anatrees_tracks_information( in_chain, Option,
 def open_csv_generate_writer( filename ):
     
     writer = csv.writer(open(filename, 'wb'))
-    writer = csv.writer(results_features)
+    writer.writerow(results_features)
     return writer
 
 
