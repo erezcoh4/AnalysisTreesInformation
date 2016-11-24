@@ -408,8 +408,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 
                 tracks = calc.tracks
-                tracks.Print()
-                
+                print 'len(tracks):',len(tracks) 
                 resutls = [calc.run, calc.subrun , calc.event
                            , len(tracks) ]
                 writer.writerow( resutls )
