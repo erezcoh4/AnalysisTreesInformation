@@ -408,11 +408,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 
                 tracks = calc.tracks
-#                print 'tracks.size():',tracks.size()
-                for track in tracks:
-                    track.Print()
+                print 'calc.Ntracks:',calc.Ntracks
+                for i in range(calc.Ntracks):
+                    track[i].Print()
                 resutls = [calc.run, calc.subrun , calc.event
-                           , len(tracks) ]
+                           , calc.Ntracks ]
                 writer.writerow( resutls )
                 print "writer.writerow( [calc.run, calc.subrun , calc.event] )"
 
