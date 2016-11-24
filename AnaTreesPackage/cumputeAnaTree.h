@@ -67,9 +67,10 @@ public:
     void        SetOption (TString foption) {option = foption;};
     
     // getters
-    TTree*          GetInTree (){return InTree;};
-    TTree*         GetOutTree (){return OutTree;};
+    TTree*          GetInTree ()            {return InTree;};
+    TTree*         GetOutTree ()            {return OutTree;};
     void             GetEntry (int);
+    PandoraNuTrack   GetTrack (int i)       {return tracks.at(i);};
    
     // initializations
     void    InitInputTree ();
