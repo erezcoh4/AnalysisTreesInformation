@@ -399,7 +399,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
             
-            if do_continue:
+            if calc.Ntracks>0 and do_continue:
                 
                 counter = counter+1
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
@@ -407,14 +407,17 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 
                 
-                tracks = calc.tracks
                 print 'calc.Ntracks:',calc.Ntracks
+                results = [ calc.run, calc.subrun , calc.event , calc.Ntracks ]
+                
                 for i in range(calc.Ntracks):
                     track = calc.GetTrack(i)
                     track.Print()
-                resutls = [calc.run, calc.subrun , calc.event
-                           , calc.Ntracks ]
-                writer.writerow( resutls )
+                    track_features = [track.length      , track.pidpida     , track.pidpida
+                                      , track.pidchi    , track.cosmicscore , track.coscontscore]
+                    results.append( track_features )
+                
+                writer.writerow( results )
                 print "writer.writerow( [calc.run, calc.subrun , calc.event] )"
 
 
