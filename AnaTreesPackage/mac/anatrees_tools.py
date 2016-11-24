@@ -409,10 +409,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 tracks = calc.tracks
                 
                 writer.writerow( [calc.run, calc.subrun , calc.event] )
-                print "writer.writerow( [calc.run, 'subrun':calc.subrun , 'event':calc.event] )"
-                writer.writerow( {'run':calc.run, 'subrun':calc.subrun , 'event':calc.event } )
-                print "writer.writerow( {'run':calc.run, 'subrun':calc.subrun , 'event':calc.event } )"
-                stream_dataframe_to_csv( results, resutls_file_name  )
+                print "writer.writerow( [calc.run, calc.subrun , calc.event] )"
+#                writer.writerow( {'run':calc.run, 'subrun':calc.subrun , 'event':calc.event } )
+#                print "writer.writerow( {'run':calc.run, 'subrun':calc.subrun , 'event':calc.event } )"
+#                stream_dataframe_to_csv( results, resutls_file_name  )
 
 
 
