@@ -23,8 +23,7 @@ mu_p_intersection_path  = lists_path + "/muon_proton_intersection"
 schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 
-results_features = ['run', 'subrun' , 'event'
-                    , 'Ntracks']
+results_features = ['run', 'subrun' , 'event']
 
 
 
@@ -412,8 +411,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 
                 tracks = calc.tracks
-                results = [ calc.run,calc.subrun,calc.event
-                           , int(tracks.size())]
+                results = [ calc.run,calc.subrun,calc.event ]
                 stream_dataframe_to_csv( results, resutls_file_name  )
 
 
