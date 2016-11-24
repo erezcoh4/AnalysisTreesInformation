@@ -410,7 +410,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 tracks = calc.tracks
                 print 'calc.Ntracks:',calc.Ntracks
                 for i in range(calc.Ntracks):
-                    track = GetTrack(i)
+                    track = calc.GetTrack(i)
                     track.Print()
                 resutls = [calc.run, calc.subrun , calc.event
                            , calc.Ntracks ]
