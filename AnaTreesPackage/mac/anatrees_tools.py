@@ -453,6 +453,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         energy_deposition_information = track.GetEdepYInfo( step );
                         residual_range_Y.append( energy_deposition_information.at(0) )
                         dqdx_Y.append( track.dqdx_Y.at(step) )
+                        print 'dqdx_Y: ',dqdx_Y[step]
                         dEdx_Y.append( energy_deposition_information.at(2) )
                         Edep_Y.append( energy_deposition_information.at(3) )
                     
