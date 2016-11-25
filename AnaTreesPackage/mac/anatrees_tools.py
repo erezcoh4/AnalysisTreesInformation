@@ -350,7 +350,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     writer = csv.writer(open(resutls_file_name, 'wb'))
-    if first_anatree_file===0:
+    if first_anatree_file==0:
         writer.writerow( track_features_names )
 
 
