@@ -339,7 +339,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                                           AddEventsList=False,
                                                           EventsListName="", AnaTreesListName="", output_mupRSEFileName="" ):
     
-    
+    import csv
     if Option != 'extract all tracks information' and Option != 'find common muon-proton vertices':
         print "options:"
         print "\t extract all tracks information"
@@ -368,7 +368,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     calc = cumputeAnaTree( in_chain, TracksTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
     
     if AddEventsList:
-        import csv
         if flags.verbose: print_filename( EventsListName , "adding list of R/S/E from" )
         with open( EventsListName , 'rb') as csvfile:
             reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
