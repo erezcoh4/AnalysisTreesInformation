@@ -226,118 +226,109 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
     in_chain.Add( InputFileName )
     extract_anatrees_tracks_information( in_chain, Option, 0, 0 , MCmode, AddEventsList, EventsListName , AnaTreesListName , output_mupRSEFileName )
 
-
-
-# -------------------------
-def extract_anatrees_tracks_information( in_chain, Option,
-                                        first_anatree_file=0, last_anatree_file=1,
-                                        MCmode=False,
-                                        AddEventsList=False,
-                                        EventsListName="", AnaTreesListName="", output_mupRSEFileName="" ):
-
-
-    if Option != 'extract all tracks information' and Option != 'find common muon-proton vertices':
-        print "options:"
-        print "\t extract all tracks information"
-        print "\t find common muon-proton vertices"
-        exit(0)
-
-    FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-
-    if Option=="find common muon-proton vertices":
-        output_rse_file = open( output_mupRSEFileName , "w" )
-
-    Nentries    = in_chain.GetEntries()
-    Nreduced    = int(flags.evnts_frac*(Nentries))
-    if flags.verbose: print_important( "starting run on %d events"%Nreduced )
-    OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
-    TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
-    GENIETree   = ROOT.TTree("GENIETree","genie interactions")
-    
-    calc = cumputeAnaTree( in_chain, TracksTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
-    
-    if AddEventsList:
-        import csv
-        if flags.verbose: print_filename( EventsListName , "adding list of R/S/E from" )
-        with open( EventsListName , 'rb') as csvfile:
-            reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
-            header = next(reader)
-            rse_events_list = [dict(zip(header, map(int, row))) for row in reader]
-        if flags.verbose>3:
-            print rse_events_list
-
-
-    counter = 0
-    
-    for entry in range(Nreduced):
-        
-        do_continue = True
-        calc.GetEntry( entry )
-        entry_rse = [calc.run,calc.subrun,calc.event]
-        if flags.verbose>2: print entry_rse
-        
-        if AddEventsList:
-            
-            do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse , rse_events_list )
-            if (do_continue and flags.verbose>1): print_important("found r-%d/s-%d/e-%d, extracting information....\n"%(calc.run,calc.subrun,calc.event))
-    
-        if do_continue:
-            
-            calc.extract_information()
-            
-            if (flags.verbose and entry%flags.print_mod==0):
-                
-                calc.PrintData( entry )
-            
-            if Option=="extract all tracks information":
-                
-                do_continue = True
-                ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = 0 , 0 , 0
-            
-            if Option=="find common muon-proton vertices":
-                
-                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
-            
-            if do_continue:
-                
-                counter = counter+1
-                calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-                calc.FillOutTree()
-                calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-                
-                if Option=="find common muon-proton vertices":
-                    
-                    output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
-
-    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
-    print_filename( TracksAnaFileName , "wrote root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
-
-    if Option=="find common muon-proton vertices":
-        print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
-        output_rse_file.close()
-
-
-    if MCmode:
-        GENIETree.Write()
-
-    TracksTree.Write()
-    OutFile.Close()
-
-
-
-
+#
+#
+## -------------------------
+#def extract_anatrees_tracks_information( in_chain, Option,
+#                                        first_anatree_file=0, last_anatree_file=1,
+#                                        MCmode=False,
+#                                        AddEventsList=False,
+#                                        EventsListName="", AnaTreesListName="", output_mupRSEFileName="" ):
+#
+#
+#    if Option != 'extract all tracks information' and Option != 'find common muon-proton vertices':
+#        print "options:"
+#        print "\t extract all tracks information"
+#        print "\t find common muon-proton vertices"
+#        exit(0)
+#
+#    FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+#    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+#
+#    if Option=="find common muon-proton vertices":
+#        output_rse_file = open( output_mupRSEFileName , "w" )
+#
+#    Nentries    = in_chain.GetEntries()
+#    Nreduced    = int(flags.evnts_frac*(Nentries))
+#    if flags.verbose: print_important( "starting run on %d events"%Nreduced )
+#    OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
+#    TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
+#    GENIETree   = ROOT.TTree("GENIETree","genie interactions")
+#    
+#    calc = cumputeAnaTree( in_chain, TracksTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
+#    
+#    if AddEventsList:
+#        import csv
+#        if flags.verbose: print_filename( EventsListName , "adding list of R/S/E from" )
+#        with open( EventsListName , 'rb') as csvfile:
+#            reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
+#            header = next(reader)
+#            rse_events_list = [dict(zip(header, map(int, row))) for row in reader]
+#        if flags.verbose>3:
+#            print rse_events_list
+#
+#
+#    counter = 0
+#    
+#    for entry in range(Nreduced):
+#        
+#        do_continue = True
+#        calc.GetEntry( entry )
+#        entry_rse = [calc.run,calc.subrun,calc.event]
+#        if flags.verbose>2: print entry_rse
+#        
+#        if AddEventsList:
+#            
+#            do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse , rse_events_list )
+#            if (do_continue and flags.verbose>1): print_important("found r-%d/s-%d/e-%d, extracting information....\n"%(calc.run,calc.subrun,calc.event))
+#    
+#        if do_continue:
+#            
+#            calc.extract_information()
+#            
+#            if (flags.verbose and entry%flags.print_mod==0):
+#                
+#                calc.PrintData( entry )
+#            
+#            if Option=="extract all tracks information":
+#                
+#                do_continue = True
+#                ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = 0 , 0 , 0
+#            
+#            if Option=="find common muon-proton vertices":
+#                
+#                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
+#            
+#            if do_continue:
+#                
+#                counter = counter+1
+#                calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+#                calc.FillOutTree()
+#                calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+#                
+#                if Option=="find common muon-proton vertices":
+#                    
+#                    output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
+#
+#    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
+#    print_filename( TracksAnaFileName , "wrote root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
+#
+#    if Option=="find common muon-proton vertices":
+#        print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
+#        output_rse_file.close()
+#
+#
+#    if MCmode:
+#        GENIETree.Write()
+#
+#    TracksTree.Write()
+#    OutFile.Close()
+#
 
 
 
 
 
-# ------------------------------------------------------------------------------- #
-def open_csv_generate_writer( filename , do_write_header = False ):
-    
-    writer = csv.writer(open(filename, 'wb'))
-    if do_write_header: writer.writerow( track_features_names )
-    return writer
 
 
 
@@ -358,7 +349,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    writer = open_csv_generate_writer( resutls_file_name , do_write_header = True if first_anatree_file==0 else False )
+    writer = csv.writer(open(resutls_file_name, 'wb'))
+    if first_anatree_file===0:
+        writer.writerow( track_features_names )
+
 
 
     if Option=="find common muon-proton vertices":
