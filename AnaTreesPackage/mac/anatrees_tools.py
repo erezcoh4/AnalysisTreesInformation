@@ -333,10 +333,10 @@ def extract_anatrees_tracks_information( in_chain, Option,
 
 
 # ------------------------------------------------------------------------------- #
-def open_csv_generate_writer( filename ):
+def open_csv_generate_writer( filename , do_write_header = False ):
     
     writer = csv.writer(open(filename, 'wb'))
-    writer.writerow( track_features_names )
+    if do_write_header: writer.writerow( track_features_names )
     return writer
 
 
@@ -358,7 +358,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    writer = open_csv_generate_writer( resutls_file_name )
+    writer = open_csv_generate_writer( resutls_file_name , do_write_header = True if first_anatree_file==0 else False )
 
 
     if Option=="find common muon-proton vertices":
@@ -450,16 +450,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                       
                     residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
                     for step in range(track.GetEdepYNsteps()):
-#                        energy_deposition_information = track.GetEdepYInfo( step );
                         residual_range_Y.append( track.residual_range_Y.at(step) )
                         dqdx_Y.append( track.dqdx_Y.at(step) )
-#                        print 'dqdx_Y: ',dqdx_Y[step]
                         dEdx_Y.append( track.dEdx_Y.at(step) )
                         Edep_Y.append( track.Edep_Y.at(step) )
-#                        dEdx_Y.append( energy_deposition_information.at(2) )
-#                        Edep_Y.append( energy_deposition_information.at(3) )
 
-#                    track_features.append( [ residual_range_Y , dqdx_Y  , dEdx_Y , Edep_Y ] )
                     track_features.append(residual_range_Y)
                     track_features.append(dqdx_Y)
                     track_features.append(dEdx_Y)
