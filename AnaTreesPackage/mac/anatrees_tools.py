@@ -428,6 +428,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 for i in range(calc.Ntracks):
                     track = calc.GetTrack(i)
                     track.Print()
+                    roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
+                    CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
+                    
                     track_features = [ track.run                , track.subrun          , track.event           , track.track_id
                                       , track.is_flipped        , track.nhits           , track.length
                                       , track.start_pos.x()     , track.start_pos.y()   , track.start_pos.z()
@@ -439,9 +442,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                       , track.cftime            , track.cftimewidth     , track.cfzcenter       , track.cfzwidth
                                       , track.cfycenter         , track.cfywidth        , track.cftotalpe       , track.cfdistance
                                       , track.MCpdgCode
-                                      , track.roi[0].start_wire , track.roi[0].start_time   , track.roi[0].end_wire , track.roi[0].end_time
-                                      , track.roi[1].start_wire , track.roi[1].start_time   , track.roi[1].end_wire , track.roi[1].end_time
-                                      , track.roi[2].start_wire , track.roi[2].start_time   , track.roi[2].end_wire , track.roi[2].end_time
+                                      , roi_U.start_wire        , roi_U.start_time      , roi_U.end_wire        , roi_U.end_time
+                                      , roi_V.start_wire        , roi_V.start_time      , roi_V.end_wire        , roi_V.end_time
+                                      , roi_Y.start_wire        , roi_Y.start_time      , roi_Y.end_wire        , roi_Y.end_time
                                       , track.purtruth_Y
                                       , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
                                       ]
