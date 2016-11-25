@@ -132,6 +132,14 @@ public:
     Float_t       GetLength (){return length;};
     Float_t        GetTheta (){return theta;};
     Float_t          GetPhi (){return phi;};
+    size_t   GetEdepYNsteps (){return residual_range_Y.size();};
+
+    std::vector<Float_t> GetEdepYInfo (int step)
+    {
+        std::vector<Float_t> result = {residual_range_Y.at(step), dqdx_Y.at(step), dEdx_Y.at(step), Edep_Y.at(step)};
+        return result;
+    };
+    
     std::vector<Float_t> GetTrackLengthVector (int plane)
     {
         switch (plane) {

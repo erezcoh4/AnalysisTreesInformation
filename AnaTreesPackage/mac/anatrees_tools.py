@@ -23,12 +23,27 @@ mu_p_intersection_path  = lists_path + "/muon_proton_intersection"
 schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 
-results_features = ['run', 'subrun' , 'event'
-                    , 'Ntracks'
-                    , 'track_1' , 'track_2' , 'track_3' , 'track_4' , 'track_5' , 'track_6'  , 'track_7']
 
-
-
+track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
+                        ,'flip'         ,'nhits'    ,'length'
+                        ,'startx'       ,'starty'   ,'startz'
+                        ,'endx'         ,'endy'     ,'endz'
+                        ,'theta'        ,'phi'      ,'distlenratio'
+                        ,'startdqdx'    ,'enddqdx'  ,'dqdxdiff'     ,'dqdxratio'    ,'totaldqdx'    ,'averagedqdx'
+                        ,'cosmicscore'  ,'coscontscore'
+                        ,'pidpida'      ,'pidchi'
+                        ,'cftime'       ,'cftimewidth','cfzcenter'  ,'cfzwidth'     ,'cfycenter'    ,'cfywidth' ,'cftotalpe'    , 'cfdistance'
+                        ,'MCpdgCode'
+                        ,'U_start_wire' ,'U_start_time' ,'U_end_wire' ,'U_end_time'
+                        ,'V_start_wire' ,'V_start_time' ,'V_end_wire' ,'V_end_time'
+                        ,'Y_start_wire' ,'Y_start_time' ,'Y_end_wire' ,'Y_end_time'
+                        ,'purtruth_Y'
+                        ,'CaloPDG_U'    , 'CaloPDG_V'   , 'CaloPDG_Y'
+                        ,'residual_range_Y'
+                        ,'dqdx_Y'
+                        ,'dEdx_Y'
+                        ,'Edep_Y'
+                        ]
 
 
 # list names and file names
@@ -321,7 +336,7 @@ def extract_anatrees_tracks_information( in_chain, Option,
 def open_csv_generate_writer( filename ):
     
     writer = csv.writer(open(filename, 'wb'))
-    writer.writerow(results_features)
+    writer.writerow( track_features_names )
     return writer
 
 
@@ -409,17 +424,39 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 
                 print 'calc.Ntracks:',calc.Ntracks
-                results = [ calc.run, calc.subrun , calc.event , calc.Ntracks ]
                 
                 for i in range(calc.Ntracks):
                     track = calc.GetTrack(i)
                     track.Print()
-                    track_features = [track.length      , track.pidpida     , track.pidpida
-                                      , track.pidchi    , track.cosmicscore , track.coscontscore]
-                    results.append( track_features )
+                    track_features = [ track.run                , track.subrun          , track.event           , track.track_id
+                                      , track.is_flipped        , track.nhits           , track.length
+                                      , track.start_pos.x()     , track.start_pos.y()   , track.start_pos.z()
+                                      , track.end_pos.x()       , track.end_pos.y()     , track.end_pos.z()
+                                      , track.theta             , track.phi             , track.distlenratio
+                                      , track.start_dqdx        , track.end_dqdx        , track.dqdx_diff       , track.dqdx_ratio
+                                      , track.tot_dqdx          , track.avg_dqdx
+                                      , track.cosmicscore       , track.coscontscore    , track.pidpida         , track.pidchi
+                                      , track.cftime            , track.cftimewidth     , track.cfzcenter       , track.cfzwidth
+                                      , track.cfycenter         , track.cfywidth        , track.cftotalpe       , track.cfdistance
+                                      , track.MCpdgCode
+                                      , track.roi[0].start_wire , track.roi[0].start_time   , track.roi[0].end_wire , track.roi[0].end_time
+                                      , track.roi[1].start_wire , track.roi[1].start_time   , track.roi[1].end_wire , track.roi[1].end_time
+                                      , track.roi[2].start_wire , track.roi[2].start_time   , track.roi[2].end_wire , track.roi[2].end_time
+                                      , track.purtruth_Y
+                                      , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
+                                      ]
+                                      
+                    residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
+                    for step in range(track.GetEdepYNsteps()):
+                        energy_deposition_information = track.GetEdepYInfo( step );
+                        residual_range_Y.append( energy_deposition_information.at(0) )
+                        dqdx_Y.append( energy_deposition_information.at(1) )
+                        dEdx_Y.append( energy_deposition_information.at(2) )
+                        Edep_Y.append( energy_deposition_information.at(3) )
+                    
+                    track_features.append( [ residual_range_Y , dqdx_Y  , dEdx_Y , Edep_Y ] )
                 
-                writer.writerow( results )
-                print "writer.writerow( [calc.run, calc.subrun , calc.event] )"
+                    writer.writerow( track_features )
 
 
 
