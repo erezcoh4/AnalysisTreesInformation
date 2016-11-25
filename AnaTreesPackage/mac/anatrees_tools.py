@@ -417,7 +417,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
             
             if calc.Ntracks>0 and do_continue:
                 
-                counter = counter+1
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 calc.FillOutTree()
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
@@ -453,13 +452,14 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     for step in range(track.GetEdepYNsteps()):
                         energy_deposition_information = track.GetEdepYInfo( step );
                         residual_range_Y.append( energy_deposition_information.at(0) )
-                        dqdx_Y.append( energy_deposition_information.at(1) )
+                        dqdx_Y.append( track.dqdx_Y.at(step) )
                         dEdx_Y.append( energy_deposition_information.at(2) )
                         Edep_Y.append( energy_deposition_information.at(3) )
                     
                     track_features.append( [ residual_range_Y , dqdx_Y  , dEdx_Y , Edep_Y ] )
                 
                     writer.writerow( track_features )
+                    counter = counter+1
 
 
 
