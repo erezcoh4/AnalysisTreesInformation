@@ -226,7 +226,8 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
     in_chain.Add( InputFileName )
     extract_anatrees_tracks_information( in_chain, Option, 0, 0 , MCmode, AddEventsList, EventsListName , AnaTreesListName , output_mupRSEFileName )
 
-#
+
+# deprecated, delete by Dec-15
 #
 ## -------------------------
 #def extract_anatrees_tracks_information( in_chain, Option,
@@ -419,7 +420,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 for i in range(calc.Ntracks):
                     track = calc.GetTrack(i)
-                    track.Print()
+                    
                     roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
                     CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
                     
