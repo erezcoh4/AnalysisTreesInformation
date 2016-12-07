@@ -437,8 +437,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                             and 50 < track.end_pos.x()      and track.end_pos.x() < 230
                             and -60 < track.start_pos.y()   and track.start_pos.y() < 60
                             and -60 < track.end_pos.y()     and track.end_pos.y() < 60
-                            and 50 < track.start_pos.y()    and track.start_pos.y() < 980
-                            and 50 < track.end_pos.y()      and track.end_pos.y() < 980):
+                            and 50 < track.start_pos.z()    and track.start_pos.z() < 980
+                            and 50 < track.end_pos.z()      and track.end_pos.z() < 980):
                             track_fiducial_cut = True
                         # (3) Flash-matched
                         flashmatched_cut = True if ( -30 < track.cfdistance and track.cfdistance < 30 ) else False
