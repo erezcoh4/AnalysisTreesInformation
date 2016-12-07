@@ -411,24 +411,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
             
-            
-            if "add hard geometrical cuts" in Option:
-                # sample of free protons candidates from off-beam data using only geometrical cuts
-                # (1) track less then some minimum length 10 cm proton has ~ 800 MeV/c
-                length_cut = True if (track.length < 10) else False
-                # (2) Far away from dead regions (50 cm from each side)
-                fiducial_cuts = False
-                if (50 < track.start_pos.x() and track.start_pos.x() < 230
-                    50 < track.end_pos.x() and track.end_pos.x() < 230
-                    -60 < track.start_pos.y() and track.start_pos.y() < 60
-                    -60 < track.end_pos.y() and track.end_pos.y() < 60
-                    50 < track.start_pos.y() and track.start_pos.y() < 980
-                    50 < track.end_pos.y() and track.end_pos.y() < 980):
-                    track_fiducial_cut = True
-                # (3) Flash-matched
-                flashmatched_cut = True if ( -30 < track.cfdistance and track.cfdistance < 30 ) else False
-                # ---------------------------------------------------------------------
-                do_continue = True if (length_cut and fiducial_cuts and flashmatched_cut) else False
 
 
             if calc.Ntracks>0 and do_continue:
@@ -438,11 +420,31 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 
                 
-                print 'calc.Ntracks:',calc.Ntracks
                 
                 for i in range(calc.Ntracks):
                     track = calc.GetTrack(i)
                     
+                    
+
+                    if "add hard geometrical cuts" in Option:
+                    # sample of free protons candidates from off-beam data using only geometrical cuts
+                    # (1) track less then some minimum length 10 cm proton has ~ 800 MeV/c
+                    length_cut = True if (track.length < 10) else False
+                    # (2) Far away from dead regions (50 cm from each side)
+                    fiducial_cuts = False
+                    if (50 < track.start_pos.x() and track.start_pos.x() < 230
+                        50 < track.end_pos.x() and track.end_pos.x() < 230
+                        -60 < track.start_pos.y() and track.start_pos.y() < 60
+                        -60 < track.end_pos.y() and track.end_pos.y() < 60
+                        50 < track.start_pos.y() and track.start_pos.y() < 980
+                        50 < track.end_pos.y() and track.end_pos.y() < 980):
+                        track_fiducial_cut = True
+                    # (3) Flash-matched
+                    flashmatched_cut = True if ( -30 < track.cfdistance and track.cfdistance < 30 ) else False
+                    # ---------------------------------------------------------------------
+                    if (!length_cut and !fiducial_cuts and !flashmatched_cut) continue
+
+
                     roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
                     CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
                     
