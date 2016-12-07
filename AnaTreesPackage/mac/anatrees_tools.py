@@ -343,10 +343,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                                           output_mupRSEFileName="" ):
     
     import csv
-    if Option != 'extract all tracks information' and Option != 'find common muon-proton vertices':
-        print "options:"
+    if 'extract all tracks information' not in Option and 'find common muon-proton vertices' not in Option:
+        print "Problem, can not extract!\noptions are:"
         print "\t extract all tracks information"
         print "\t find common muon-proton vertices"
+        print "\t exiting..."
         exit(0)
 
     FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
