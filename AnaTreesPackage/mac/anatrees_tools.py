@@ -427,59 +427,59 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     
 
                     if "add hard geometrical cuts" in Option:
-                    # sample of free protons candidates from off-beam data using only geometrical cuts
-                    # (1) track less then some minimum length 10 cm proton has ~ 800 MeV/c
-                    length_cut = True if (track.length < 10) else False
-                    # (2) Far away from dead regions (50 cm from each side)
-                    fiducial_cuts = False
-                    if (50 < track.start_pos.x() and track.start_pos.x() < 230
-                        50 < track.end_pos.x() and track.end_pos.x() < 230
-                        -60 < track.start_pos.y() and track.start_pos.y() < 60
-                        -60 < track.end_pos.y() and track.end_pos.y() < 60
-                        50 < track.start_pos.y() and track.start_pos.y() < 980
-                        50 < track.end_pos.y() and track.end_pos.y() < 980):
-                        track_fiducial_cut = True
-                    # (3) Flash-matched
-                    flashmatched_cut = True if ( -30 < track.cfdistance and track.cfdistance < 30 ) else False
-                    # ---------------------------------------------------------------------
-                    if (!length_cut and !fiducial_cuts and !flashmatched_cut) continue
+                        # sample of free protons candidates from off-beam data using only geometrical cuts
+                        # (1) track less then some minimum length 10 cm proton has ~ 800 MeV/c
+                        length_cut = True if (track.length < 10) else False
+                        # (2) Far away from dead regions (50 cm from each side)
+                        fiducial_cuts = False
+                        if (50 < track.start_pos.x() and track.start_pos.x() < 230
+                            50 < track.end_pos.x() and track.end_pos.x() < 230
+                            -60 < track.start_pos.y() and track.start_pos.y() < 60
+                            -60 < track.end_pos.y() and track.end_pos.y() < 60
+                            50 < track.start_pos.y() and track.start_pos.y() < 980
+                            50 < track.end_pos.y() and track.end_pos.y() < 980):
+                            track_fiducial_cut = True
+                        # (3) Flash-matched
+                        flashmatched_cut = True if ( -30 < track.cfdistance and track.cfdistance < 30 ) else False
+                        # ---------------------------------------------------------------------
+                        do_continue = True if (length_cut and fiducial_cuts and flashmatched_cut) else False
 
-
-                    roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
-                    CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
+                    if do_continue:
+                        roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
+                        CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
                     
-                    track_features = [ track.run                , track.subrun          , track.event           , track.track_id
-                                      , track.is_flipped        , track.nhits           , track.length
-                                      , track.start_pos.x()     , track.start_pos.y()   , track.start_pos.z()
-                                      , track.end_pos.x()       , track.end_pos.y()     , track.end_pos.z()
-                                      , track.theta             , track.phi             , track.distlenratio
-                                      , track.start_dqdx        , track.end_dqdx        , track.dqdx_diff       , track.dqdx_ratio
-                                      , track.tot_dqdx          , track.avg_dqdx
-                                      , track.cosmicscore       , track.coscontscore    , track.pidpida         , track.pidchi
-                                      , track.cftime            , track.cftimewidth     , track.cfzcenter       , track.cfzwidth
-                                      , track.cfycenter         , track.cfywidth        , track.cftotalpe       , track.cfdistance
-                                      , track.MCpdgCode
-                                      , roi_U.start_wire        , roi_U.start_time      , roi_U.end_wire        , roi_U.end_time
-                                      , roi_V.start_wire        , roi_V.start_time      , roi_V.end_wire        , roi_V.end_time
-                                      , roi_Y.start_wire        , roi_Y.start_time      , roi_Y.end_wire        , roi_Y.end_time
-                                      , track.purtruth_Y
-                                      , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
-                                      ]
+                        track_features = [ track.run                , track.subrun          , track.event           , track.track_id
+                                          , track.is_flipped        , track.nhits           , track.length
+                                          , track.start_pos.x()     , track.start_pos.y()   , track.start_pos.z()
+                                          , track.end_pos.x()       , track.end_pos.y()     , track.end_pos.z()
+                                          , track.theta             , track.phi             , track.distlenratio
+                                          , track.start_dqdx        , track.end_dqdx        , track.dqdx_diff       , track.dqdx_ratio
+                                          , track.tot_dqdx          , track.avg_dqdx
+                                          , track.cosmicscore       , track.coscontscore    , track.pidpida         , track.pidchi
+                                          , track.cftime            , track.cftimewidth     , track.cfzcenter       , track.cfzwidth
+                                          , track.cfycenter         , track.cfywidth        , track.cftotalpe       , track.cfdistance
+                                          , track.MCpdgCode
+                                          , roi_U.start_wire        , roi_U.start_time      , roi_U.end_wire        , roi_U.end_time
+                                          , roi_V.start_wire        , roi_V.start_time      , roi_V.end_wire        , roi_V.end_time
+                                          , roi_Y.start_wire        , roi_Y.start_time      , roi_Y.end_wire        , roi_Y.end_time
+                                          , track.purtruth_Y
+                                          , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
+                                          ]
                                       
-                    residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
-                    for step in range(track.GetEdepYNsteps()):
-                        residual_range_Y.append( track.residual_range_Y.at(step) )
-                        dqdx_Y.append( track.dqdx_Y.at(step) )
-                        dEdx_Y.append( track.dEdx_Y.at(step) )
-                        Edep_Y.append( track.Edep_Y.at(step) )
+                        residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
+                        for step in range(track.GetEdepYNsteps()):
+                            residual_range_Y.append( track.residual_range_Y.at(step) )
+                            dqdx_Y.append( track.dqdx_Y.at(step) )
+                            dEdx_Y.append( track.dEdx_Y.at(step) )
+                            Edep_Y.append( track.Edep_Y.at(step) )
 
-                    track_features.append(residual_range_Y)
-                    track_features.append(dqdx_Y)
-                    track_features.append(dEdx_Y)
-                    track_features.append(Edep_Y)
+                        track_features.append(residual_range_Y)
+                        track_features.append(dqdx_Y)
+                        track_features.append(dEdx_Y)
+                        track_features.append(Edep_Y)
                 
-                    writer.writerow( track_features )
-                    counter = counter+1
+                        writer.writerow( track_features )
+                        counter = counter+1
 
 
 
