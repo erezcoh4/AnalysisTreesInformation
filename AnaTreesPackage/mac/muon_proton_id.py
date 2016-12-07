@@ -29,13 +29,9 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
     first_anatree_file = flags.run
     last_anatree_file = first_anatree_file + splitjobs_files
     print_important( "extract tracks information from MC AnalysisTrees" )
-    # ---------------
     # open cosmic MC
-    # ---------------
     # extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , MCmode = True )
-    # ---------------
     # BNB MC
-    # ---------------
     extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
     # ---------------
 
@@ -57,9 +53,12 @@ if flags.option=="extract MC-pions tracks information from AnalysisTrees" or 'ex
     extract_anatrees_tracks_information_from_files_list( "piminus_0-2.0GeV_isotropic" , "extract all tracks information" , 0 , 377 , MCmode = True ) # 397 files
 
 
+
 # (2) train, build, test the GBDT models
 # -------------------------------------------------------------------
 # use GBDTprotons/GBDTprotonsPackage
+
+
 
 
 # (3) extract all tracks information from analysis trees to classify proton tracks
@@ -68,9 +67,11 @@ if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA
     splitjobs_files = 1000 # splitting ti jobs: 0-1000, 1000-2000, 2000-3000, ....
     first_anatree_file = flags.run
     last_anatree_file = first_anatree_file + splitjobs_files
-    print_important( "extract tracks information from AnalysisTrees (files %d-%d)"%(first_anatree_file,last_anatree_file) )
-    extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" , "extract all tracks information" , first_anatree_file , last_anatree_file )
-
+    print_important("extract AnalysisTrees information (files %d-%d)"%(first_anatree_file,last_anatree_file) )
+    # cosmic
+    extract_anatrees_tracks_information_from_files_list( "extBNB" , "extract all tracks information" , first_anatree_file , last_anatree_file )
+    # BNB
+#    extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" , "extract all tracks information" , first_anatree_file , last_anatree_file )
 
 
 # (4) Classify proton tracks
