@@ -64,12 +64,12 @@ if flags.option=="extract MC-pions tracks information from AnalysisTrees" or 'ex
 # (3) extract all tracks information from analysis trees to classify proton tracks
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA' in flags.option:
-    splitjobs_files = 1000 # splitting ti jobs: 0-1000, 1000-2000, 2000-3000, ....
+    splitjobs_files = 10 # splitting ti jobs: 0-1000, 1000-2000, 2000-3000, ....
     first_anatree_file = flags.run
     last_anatree_file = first_anatree_file + splitjobs_files
     print_important("extract AnalysisTrees information (files %d-%d)"%(first_anatree_file,last_anatree_file) )
     # cosmic
-    extract_anatrees_tracks_information_from_files_list( "extBNB" , "extract all tracks information" , first_anatree_file , last_anatree_file )
+    extract_anatrees_tracks_information_from_files_list( "extBNB" , "extract all tracks information, add hard geometrical cuts" , first_anatree_file , last_anatree_file )
     # BNB
 #    extract_anatrees_tracks_information_from_files_list( "BNB_5e19POT" , "extract all tracks information" , first_anatree_file , last_anatree_file )
 

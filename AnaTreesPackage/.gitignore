@@ -16,4 +16,4 @@
 *.swp
 *Cint.cxx
 *Dict.cxx
-AnalysisTreesInformation_AnaTreesPackageDict.cxx
+*AnalysisTreesInformation_AnaTreesPackageDict.cxx
