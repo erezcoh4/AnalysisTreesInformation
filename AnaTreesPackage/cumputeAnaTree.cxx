@@ -19,7 +19,7 @@ bool cumputeAnaTree::extract_information (){ // main event loop....
     }
 
     // if we want to collect vertices, these should be uncommented out
-    if (option == "find common muon-proton vertices"){
+    if (option.Contains("find common muon-proton vertices")){
         CollectTrackVertices();
         FindMutualVertices();
         FindMuonScattering();
@@ -464,6 +464,12 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     if(debug>3) Printf("truth pdg is: %d",pdg[ig4]);
                     FoundMCtrack = true;
                     c_track.SetMCpdgCode(pdg[ig4]);
+                    // energy
+                    c_track.truth_Eng = Eng[ig4];
+                    // angles
+                    c_track.truth_theta = theta[ig4];
+                    c_track.truth_phi = phi[ig4];
+
                 }
             }
             if (!FoundMCtrack) {

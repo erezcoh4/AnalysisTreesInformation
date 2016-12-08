@@ -55,7 +55,7 @@ def dEdx_scatter_mulitple( df_hits_list , labels ,colors , s=0.1 , alpha=0.8):
         dEdx_scatter( df_hits , label=label ,color=color , s=s , alpha=alpha , x_text=30+2*c, y_text=27-c)
         c += 1.5
 
-
+# dE/dx jointpplot
 def dEdx_jointplot( df_hits , cmap='hot_r' , label='protons', xlim=(0,100) , ylim=(0,30)):
     with sns.axes_style("white"):
         g = sns.jointplot(df_hits.residual_range , df_hits.dEdx ,
@@ -65,3 +65,6 @@ def dEdx_jointplot( df_hits , cmap='hot_r' , label='protons', xlim=(0,100) , yli
     g.set_axis_labels('residual range [cm]' , '$dE/dx$ [MeV/cm]')
     plt.colorbar()
     g.fig.suptitle(label)
+
+
+

@@ -178,7 +178,7 @@ public:
         
 
     
-    Int_t       MCpdgCode   , CalorimetryPDG[3];
+    Int_t       CalorimetryPDG[3];
     Int_t       run         , subrun    , event;
     Int_t       nhits       , is_flipped;
     Int_t       NNeighborTracks;
@@ -211,6 +211,12 @@ public:
     vector<Int_t>       NeighborTracks;
     vector<Float_t>     NeighborTracksDistance;
     vector<Float_t>     NeighborTracksAngles;
+    
+    
+    // truth information - only valid for MC data
+    Int_t       MCpdgCode;
+    Float_t     truth_Eng , truth_theta , truth_phi;
+
 };
 #endif
 /** @} */ // end of doxygen group
