@@ -419,7 +419,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 calc.FillOutTree()
-                calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 
                 
                 
@@ -499,6 +498,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         if flags.verbose:
                             print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
                     
+                    if do_continue: calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                     if flags.verbose>2: print_line()
 
 
