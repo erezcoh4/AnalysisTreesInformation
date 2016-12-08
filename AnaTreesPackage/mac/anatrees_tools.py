@@ -495,7 +495,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         counter = counter+1
                         if flags.verbose:
                             print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
-                            print_line()
+                    
+                    if flags.verbose: print_line()
 
 
 
