@@ -151,6 +151,10 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("trkg4id_pandoraNu"                          , &trkg4id_pandoraNu);
         InTree -> SetBranchAddress("TrackId"                                    , &TrackId);
         InTree -> SetBranchAddress("pdg"                                        , &pdg);
+        InTree -> SetBranchAddress("Eng"                                        , &Eng);
+        InTree -> SetBranchAddress("theta"                                      , &theta);
+        InTree -> SetBranchAddress("phi"                                        , &phi);
+
         // purity
         InTree -> SetBranchAddress("trkpurtruth_pandoraNu"                      , &trkpurtruth);
 

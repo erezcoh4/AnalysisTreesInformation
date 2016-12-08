@@ -39,6 +39,7 @@ track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
                         ,'Y_start_wire' ,'Y_start_time' ,'Y_end_wire' ,'Y_end_time'
                         ,'purtruth_Y'
                         ,'CaloPDG_U'    , 'CaloPDG_V'   , 'CaloPDG_Y'
+                        ,'truth_Eng'    ,'truth_theta' , 'truth_phi'
                         ,'residual_range_Y'
                         ,'dqdx_Y'
                         ,'dEdx_Y'
@@ -478,6 +479,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                           , roi_Y.start_wire        , roi_Y.start_time      , roi_Y.end_wire        , roi_Y.end_time
                                           , track.purtruth_Y
                                           , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
+                                          , track.truth_Eng         , track.truth_theta     , track.truth_phi
                                           ]
                                       
                         residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []

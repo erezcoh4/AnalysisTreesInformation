@@ -224,7 +224,7 @@ public:
     
     // MC information
     Int_t       geant_list_size         , pdg[MAX_tracks];
-   
+    Float_t     Eng[MAX_tracks] , theta[MAX_tracks] , phi[MAX_tracks];
     
     Float_t     enu_truth[kMaxTruth];       //true neutrino energy in GeV
     Float_t     Q2_truth[kMaxTruth];        //Momentum transfer squared in GeV^2
