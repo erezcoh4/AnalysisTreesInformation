@@ -442,10 +442,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         # (2) Far away from dead regions (50 cm from each side)
                         fiducial_cuts = True if (    track.start_pos.x() < 40  or 210 < track.start_pos.x()
                                                  or  track.end_pos.x()   < 40  or 210 < track.end_pos.x()
-                                                 or  track.start_pos.y() < -70 or 70  < track.start_pos.y()
-                                                 or  track.end_pos.y()   < -70 or 70  < track.end_pos.y()
-                                                 or  track.start_pos.z() < 220 or 820 < track.start_pos.z()
-                                                 or  track.end_pos.z()   < 220 or 820 < track.end_pos.z()    ) else False
+                                                 or  track.start_pos.y() < -50 or 50  < track.start_pos.y()
+                                                 or  track.end_pos.y()   < -50 or 50  < track.end_pos.y()
+                                                 or  track.start_pos.z() < 420 or 620 < track.start_pos.z()
+                                                 or  track.end_pos.z()   < 420 or 620 < track.end_pos.z()    ) else False
                         # (3) Flash-matched (30 ns from each side)
                         flashmatched_cut = True if ( track.cftime < 2 and track.cftime != -9999 ) else False
                         # ---------------------------------------------------------------------
@@ -491,7 +491,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         track_features.append(dEdx_Y)
                         track_features.append(Edep_Y)
                         
-                        print track_features
                         
                         writer.writerow( track_features )
                         counter = counter+1
