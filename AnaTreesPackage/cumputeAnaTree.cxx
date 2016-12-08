@@ -918,7 +918,7 @@ bool cumputeAnaTree::FillOutTree (){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
     
-    if (option == "extract all tracks information"){
+    if (option.Contains("extract all tracks information")){
         for (auto t:tracks){
             csvfile
             << t.run                    << " " << t.subrun
@@ -948,7 +948,7 @@ void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GB
     }
     
     
-    else if (option == "find common muon-proton vertices"){
+    else if (option.Contains("find common muon-proton vertices")){
         // R/S/E
         // ivtx / itrk_NuSelMuon / itrk_GBDTproton
         // ROI for muon
