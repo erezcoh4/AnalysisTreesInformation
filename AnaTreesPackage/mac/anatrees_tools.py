@@ -436,7 +436,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                             print 'track position: (%.1f,%.1f,%.1f)=>(%.1f,%.1f,%.1f)'%(track.start_pos.x(),track.start_pos.y(),track.start_pos.z(), track.end_pos.x(),track.end_pos.y(),track.end_pos.z())
                             if track.cftime>2 or track.cftime==-9999:  print 'track closest-flash time: %.1f ns'%track.cftime
                             else: print_important( 'track closest-flash time: %.1f ns'%track.cftime )
-                            print_line()
                         
                         # (1) track less then some minimum length 10 cm proton has ~ 800 MeV/c
                         length_cut = True if (track.length < 10) else False
@@ -446,8 +445,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                             and 40 < track.end_pos.x()      and track.end_pos.x() < 210
                             and -50 < track.start_pos.y()   and track.start_pos.y() < 50
                             and -50 < track.end_pos.y()     and track.end_pos.y() < 50
-                            and 420 < track.start_pos.z()    and track.start_pos.z() < 620
-                            and 420 < track.end_pos.z()      and track.end_pos.z() < 620):
+                            and 420 < track.start_pos.z()   and track.start_pos.z() < 620
+                            and 420 < track.end_pos.z()     and track.end_pos.z() < 620):
                             track_fiducial_cut = True
                         # (3) Flash-matched (30 ns from each side)
                         flashmatched_cut = True if ( track.cftime < 2 and track.cftime != -9999 ) else False
@@ -455,8 +454,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         do_continue = True if (length_cut and fiducial_cuts and flashmatched_cut) else False
 
 
-
                     if do_continue:
+                        
+                        if flags.verbose>2: print_important('keepng track....')
+                        
                         roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
                         CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
                     
@@ -494,6 +495,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         counter = counter+1
                         if flags.verbose:
                             print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
+                            print_line()
 
 
 
