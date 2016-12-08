@@ -449,9 +449,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         # (3) Flash-matched (30 ns from each side)
                         flashmatched_cut = True if ( track.cftime < 2 and track.cftime != -9999 ) else False
                         # ---------------------------------------------------------------------
-                        print 'length-cut:',length_cut,'\tfiducial_cuts:' , fiducial_cuts , '\tflashmatched_cut:', flashmatched_cut
+                        if flags.verose>4: print 'length-cut:',length_cut,'\tfiducial_cuts:' , fiducial_cuts , '\tflashmatched_cut:', flashmatched_cut
                         do_continue = True if (length_cut and fiducial_cuts and flashmatched_cut) else False
-                        print 'do_continue:', do_continue
+                        if flags.verose>4: print 'do_continue:', do_continue
 
 
                     if do_continue:
@@ -496,7 +496,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         if flags.verbose:
                             print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
                     
-                    if flags.verbose: print_line()
+                    if flags.verbose>2: print_line()
 
 
 
