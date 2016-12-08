@@ -456,7 +456,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
                     if do_continue:
                         
-                        if flags.verbose>2: print_important('keepng track....')
+                        if flags.verbose>2:
+                                print_important('keeping track....')
                         
                         roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
                         CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
@@ -497,7 +498,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         if flags.verbose:
                             print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
                     
-                    if do_continue: calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+                    if do_continue:
+                        calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                     if flags.verbose>2: print_line()
 
 
