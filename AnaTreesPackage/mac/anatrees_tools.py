@@ -413,7 +413,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                 do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
             
-
+            if flags.verbose>3: print 'running on calc.Ntracks'
 
             if calc.Ntracks>0 and do_continue:
                 
@@ -427,6 +427,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     track = calc.GetTrack(i)
                     
                     
+                    if flags.verbose>4: print 'track',i
 
                     if "add hard geometrical cuts" in Option:
                         # sample of free protons candidates from off-beam data using only geometrical cuts
