@@ -432,10 +432,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         # sample of free protons candidates from off-beam data using only geometrical cuts
                         if flags.verbose>2:
                             if track.length>10: print 'track length: %.1f cm'%track.length
-                            else track.length<10: print_important( 'track length: %.1f cm'%track.length )
+                            else: track.length<10: print_important( 'track length: %.1f cm'%track.length )
                             print 'track position: (%.1f,%.1f,%.1f)=>(%.1f,%.1f,%.1f)'%(track.start_pos.x(),track.start_pos.y(),track.start_pos.z(), track.end_pos.x(),track.end_pos.y(),track.end_pos.z())
                             if track.cftime>2:  print 'track closest-flash time: %.1f ns'%track.cftime
-                            else print_important( 'track closest-flash time: %.1f ns'%track.cftime )
+                            else: print_important( 'track closest-flash time: %.1f ns'%track.cftime )
                         
                         # (1) track less then some minimum length 10 cm proton has ~ 800 MeV/c
                         length_cut = True if (track.length < 10) else False
