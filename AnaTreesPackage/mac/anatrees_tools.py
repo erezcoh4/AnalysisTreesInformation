@@ -440,14 +440,12 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         # (1) track less then some minimum length 10 cm proton has ~ 800 MeV/c
                         length_cut = True if (track.length < 10) else False
                         # (2) Far away from dead regions (50 cm from each side)
-                        fiducial_cuts = False
-                        if (    40 < track.start_pos.x()    and track.start_pos.x() < 210
-                            and 40 < track.end_pos.x()      and track.end_pos.x() < 210
-                            and -70 < track.start_pos.y()   and track.start_pos.y() < 70
-                            and -70 < track.end_pos.y()     and track.end_pos.y() < 70
-                            and 220 < track.start_pos.z()   and track.start_pos.z() < 820
-                            and 220 < track.end_pos.z()     and track.end_pos.z() < 820):
-                            track_fiducial_cut = True
+                        fiducial_cuts = True if (    track.start_pos.x() < 40  or 210 < track.start_pos.x()
+                                                 or  track.end_pos.x()   < 40  or 210 < track.end_pos.x()
+                                                 or  track.start_pos.y() < -70 or 70  < track.start_pos.y()
+                                                 or  track.end_pos.y()   < -70 or 70  < track.end_pos.y()
+                                                 or  track.start_pos.z() < 220 or 820 < track.start_pos.z()
+                                                 or  track.end_pos.z()   < 220 or 820 < track.end_pos.z()    ) else False
                         # (3) Flash-matched (30 ns from each side)
                         flashmatched_cut = True if ( track.cftime < 2 and track.cftime != -9999 ) else False
                         # ---------------------------------------------------------------------
