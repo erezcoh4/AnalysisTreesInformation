@@ -7,6 +7,8 @@ sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/mySoftware/MySoftwarePackag
 import GeneralPlot as gp , Initiation as init, plot_tools as pt
 dirname = init.createnewdir()
 generic = lambda x: ast.literal_eval(x)
+from matplotlib.colors import LogNorm
+
 
 # hits data frame
 def DataFrame_hits( tracks_df ):

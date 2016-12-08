@@ -429,21 +429,28 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
                     if "add hard geometrical cuts" in Option:
                         # sample of free protons candidates from off-beam data using only geometrical cuts
+                        if flags.verbose>2:
+                            print 'track length: ',track.length
+                            print 'track position: (',track.start_pos.x(),track.start_pos.y(),track.start_pos.z(),',) => (', track.end_pos.x(),track.end_pos.y(),track.end_pos.z(),')'
+                            print 'track closest-flash time: ',track.cftime
+                        
                         # (1) track less then some minimum length 10 cm proton has ~ 800 MeV/c
                         length_cut = True if (track.length < 10) else False
                         # (2) Far away from dead regions (50 cm from each side)
                         fiducial_cuts = False
-                        if (    50 < track.start_pos.x()    and track.start_pos.x() < 230
-                            and 50 < track.end_pos.x()      and track.end_pos.x() < 230
-                            and -60 < track.start_pos.y()   and track.start_pos.y() < 60
-                            and -60 < track.end_pos.y()     and track.end_pos.y() < 60
-                            and 50 < track.start_pos.z()    and track.start_pos.z() < 980
-                            and 50 < track.end_pos.z()      and track.end_pos.z() < 980):
+                        if (    40 < track.start_pos.x()    and track.start_pos.x() < 210
+                            and 40 < track.end_pos.x()      and track.end_pos.x() < 210
+                            and -50 < track.start_pos.y()   and track.start_pos.y() < 50
+                            and -50 < track.end_pos.y()     and track.end_pos.y() < 50
+                            and 420 < track.start_pos.z()    and track.start_pos.z() < 620
+                            and 420 < track.end_pos.z()      and track.end_pos.z() < 620):
                             track_fiducial_cut = True
-                        # (3) Flash-matched
-                        flashmatched_cut = True if ( -30 < track.cfdistance and track.cfdistance < 30 ) else False
+                        # (3) Flash-matched (30 ns from each side)
+                        flashmatched_cut = True if ( track.cftime < 2 ) else False
                         # ---------------------------------------------------------------------
                         do_continue = True if (length_cut and fiducial_cuts and flashmatched_cut) else False
+
+
 
                     if do_continue:
                         roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
@@ -481,6 +488,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 
                         writer.writerow( track_features )
                         counter = counter+1
+                        if flags.verbose:
+                            print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
+
 
 
 
