@@ -490,7 +490,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         track_features.append(dqdx_Y)
                         track_features.append(dEdx_Y)
                         track_features.append(Edep_Y)
-                
+                        
+                        print track_features
+                        
                         writer.writerow( track_features )
                         counter = counter+1
                         if flags.verbose:
