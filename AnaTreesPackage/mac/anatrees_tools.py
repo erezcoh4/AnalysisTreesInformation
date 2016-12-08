@@ -103,7 +103,7 @@ def tracks_anafile_name( ListName , first_anatree_file = 0 , last_anatree_file =
 # -------------------------
 def read_files_from_a_list( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
     # returns the files
-    if flags.verbose: print_filename(ListName,"reading list of files (collecting files %d to %d)..."%(first_anatree_file , last_anatree_file))
+    if flags.verbose: print_filename(lists_path + "/analysis_trees/" + ListName + ".list","reading list of files (collecting files %d to %d)..."%(first_anatree_file , last_anatree_file))
     with open( lists_path + "/analysis_trees/" + ListName + ".list") as f:
         files = f.read().splitlines()
     if last_anatree_file > first_anatree_file:
