@@ -22,6 +22,10 @@ neutrinoSel2_path       = lists_path + "/NeutrinoSelection2"
 mu_p_intersection_path  = lists_path + "/muon_proton_intersection"
 schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
+g4_features_names = [ 'run'         ,'subrun'       ,'event'
+                     ,'ig4'         ,'track_id'     ,'pdg'
+                     ,'Eng'         ,'theta'        ,'phi'
+                     ]
 
 
 track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
@@ -88,6 +92,15 @@ def tracks_full_features_file_name( ListName , first_anatree_file = 0 , last_ana
         return featuresfiles_path + "/" + "full_features_" + ListName + ".csv"
     else:
         return featuresfiles_path + "/" + "full_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+
+# -------------------------
+def g4_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
+    if first_anatree_file==last_anatree_file:
+        return featuresfiles_path + "/" + "g4_features_" + ListName + ".csv"
+    else:
+        return featuresfiles_path + "/" + "g4_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+
+
 
 # -------------------------
 def tracks_anafile_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
@@ -355,10 +368,15 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+    g4info_file_name    = g4_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     writer = csv.writer(open(resutls_file_name, 'wb'))
     if first_anatree_file==0:
         writer.writerow( track_features_names )
 
+    if MCmode:
+        writer_g4 = csv.writer(open(g4info_file_name, 'wb'))
+        if first_anatree_file==0:
+            writer_g4.writerow( g4_features_names )
 
 
     if Option=="find common muon-proton vertices":
@@ -421,8 +439,17 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 calc.FillOutTree()
                 
-                
-                
+                # geant4 particles
+                if MCmode:
+                    for i in range(calc.Ng4particles):
+                        g4particle = calc.GetG4Particle(i)
+                        g4_features = [ g4particle.run , g4particle.subrun  , g4particle.event ,
+                                          g4particle.ig4  , g4particle.TrackId  , g4particle.pdg ,
+                                          g4particle.Eng  , g4particle.theta  , g4particle.phi ]
+                    writer_g4.writerow( g4_features )
+                # end geant4 particles
+
+                # tracks
                 for i in range(calc.Ntracks):
                     track = calc.GetTrack(i)
                     
@@ -499,7 +526,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         counter = counter+1
                         if flags.verbose>1:
                             print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
-                    
+                    # end tracks
+
                     if do_continue:
                         calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                     if flags.verbose>2: print_line()

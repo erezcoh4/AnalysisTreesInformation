@@ -19,8 +19,10 @@
 #pragma link C++ class mutual_vertex+;
 #pragma link C++ class ImportantTools+;
 #pragma link C++ class AnalyzeTracksFile+;
+#pragma link C++ class LArG4Particle+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
+
 
 
 

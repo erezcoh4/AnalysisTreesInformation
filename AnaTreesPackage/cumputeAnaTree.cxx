@@ -208,9 +208,11 @@ void cumputeAnaTree::InitOutputTree(){
     OutTree -> Branch("subrun"      ,&subrun            ,"subrun/I");
     OutTree -> Branch("event"       ,&event             ,"event/I");
     OutTree -> Branch("Ntracks"     ,&Ntracks           ,"Ntracks/I"); // number of contained tracks, not ntracks_pandoraNu...
+    OutTree -> Branch("Ng4particles"     ,&Ng4particles           ,"Ng4particles/I"); // number of g4 particles
     
     OutTree -> Branch("nu_interactions"     ,&nu_interactions); // neutrino interactions...
     OutTree -> Branch("tracks"              ,&tracks); // tracks information...
+    OutTree -> Branch("g4particles"        ,&g4particles); // g4 information...
     
     if (MCmode){
         OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
@@ -287,8 +289,9 @@ void cumputeAnaTree::InitEntry(){
     if (!tracks.empty())                tracks.clear();
     if (!tracks_vertices.empty())       tracks_vertices.clear();
     if (!mutual_vertices.empty())       mutual_vertices.clear();
+    if (!g4particles.empty())           g4particles.clear();
     
-    NnuInteractions = Ntracks = ntracks_pandoraNu = 0;
+    NnuInteractions = Ntracks = ntracks_pandoraNu = Ng4particles = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -461,7 +464,19 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         if(MCmode){
             if(debug>3) Printf("plugging also MC information:");
             bool FoundMCtrack = false;
+            Ng4particles = geant_list_size;
             for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
+                
+                g4particles.push_back( LArG4Particle(run ,
+                                                      subrun ,
+                                                      event ,
+                                                      ig4 ,
+                                                      TrackId[ig4],
+                                                      pdg[ig4],
+                                                      Eng[ig4],
+                                                      theta[ig4],
+                                                      phi[ig4]) );
+                
                 if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
                 if(TrackId[ig4] == trkg4id_pandoraNu[j]){
                     // pdg code, for training and testing purposes
@@ -717,7 +732,7 @@ bool cumputeAnaTree::GetTruthInformation(){
     //loop over neutrino interactions
     if (debug > 2) SHOW(mcevts_truth);
     
-    for (Int_t n = 0; n < mcevts_truth && n < kMaxTruth; n++) {
+    for (Int_t n = 0; n < mcevts_truth && n < kMaxTruth ; n++) {
         
         if (debug>2) {
             Printf("mc event %d",n);
@@ -1053,6 +1068,12 @@ void cumputeAnaTree::PrintData(int entry){
     if(!mutual_vertices.empty()){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << mutual_vertices.size() << " mutual vertices\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
         for (auto v: mutual_vertices) {
+            v.Print();
+        }
+    }
+    if(!g4particles.empty()){
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << g4particles.size() << " g4 particles \n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
+        for (auto v: g4particles) {
             v.Print();
         }
     }

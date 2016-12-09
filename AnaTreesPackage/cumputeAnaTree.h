@@ -22,6 +22,7 @@
 #include "GENIEinteraction.h"
 #include "track_vertex.h"
 #include "mutual_vertex.h"
+#include "LArG4Particle.h"
 
 
 #define MAX_vertices 20
@@ -71,6 +72,7 @@ public:
     TTree*         GetOutTree ()            {return OutTree;};
     void             GetEntry (int);
     PandoraNuTrack   GetTrack (int i)       {return tracks.at(i);};
+    LArG4Particle   GetG4Particle (int i)   {return g4particles.at(i);};
    
     // initializations
     void    InitInputTree ();
@@ -95,6 +97,9 @@ public:
     void              Write2CSV ( Int_t, Int_t, Int_t  );
     void    GetEnergyDeposition ( int j );
 
+    
+    
+    
     // helpers
     bool        VertexContained ( TVector3 );
     bool         TrackContained ( TVector3 , TVector3 );
@@ -142,7 +147,7 @@ public:
     
     
     Int_t       nhits       , primary;
-    Int_t       Ntracks     , NnuInteractions   , Ncosmictracks;
+    Int_t       Ntracks     , NnuInteractions   , Ncosmictracks     , Ng4particles;
     Int_t       trkg4id_pandoraNu[MAX_tracks]   , TrackId[MAX_tracks];
     Int_t       trkpidpdg_pandoraNu[MAX_tracks][3];
     Int_t       no_hits     , no_flashes;
@@ -296,6 +301,8 @@ public:
 
     mutual_vertex c_mutual_vertex;
     std::vector<mutual_vertex> mutual_vertices;
+    
+    std::vector<LArG4Particle> g4particles;
 
 
 

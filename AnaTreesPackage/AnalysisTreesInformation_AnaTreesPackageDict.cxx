@@ -41,6 +41,7 @@ namespace std {} using namespace std;
 #include "AnalyzeTracksFile.h"
 #include "GENIEinteraction.h"
 #include "ImportantTools.h"
+#include "LArG4Particle.h"
 #include "PandoraNuTrack.h"
 #include "cumputeAnaTree.h"
 #include "mutual_vertex.h"
@@ -154,7 +155,7 @@ namespace ROOT {
       ::cumputeAnaTree *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::cumputeAnaTree));
       static ::ROOT::TGenericClassInfo 
-         instance("cumputeAnaTree", "cumputeAnaTree.h", 38,
+         instance("cumputeAnaTree", "cumputeAnaTree.h", 39,
                   typeid(::cumputeAnaTree), DefineBehavior(ptr, ptr),
                   &cumputeAnaTree_Dictionary, isa_proxy, 4,
                   sizeof(::cumputeAnaTree) );
@@ -451,6 +452,51 @@ namespace ROOT {
 } // end of namespace ROOT
 
 namespace ROOT {
+   static TClass *LArG4Particle_Dictionary();
+   static void LArG4Particle_TClassManip(TClass*);
+   static void *new_LArG4Particle(void *p = 0);
+   static void *newArray_LArG4Particle(Long_t size, void *p);
+   static void delete_LArG4Particle(void *p);
+   static void deleteArray_LArG4Particle(void *p);
+   static void destruct_LArG4Particle(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::LArG4Particle*)
+   {
+      ::LArG4Particle *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::LArG4Particle));
+      static ::ROOT::TGenericClassInfo 
+         instance("LArG4Particle", "LArG4Particle.h", 25,
+                  typeid(::LArG4Particle), DefineBehavior(ptr, ptr),
+                  &LArG4Particle_Dictionary, isa_proxy, 4,
+                  sizeof(::LArG4Particle) );
+      instance.SetNew(&new_LArG4Particle);
+      instance.SetNewArray(&newArray_LArG4Particle);
+      instance.SetDelete(&delete_LArG4Particle);
+      instance.SetDeleteArray(&deleteArray_LArG4Particle);
+      instance.SetDestructor(&destruct_LArG4Particle);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::LArG4Particle*)
+   {
+      return GenerateInitInstanceLocal((::LArG4Particle*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::LArG4Particle*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *LArG4Particle_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const ::LArG4Particle*)0x0)->GetClass();
+      LArG4Particle_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void LArG4Particle_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
    // Wrappers around operator new
    static void *new_box(void *p) {
       return  p ? new(p) ::box : new ::box;
@@ -631,6 +677,27 @@ namespace ROOT {
       ((current_t*)p)->~current_t();
    }
 } // end of namespace ROOT for class ::AnalyzeTracksFile
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_LArG4Particle(void *p) {
+      return  p ? new(p) ::LArG4Particle : new ::LArG4Particle;
+   }
+   static void *newArray_LArG4Particle(Long_t nElements, void *p) {
+      return p ? new(p) ::LArG4Particle[nElements] : new ::LArG4Particle[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_LArG4Particle(void *p) {
+      delete ((::LArG4Particle*)p);
+   }
+   static void deleteArray_LArG4Particle(void *p) {
+      delete [] ((::LArG4Particle*)p);
+   }
+   static void destruct_LArG4Particle(void *p) {
+      typedef ::LArG4Particle current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::LArG4Particle
 
 namespace ROOT {
    static TClass *vectorlEtrack_vertexgR_Dictionary();
@@ -1200,6 +1267,69 @@ namespace ROOT {
 } // end of namespace ROOT for class vector<PandoraNuTrack>
 
 namespace ROOT {
+   static TClass *vectorlELArG4ParticlegR_Dictionary();
+   static void vectorlELArG4ParticlegR_TClassManip(TClass*);
+   static void *new_vectorlELArG4ParticlegR(void *p = 0);
+   static void *newArray_vectorlELArG4ParticlegR(Long_t size, void *p);
+   static void delete_vectorlELArG4ParticlegR(void *p);
+   static void deleteArray_vectorlELArG4ParticlegR(void *p);
+   static void destruct_vectorlELArG4ParticlegR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<LArG4Particle>*)
+   {
+      vector<LArG4Particle> *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<LArG4Particle>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<LArG4Particle>", -2, "vector", 457,
+                  typeid(vector<LArG4Particle>), DefineBehavior(ptr, ptr),
+                  &vectorlELArG4ParticlegR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<LArG4Particle>) );
+      instance.SetNew(&new_vectorlELArG4ParticlegR);
+      instance.SetNewArray(&newArray_vectorlELArG4ParticlegR);
+      instance.SetDelete(&delete_vectorlELArG4ParticlegR);
+      instance.SetDeleteArray(&deleteArray_vectorlELArG4ParticlegR);
+      instance.SetDestructor(&destruct_vectorlELArG4ParticlegR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<LArG4Particle> >()));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const vector<LArG4Particle>*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlELArG4ParticlegR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const vector<LArG4Particle>*)0x0)->GetClass();
+      vectorlELArG4ParticlegR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlELArG4ParticlegR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlELArG4ParticlegR(void *p) {
+      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<LArG4Particle> : new vector<LArG4Particle>;
+   }
+   static void *newArray_vectorlELArG4ParticlegR(Long_t nElements, void *p) {
+      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<LArG4Particle>[nElements] : new vector<LArG4Particle>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlELArG4ParticlegR(void *p) {
+      delete ((vector<LArG4Particle>*)p);
+   }
+   static void deleteArray_vectorlELArG4ParticlegR(void *p) {
+      delete [] ((vector<LArG4Particle>*)p);
+   }
+   static void destruct_vectorlELArG4ParticlegR(void *p) {
+      typedef vector<LArG4Particle> current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class vector<LArG4Particle>
+
+namespace ROOT {
    static TClass *vectorlEGENIEinteractiongR_Dictionary();
    static void vectorlEGENIEinteractiongR_TClassManip(TClass*);
    static void *new_vectorlEGENIEinteractiongR(void *p = 0);
@@ -1268,6 +1398,7 @@ namespace {
 "AnalyzeTracksFile.h",
 "GENIEinteraction.h",
 "ImportantTools.h",
+"LArG4Particle.h",
 "PandoraNuTrack.h",
 "cumputeAnaTree.h",
 "mutual_vertex.h",
@@ -1299,6 +1430,7 @@ class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  track_vertex
 class __attribute__((annotate("$clingAutoload$cumputeAnaTree.h")))  mutual_vertex;
 class __attribute__((annotate("$clingAutoload$ImportantTools.h")))  ImportantTools;
 class __attribute__((annotate("$clingAutoload$AnalyzeTracksFile.h")))  AnalyzeTracksFile;
+class __attribute__((annotate("$clingAutoload$LArG4Particle.h")))  LArG4Particle;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
 
@@ -1310,6 +1442,7 @@ class __attribute__((annotate("$clingAutoload$AnalyzeTracksFile.h")))  AnalyzeTr
 #include "AnalyzeTracksFile.h"
 #include "GENIEinteraction.h"
 #include "ImportantTools.h"
+#include "LArG4Particle.h"
 #include "PandoraNuTrack.h"
 #include "cumputeAnaTree.h"
 #include "mutual_vertex.h"
@@ -1322,6 +1455,7 @@ class __attribute__((annotate("$clingAutoload$AnalyzeTracksFile.h")))  AnalyzeTr
 "AnalyzeTracksFile", payloadCode, "@",
 "GENIEinteraction", payloadCode, "@",
 "ImportantTools", payloadCode, "@",
+"LArG4Particle", payloadCode, "@",
 "PandoraNuTrack", payloadCode, "@",
 "box", payloadCode, "@",
 "cumputeAnaTree", payloadCode, "@",
