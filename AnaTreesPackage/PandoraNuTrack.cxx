@@ -231,7 +231,6 @@ void PandoraNuTrack::Print(){
     PrintPhys(start_dqdx,"ADC/cm");
     PrintPhys(end_dqdx,"ADC/cm");
     PrintPhys(tot_dqdx,"ADC/cm");
-    SHOW(MCpdgCode);
     SHOW3( cosmicscore, coscontscore , pidpida )
     SHOW3( purtruth_U , purtruth_V   , purtruth_Y );
     for (int plane = 0 ; plane < 3; plane++) {
@@ -247,6 +246,10 @@ void PandoraNuTrack::Print(){
         << " deg.";
     }
     cout << "\033[0m" << endl;
+    cout << "MC information: " << endl;
+    SHOW(MCpdgCode);
+    SHOW3(truth_Eng , truth_theta , truth_phi);
+
 
 }
 
