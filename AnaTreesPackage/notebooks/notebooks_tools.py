@@ -1,5 +1,4 @@
 features_path = "/Users/erezcohen/Desktop/uBoone/AnalysisTreesAna/FeaturesFiles/"
-features_path = "/Users/erezcohen/Desktop/uBoone/AnalysisTreesAna/FeaturesFiles/"
 
 import sys, pandas as pd, numpy as np, matplotlib.pyplot as plt, ast
 import matplotlib as mpl , seaborn as sns; sns.set(style="white", color_codes=True , font_scale=1)
@@ -66,5 +65,24 @@ def dEdx_jointplot( df_hits , cmap='hot_r' , label='protons', xlim=(0,100) , yli
     plt.colorbar()
     g.fig.suptitle(label)
 
+# dE/dx of expected muons/pions/kaons/protons
+dEdx_truth_protons = pd.read_csv('/Users/erezcohen/Desktop/uBoone/analysis/BetheBloch/dedx_range_protons.csv')
+dEdx_truth_kaons = pd.read_csv('/Users/erezcohen/Desktop/uBoone/analysis/BetheBloch/dedx_range_kaons.csv')
+dEdx_truth_pions = pd.read_csv('/Users/erezcohen/Desktop/uBoone/analysis/BetheBloch/dedx_range_pions.csv')
+dEdx_truth_muons = pd.read_csv('/Users/erezcohen/Desktop/uBoone/analysis/BetheBloch/dedx_range_muons.csv')
+
+# dE/dx vs expected muons/pions/kaons/protons
+def dEdx_vs_expected_particles( hits , xlim = (0,20) , ylim = (0,40) , cmap='hot_r' ):
+    
+    fig,ax = plt.subplots(figsize=(14,10))
+    plt.hist2d(hits.residual_range , hits.dEdx  , bins=[np.linspace(xlim[0],xlim[1],100),np.linspace(ylim[0],ylim[1],100)], cmap=cmap);
+    plt.plot(dEdx_truth_protons['residual range [cm]'],dEdx_truth_protons['dE/dx [MeV/cm]'],color='purple',label='expected protons dE/dx')
+    plt.plot(dEdx_truth_kaons['residual range [cm]'],dEdx_truth_kaons['dE/dx [MeV/cm]'],color='green',label='expected kaons dE/dx')
+    plt.plot(dEdx_truth_pions['residual range [cm]'],dEdx_truth_pions['dE/dx [MeV/cm]'],color='blue',label='expected pions dE/dx')
+    plt.plot(dEdx_truth_muons['residual range [cm]'],dEdx_truth_muons['dE/dx [MeV/cm]'],color='black',label='expected muons dE/dx')
+    pt.set_axes(ax,'residual range [cm]','dE/dx [MeV/cm]')
+    plt.legend(fontsize=25)
+    ax.set_xlim(xlim)
+    ax.set_ylim(ylim)
 
 
