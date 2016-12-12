@@ -25,6 +25,7 @@ schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 g4_features_names = [ 'run'         ,'subrun'       ,'event'
                      ,'ig4'         ,'track_id'     ,'pdg'
                      ,'Eng'         ,'theta'        ,'phi'
+                     ,'primary'
                      ]
 
 
@@ -443,9 +444,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 if MCmode:
                     for i in range(calc.Ng4particles):
                         g4particle = calc.GetG4Particle(i)
-                        g4_features = [ g4particle.run , g4particle.subrun  , g4particle.event ,
-                                          g4particle.ig4  , g4particle.TrackId  , g4particle.pdg ,
-                                          g4particle.Eng  , g4particle.theta  , g4particle.phi ]
+                        g4_features = [ g4particle.run  , g4particle.subrun     , g4particle.event  ,
+                                        g4particle.ig4  , g4particle.TrackId    , g4particle.pdg    ,
+                                        g4particle.Eng  , g4particle.theta      , g4particle.phi    ,
+                                        g4particle.primary_process]
                     writer_g4.writerow( g4_features )
                 # end geant4 particles
 

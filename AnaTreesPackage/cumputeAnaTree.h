@@ -228,7 +228,7 @@ public:
     
     
     // MC information
-    Int_t       geant_list_size         , pdg[MAX_tracks];
+    Int_t       geant_list_size , pdg[MAX_tracks]   , primary_process[MAX_tracks];
     Float_t     Eng[MAX_tracks] , theta[MAX_tracks] , phi[MAX_tracks];
     
     Float_t     enu_truth[kMaxTruth];       //true neutrino energy in GeV

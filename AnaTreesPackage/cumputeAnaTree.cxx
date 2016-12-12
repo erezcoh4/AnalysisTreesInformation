@@ -154,6 +154,7 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("Eng"                                        , &Eng);
         InTree -> SetBranchAddress("theta"                                      , &theta);
         InTree -> SetBranchAddress("phi"                                        , &phi);
+        InTree -> SetBranchAddress("primary_process"                            , &primary_process);
 
         // purity
         InTree -> SetBranchAddress("trkpurtruth_pandoraNu"                      , &trkpurtruth);
@@ -468,14 +469,15 @@ void cumputeAnaTree::GetPandoraNuTracks(){
             for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
                 
                 g4particles.push_back( LArG4Particle(run ,
-                                                      subrun ,
-                                                      event ,
-                                                      ig4 ,
-                                                      TrackId[ig4],
-                                                      pdg[ig4],
-                                                      Eng[ig4],
-                                                      theta[ig4],
-                                                      phi[ig4]) );
+                                                     subrun ,
+                                                     event ,
+                                                     ig4 ,
+                                                     TrackId[ig4],
+                                                     pdg[ig4],
+                                                     Eng[ig4],
+                                                     theta[ig4],
+                                                     phi[ig4],
+                                                     primary_process[ig4]) );
                 
                 if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
                 if(TrackId[ig4] == trkg4id_pandoraNu[j]){
