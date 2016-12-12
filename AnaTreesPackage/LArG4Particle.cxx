@@ -15,7 +15,7 @@ LArG4Particle::LArG4Particle(Int_t frun, Int_t fsubrun , Int_t fevent ,
     SetEng (fEng);
     SetTheta (ftheta);
     SetPhi (fphi);
-    SetPrimaryProcess(fpp);
+    SetPrimaryProcess (fpp);
     
 }
 

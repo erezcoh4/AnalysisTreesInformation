@@ -130,8 +130,8 @@ bool GENIEinteraction::ComputeKinematics(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool GENIEinteraction::ComputePmissPrec(){
     
-    SHOW(Np);
-    SHOW(protons.size());
+    //    SHOW(Np);
+    //    SHOW(protons.size());
     if(Np>0){
         
         Plead = protons.at(0);
