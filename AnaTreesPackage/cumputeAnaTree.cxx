@@ -485,6 +485,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     if(debug>3) Printf("truth pdg is: %d",pdg[ig4]);
                     FoundMCtrack = true;
                     c_track.SetMCpdgCode(pdg[ig4]);
+                    c_track.SetProcessPrimary(process_primary[ig4]);
                     // energy
                     c_track.truth_Eng = Eng[ig4];
                     // angles

@@ -102,7 +102,8 @@ public:
     void          Set_nhits (Int_t n)       {nhits = n;};
     void       SetMCpdgCode (Int_t _mcpdg)  {MCpdgCode = _mcpdg;};
     void  SetCalorimetryPDG (Int_t _pdg[3]) {for (int i=0 ; i < 3 ; i++ ) CalorimetryPDG[i] = _pdg[i];};
-    
+    void  SetProcessPrimary (Int_t fpp)     {process_primary = fpp;};
+
     void       SetCosScores (Float_t fcscore, Float_t fccscore)
     {cosmicscore = fcscore; coscontscore = fccscore;};
     
@@ -182,7 +183,7 @@ public:
     Int_t       run         , subrun    , event;
     Int_t       nhits       , is_flipped;
     Int_t       NNeighborTracks;
-    Short_t     track_id;
+    Short_t     track_id    , process_primary;
     
     TVector3    start_pos   , end_pos   ;
     
