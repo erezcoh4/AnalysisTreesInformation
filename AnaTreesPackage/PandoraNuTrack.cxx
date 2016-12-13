@@ -247,7 +247,8 @@ void PandoraNuTrack::Print(){
     }
     cout << "\033[0m" << endl;
     cout << "MC information: " << endl;
-    SHOW(MCpdgCode);
+    SHOW ( process_primary );
+    SHOW (MCpdgCode);
     SHOW3(truth_Eng , truth_theta , truth_phi);
 
 

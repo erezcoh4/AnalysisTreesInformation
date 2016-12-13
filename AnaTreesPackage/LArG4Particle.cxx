@@ -22,7 +22,9 @@ LArG4Particle::LArG4Particle(Int_t frun, Int_t fsubrun , Int_t fevent ,
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void LArG4Particle::Print(){
+    cout << "\033[31m" << "LArG4Particle " << ig4 << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
     SHOW3 ( run , subrun , event ) ;
+    SHOW ( process_primary );
     SHOW3 ( ig4 , TrackId , pdg ) ;
     SHOW3 ( Eng , theta , phi ) ;
     
