@@ -39,7 +39,7 @@ public:
     void           Set_ig4 (Int_t fig4)     {ig4 = fig4;};
     void        SetTrackId (Int_t fTrackId) {TrackId = fTrackId;};
     void            SetPDG (Int_t fpdg)     {pdg = fpdg;};
-    void SetPrimaryProcess (Int_t fpp)      {primary_process = fpp;};
+    void SetPrimaryProcess (Int_t fpp)      {process_primary = fpp;};
     void            SetEng (Float_t fEng)   {Eng = fEng;};
     void          SetTheta (Float_t ftheta) {theta = ftheta;};
     void            SetPhi (Float_t fphi)   {phi = fphi;};
@@ -52,7 +52,7 @@ public:
     Float_t          GetEng () {return Eng;};
     Float_t        GetTheta () {return theta;};
     Float_t          GetPhi () {return phi;};
-    Int_t GetPrimaryProcess () {return primary_process;};
+    Int_t GetPrimaryProcess () {return process_primary;};
     
     
     Int_t       run , subrun    , event;
@@ -60,7 +60,7 @@ public:
     
     
     
-    Float_t     Eng , theta     , phi , primary_process;
+    Float_t     Eng , theta     , phi , process_primary;
 
 };
 

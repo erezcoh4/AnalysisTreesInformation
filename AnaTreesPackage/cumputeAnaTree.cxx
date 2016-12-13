@@ -154,7 +154,7 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("Eng"                                        , &Eng);
         InTree -> SetBranchAddress("theta"                                      , &theta);
         InTree -> SetBranchAddress("phi"                                        , &phi);
-        InTree -> SetBranchAddress("primary_process"                            , &primary_process);
+        InTree -> SetBranchAddress("process_primary"                            , &process_primary);
 
         // purity
         InTree -> SetBranchAddress("trkpurtruth_pandoraNu"                      , &trkpurtruth);
@@ -477,7 +477,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                                                      Eng[ig4],
                                                      theta[ig4],
                                                      phi[ig4],
-                                                     primary_process[ig4]) );
+                                                     process_primary[ig4]) );
                 
                 if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
                 if(TrackId[ig4] == trkg4id_pandoraNu[j]){
