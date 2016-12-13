@@ -7,7 +7,15 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 LArG4Particle::LArG4Particle(Int_t frun, Int_t fsubrun , Int_t fevent ,
                              Int_t fig4, Int_t fTrackId, Int_t fpdg, Float_t fEng, Float_t ftheta, Float_t fphi,
-                             Int_t fpp){
+                             Int_t fpp):
+pdg(-100),
+ig4(-100),
+TrackId(-100),
+Eng(-100),
+theta(-100),
+phi(-100),
+process_primary(-100)
+{
     SetRSE (frun, fsubrun , fevent);
     Set_ig4 (fig4) ;
     SetTrackId (fTrackId);
