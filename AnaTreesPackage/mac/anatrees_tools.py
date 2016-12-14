@@ -24,7 +24,7 @@ schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 g4_features_names = [ 'run'         ,'subrun'       ,'event'
                      ,'ig4'         ,'track_id'     ,'pdg'
-                     ,'Eng'         ,'theta'        ,'phi'
+                     ,'P'           ,'Eng'          ,'theta'        ,'phi'
                      ,'primary'
                      ]
 
@@ -44,7 +44,7 @@ track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
                         ,'Y_start_wire' ,'Y_start_time' ,'Y_end_wire' ,'Y_end_time'
                         ,'purtruth_Y'
                         ,'CaloPDG_U'    , 'CaloPDG_V'   , 'CaloPDG_Y'
-                        ,'truth_Eng'    ,'truth_theta' , 'truth_phi'  , 'process_primary'
+                        ,'truth_P'      ,'truth_Eng'    ,'truth_theta' , 'truth_phi'  , 'process_primary'
                         ,'residual_range_Y'
                         ,'dqdx_Y'
                         ,'dEdx_Y'
@@ -446,7 +446,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         g4particle = calc.GetG4Particle(i)
                         g4_features = [ g4particle.run  , g4particle.subrun     , g4particle.event  ,
                                         g4particle.ig4  , g4particle.TrackId    , g4particle.pdg    ,
-                                        g4particle.Eng  , g4particle.theta      , g4particle.phi    ,
+                                        g4particle.P    , g4particle.Eng        , g4particle.theta  , g4particle.phi    ,
                                         g4particle.process_primary]
                     writer_g4.writerow( g4_features )
                 # end geant4 particles
@@ -508,7 +508,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                           , roi_Y.start_wire        , roi_Y.start_time      , roi_Y.end_wire        , roi_Y.end_time
                                           , track.purtruth_Y
                                           , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
-                                          , track.truth_Eng         , track.truth_theta     , track.truth_phi       , track.process_primary
+                                          , track.truth_P          , track.truth_Eng       , track.truth_theta     , track.truth_phi       , track.process_primary
                                           ]
                                       
                         residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
