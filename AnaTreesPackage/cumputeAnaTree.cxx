@@ -467,7 +467,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
             if(debug>3) Printf("plugging also MC information:");
             bool FoundMCtrack = false;
             Ng4particles = geant_list_size;
-            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
+            for(Int_t ig4=0; ig4 < geant_list_size ; ig4++){
                 
                 g4particles.push_back( LArG4Particle(run ,
                                                      subrun ,
@@ -480,6 +480,10 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                                                      theta[ig4],
                                                      phi[ig4],
                                                      process_primary[ig4]) );
+                
+                
+            }
+            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
                 
                 if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
                 if(TrackId[ig4] == trkg4id_pandoraNu[j]){
