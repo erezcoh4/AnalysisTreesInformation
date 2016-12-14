@@ -448,8 +448,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                         g4particle.ig4  , g4particle.TrackId    , g4particle.pdg    ,
                                         g4particle.P    , g4particle.Eng        , g4particle.theta  , g4particle.phi    ,
                                         g4particle.process_primary]
-                    writer_g4.writerow( g4_features )
-                # end geant4 particles
+                        writer_g4.writerow( g4_features )
+                    # end geant4 particles
 
                 # tracks
                 for i in range(calc.Ntracks):
