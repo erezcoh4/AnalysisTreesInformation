@@ -466,23 +466,6 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         if(MCmode){
             if(debug>3) Printf("plugging also MC information:");
             bool FoundMCtrack = false;
-            Ng4particles = geant_list_size;
-            for(Int_t ig4=0; ig4 < geant_list_size ; ig4++){
-                
-                g4particles.push_back( LArG4Particle(run ,
-                                                     subrun ,
-                                                     event ,
-                                                     ig4 ,
-                                                     TrackId[ig4],
-                                                     pdg[ig4],
-                                                     P[ig4],
-                                                     Eng[ig4],
-                                                     theta[ig4],
-                                                     phi[ig4],
-                                                     process_primary[ig4]) );
-                
-                
-            }
             for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
                 
                 if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
@@ -518,6 +501,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         tracks.push_back(c_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",tracks.size());
     }
+    
 }
 
 
@@ -737,16 +721,36 @@ void cumputeAnaTree::FindMutualVertices(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetTruthInformation(){
     
-    if (debug > 2) Printf("getting truth information");
+    if (debug > 2) Printf("getting geant4 information");
     
+    Ng4particles = geant_list_size;
+    for(Int_t ig4=0; ig4 < geant_list_size ; ig4++){
+        
+        g4particles.push_back( LArG4Particle(run ,
+                                             subrun ,
+                                             event ,
+                                             ig4 ,
+                                             TrackId[ig4],
+                                             pdg[ig4],
+                                             P[ig4],
+                                             Eng[ig4],
+                                             theta[ig4],
+                                             phi[ig4],
+                                             process_primary[ig4]) );
+        
+        
+    }
+    
+    if (debug > 2) Printf("getting genie information");
     //loop over neutrino interactions
     if (debug > 2) SHOW(mcevts_truth);
-    
     for (Int_t n = 0; n < mcevts_truth && n < kMaxTruth ; n++) {
         
         if (debug>2) {
             Printf("mc event %d",n);
-            cout << "," << run << "," <<subrun<< "," <<event<< "," <<nuvtxx_truth[n] << "," << nuvtxy_truth[n] << "," << nuvtxz_truth[n]<< "," <<ccnc_truth[n]<< "," <<nuPDG_truth[n]<< "," <<X_truth[n]<< "," << Q2_truth[n] << "..."<< endl;
+            cout << "," << run << "," <<subrun<< "," <<event<< ","
+            <<nuvtxx_truth[n] << "," << nuvtxy_truth[n] << "," << nuvtxz_truth[n]<< ","
+            <<ccnc_truth[n]<< "," <<nuPDG_truth[n]<< "," <<X_truth[n]<< "," << Q2_truth[n] << "..."<< endl;
         }
         
         c_nu_interaction = nuInteraction(
