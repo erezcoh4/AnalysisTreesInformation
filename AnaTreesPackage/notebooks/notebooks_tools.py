@@ -3,7 +3,8 @@ features_path = "/Users/erezcohen/Desktop/uBoone/AnalysisTreesAna/FeaturesFiles/
 import sys, pandas as pd, numpy as np, matplotlib.pyplot as plt, ast
 import matplotlib as mpl , seaborn as sns; sns.set(style="white", color_codes=True , font_scale=1)
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/mySoftware/MySoftwarePackage/mac')
-import GeneralPlot as gp , Initiation as init, plot_tools as pt
+import GeneralPlot as gp , Initiation as init
+from plot_tools import *
 dirname = init.createnewdir()
 generic = lambda x: ast.literal_eval(x)
 from matplotlib.colors import LogNorm
