@@ -420,6 +420,18 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
             
             calc.extract_information()
             
+            # geant4 particles
+            if MCmode:
+                for i in range(calc.Ng4particles):
+                    g4particle = calc.GetG4Particle(i)
+                    g4_features = [ g4particle.run  , g4particle.subrun     , g4particle.event  ,
+                                   g4particle.ig4   , g4particle.TrackId    , g4particle.pdg    ,
+                                   g4particle.P     , g4particle.Eng        , g4particle.theta  , g4particle.phi    ,
+                                   g4particle.process_primary ]
+                    writer_g4.writerow( g4_features )
+            # end geant4 particles
+
+
             if (flags.verbose and entry%flags.print_mod==0):
                 
                 calc.PrintData( entry )
@@ -440,16 +452,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                 calc.FillOutTree()
                 
-                # geant4 particles
-                if MCmode:
-                    for i in range(calc.Ng4particles):
-                        g4particle = calc.GetG4Particle(i)
-                        g4_features = [ g4particle.run  , g4particle.subrun     , g4particle.event  ,
-                                        g4particle.ig4  , g4particle.TrackId    , g4particle.pdg    ,
-                                        g4particle.P    , g4particle.Eng        , g4particle.theta  , g4particle.phi    ,
-                                        g4particle.process_primary]
-                        writer_g4.writerow( g4_features )
-                    # end geant4 particles
 
                 # tracks
                 for i in range(calc.Ntracks):
