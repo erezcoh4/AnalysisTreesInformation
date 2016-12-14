@@ -250,6 +250,7 @@ void PandoraNuTrack::Print(){
     cout << "MC information: " << endl;
     SHOW ( process_primary );
     SHOW (MCpdgCode);
+    PrintPhys (truth_P , "GeV/c");
     SHOW3(truth_Eng , truth_theta , truth_phi);
 
 

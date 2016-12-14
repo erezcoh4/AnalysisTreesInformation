@@ -151,6 +151,7 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("trkg4id_pandoraNu"                          , &trkg4id_pandoraNu);
         InTree -> SetBranchAddress("TrackId"                                    , &TrackId);
         InTree -> SetBranchAddress("pdg"                                        , &pdg);
+        InTree -> SetBranchAddress("P"                                          , &P);
         InTree -> SetBranchAddress("Eng"                                        , &Eng);
         InTree -> SetBranchAddress("theta"                                      , &theta);
         InTree -> SetBranchAddress("phi"                                        , &phi);
@@ -474,6 +475,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                                                      ig4 ,
                                                      TrackId[ig4],
                                                      pdg[ig4],
+                                                     P[ig4],
                                                      Eng[ig4],
                                                      theta[ig4],
                                                      phi[ig4],
@@ -487,10 +489,11 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     c_track.SetMCpdgCode(pdg[ig4]);
                     c_track.SetProcessPrimary(process_primary[ig4]);
                     // energy
-                    c_track.truth_Eng = Eng[ig4];
+                    c_track.truth_P     = P[ig4];
+                    c_track.truth_Eng   = Eng[ig4];
                     // angles
                     c_track.truth_theta = theta[ig4];
-                    c_track.truth_phi = phi[ig4];
+                    c_track.truth_phi   = phi[ig4];
 
                 }
             }

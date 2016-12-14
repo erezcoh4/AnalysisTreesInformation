@@ -26,7 +26,7 @@ class LArG4Particle{
 
 public:
               LArG4Particle (){};
-              LArG4Particle (Int_t , Int_t , Int_t , Int_t , Int_t , Int_t , Float_t , Float_t , Float_t , Int_t);
+              LArG4Particle (Int_t , Int_t , Int_t , Int_t , Int_t , Int_t , Float_t , Float_t , Float_t , Float_t , Int_t);
              ~LArG4Particle (){}
     
     
@@ -40,6 +40,7 @@ public:
     void        SetTrackId (Int_t fTrackId) {TrackId = fTrackId;};
     void            SetPDG (Int_t fpdg)     {pdg = fpdg;};
     void SetPrimaryProcess (Int_t fpp)      {process_primary = fpp;};
+    void              SetP (Float_t fP)     {P = fP;};
     void            SetEng (Float_t fEng)   {Eng = fEng;};
     void          SetTheta (Float_t ftheta) {theta = ftheta;};
     void            SetPhi (Float_t fphi)   {phi = fphi;};
@@ -60,7 +61,7 @@ public:
     
     
     
-    Float_t     Eng , theta     , phi , process_primary;
+    Float_t     P , Eng , theta     , phi , process_primary;
 
 };
 
