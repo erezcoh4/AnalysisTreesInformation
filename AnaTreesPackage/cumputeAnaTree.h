@@ -27,7 +27,6 @@
 
 #define MAX_vertices 20
 #define MAX_tracks 1000
-//#define MAX_cosmic_tracks 500
 #define MAX_hits 50000
 #define kMaxTruth 10
 /**

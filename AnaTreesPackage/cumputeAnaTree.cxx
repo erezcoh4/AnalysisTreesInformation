@@ -467,7 +467,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         if(MCmode){
             if(debug>3) Printf("plugging also MC information:");
             bool FoundMCtrack = false;
-            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
+            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks && !FoundMCtrack ; ig4++) {
                 
                 if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
                 if(TrackId[ig4] == trkg4id_pandoraNu[j]){
