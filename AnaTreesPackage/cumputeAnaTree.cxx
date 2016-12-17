@@ -724,10 +724,10 @@ void cumputeAnaTree::FindMutualVertices(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetTruthInformation(){
     
-    if (debug > 2) Printf("getting geant4 information");
+    if (debug > 3) Printf("getting geant4 information");
     
     Ng4particles = geant_list_size;
-    if (debug > 2) SHOW(Ng4particles);
+    if (debug > 3) SHOW(Ng4particles);
 
     for(Int_t ig4=0; ig4 < geant_list_size ; ig4++){
         
@@ -749,9 +749,9 @@ bool cumputeAnaTree::GetTruthInformation(){
         
     }
     
-    if (debug > 2) Printf("getting genie information");
+    if (debug > 3) Printf("getting genie information");
     //loop over neutrino interactions
-    if (debug > 2) SHOW(mcevts_truth);
+    if (debug > 3) SHOW(mcevts_truth);
     for (Int_t n = 0; n < mcevts_truth && n < kMaxTruth ; n++) {
         
         if (debug>2) {
