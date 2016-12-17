@@ -728,10 +728,10 @@ bool cumputeAnaTree::GetTruthInformation(){
     
     if (debug > 3) SHOW(geant_list_size);
 
-    for(Int_t ig4=0; ig4 < geant_list_size ; ig4++){
+    for(Int_t ig4=0; ig4 < geant_list_size &&  Ng4particles < MAX_tracks; ig4++){
         
         if ( Eng[ig4]-Mass[ig4] < 0.01 )    continue; // threshold out generated particles with kinetic energy < 10 MeV
-        
+        MAX_tracks ++ ;
         g4particles.push_back( LArG4Particle(run ,
                                              subrun ,
                                              event ,
@@ -747,8 +747,8 @@ bool cumputeAnaTree::GetTruthInformation(){
         
         
     }
+    if (debug > 3) SHOW(Ng4particles);
     
-    Ng4particles = g4particles.size();
     
     if (debug > 3) Printf("getting genie information");
     //loop over neutrino interactions
