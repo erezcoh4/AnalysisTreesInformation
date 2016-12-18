@@ -59,7 +59,7 @@ void LArG4Particle::Print(){
     SHOW3 ( Eng , theta , phi ) ;
     SHOWTVector3 ( start_pos ) ;
     SHOWTVector3 ( end_pos ) ;
-    PrintPhys ( length , "cm" )
+    PrintPhys ( length , "cm" );
     SHOW ( Mother );
 }
 
