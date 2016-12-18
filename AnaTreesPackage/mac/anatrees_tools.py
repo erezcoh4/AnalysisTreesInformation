@@ -438,7 +438,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                    g4particle.length        , g4particle.Mother
                                    ]
                                    
-                    writer_g4.writerow( ['{:.2f}'.format(x) for x in g4_features]  )
+                    writer_g4.writerow( ['{:.3f}'.format(x) for x in g4_features]  )
             # end geant4 particles
 
 
@@ -523,6 +523,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                           , track.truth_P          , track.truth_Eng        , track.truth_KE        , track.truth_theta     , track.truth_phi       , track.process_primary
                                           ]
 
+                        track_features = ['{:.3f}'.format(x) for x in track_features]
 
                         residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
                         for step in range(track.GetEdepYNsteps()):
@@ -531,10 +532,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                             dEdx_Y.append( track.dEdx_Y.at(step) )
                             Edep_Y.append( track.Edep_Y.at(step) )
 
-                        track_features.append(residual_range_Y)
-                        track_features.append(dqdx_Y)
-                        track_features.append(dEdx_Y)
-                        track_features.append(Edep_Y)
+                        track_features.append(['{:.3f}'.format(x) for x in residual_range_Y])
+                        track_features.append(['{:.3f}'.format(x) for x in dqdx_Y])
+                        track_features.append(['{:.3f}'.format(x) for x in dEdx_Y])
+                        track_features.append(['{:.3f}'.format(x) for x in Edep_Y])
                         
                         
                         writer.writerow( track_features )
