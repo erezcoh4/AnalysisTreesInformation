@@ -147,7 +147,9 @@ void cumputeAnaTree::InitInputTree(){
     if (MCmode) {
         
         if (debug>1)  Printf ("\n\nrunning on MC mode...\n\n");
+        // geant information
         InTree -> SetBranchAddress("geant_list_size"                            , &geant_list_size);
+        InTree -> SetBranchAddress("no_primaries"                               , &no_primaries);
         InTree -> SetBranchAddress("trkg4id_pandoraNu"                          , &trkg4id_pandoraNu);
         InTree -> SetBranchAddress("TrackId"                                    , &TrackId);
         InTree -> SetBranchAddress("pdg"                                        , &pdg);
@@ -157,7 +159,18 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("theta"                                      , &theta);
         InTree -> SetBranchAddress("phi"                                        , &phi);
         InTree -> SetBranchAddress("process_primary"                            , &process_primary);
+        
+        InTree -> SetBranchAddress("Mother"                                     , &Mother);
+        InTree -> SetBranchAddress("EndPointx"                                  , &EndPointx);
+        InTree -> SetBranchAddress("EndPointy"                                  , &EndPointy);
+        InTree -> SetBranchAddress("EndPointz"                                  , &EndPointz);
+        InTree -> SetBranchAddress("StartPointx"                                , &StartPointx);
+        InTree -> SetBranchAddress("StartPointy"                                , &StartPointy);
+        InTree -> SetBranchAddress("StartPointz"                                , &StartPointz);
+        
+        
 
+        
         // purity
         InTree -> SetBranchAddress("trkpurtruth_pandoraNu"                      , &trkpurtruth);
 
@@ -723,12 +736,13 @@ void cumputeAnaTree::FindMutualVertices(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetTruthInformation(){
-    
+    // information about these branches can be found at
+    // [https://indico.fnal.gov/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=11056]
     if (debug > 3) Printf("getting geant4 information");
     
-    if (debug > 3) SHOW(geant_list_size);
+    if (debug > 3) SHOW2(geant_list_size , no_primaries);
 
-    for(Int_t ig4=0; ig4 < geant_list_size &&  Ng4particles < MAX_tracks; ig4++){
+    for(Int_t ig4=0; ig4 < geant_list_size &&  Ng4particles < kMaxPrimaries; ig4++){
         
         if ( Eng[ig4]-Mass[ig4] < 0.01 )    continue; // threshold out generated particles with kinetic energy < 10 MeV
         Ng4particles ++ ;
@@ -743,7 +757,11 @@ bool cumputeAnaTree::GetTruthInformation(){
                                              Mass[ig4],
                                              theta[ig4],
                                              phi[ig4],
-                                             process_primary[ig4]) );
+                                             process_primary[ig4],
+                                             TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ),
+                                             TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ),
+                                             Mother[ig4]
+                                             ) );
         
         
     }

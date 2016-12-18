@@ -29,6 +29,7 @@
 #define MAX_tracks 1000
 #define MAX_hits 50000
 #define kMaxTruth 10
+constexpr int kMaxPrimaries  = 20000;  //maximum number of primary particles
 /**
  \class cumputeAnaTree
  User defined class cumputeAnaTree ... these comments are used to generate
@@ -227,8 +228,14 @@ public:
     
     
     // MC information
-    Int_t       geant_list_size , pdg[MAX_tracks]   , process_primary[MAX_tracks];
-    Float_t     Eng[MAX_tracks] , theta[MAX_tracks] , phi[MAX_tracks] , P[MAX_tracks] , Mass[MAX_tracks] , KE[MAX_tracks];
+    // geant information
+    Int_t       geant_list_size , no_primaries;
+    Int_t       pdg[kMaxPrimaries]  , process_primary[kMaxPrimaries]        , Mother[kMaxPrimaries];
+    Float_t     Eng[kMaxPrimaries]  , P[kMaxPrimaries]  , Mass[kMaxPrimaries]   , KE[kMaxPrimaries];
+    Float_t     theta[kMaxPrimaries], phi[kMaxPrimaries];
+    Float_t     StartPointx[kMaxPrimaries]  , StartPointy[kMaxPrimaries]    , StartPointz[kMaxPrimaries];
+    Float_t     EndPointx[kMaxPrimaries]    , EndPointy[kMaxPrimaries]      , EndPointz[kMaxPrimaries];
+    /// ---------------------------------
     
     Float_t     enu_truth[kMaxTruth];       //true neutrino energy in GeV
     Float_t     Q2_truth[kMaxTruth];        //Momentum transfer squared in GeV^2

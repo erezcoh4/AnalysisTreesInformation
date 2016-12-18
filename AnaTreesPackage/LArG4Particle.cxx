@@ -8,7 +8,9 @@
 LArG4Particle::LArG4Particle(Int_t frun, Int_t fsubrun , Int_t fevent ,
                              Int_t fig4, Int_t fTrackId, Int_t fpdg,
                              Float_t fP, Float_t fEng, Float_t fMass, Float_t ftheta, Float_t fphi,
-                             Int_t fpp):
+                             Int_t fpp,
+                             TVector3 fstart_pos , TVector3 fend_pos,
+                             Int_t fMother):
 pdg(-100),
 ig4(-100),
 TrackId(-100),
@@ -16,7 +18,10 @@ Eng(-100),
 Mass(-100),
 theta(-100),
 phi(-100),
-process_primary(-100)
+process_primary(-100),
+Mother(-100),
+start_pos(TVector3()),
+end_pos(TVector3())
 {
     SetRSE (frun, fsubrun , fevent);
     Set_ig4 (fig4) ;
@@ -29,6 +34,9 @@ process_primary(-100)
     SetTheta (ftheta);
     SetPhi (fphi);
     SetPrimaryProcess (fpp);
+    SetMother (fMother);
+    SetStartPos (fstart_pos);
+    SetEndPos (fend_pos);
     
 }
 
@@ -42,7 +50,9 @@ void LArG4Particle::Print(){
     SHOW2 ( Mass , KE );
     SHOW3 ( ig4 , TrackId , pdg ) ;
     SHOW3 ( Eng , theta , phi ) ;
-    
+    SHOWTVector3 ( start_pos ) ;
+    SHOWTVector3 ( end_pos ) ;
+    SHOW ( Mother );
 }
 
 #endif

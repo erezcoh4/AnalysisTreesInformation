@@ -27,6 +27,9 @@ g4_features_names = [ 'run'         ,'subrun'       ,'event'
                      ,'P'           ,'Mass'         ,'Eng'
                      ,'KE'          ,'theta'        ,'phi'
                      ,'primary'
+                     ,'startx'       ,'starty'   ,'startz'
+                     ,'endx'         ,'endy'     ,'endz'
+                     ,'Mother'
                      ]
 
 
@@ -429,7 +432,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                    g4particle.ig4   , g4particle.TrackId    , g4particle.pdg    ,
                                    g4particle.P     , g4particle.Mass       , g4particle.Eng    ,
                                    g4particle.KE    , g4particle.theta      , g4particle.phi    ,
-                                   g4particle.process_primary ]
+                                   g4particle.process_primary ,
+                                   g4particle.start_pos.x() , g4particle.start_pos.y()  , g4particle.start_pos.z(),
+                                   g4particle.end_pos.x()   , g4particle.end_pos.y()    , g4particle.end_pos.z(),
+                                   g4particle.Mother
+                                   ]
                     writer_g4.writerow( g4_features )
             # end geant4 particles
 

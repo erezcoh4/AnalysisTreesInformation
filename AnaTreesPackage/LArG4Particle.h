@@ -26,7 +26,7 @@ class LArG4Particle{
 
 public:
               LArG4Particle (){};
-              LArG4Particle (Int_t , Int_t , Int_t , Int_t , Int_t , Int_t , Float_t , Float_t , Float_t , Float_t , Float_t , Int_t);
+              LArG4Particle (Int_t , Int_t , Int_t , Int_t , Int_t , Int_t , Float_t , Float_t , Float_t , Float_t , Float_t , Int_t , TVector3 , TVector3 , Int_t );
              ~LArG4Particle (){}
     
     
@@ -40,12 +40,15 @@ public:
     void        SetTrackId (Int_t fTrackId) {TrackId = fTrackId;};
     void            SetPDG (Int_t fpdg)     {pdg = fpdg;};
     void SetPrimaryProcess (Int_t fpp)      {process_primary = fpp;};
+    void         SetMother (Int_t fm)       {Mother = fm;};
     void              SetP (Float_t fP)     {P = fP;};
     void            SetEng (Float_t fEng)   {Eng = fEng;};
     void           SetMass (Float_t fMass)  {Mass = fMass;};
     void             SetKE (Float_t fKE)    {KE = fKE;};
     void          SetTheta (Float_t ftheta) {theta = ftheta;};
     void            SetPhi (Float_t fphi)   {phi = fphi;};
+    void       SetStartPos (TVector3 fp)    {start_pos = fp;};
+    void         SetEndPos (TVector3 fp)    {end_pos = fp;};
     
     
     // getters
@@ -60,12 +63,14 @@ public:
     Int_t GetPrimaryProcess () {return process_primary;};
     
     
-    Int_t       run , subrun    , event;
+    Int_t       run , subrun    , event , Mother;
     Int_t       ig4 , TrackId   , pdg;
     
     
     
     Float_t     P , Eng  , Mass , KE , theta , phi , process_primary;
+    
+    TVector3    start_pos , end_pos;
 
 };
 
