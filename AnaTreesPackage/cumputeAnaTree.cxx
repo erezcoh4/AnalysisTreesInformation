@@ -749,6 +749,7 @@ bool cumputeAnaTree::GetTruthInformation(){
         // threshold out uncontained generated particles tracks or ones with kinetic energy < 10 MeV
         if ( Eng[ig4]-Mass[ig4] < 0.01 )    continue;
         if (!TrackContained( TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ) , TVector3(EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ) )) continue;
+        // Katherine cuts on tracks shorter than 1.5 cm
         // keep contained tracks with kinetic energy > 10 MeV (we are mainly interested in protons eventually...)
         
         Ng4particles ++ ;
