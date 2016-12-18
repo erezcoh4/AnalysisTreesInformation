@@ -746,7 +746,11 @@ bool cumputeAnaTree::GetTruthInformation(){
 
     for(Int_t ig4=0; ig4 < geant_list_size &&  ig4 < kMaxPrimaries; ig4++){
         
-        if ( Eng[ig4]-Mass[ig4] < 0.01 )    continue; // threshold out generated particles with kinetic energy < 10 MeV
+        // threshold out uncontained generated particles tracks or ones with kinetic energy < 10 MeV
+        if ( Eng[ig4]-Mass[ig4] < 0.01 )    continue;
+        if (!TrackContained( TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ) , TVector3(EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ) )) continue;
+        // keep contained tracks with kinetic energy > 10 MeV (we are mainly interested in protons eventually...)
+        
         Ng4particles ++ ;
         g4particles.push_back( LArG4Particle(run ,
                                              subrun ,
