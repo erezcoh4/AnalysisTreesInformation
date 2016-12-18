@@ -437,7 +437,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                    g4particle.end_pos.x()   , g4particle.end_pos.y()    , g4particle.end_pos.z(),
                                    g4particle.length        , g4particle.Mother
                                    ]
-                    writer_g4.writerow( g4_features )
+                                   
+                    writer_g4.writerow( ['{:3.2e}'.format(x) for x in g4_features]  )
             # end geant4 particles
 
 
