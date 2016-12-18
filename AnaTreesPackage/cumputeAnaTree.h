@@ -27,7 +27,6 @@
 
 #define MAX_vertices 20
 #define MAX_tracks 1000
-//#define MAX_cosmic_tracks 500
 #define MAX_hits 50000
 #define kMaxTruth 10
 /**
@@ -268,10 +267,6 @@ public:
     // energy deposition profile
     std::vector <Float_t>   residual_range[3]    , dEdx[3] , Edep[3] , dqdx[3];
 
-//    std::vector <Float_t>   track_dx_U  , residual_range_U    , dEdx_U , Edep_U , dqdx_U;
-//    std::vector <Float_t>   track_dx_V  , residual_range_V    , dEdx_V , Edep_V , dqdx_V;
-//    std::vector <Float_t>   track_dx_Y  , residual_range_Y    , dEdx_Y , Edep_Y , dqdx_Y;
-//    std::vector <TVector3>  TrkPos_U    , TrkPos_V      , TrkPos_Y;
 
     Float_t Nhits[3];
 

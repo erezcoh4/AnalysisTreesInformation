@@ -467,7 +467,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         if(MCmode){
             if(debug>3) Printf("plugging also MC information:");
             bool FoundMCtrack = false;
-            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
+            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks && !FoundMCtrack ; ig4++) {
                 
                 if(debug>3) Printf("trkg4id_pandoraNu[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraNu[j],ig4,TrackId[ig4]);
                 if(TrackId[ig4] == trkg4id_pandoraNu[j]){
@@ -724,11 +724,14 @@ void cumputeAnaTree::FindMutualVertices(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetTruthInformation(){
     
-    if (debug > 2) Printf("getting geant4 information");
+    if (debug > 3) Printf("getting geant4 information");
     
-    Ng4particles = geant_list_size;
-    for(Int_t ig4=0; ig4 < geant_list_size ; ig4++){
+    if (debug > 3) SHOW(geant_list_size);
+
+    for(Int_t ig4=0; ig4 < geant_list_size &&  Ng4particles < MAX_tracks; ig4++){
         
+        if ( Eng[ig4]-Mass[ig4] < 0.01 )    continue; // threshold out generated particles with kinetic energy < 10 MeV
+        Ng4particles ++ ;
         g4particles.push_back( LArG4Particle(run ,
                                              subrun ,
                                              event ,
@@ -744,10 +747,12 @@ bool cumputeAnaTree::GetTruthInformation(){
         
         
     }
+    if (debug > 3) SHOW(Ng4particles);
     
-    if (debug > 2) Printf("getting genie information");
+    
+    if (debug > 3) Printf("getting genie information");
     //loop over neutrino interactions
-    if (debug > 2) SHOW(mcevts_truth);
+    if (debug > 3) SHOW(mcevts_truth);
     for (Int_t n = 0; n < mcevts_truth && n < kMaxTruth ; n++) {
         
         if (debug>2) {
@@ -956,42 +961,42 @@ bool cumputeAnaTree::FillOutTree (){
     
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
     
-    if (option.Contains("extract all tracks information")){
-        for (auto t:tracks){
-            csvfile
-            << t.run                    << " " << t.subrun
-            << " " << t.event           << " " << t.track_id
-            << " " << t.is_flipped      << " " << t.nhits           << " " << t.length
-            << " " << t.start_pos.x()   << " " << t.start_pos.y()   << " " << t.start_pos.z()
-            << " " << t.end_pos.x()     << " " << t.end_pos.y()     << " " << t.end_pos.z()
-            << " " << t.theta           << " " << t.phi             << " " << t.distlenratio
-            << " " << t.start_dqdx      << " " << t.end_dqdx
-            << " " << t.dqdx_diff       << " " << t.dqdx_ratio
-            << " " << t.tot_dqdx        << " " << t.avg_dqdx
-            << " " << t.cosmicscore     << " " << t.coscontscore
-            << " " << t.pidpida         << " " << t.pidchi
-            << " " << t.cftime          << " " << t.cftimewidth
-            << " " << t.cfzcenter       << " " << t.cfzwidth
-            << " " << t.cfycenter       << " " << t.cfywidth
-            << " " << t.cftotalpe       << " " << t.cfdistance
-            << " " << t.MCpdgCode
-            << " " << t.roi[0].start_wire  << " " << t.roi[0].start_time
-            << " " << t.roi[0].end_wire    << " " << t.roi[0].end_time
-            << " " << t.roi[1].start_wire  << " " << t.roi[1].start_time
-            << " " << t.roi[1].end_wire    << " " << t.roi[1].end_time
-            << " " << t.roi[2].start_wire  << " " << t.roi[2].start_time
-            << " " << t.roi[2].end_wire    << " " << t.roi[2].end_time
-            << endl;
-        }
-    }
-    
-    
-    else if (option.Contains("find common muon-proton vertices")){
+    // deprecated, delete by Jan-17 2017!
+//    
+//    if (option.Contains("extract all tracks information")){
+//        for (auto t:tracks){
+//            csvfile
+//            << t.run                    << " " << t.subrun
+//            << " " << t.event           << " " << t.track_id
+//            << " " << t.is_flipped      << " " << t.nhits           << " " << t.length
+//            << " " << t.start_pos.x()   << " " << t.start_pos.y()   << " " << t.start_pos.z()
+//            << " " << t.end_pos.x()     << " " << t.end_pos.y()     << " " << t.end_pos.z()
+//            << " " << t.theta           << " " << t.phi             << " " << t.distlenratio
+//            << " " << t.start_dqdx      << " " << t.end_dqdx
+//            << " " << t.dqdx_diff       << " " << t.dqdx_ratio
+//            << " " << t.tot_dqdx        << " " << t.avg_dqdx
+//            << " " << t.cosmicscore     << " " << t.coscontscore
+//            << " " << t.pidpida         << " " << t.pidchi
+//            << " " << t.cftime          << " " << t.cftimewidth
+//            << " " << t.cfzcenter       << " " << t.cfzwidth
+//            << " " << t.cfycenter       << " " << t.cfywidth
+//            << " " << t.cftotalpe       << " " << t.cfdistance
+//            << " " << t.MCpdgCode
+//            << " " << t.roi[0].start_wire  << " " << t.roi[0].start_time
+//            << " " << t.roi[0].end_wire    << " " << t.roi[0].end_time
+//            << " " << t.roi[1].start_wire  << " " << t.roi[1].start_time
+//            << " " << t.roi[1].end_wire    << " " << t.roi[1].end_time
+//            << " " << t.roi[2].start_wire  << " " << t.roi[2].start_time
+//            << " " << t.roi[2].end_wire    << " " << t.roi[2].end_time
+//            << endl;
+//        }
+//    }
+//
+//    else
+    if (option.Contains("find common muon-proton vertices")){
         // R/S/E
         // ivtx / itrk_NuSelMuon / itrk_GBDTproton
         // ROI for muon
