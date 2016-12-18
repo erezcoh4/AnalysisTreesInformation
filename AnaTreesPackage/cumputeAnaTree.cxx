@@ -744,7 +744,7 @@ bool cumputeAnaTree::GetTruthInformation(){
     
     if (debug > 3) SHOW2(geant_list_size , no_primaries);
 
-    for(Int_t ig4=0; ig4 < geant_list_size &&  Ng4particles < kMaxPrimaries; ig4++){
+    for(Int_t ig4=0; ig4 < geant_list_size &&  ig4 < kMaxPrimaries; ig4++){
         
         if ( Eng[ig4]-Mass[ig4] < 0.01 )    continue; // threshold out generated particles with kinetic energy < 10 MeV
         Ng4particles ++ ;

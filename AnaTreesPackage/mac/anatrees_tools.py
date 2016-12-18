@@ -522,7 +522,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                           , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
                                           , track.truth_P          , track.truth_Eng        , track.truth_KE        , track.truth_theta     , track.truth_phi       , track.process_primary
                                           ]
-                                      
+
+
                         residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
                         for step in range(track.GetEdepYNsteps()):
                             residual_range_Y.append( track.residual_range_Y.at(step) )
