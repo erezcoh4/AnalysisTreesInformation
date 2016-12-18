@@ -49,7 +49,7 @@ public:
     void            SetPhi (Float_t fphi)   {phi = fphi;};
     void       SetStartPos (TVector3 fp)    {start_pos = fp;};
     void         SetEndPos (TVector3 fp)    {end_pos = fp;};
-    
+    void    SetTrackLength ();
     
     // getters
     Int_t           Get_ig4 () {return ig4;};
@@ -69,6 +69,7 @@ public:
     
     
     Float_t     P , Eng  , Mass , KE , theta , phi , process_primary;
+    Float_t     length;
     
     TVector3    start_pos , end_pos;
 

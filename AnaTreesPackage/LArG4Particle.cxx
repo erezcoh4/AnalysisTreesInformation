@@ -37,8 +37,15 @@ end_pos(TVector3())
     SetMother (fMother);
     SetStartPos (fstart_pos);
     SetEndPos (fend_pos);
-    
+    SetTrackLength ();
 }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void LArG4Particle::SetTrackLength (){
+    length = (start_pos - end_pos).Mag();
+}
+
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -52,7 +59,9 @@ void LArG4Particle::Print(){
     SHOW3 ( Eng , theta , phi ) ;
     SHOWTVector3 ( start_pos ) ;
     SHOWTVector3 ( end_pos ) ;
+    PrintPhys ( length , "cm" )
     SHOW ( Mother );
 }
+
 
 #endif
