@@ -737,6 +737,8 @@ void cumputeAnaTree::FindMutualVertices(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::GetTruthInformation(){
     // information about these branches can be found at
+    // [https://cdcvs.fnal.gov/redmine/projects/dunetpc/repository/revisions/develop/entry/dune/FDSensOpt/NueAna_module.cc]
+    // and/or summarized in T.Y slides
     // [https://indico.fnal.gov/getFile.py/access?contribId=1&resId=0&materialId=slides&confId=11056]
     if (debug > 3) Printf("getting geant4 information");
     
@@ -759,7 +761,7 @@ bool cumputeAnaTree::GetTruthInformation(){
                                              phi[ig4],
                                              process_primary[ig4],
                                              TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ),
-                                             TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ),
+                                             TVector3(EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ),
                                              Mother[ig4]
                                              ) );
         
