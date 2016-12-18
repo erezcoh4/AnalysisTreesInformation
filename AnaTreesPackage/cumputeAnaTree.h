@@ -29,7 +29,7 @@
 #define MAX_tracks 1000
 #define MAX_hits 50000
 #define kMaxTruth 10
-#define kMaxPrimaries  = 20000  //maximum number of primary particles
+#define kMaxPrimaries 20000  //maximum number of primary particles
 /**
  \class cumputeAnaTree
  User defined class cumputeAnaTree ... these comments are used to generate
