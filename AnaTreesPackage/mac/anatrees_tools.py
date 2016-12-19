@@ -408,7 +408,7 @@ def do_pass_geometrical_cuts( track ):
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-def stream_g4_features_to_file ( g4particle , writer_g4 )
+def stream_g4_features_to_file ( g4particle , writer_g4 ):
     g4particle = calc.GetG4Particle(i)
     g4_features = [ g4particle.run  , g4particle.subrun     , g4particle.event  ,
                     g4particle.ig4   , g4particle.TrackId    , g4particle.pdg    ,
@@ -426,7 +426,7 @@ def stream_g4_features_to_file ( g4particle , writer_g4 )
 
 
 # ----------------------------------------------------------------------------------------------------
-def stream_tracks_features_to_file ( track , writer )
+def stream_tracks_features_to_file ( track , writer ):
 
     roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
     CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
