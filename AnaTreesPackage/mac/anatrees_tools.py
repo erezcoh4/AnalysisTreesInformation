@@ -409,7 +409,7 @@ def do_pass_geometrical_cuts( track ):
 
 # ----------------------------------------------------------------------------------------------------
 def stream_g4_features_to_file ( g4particle , writer_g4 ):
-    g4particle = calc.GetG4Particle(i)
+
     g4_features = [ g4particle.run  , g4particle.subrun     , g4particle.event  ,
                     g4particle.ig4   , g4particle.TrackId    , g4particle.pdg    ,
                     g4particle.P     , g4particle.Mass       , g4particle.Eng    ,
