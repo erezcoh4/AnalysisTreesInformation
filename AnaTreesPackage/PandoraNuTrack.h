@@ -216,7 +216,9 @@ public:
     
     // truth information - only valid for MC data
     Int_t       MCpdgCode;
-    Float_t     truth_Eng , truth_theta , truth_phi , truth_P , truth_Mass , truth_KE;
+    Float_t     truth_Eng , truth_P , truth_Mass , truth_KE;
+    Float_t     truth_theta         , truth_phi;
+    TVector3    truth_start_pos     , truth_end_pos
 
 };
 #endif

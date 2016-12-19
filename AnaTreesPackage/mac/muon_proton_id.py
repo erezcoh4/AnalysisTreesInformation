@@ -19,7 +19,7 @@ maxscore                = 'protons'
 p_score                 = 0.9
 
 
-splitjobs_files = 1000 # splitting the jobs: 0-10, 10-20, 20-30,....
+splitjobs_files = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
 first_anatree_file = flags.run
 last_anatree_file = first_anatree_file + splitjobs_files
 
@@ -30,6 +30,7 @@ last_anatree_file = first_anatree_file + splitjobs_files
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
     print_important( "extract tracks information from MC AnalysisTrees" )
     extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
+
 
 # ---------------
 if flags.option=="extract MC-CORSIKA tracks information from AnalysisTrees" or 'extract_CORSIKA' in flags.option:
