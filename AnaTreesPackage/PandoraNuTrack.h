@@ -218,7 +218,7 @@ public:
     Int_t       MCpdgCode;
     Float_t     truth_Eng , truth_P , truth_Mass , truth_KE;
     Float_t     truth_theta         , truth_phi;
-    TVector3    truth_start_pos     , truth_end_pos
+    TVector3    truth_start_pos     , truth_end_pos;
 
 };
 #endif

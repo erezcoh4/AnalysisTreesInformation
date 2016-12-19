@@ -252,6 +252,9 @@ void PandoraNuTrack::Print(){
     SHOW (MCpdgCode);
     PrintPhys (truth_P , "GeV/c");
     SHOW3(truth_Eng , truth_theta , truth_phi);
+    SHOWTVector3(truth_start_pos);
+    SHOWTVector3(truth_end_pos);
+
 
 
 }
