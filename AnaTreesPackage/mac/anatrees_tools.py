@@ -353,11 +353,12 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
 
 # ----------------------------------------------------------------------------------------------------
 def add_event_list( EventsListName ):
-    if flags.verbose: print_filename( EventsListName , "adding list of R/S/E from" )
-        with open( EventsListName , 'rb') as csvfile:
-            reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
-            header = next(reader)
-            rse_events_list = [dict(zip(header, map(int, row))) for row in reader]
+    if flags.verbose:
+        print_filename( EventsListName , "adding list of R/S/E from" )
+    with open( EventsListName , 'rb') as csvfile:
+        reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
+        header = next(reader)
+        rse_events_list = [dict(zip(header, map(int, row))) for row in reader]
     if flags.verbose>3:
         print rse_events_list
     return rse_events_list
