@@ -87,3 +87,17 @@ def dEdx_vs_expected_particles( hits , xlim = (0,20) , ylim = (0,40) , cmap='hot
     ax.set_ylim(ylim)
 
 
+
+# acceptance plots for protons
+def uB_acceptace_1d( var='P', x_label='momentum [GeV/c]',
+                    bins=np.linspace(0,2,30) ,
+                    figsize=(10,10),fontsize=20,
+                    legend_loc='lower left',
+                    y_lim=None):
+    gen_protons = MCBNB_gen_protons[var][MCBNB_gen_protons.length>1.5]
+    rec_protons = MCBNB_rec_protons['truth_'+var]
+    return acceptace_1d( MCBNB_gen_protons[var][MCBNB_gen_protons.length>1.5] , MCBNB_rec_protons['truth_'+var] ,
+                        bins=bins , figsize=figsize,fontsize=fontsize,
+                        legend_loc=legend_loc, y_lim=y_lim, x_label=x_label)
+
+
