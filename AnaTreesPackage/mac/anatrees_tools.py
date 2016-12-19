@@ -400,7 +400,7 @@ def do_pass_geometrical_cuts( track ):
         print 'length-cut:',length_cut,'\tfiducial_cuts:' , fiducial_cuts , '\tflashmatched_cut:', flashmatched_cut
     
     if (length_cut and fiducial_cuts and flashmatched_cut):
-        return = True
+        return True
     else:
         return False
 
