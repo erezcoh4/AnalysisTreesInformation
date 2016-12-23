@@ -16,7 +16,7 @@ from larlite import larlite as fmwk
 
 # ----------------------- file names ----------------------------- #
 # input (1): larlite file
-latlitefilename = "larlite_BNB5e19_mu-p_vertex_maxscoredprotons_score_0.9_917evnts_22Nov2016.root"
+latlitefilename = "larlite_BNB5e19_mu-p_vertex_maxscoredprotons_score_0.9_917evnts_23Dec2016.root"
 print_filename( latlitefilename ,"input (1): larlite input file" )
 
 # input (2): roi map for muon-proton vertices
