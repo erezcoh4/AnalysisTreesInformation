@@ -231,9 +231,8 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option,
     
     extract_anatrees_tracks_information_with_all_features( in_chain , Option,
                                                           first_anatree_file , last_anatree_file,
-                                        MCmode, AddEventsList , EventsListName , AnaTreesListName )
+                                                          MCmode, AddEventsList , EventsListName , AnaTreesListName )
 
-#extract_anatrees_tracks_information
 
 # -------------------------
 def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Option,
@@ -243,10 +242,13 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
                                                     EventsListName="",
                                                     output_mupRSEFileName="" ):
     
-    AnaTreesListName = DataType + "_AnalysisTrees"
+#    AnaTreesListName = DataType + "_AnalysisTrees"
     in_chain = ROOT.TChain( TreeName )
     in_chain.Add( InputFileName )
-    extract_anatrees_tracks_information( in_chain, Option, 0, 0 , MCmode, AddEventsList, EventsListName , AnaTreesListName , output_mupRSEFileName )
+    extract_anatrees_tracks_information_with_all_features( in_chain=in_chain, Option=Option,
+                                                          MCmode=MCmode, AddEventsList=AddEventsList,
+                                                          EventsListName=EventsListName , AnaTreesListName=DataType+"_AnalysisTrees" ,
+                                                          output_mupRSEFileName=output_mupRSEFileName )
 
 
 # deprecated, delete by Dec-15
@@ -403,8 +405,6 @@ def do_pass_geometrical_cuts( track ):
         return True
     else:
         return False
-
-
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
@@ -422,8 +422,6 @@ def stream_g4_features_to_file ( g4particle , writer_g4 ):
             
     writer_g4.writerow( ['{:.3f}'.format(x) for x in g4_features]  )
 # ----------------------------------------------------------------------------------------------------
-
-
 
 # ----------------------------------------------------------------------------------------------------
 def stream_tracks_features_to_file ( track , writer ):
