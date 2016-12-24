@@ -539,24 +539,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
             
             # geant4 particles
             if MCmode:
-#                stream_g4_features_to_file ( calc , writer_g4 )
                 for i in range(calc.Ng4particles):
                     g4particle = calc.GetG4Particle(i)
                     stream_g4_features_to_file ( g4particle , writer_g4 )
                     g4_counter = g4_counter + 1
-#                    g4particle = calc.GetG4Particle(i)
-#                    g4_features = [ g4particle.run  , g4particle.subrun     , g4particle.event  ,
-#                                   g4particle.ig4   , g4particle.TrackId    , g4particle.pdg    ,
-#                                   g4particle.P     , g4particle.Mass       , g4particle.Eng    ,
-#                                   g4particle.KE    , g4particle.theta      , g4particle.phi    ,
-#                                   g4particle.process_primary ,
-#                                   g4particle.start_pos.x() , g4particle.start_pos.y()  , g4particle.start_pos.z(),
-#                                   g4particle.end_pos.x()   , g4particle.end_pos.y()    , g4particle.end_pos.z(),
-#                                   g4particle.length        , g4particle.Mother
-#                                   ]
-#                                   
-#                    writer_g4.writerow( ['{:.3f}'.format(x) for x in g4_features]  )
-#            # end geant4 particles
+            # end geant4 particles
 
 
             if (flags.verbose and entry%flags.print_mod==0):
@@ -587,7 +574,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 for i in range(calc.Ntracks):
                     
                     track = calc.GetTrack(i)
-                    
                     if flags.verbose>4: print 'grabbed track',i
 
                     if "add hard geometrical cuts" in Option:
@@ -599,67 +585,17 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     if do_continue:
                         
                         stream_tracks_features_to_file ( track , writer )
-#
-#                        roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
-#                        CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
-#                    
-#                        track_features = [ track.run                , track.subrun          , track.event           , track.track_id
-#                                          , track.is_flipped        , track.nhits           , track.length
-#                                          , track.start_pos.x()     , track.start_pos.y()   , track.start_pos.z()
-#                                          , track.end_pos.x()       , track.end_pos.y()     , track.end_pos.z()
-#                                          , track.theta             , track.phi             , track.distlenratio
-#                                          , track.start_dqdx        , track.end_dqdx        , track.dqdx_diff       , track.dqdx_ratio
-#                                          , track.tot_dqdx          , track.avg_dqdx
-#                                          , track.cosmicscore       , track.coscontscore    , track.pidpida         , track.pidchi
-#                                          , track.cftime            , track.cftimewidth     , track.cfzcenter       , track.cfzwidth
-#                                          , track.cfycenter         , track.cfywidth        , track.cftotalpe       , track.cfdistance
-#                                          , track.MCpdgCode
-#                                          , roi_U.start_wire        , roi_U.start_time      , roi_U.end_wire        , roi_U.end_time
-#                                          , roi_V.start_wire        , roi_V.start_time      , roi_V.end_wire        , roi_V.end_time
-#                                          , roi_Y.start_wire        , roi_Y.start_time      , roi_Y.end_wire        , roi_Y.end_time
-#                                          , track.purtruth_Y
-#                                          , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
-#                                          , track.truth_P          , track.truth_Eng        , track.truth_KE        , track.truth_theta     , track.truth_phi       , track.process_primary
-#                                          , track.truth_start_pos.x()   , track.truth_start_pos.y()     , track.truth_start_pos.z()
-#                                          , track.truth_end_pos.x()     , track.truth_end_pos.y()       , track.truth_end_pos.z()
-#                                          ]
-#
-#                        track_features = ['{:.3f}'.format(x) for x in track_features]
-#
-#                        residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
-#                        for step in range(track.GetEdepYNsteps()):
-#                            residual_range_Y.append( track.residual_range_Y.at(step) )
-#                            dqdx_Y.append( track.dqdx_Y.at(step) )
-#                            dEdx_Y.append( track.dEdx_Y.at(step) )
-#                            Edep_Y.append( track.Edep_Y.at(step) )
-#
-#                        track_features.append(residual_range_Y)
-#                        track_features.append(dqdx_Y)
-#                        track_features.append(dEdx_Y)
-#                        track_features.append(Edep_Y)
-#                        
-#                        
-#                        writer.writerow( track_features )
+                        if flags.verbose>2: print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
                         counter = counter+1
-                        if flags.verbose>1:
-                            print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
-                    # end tracks
-
-                    if do_continue:
-                        
-                        calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                     
                     if flags.verbose>2: print_line()
-
-
-
+                # end tracks
 
                 if Option=="find common muon-proton vertices":
-                    
+                    calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )                    
                     output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
 
     print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
-    print_filename( resutls_file_name , "wrote csv file with all %d g4 generated tracks (%.2f MB)"%(g4_counter,float(os.path.getsize(g4info_file_name)/1048576.0)) )
     print_filename( resutls_file_name , "wrote csv file with all %d tracks features (%.2f MB)"%(counter,float(os.path.getsize(resutls_file_name)/1048576.0)) )
     print_filename( TracksAnaFileName , "wrote root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
     
@@ -667,7 +603,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
         output_rse_file.close()
 
-    if MCmode:  GENIETree.Write()
+    if MCmode:
+        print_filename( resutls_file_name , "wrote csv file with all %d g4 generated tracks (%.2f MB)"%(g4_counter,float(os.path.getsize(g4info_file_name)/1048576.0)) )
+        GENIETree.Write()
     
     TracksTree.Write()
     OutFile.Close()
