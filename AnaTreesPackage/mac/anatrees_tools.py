@@ -234,7 +234,7 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option,
                                                           MCmode, AddEventsList , EventsListName , AnaTreesListName )
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Option,
                                                     MCmode=False,
                                                     TreeName="analysistree/anatree",
@@ -249,6 +249,7 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
                                                           MCmode=MCmode, AddEventsList=AddEventsList,
                                                           EventsListName=EventsListName , AnaTreesListName=DataType+"_AnalysisTrees" ,
                                                           output_mupRSEFileName=output_mupRSEFileName )
+# ----------------------------------------------------------------------------------------------------
 
 
 # deprecated, delete by Dec-15
@@ -473,7 +474,7 @@ def stream_tracks_features_to_file ( track , writer ):
 
 # ----------------------------------------------------------------------------------------------------
 def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
-                                                          first_anatree_file=0, last_anatree_file=1,
+                                                          first_anatree_file=0, last_anatree_file=0,
                                                           MCmode=False,
                                                           AddEventsList=False,
                                                           EventsListName="",
@@ -592,7 +593,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                 # end tracks
 
                 if Option=="find common muon-proton vertices":
-                    calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )                    
+                    calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                     output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
 
     print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
