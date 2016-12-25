@@ -24,6 +24,10 @@ roi_map_name    = rois_path + '/' + "roi_Sel2muons_BNB_5e19POT_multi_BNB_Trained
 print_filename( roi_map_name , "input (2): roi map" )
 # ---------------------------------------------------------------- #
 
+# arguments
+image_format = 'png'
+
+
 # output: where the images will be generated
 images_name     = "BNB_5e19POT_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_mu_p_intersection_maxdistance_10cm"
 n_max_entries   = -1 if flags.evnts_frac <= 1 else int(flags.evnts_frac)
@@ -73,6 +77,8 @@ ana_process.SetArgs( flags.worker , flags.verbose , images_path , n_max_entries 
 # load ROIs map
 n_roi_per_event = 3
 ana_process.LoadROIsMap( roi_map_name , n_roi_per_event )
+ana_process.SetImageFormat( image_format )
+
 # add my analysis process
 my_fwk.add_process( ana_process )
 # run the analysis

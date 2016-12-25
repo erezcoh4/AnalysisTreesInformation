@@ -59,69 +59,78 @@ track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
 
 
 # list names and file names
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def Sel2muons_list_name(DataType = "BNB_5e19POT"):
     if DataType == "BNB_5e19POT":
         neutrinoSel2_list_name = "BeamOnData_pandoraNu_pandoraNu.csv"
     elif DataType == "EXTBNB":
         neutrinoSel2_list_name = "BeamOffData_pandoraNu_pandoraNu.csv"
     return neutrinoSel2_path + "/" + neutrinoSel2_list_name
+# ----------------------------------------------------------------------------------------------------
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ):
     classification_name = TracksListName + "_" + GBDTmodelName
     return "Sel2muons_"+classification_name+"_pscore_%.2f_intersection"%p_score
+# ----------------------------------------------------------------------------------------------------
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def Sel2muons_intersection_list_csv_name( GBDTmodelName, TracksListName, p_score ):
     return Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + ".csv"
+# ----------------------------------------------------------------------------------------------------
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score ):
     return Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + "_mindistance_%dcm.csv"%min_trk_vtx_distance
+# ----------------------------------------------------------------------------------------------------
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def schemed_anatrees_file_name( anatrees_list_name , scheming_name ):
     return schemed_anatrees_path + "/" + anatrees_list_name + "_" + scheming_name + ".root"
+# ----------------------------------------------------------------------------------------------------
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def tracks_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
     if first_anatree_file==last_anatree_file:
         return featuresfiles_path + "/" + "features_" + ListName + ".csv"
     else:
         return featuresfiles_path + "/" + "features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+# ----------------------------------------------------------------------------------------------------
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def tracks_full_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
     if first_anatree_file==last_anatree_file:
         return featuresfiles_path + "/" + "full_features_" + ListName + ".csv"
     else:
         return featuresfiles_path + "/" + "full_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+# ----------------------------------------------------------------------------------------------------
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def g4_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
     if first_anatree_file==last_anatree_file:
         return featuresfiles_path + "/" + "g4_features_" + ListName + ".csv"
     else:
         return featuresfiles_path + "/" + "g4_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+# ----------------------------------------------------------------------------------------------------
 
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def tracks_anafile_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
     if first_anatree_file==last_anatree_file:
         return anafiles_path + "/" + "Tracks_" + ListName + ".root"
     else:
         return anafiles_path + "/" + "Tracks_" + ListName + "_anatreefiles_%d_to_%d.root"%(first_anatree_file,last_anatree_file)
+# ----------------------------------------------------------------------------------------------------
 
 
 
 
 
 # methods
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def read_files_from_a_list( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
     # returns the files
     if flags.verbose: print_filename(lists_path + "/analysis_trees/" + ListName + ".list","reading list of files (collecting files %d to %d)..."%(first_anatree_file , last_anatree_file))
@@ -131,9 +140,10 @@ def read_files_from_a_list( ListName , first_anatree_file = 0 , last_anatree_fil
         files = files[ first_anatree_file : last_anatree_file ]
     if flags.verbose>4: print files
     return files
+# ----------------------------------------------------------------------------------------------------
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def get_analysistrees_chain(files):
     chain = ROOT.TChain("analysistree/anatree")
     for i in range(int(flags.files_frac*len(files))):
@@ -142,19 +152,21 @@ def get_analysistrees_chain(files):
             chain.Add(files[i])
     if flags.verbose: print "input chain entries from ",int(flags.files_frac*len(files))," files: ",chain.GetEntries()
     return chain
+# ----------------------------------------------------------------------------------------------------
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def search_rse( RSE , EventsList ):
     run,subrun,event = RSE[0],RSE[1],RSE[2]
     for e in EventsList:
         if e['run'] == run and e['subrun'] == subrun and e['event'] == event:
             return True , e['ivtx-NuSel'], e['itrk-NuSelMuon'], e['itrk-GBDTproton']
     return False , -1 , -1 , -1
+# ----------------------------------------------------------------------------------------------------
 
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_score ):
     import csv, pandas as pd
     
@@ -179,6 +191,7 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
     print_filename( IntersectionListName , "intersected Sel2/GBDTprotons lists (%d tracks)"%len(df_intersection))
     print_important( "more %s \nscp %s $uboone:~/"%(IntersectionListName,IntersectionListName) )
     print_line()
+# ----------------------------------------------------------------------------------------------------
 
 
 
@@ -188,7 +201,7 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
 
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     '''
     This functionallity schemes (big) analysis trees
@@ -215,11 +228,12 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     
     OutTree.Write()
     OutFile.Close()
+# ----------------------------------------------------------------------------------------------------
 
 
 
 
-# -------------------------
+# ----------------------------------------------------------------------------------------------------
 def extract_anatrees_tracks_information_from_files_list( DataType, Option,
                                                         first_anatree_file , last_anatree_file ,
                                                         MCmode=False, AddEventsList=False , EventsListName="" ):
@@ -232,6 +246,7 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option,
     extract_anatrees_tracks_information_with_all_features( in_chain , Option,
                                                           first_anatree_file , last_anatree_file,
                                                           MCmode, AddEventsList , EventsListName , AnaTreesListName )
+# ----------------------------------------------------------------------------------------------------
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -242,7 +257,6 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
                                                     EventsListName="",
                                                     output_mupRSEFileName="" ):
     
-#    AnaTreesListName = DataType + "_AnalysisTrees"
     in_chain = ROOT.TChain( TreeName )
     in_chain.Add( InputFileName )
     extract_anatrees_tracks_information_with_all_features( in_chain=in_chain, Option=Option,
@@ -250,107 +264,6 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
                                                           EventsListName=EventsListName , AnaTreesListName=DataType+"_AnalysisTrees" ,
                                                           output_mupRSEFileName=output_mupRSEFileName )
 # ----------------------------------------------------------------------------------------------------
-
-
-# deprecated, delete by Dec-15
-#
-## -------------------------
-#def extract_anatrees_tracks_information( in_chain, Option,
-#                                        first_anatree_file=0, last_anatree_file=1,
-#                                        MCmode=False,
-#                                        AddEventsList=False,
-#                                        EventsListName="", AnaTreesListName="", output_mupRSEFileName="" ):
-#
-#
-#    if Option != 'extract all tracks information' and Option != 'find common muon-proton vertices':
-#        print "options:"
-#        print "\t extract all tracks information"
-#        print "\t find common muon-proton vertices"
-#        exit(0)
-#
-#    FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-#    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-#
-#    if Option=="find common muon-proton vertices":
-#        output_rse_file = open( output_mupRSEFileName , "w" )
-#
-#    Nentries    = in_chain.GetEntries()
-#    Nreduced    = int(flags.evnts_frac*(Nentries))
-#    if flags.verbose: print_important( "starting run on %d events"%Nreduced )
-#    OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
-#    TracksTree  = ROOT.TTree("TracksTree","pandoraNu tracks")
-#    GENIETree   = ROOT.TTree("GENIETree","genie interactions")
-#    
-#    calc = cumputeAnaTree( in_chain, TracksTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
-#    
-#    if AddEventsList:
-#        import csv
-#        if flags.verbose: print_filename( EventsListName , "adding list of R/S/E from" )
-#        with open( EventsListName , 'rb') as csvfile:
-#            reader = csv.reader(csvfile, delimiter=' ', skipinitialspace=True)
-#            header = next(reader)
-#            rse_events_list = [dict(zip(header, map(int, row))) for row in reader]
-#        if flags.verbose>3:
-#            print rse_events_list
-#
-#
-#    counter = 0
-#    
-#    for entry in range(Nreduced):
-#        
-#        do_continue = True
-#        calc.GetEntry( entry )
-#        entry_rse = [calc.run,calc.subrun,calc.event]
-#        if flags.verbose>2: print entry_rse
-#        
-#        if AddEventsList:
-#            
-#            do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse , rse_events_list )
-#            if (do_continue and flags.verbose>1): print_important("found r-%d/s-%d/e-%d, extracting information....\n"%(calc.run,calc.subrun,calc.event))
-#    
-#        if do_continue:
-#            
-#            calc.extract_information()
-#            
-#            if (flags.verbose and entry%flags.print_mod==0):
-#                
-#                calc.PrintData( entry )
-#            
-#            if Option=="extract all tracks information":
-#                
-#                do_continue = True
-#                ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = 0 , 0 , 0
-#            
-#            if Option=="find common muon-proton vertices":
-#                
-#                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
-#            
-#            if do_continue:
-#                
-#                counter = counter+1
-#                calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-#                calc.FillOutTree()
-#                calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-#                
-#                if Option=="find common muon-proton vertices":
-#                    
-#                    output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
-#
-#    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
-#    print_filename( TracksAnaFileName , "wrote root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
-#
-#    if Option=="find common muon-proton vertices":
-#        print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
-#        output_rse_file.close()
-#
-#
-#    if MCmode:
-#        GENIETree.Write()
-#
-#    TracksTree.Write()
-#    OutFile.Close()
-#
-
 
 
 
