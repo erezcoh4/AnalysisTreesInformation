@@ -58,6 +58,20 @@ track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
                         ]
 
 
+mu_p_features_names = ['run','subrun','event',
+                       'ivtx','itrk_NuSelMuon','itrk_GBDTproton',
+                       'mu_U_start_wire','mu_U_start_time','mu_U_end_wire','mu_U_end_time'
+                       'mu_V_start_wire','mu_V_start_time','mu_V_end_wire','mu_V_end_time'
+                       'mu_Y_start_wire','mu_Y_start_time','mu_Y_end_wire','mu_Y_end_time'
+                       'p_U_start_wire','p_U_start_time','p_U_end_wire','p_U_end_time'
+                       'p_V_start_wire','p_V_start_time','p_V_end_wire','p_V_end_time'
+                       'p_Y_start_wire','p_Y_start_time','p_Y_end_wire','p_Y_end_time'
+                       'v_U_start_wire','v_U_start_time','v_U_end_wire','v_U_end_time'
+                       'v_V_start_wire','v_V_start_time','v_V_end_wire','v_V_end_time'
+                       'v_Y_start_wire','v_Y_start_time','v_Y_end_wire','v_Y_end_time'
+                       ]
+
+
 # list names and file names
 # ----------------------------------------------------------------------------------------------------
 def Sel2muons_list_name(DataType = "BNB_5e19POT"):
@@ -116,6 +130,15 @@ def g4_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file
 # ----------------------------------------------------------------------------------------------------
 
 
+# ----------------------------------------------------------------------------------------------------
+def rois_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
+    if first_anatree_file==last_anatree_file:
+        return rois_path + "/" + "rois_" + ListName + ".csv"
+    else:
+        return rois_path + "/" + "rois_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+# ----------------------------------------------------------------------------------------------------
+
+
 
 # ----------------------------------------------------------------------------------------------------
 def tracks_anafile_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
@@ -124,9 +147,6 @@ def tracks_anafile_name( ListName , first_anatree_file = 0 , last_anatree_file =
     else:
         return anafiles_path + "/" + "Tracks_" + ListName + "_anatreefiles_%d_to_%d.root"%(first_anatree_file,last_anatree_file)
 # ----------------------------------------------------------------------------------------------------
-
-
-
 
 
 # methods
@@ -196,11 +216,6 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
 
 
 
-
-
-
-
-
 # ----------------------------------------------------------------------------------------------------
 def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     '''
@@ -229,8 +244,6 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     OutTree.Write()
     OutFile.Close()
 # ----------------------------------------------------------------------------------------------------
-
-
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -383,6 +396,25 @@ def stream_tracks_features_to_file ( track , writer ):
     writer.writerow( track_features )
 # ----------------------------------------------------------------------------------------------------
 
+# ----------------------------------------------------------------------------------------------------
+def stream_mu_p_vertex_features_to_file ( calc , writer_mu_p ):
+    
+    mu_p_features = [ calc.run , calc.subrun , calc.event
+                      calc.ivtx , itrk_NuSelMuon , itrk_GBDTproton
+                     calc.ROItrk_NuSelMuon[0].start_wire , calc.ROItrk_NuSelMuon[0].start_time , calc.ROItrk_NuSelMuon[0].end_wire , calc.ROItrk_NuSelMuon[0].end_time
+                     calc.ROItrk_NuSelMuon[1].start_wire , calc.ROItrk_NuSelMuon[1].start_time , calc.ROItrk_NuSelMuon[1].end_wire , calc.ROItrk_NuSelMuon[1].end_time
+                     calc.ROItrk_NuSelMuon[2].start_wire , calc.ROItrk_NuSelMuon[2].start_time , calc.ROItrk_NuSelMuon[2].end_wire , calc.ROItrk_NuSelMuon[2].end_time
+                     calc.ROItrk_GBDTproton[0].start_wire , calc.ROItrk_GBDTproton[0].start_time , calc.ROItrk_GBDTproton[0].end_wire , calc.ROItrk_GBDTproton[0].end_time
+                     calc.ROItrk_GBDTproton[1].start_wire , calc.ROItrk_GBDTproton[1].start_time , calc.ROItrk_GBDTproton[1].end_wire , calc.ROItrk_GBDTproton[1].end_time
+                     calc.ROItrk_GBDTproton[2].start_wire , calc.ROItrk_GBDTproton[2].start_time , calc.ROItrk_GBDTproton[2].end_wire , calc.ROItrk_GBDTproton[2].end_time
+                     calc.mu_p_VtxROI[0].start_wire , calc.mu_p_VtxROI[0].start_time , calc.mu_p_VtxROI[0].end_wire , calc.mu_p_VtxROI[0].end_time
+                     calc.mu_p_VtxROI[1].start_wire , calc.mu_p_VtxROI[1].start_time , calc.mu_p_VtxROI[1].end_wire , calc.mu_p_VtxROI[1].end_time
+                     calc.mu_p_VtxROI[2].start_wire , calc.mu_p_VtxROI[2].start_time , calc.mu_p_VtxROI[2].end_wire , calc.mu_p_VtxROI[2].end_time
+                     ]
+                     
+    writer_mu_p.writerow( ['{:.3f}'.format(x) for x in mu_p_features] )
+# ----------------------------------------------------------------------------------------------------
+
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -399,6 +431,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         print "Problem, can not extract!\noptions are:"
         print "\t extract all tracks information"
         print "\t find common muon-proton vertices"
+        print "\t add hard geometrical cuts"
         print "\t exiting..."
         exit(0)
 
@@ -408,6 +441,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     g4info_file_name    = g4_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+    rois_file_name      = rois_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
 
     writer = csv.writer(open(resutls_file_name, 'wb'))
     if first_anatree_file==0:
@@ -418,9 +452,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         if first_anatree_file==0:
             writer_g4.writerow( g4_features_names )
 
-
     if Option=="find common muon-proton vertices":
-        output_rse_file = open( output_mupRSEFileName , "w" )
+        output_rse_file = open( output_mupRSEFileName , 'w' )
+        writer_mu_p = csv.writer(open(rois_file_name, 'wb'))
+        if first_anatree_file==0:
+            writer_mu_p.writerow( mu_p_features_names )
     
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
@@ -434,6 +470,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
     if flags.verbose: print_important( "starting run on %d events"%Nreduced )
 
+# - # main events loop
     # main events loop
     for entry in range(Nreduced):
         
@@ -447,6 +484,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
             do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse , rse_events_list )
             if (do_continue and flags.verbose>1): print_important("found r-%d/s-%d/e-%d, extracting information....\n"%(calc.run,calc.subrun,calc.event))
         
+# - # - # do-continue for finding RSE
         if do_continue:
             
             calc.extract_information()
@@ -471,20 +509,19 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
             if "find common muon-proton vertices" in Option:
                 
                 do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
-            
-            if "find common muon-proton vertices" in Option:
-                
-                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
-            
-            
+        
             if flags.verbose>3: print 'loooping over Ntracks=',calc.Ntracks,'contained tracks in this event'
 
+# - # - # - # if Ntracks > 0
             if calc.Ntracks>0 and do_continue:
                 
-                calc.CreateROIs( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-                calc.FillOutTree()
+                if "find common muon-proton vertices" in Option:
+                    #                calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+                    output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
+                    calc.CreateROIsCCQE( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+                    stream_mu_p_vertex_features_to_file ( calc , writer_mu_p )
 
-                # tracks
+# - # - # - # - # for i in range(calc.Ntracks)
                 for i in range(calc.Ntracks):
                     
                     track = calc.GetTrack(i)
@@ -495,7 +532,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         do_continue = do_pass_geometrical_cuts(track)
                         if flags.verbose>4: print 'do_continue:', do_continue
 
-
                     if do_continue:
                         
                         stream_tracks_features_to_file ( track , writer )
@@ -503,11 +539,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         counter = counter+1
                     
                     if flags.verbose>2: print_line()
-                # end tracks
-
-                if Option=="find common muon-proton vertices":
-                    calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-                    output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
+# - # - # - # end if Ntracks > 0
+# - # - # - # - # end for i in range(calc.Ntracks)
+                calc.FillOutTree()
+# - # - # end do-continue for finding RSE
+# - # end main events loop
 
     print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
     print_filename( resutls_file_name , "wrote csv file with all %d tracks features (%.2f MB)"%(counter,float(os.path.getsize(resutls_file_name)/1048576.0)) )
@@ -515,6 +551,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     
     if Option=="find common muon-proton vertices":
         print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
+        print_filename( rois_file_name , "muon / proton ROIs ")
         output_rse_file.close()
 
     if MCmode:

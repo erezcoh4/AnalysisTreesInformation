@@ -93,7 +93,7 @@ public:
     void   CollectTrackVertices ();
     void     FindMutualVertices ();
     void     FindMuonScattering ();
-    void             CreateROIs ( Int_t, Int_t, Int_t );
+    void         CreateROIsCCQE ( Int_t, Int_t, Int_t );
     void              Write2CSV ( Int_t, Int_t, Int_t  );
     void    GetEnergyDeposition ( int j );
 

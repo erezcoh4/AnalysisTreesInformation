@@ -7,7 +7,7 @@ from larlite import larlite as fmwk
     
     usage:
     ------
-    python $AnalysisTreesAna/mac/create_roi_images.py -wuboone -v2 -evf=3
+    python $AnalysisTreesAna/mac/create_roi_images.py -wuboone -v2 -evf=100
     
     evf represents the maximal number of images it will create (=n_max_entries)
     

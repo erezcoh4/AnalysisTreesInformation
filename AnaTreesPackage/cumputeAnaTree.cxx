@@ -542,129 +542,9 @@ void cumputeAnaTree::GetEnergyDeposition( int j ){
     }
     c_track.SetCalorimetry_Y( residual_range[2] , dEdx[2] , Edep[2] , dqdx[2] );
 
-    
-    // deprecated, delete by Dec-15
-    //    SHOW3(ntrkhits_pandoraNu[j][0],ntrkhits_pandoraNu[j][1],ntrkhits_pandoraNu[j][2]);
-    //    for(Int_t plane=0; plane<3;plane++) {
-    //
-    //        if (!track_length[plane].empty())   track_length[plane].clear();
-    //        if (!track_dx[plane].empty())       track_dx[plane].clear();
-    //        if (!dEdx[plane].empty())           dEdx[plane].clear();
-    //        if (!TrkPos[plane].empty())         TrkPos[plane].clear();
-    //
-    //        Nhits[plane] = ntrkhits_pandoraNu[j][plane];
-    //        if( Nhits[plane] ) {
-    //
-    //            Int_t trkhit = 0;
-    //            TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
-    //            dEdx[plane].push_back( 0 ); // in [MeV/cm]
-    //            track_dx[plane].push_back( 0 ); // in [cm]
-    //            track_length[plane].push_back( 0 ); // in [cm]
-    //
-    //            for(Int_t trkhit=1; trkhit < Nhits[plane] ; trkhit++) {
-    //                TrkPos[plane].push_back( TVector3( trkxyz_pandoraNu[j][plane][trkhit][0] , trkxyz_pandoraNu[j][plane][trkhit][1] , trkxyz_pandoraNu[j][plane][trkhit][2] ) );
-    //                dEdx[plane].push_back( trkdedx_pandoraNu[j][plane][trkhit] ); // in [MeV/cm]
-    //                track_dx[plane].push_back( (TrkPos[plane].at(trkhit) - TrkPos[plane].at(trkhit-1)).Mag() );
-    //                track_length[plane].push_back( track_length[plane].back() + track_dx[plane].back()  );
-    //            }
-    //        }
-    //    }
-    
-//    
-//    // maybe we should only use dE/dx for the collection plane? (Y)
-//    if (!residual_range_U.empty())   residual_range_U.clear();
-//    if (!track_dx_U.empty())       track_dx_U.clear();
-//    if (!dEdx_U.empty())           dEdx_U.clear();
-//    if (!Edep_U.empty())           Edep_U.clear();
-//    if (!TrkPos_U.empty())         TrkPos_U.clear();
-//    if (!dqdx_U.empty())           dqdx_U.clear();
-//    
-//    Int_t Nhits_U = ntrkhits_pandoraNu[j][0];
-//    if( Nhits_U ) {
-//        
-//        Int_t trkhit = 0;
-//        TrkPos_U.push_back( TVector3( trkxyz_pandoraNu[j][0][trkhit][0] , trkxyz_pandoraNu[j][0][trkhit][1] , trkxyz_pandoraNu[j][0][trkhit][2] ) );
-//        Edep_U.push_back( 0 ); // in [MeV]
-//        dEdx_U.push_back( 0 ); // in [MeV/cm]
-//        track_dx_U.push_back( 0 ); // in [cm]
-//        residual_range_U.push_back( 0 ); // in [cm]
-//        dqdx_U.push_back( 0 ); // in [ADC/cm]
-//
-//        for(Int_t trkhit=1; trkhit < Nhits_U ; trkhit++) {
-//            TrkPos_U.push_back( TVector3( trkxyz_pandoraNu[j][0][trkhit][0] , trkxyz_pandoraNu[j][0][trkhit][1] , trkxyz_pandoraNu[j][0][trkhit][2] ) );
-//            dEdx_U.push_back( trkdedx_pandoraNu[j][0][trkhit] ); // in [MeV/cm]
-//            track_dx_U.push_back( (TrkPos_U.at(trkhit) - TrkPos_U.at(trkhit-1)).Mag() );
-//            Edep_U.push_back( Edep_U.back() + dEdx_U.back()*track_dx_U.back() ); // in [MeV/cm]
-//            residual_range_U.push_back( residual_range_U.back() + track_dx_U.back()  );
-//            dqdx_U.push_back( trkdqdx_pandoraNu[j][0][trkhit] ); // in [ADC/cm]
-//
-//        }
-//    }
-//    
-//    if (!residual_range_V.empty())   residual_range_V.clear();
-//    if (!track_dx_V.empty())       track_dx_V.clear();
-//    if (!dEdx_V.empty())           dEdx_V.clear();
-//    if (!Edep_V.empty())           Edep_V.clear();
-//    if (!TrkPos_V.empty())         TrkPos_V.clear();
-//    if (!dqdx_V.empty())           dqdx_V.clear();
-//    
-//    Int_t Nhits_V = ntrkhits_pandoraNu[j][1];
-//    if( Nhits_V ) {
-//        
-//        Int_t trkhit = 0;
-//        TrkPos_V.push_back( TVector3( trkxyz_pandoraNu[j][1][trkhit][0] , trkxyz_pandoraNu[j][1][trkhit][1] , trkxyz_pandoraNu[j][1][trkhit][2] ) );
-//        dEdx_V.push_back( 0 ); // in [MeV/cm]
-//        Edep_V.push_back( 0 ); // in [MeV]
-//        track_dx_V.push_back( 0 ); // in [cm]
-//        residual_range_V.push_back( 0 ); // in [cm]
-//        dqdx_V.push_back( 0 ); // in [ADC/cm]
-//
-//        for(Int_t trkhit=1; trkhit < Nhits_V ; trkhit++) {
-//            TrkPos_V.push_back( TVector3( trkxyz_pandoraNu[j][1][trkhit][0] , trkxyz_pandoraNu[j][1][trkhit][1] , trkxyz_pandoraNu[j][1][trkhit][2] ) );
-//            dEdx_V.push_back( trkdedx_pandoraNu[j][1][trkhit] ); // in [MeV/cm]
-//            track_dx_V.push_back( (TrkPos_V.at(trkhit) - TrkPos_V.at(trkhit-1)).Mag() );
-//            Edep_V.push_back( Edep_V.back() + dEdx_V.back()*track_dx_V.back() ); // in [MeV]
-//            residual_range_V.push_back( residual_range_V.back() + track_dx_V.back()  );
-//            dqdx_V.push_back( trkdqdx_pandoraNu[j][1][trkhit] ); // in [ADC/cm]
-//        }
-//    }
-//    
-//    if (!residual_range_Y.empty())   residual_range_Y.clear();
-//    if (!track_dx_Y.empty())       track_dx_Y.clear();
-//    if (!dEdx_Y.empty())           dEdx_Y.clear();
-//    if (!Edep_Y.empty())           Edep_Y.clear();
-//    if (!TrkPos_Y.empty())         TrkPos_Y.clear();
-//    if (!dqdx_Y.empty())           dqdx_Y.clear();
-//    
-//    Int_t Nhits_Y = ntrkhits_pandoraNu[j][2];
-//    if( Nhits_Y ) {
-//        
-//        Int_t trkhit = 0;
-//        TrkPos_Y.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
-//        dEdx_Y.push_back( 0 ); // in [MeV/cm]
-//        Edep_Y.push_back( 0 ); // in [MeV]
-//        track_dx_Y.push_back( 0 ); // in [cm]
-//        residual_range_Y.push_back( 0 ); // in [cm]
-//        dqdx_Y.push_back( 0 ); // in [ADC/cm]
-//        
-//        for(Int_t trkhit=1; trkhit < Nhits_Y ; trkhit++) {
-//            TrkPos_Y.push_back( TVector3( trkxyz_pandoraNu[j][2][trkhit][0] , trkxyz_pandoraNu[j][2][trkhit][1] , trkxyz_pandoraNu[j][2][trkhit][2] ) );
-//            dEdx_Y.push_back( trkdedx_pandoraNu[j][2][trkhit] ); // in [MeV/cm]
-//            track_dx_Y.push_back( (TrkPos_Y.at(trkhit) - TrkPos_Y.at(trkhit-1)).Mag() );
-//            Edep_Y.push_back( Edep_Y.back() + dEdx_Y.back()*track_dx_Y.back() ); // in [MeV]
-//            residual_range_Y.push_back( residual_range_Y.back() + track_dx_Y.back()  );
-//            dqdx_Y.push_back( trkdqdx_pandoraNu[j][2][trkhit] ); // in [ADC/cm]
-//
-//        }
-//    }
-
-//    c_track.Set_dEdx( track_dx_U , residual_range_U , dEdx_U , Edep_U , dqdx_U ,
-//                     track_dx_V , residual_range_V , dEdx_V , Edep_V , dqdx_V ,
-//                     track_dx_Y , residual_range_Y , dEdx_Y , Edep_Y , dqdx_Y );
-    if(debug>3) Printf("got dE/dx ...");
+     if(debug>3) Printf("got dE/dx ...");
 
 }
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::CollectTrackVertices(){
@@ -920,7 +800,7 @@ Float_t cumputeAnaTree::TrkVtxDistance ( Int_t ivtx , Int_t itrk ){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void cumputeAnaTree::CreateROIs( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
+void cumputeAnaTree::CreateROIsCCQE( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
     
     TVector3 vtx_position = TVector3( vtxx_pandoraNu[ivtx] , vtxy_pandoraNu[ivtx] , vtxz_pandoraNu[ivtx] );
     
@@ -932,46 +812,56 @@ void cumputeAnaTree::CreateROIs( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_G
     
     auto    geomHelper = ::larutil::GeometryHelper::GetME();
     double  vtx_xyz[3] = {vtx_position.x() , vtx_position.y() , vtx_position.z() - 20 };
-    double  time_shift =  802;
+    double  time_shift = 802;
     
     
     for (int plane = 0; plane < 3; plane++){
         
+        box pROI = ROItrk_GBDTproton[plane];
+        box muROI = ROItrk_NuSelMuon[plane];
+        
         // geoHelper is a set of utility functions that help with geometric stuff..
-        auto const& projection2D = geomHelper->Point_3Dto2D(vtx_xyz, plane);
+        auto const& projection2D = geomHelper->Point_3Dto2D( vtx_xyz , plane );
         int wire = (int) ( projection2D.w / geomHelper->WireToCm() );
         int time = (int) ( projection2D.t / geomHelper->TimeToCm() ) + time_shift;
         int start_wire = wire, start_time = time, end_wire = wire, end_time = time;
 
-        // start-wire and start-time
-        if ( start_wire > ROItrk_GBDTproton[plane].start_wire ){
-            start_wire = ROItrk_GBDTproton[plane].start_wire;
-        }
-        if ( start_wire > ROItrk_NuSelMuon[plane].start_wire ){
-            start_wire = ROItrk_NuSelMuon[plane].start_wire;
-        }
-        if ( start_time > ROItrk_GBDTproton[plane].start_time ){
-            start_time = ROItrk_GBDTproton[plane].start_time;
-        }
-        if ( start_time > ROItrk_NuSelMuon[plane].start_time ){
-            start_time = ROItrk_NuSelMuon[plane].start_time;
-        }
+        start_wire = std::min( { (int) ( projection2D.w / geomHelper->WireToCm() ) , pROI.start_wire , muROI.start_wire , pROI.end_wire , muROI.end_wire } );
+        start_time = std::min( { (int) ( projection2D.t / geomHelper->TimeToCm() ) , pROI.start_time , muROI.start_time , pROI.end_time , muROI.end_time } );
         
-        // end-wire and end-time
-        if ( end_wire < ROItrk_GBDTproton[plane].end_wire ){
-            end_wire = ROItrk_GBDTproton[plane].end_wire;
-        }
-        if ( end_wire < ROItrk_NuSelMuon[plane].end_wire ){
-            end_wire = ROItrk_NuSelMuon[plane].end_wire;
-        }
-        if ( end_time < ROItrk_GBDTproton[plane].end_time ){
-            end_time = ROItrk_GBDTproton[plane].end_time;
-        }
-        if ( end_time < ROItrk_NuSelMuon[plane].end_time ){
-            end_time = ROItrk_NuSelMuon[plane].end_time;
-        }
+        end_wire = std::max( { (int) ( projection2D.w / geomHelper->WireToCm() ) , pROI.start_wire , muROI.start_wire , pROI.end_wire , muROI.end_wire } );
+        end_time = std::max( { (int) ( projection2D.t / geomHelper->TimeToCm() ) , pROI.start_time , muROI.start_time , pROI.end_time , muROI.end_time } );
         
-        
+//        
+//        // start-wire
+//        if ( start_wire > ROItrk_GBDTproton[plane].start_wire ){
+//            start_wire = ROItrk_GBDTproton[plane].start_wire;
+//        }
+//        if ( start_wire > ROItrk_NuSelMuon[plane].start_wire ){
+//            start_wire = ROItrk_NuSelMuon[plane].start_wire;
+//        }
+//        // start-time
+//        if ( start_time > ROItrk_GBDTproton[plane].start_time ){
+//            start_time = ROItrk_GBDTproton[plane].start_time;
+//        }
+//        if ( start_time > ROItrk_NuSelMuon[plane].start_time ){
+//            start_time = ROItrk_NuSelMuon[plane].start_time;
+//        }
+//        
+//        // end-wire
+//        if ( end_wire < ROItrk_GBDTproton[plane].end_wire ){
+//            end_wire = ROItrk_GBDTproton[plane].end_wire;
+//        }
+//        if ( end_wire < ROItrk_NuSelMuon[plane].end_wire ){
+//            end_wire = ROItrk_NuSelMuon[plane].end_wire;
+//        }
+//        // end-time
+//        if ( end_time < ROItrk_GBDTproton[plane].end_time ){
+//            end_time = ROItrk_GBDTproton[plane].end_time;
+//        }
+//        if ( end_time < ROItrk_NuSelMuon[plane].end_time ){
+//            end_time = ROItrk_NuSelMuon[plane].end_time;
+//        }
         mu_p_VtxROI[plane] = box( start_wire , start_time , end_wire , end_time );
         
     }
@@ -1024,56 +914,56 @@ void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GB
 //    }
 //
 //    else
-    if (option.Contains("find common muon-proton vertices")){
-        // R/S/E
-        // ivtx / itrk_NuSelMuon / itrk_GBDTproton
-        // ROI for muon
-        // ROI for proton
-        // ROI for vertex
-        
-        csvfile
-        << run          << " " << subrun            << " " << event
-        << " " << ivtx  << " " << itrk_NuSelMuon    << " " << itrk_GBDTproton
-        << " " << ROItrk_NuSelMuon[0].start_wire    << " " << ROItrk_NuSelMuon[0].start_time
-        << " " << ROItrk_NuSelMuon[0].end_wire      << " " << ROItrk_NuSelMuon[0].end_time
-        << " " << ROItrk_NuSelMuon[1].start_wire    << " " << ROItrk_NuSelMuon[1].start_time
-        << " " << ROItrk_NuSelMuon[1].end_wire      << " " << ROItrk_NuSelMuon[1].end_time
-        << " " << ROItrk_NuSelMuon[2].start_wire    << " " << ROItrk_NuSelMuon[2].start_time
-        << " " << ROItrk_NuSelMuon[2].end_wire      << " " << ROItrk_NuSelMuon[2].end_time
-        << " " << ROItrk_GBDTproton[0].start_wire   << " " << ROItrk_GBDTproton[0].start_time
-        << " " << ROItrk_GBDTproton[0].end_wire     << " " << ROItrk_GBDTproton[0].end_time
-        << " " << ROItrk_GBDTproton[1].start_wire   << " " << ROItrk_GBDTproton[1].start_time
-        << " " << ROItrk_GBDTproton[1].end_wire     << " " << ROItrk_GBDTproton[1].end_time
-        << " " << ROItrk_GBDTproton[2].start_wire   << " " << ROItrk_GBDTproton[2].start_time
-        << " " << ROItrk_GBDTproton[2].end_wire     << " " << ROItrk_GBDTproton[2].end_time
-        << " " << mu_p_VtxROI[0].start_wire         << " " << mu_p_VtxROI[0].start_time
-        << " " << mu_p_VtxROI[0].end_wire           << " " << mu_p_VtxROI[0].end_time
-        << " " << mu_p_VtxROI[1].start_wire         << " " << mu_p_VtxROI[1].start_time
-        << " " << mu_p_VtxROI[1].end_wire           << " " << mu_p_VtxROI[1].end_time
-        << " " << mu_p_VtxROI[2].start_wire         << " " << mu_p_VtxROI[2].start_time
-        << " " << mu_p_VtxROI[2].end_wire           << " " << mu_p_VtxROI[2].end_time
-        << endl;
-        
-        
-        if(!mutual_vertices.empty()){
-            for (auto m_v:mutual_vertices){
-                csvfile
-                << m_v.run                       << " " << m_v.subrun             << " " << m_v.event
-                << " " << m_v.roi[0].start_wire  << " " << m_v.roi[0].start_time
-                << " " << m_v.roi[0].end_wire    << " " << m_v.roi[0].end_time
-                << " " << m_v.roi[1].start_wire  << " " << m_v.roi[1].start_time
-                << " " << m_v.roi[1].end_wire    << " " << m_v.roi[1].end_time
-                << " " << m_v.roi[2].start_wire  << " " << m_v.roi[2].start_time
-                << " " << m_v.roi[2].end_wire    << " " << m_v.roi[2].end_time
-                << endl;
-                
-                if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
-            }
-        }
-    }
-    else {
-        Printf("nothing to write to csv file...");
-    }
+//    if (option.Contains("find common muon-proton vertices")){
+//        // R/S/E
+//        // ivtx / itrk_NuSelMuon / itrk_GBDTproton
+//        // ROI for muon
+//        // ROI for proton
+//        // ROI for vertex
+//        
+//        csvfile
+//        << run          << " " << subrun            << " " << event
+//        << " " << ivtx  << " " << itrk_NuSelMuon    << " " << itrk_GBDTproton
+//        << " " << ROItrk_NuSelMuon[0].start_wire    << " " << ROItrk_NuSelMuon[0].start_time
+//        << " " << ROItrk_NuSelMuon[0].end_wire      << " " << ROItrk_NuSelMuon[0].end_time
+//        << " " << ROItrk_NuSelMuon[1].start_wire    << " " << ROItrk_NuSelMuon[1].start_time
+//        << " " << ROItrk_NuSelMuon[1].end_wire      << " " << ROItrk_NuSelMuon[1].end_time
+//        << " " << ROItrk_NuSelMuon[2].start_wire    << " " << ROItrk_NuSelMuon[2].start_time
+//        << " " << ROItrk_NuSelMuon[2].end_wire      << " " << ROItrk_NuSelMuon[2].end_time
+//        << " " << ROItrk_GBDTproton[0].start_wire   << " " << ROItrk_GBDTproton[0].start_time
+//        << " " << ROItrk_GBDTproton[0].end_wire     << " " << ROItrk_GBDTproton[0].end_time
+//        << " " << ROItrk_GBDTproton[1].start_wire   << " " << ROItrk_GBDTproton[1].start_time
+//        << " " << ROItrk_GBDTproton[1].end_wire     << " " << ROItrk_GBDTproton[1].end_time
+//        << " " << ROItrk_GBDTproton[2].start_wire   << " " << ROItrk_GBDTproton[2].start_time
+//        << " " << ROItrk_GBDTproton[2].end_wire     << " " << ROItrk_GBDTproton[2].end_time
+//        << " " << mu_p_VtxROI[0].start_wire         << " " << mu_p_VtxROI[0].start_time
+//        << " " << mu_p_VtxROI[0].end_wire           << " " << mu_p_VtxROI[0].end_time
+//        << " " << mu_p_VtxROI[1].start_wire         << " " << mu_p_VtxROI[1].start_time
+//        << " " << mu_p_VtxROI[1].end_wire           << " " << mu_p_VtxROI[1].end_time
+//        << " " << mu_p_VtxROI[2].start_wire         << " " << mu_p_VtxROI[2].start_time
+//        << " " << mu_p_VtxROI[2].end_wire           << " " << mu_p_VtxROI[2].end_time
+//        << endl;
+//        
+//        
+//        if(!mutual_vertices.empty()){
+//            for (auto m_v:mutual_vertices){
+//                csvfile
+//                << m_v.run                       << " " << m_v.subrun             << " " << m_v.event
+//                << " " << m_v.roi[0].start_wire  << " " << m_v.roi[0].start_time
+//                << " " << m_v.roi[0].end_wire    << " " << m_v.roi[0].end_time
+//                << " " << m_v.roi[1].start_wire  << " " << m_v.roi[1].start_time
+//                << " " << m_v.roi[1].end_wire    << " " << m_v.roi[1].end_time
+//                << " " << m_v.roi[2].start_wire  << " " << m_v.roi[2].start_time
+//                << " " << m_v.roi[2].end_wire    << " " << m_v.roi[2].end_time
+//                << endl;
+//                
+//                if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
+//            }
+//        }
+//    }
+//    else {
+//        Printf("nothing to write to csv file...");
+//    }
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
