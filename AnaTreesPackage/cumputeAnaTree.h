@@ -68,12 +68,15 @@ public:
     void        SetOption (TString foption) {option = foption;};
     
     // getters
-    TTree*          GetInTree ()            {return InTree;};
-    TTree*         GetOutTree ()            {return OutTree;};
-    void             GetEntry (int);
-    PandoraNuTrack   GetTrack (int i)       {return tracks.at(i);};
-    LArG4Particle   GetG4Particle (int i)   {return g4particles.at(i);};
-   
+    TTree*             GetInTree ()            {return InTree;};
+    TTree*            GetOutTree ()            {return OutTree;};
+    void                GetEntry ( int );
+    PandoraNuTrack      GetTrack ( int i )     {return tracks.at(i);};
+    LArG4Particle  GetG4Particle ( int i )     {return g4particles.at(i);};
+    box     GetROItrk_GBDTproton ( int plane ) {return ROItrk_GBDTproton[plane]; };
+    box      GetROItrk_NuSelMuon ( int plane ) {return ROItrk_NuSelMuon[plane]; };
+    box           Getmu_p_VtxROI ( int plane ) {return mu_p_VtxROI[plane]; };
+
     // initializations
     void    InitInputTree ();
     void   InitOutputTree ();

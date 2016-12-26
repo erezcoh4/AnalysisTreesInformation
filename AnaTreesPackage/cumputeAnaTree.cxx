@@ -866,7 +866,6 @@ void cumputeAnaTree::CreateROIsCCQE( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t it
         
     }
     
-
     
 }
 

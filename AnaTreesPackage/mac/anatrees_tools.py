@@ -399,17 +399,22 @@ def stream_tracks_features_to_file ( track , writer ):
 # ----------------------------------------------------------------------------------------------------
 def stream_mu_p_vertex_features_to_file ( ivtx, itrk_mu, itrk_p, calc , writer_mu_p ):
     
-    mu_p_features = [calc.run   , calc.subrun   , calc.event,
-                     ivtx       , itrk_mu       , itrk_p    ,
-                     calc.ROItrk_NuSelMuon[0].start_wire    , calc.ROItrk_NuSelMuon[0].start_time , calc.ROItrk_NuSelMuon[0].end_wire , calc.ROItrk_NuSelMuon[0].end_time,
-                     calc.ROItrk_NuSelMuon[1].start_wire    , calc.ROItrk_NuSelMuon[1].start_time , calc.ROItrk_NuSelMuon[1].end_wire , calc.ROItrk_NuSelMuon[1].end_time,
-                     calc.ROItrk_NuSelMuon[2].start_wire    , calc.ROItrk_NuSelMuon[2].start_time , calc.ROItrk_NuSelMuon[2].end_wire , calc.ROItrk_NuSelMuon[2].end_time,
-                     calc.ROItrk_GBDTproton[0].start_wire   , calc.ROItrk_GBDTproton[0].start_time , calc.ROItrk_GBDTproton[0].end_wire , calc.ROItrk_GBDTproton[0].end_time,
-                     calc.ROItrk_GBDTproton[1].start_wire   , calc.ROItrk_GBDTproton[1].start_time , calc.ROItrk_GBDTproton[1].end_wire , calc.ROItrk_GBDTproton[1].end_time,
-                     calc.ROItrk_GBDTproton[2].start_wire   , calc.ROItrk_GBDTproton[2].start_time , calc.ROItrk_GBDTproton[2].end_wire , calc.ROItrk_GBDTproton[2].end_time,
-                     calc.mu_p_VtxROI[0].start_wire         , calc.mu_p_VtxROI[0].start_time , calc.mu_p_VtxROI[0].end_wire , calc.mu_p_VtxROI[0].end_time,
-                     calc.mu_p_VtxROI[1].start_wire         , calc.mu_p_VtxROI[1].start_time , calc.mu_p_VtxROI[1].end_wire , calc.mu_p_VtxROI[1].end_time,
-                     calc.mu_p_VtxROI[2].start_wire         , calc.mu_p_VtxROI[2].start_time , calc.mu_p_VtxROI[2].end_wire , calc.mu_p_VtxROI[2].end_time
+    muROI_U, muROI_V, muROI_Y= calc.GetROItrk_NuSelMuon(0) , calc.GetROItrk_NuSelMuon(1) , calc.GetROItrk_NuSelMuon(2)
+    pROI_U , pROI_V , pROI_Y = calc.GetROItrk_GBDTproton(0) , calc.GetROItrk_GBDTproton(1) , calc.GetROItrk_GBDTproton(2)
+    vROI_U , vROI_V , vROI_Y = calc.Getmu_p_VtxROI(0) , calc.Getmu_p_VtxROI(1) , calc.Getmu_p_VtxROI(2)
+    box muROI = ROItrk_NuSelMuon[plane];
+    
+    mu_p_features = [calc.run           , calc.subrun       , calc.event,
+                     ivtx               , itrk_mu           , itrk_p    ,
+                     muROI_U.start_wire , muROI_U.start_time, muROI_U.end_wire  , muROI_U.end_time,
+                     muROI_V.start_wire , muROI_V.start_time, muROI_V.end_wire  , muROI_V.end_time,
+                     muROI_Y.start_wire , muROI_Y.start_time, muROI_Y.end_wire  , muROI_Y.end_time,
+                     pROI_U.start_wire  , pROI_U.start_time , pROI_U.end_wire   , pROI_U.end_time,
+                     pROI_V.start_wire  , pROI_V.start_time , pROI_V.end_wire   , pROI_V.end_time,
+                     pROI_Y.start_wire  , pROI_Y.start_time , pROI_Y.end_wire   , pROI_Y.end_time,
+                     vROI_U.start_wire  , vROI_U.start_time , vROI_U.end_wire   , vROI_U.end_time,
+                     vROI_V.start_wire  , vROI_V.start_time , vROI_V.end_wire   , vROI_V.end_time,
+                     vROI_Y.start_wire  , vROI_Y.start_time , vROI_Y.end_wire   , vROI_Y.end_time
                      ]
                      
     writer_mu_p.writerow( ['{:.3f}'.format(x) for x in mu_p_features] )
