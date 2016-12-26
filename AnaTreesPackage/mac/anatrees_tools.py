@@ -397,19 +397,19 @@ def stream_tracks_features_to_file ( track , writer ):
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-def stream_mu_p_vertex_features_to_file ( calc , writer_mu_p ):
+def stream_mu_p_vertex_features_to_file ( ivtx, itrk_mu, itrk_p, calc , writer_mu_p ):
     
-    mu_p_features = [calc.run , calc.subrun , calc.event,
-                     calc.ivtx , calc.itrk_NuSelMuon , calc.itrk_GBDTproton,
-                     calc.ROItrk_NuSelMuon[0].start_wire , calc.ROItrk_NuSelMuon[0].start_time , calc.ROItrk_NuSelMuon[0].end_wire , calc.ROItrk_NuSelMuon[0].end_time,
-                     calc.ROItrk_NuSelMuon[1].start_wire , calc.ROItrk_NuSelMuon[1].start_time , calc.ROItrk_NuSelMuon[1].end_wire , calc.ROItrk_NuSelMuon[1].end_time,
-                     calc.ROItrk_NuSelMuon[2].start_wire , calc.ROItrk_NuSelMuon[2].start_time , calc.ROItrk_NuSelMuon[2].end_wire , calc.ROItrk_NuSelMuon[2].end_time,
-                     calc.ROItrk_GBDTproton[0].start_wire , calc.ROItrk_GBDTproton[0].start_time , calc.ROItrk_GBDTproton[0].end_wire , calc.ROItrk_GBDTproton[0].end_time,
-                     calc.ROItrk_GBDTproton[1].start_wire , calc.ROItrk_GBDTproton[1].start_time , calc.ROItrk_GBDTproton[1].end_wire , calc.ROItrk_GBDTproton[1].end_time,
-                     calc.ROItrk_GBDTproton[2].start_wire , calc.ROItrk_GBDTproton[2].start_time , calc.ROItrk_GBDTproton[2].end_wire , calc.ROItrk_GBDTproton[2].end_time,
-                     calc.mu_p_VtxROI[0].start_wire , calc.mu_p_VtxROI[0].start_time , calc.mu_p_VtxROI[0].end_wire , calc.mu_p_VtxROI[0].end_time,
-                     calc.mu_p_VtxROI[1].start_wire , calc.mu_p_VtxROI[1].start_time , calc.mu_p_VtxROI[1].end_wire , calc.mu_p_VtxROI[1].end_time,
-                     calc.mu_p_VtxROI[2].start_wire , calc.mu_p_VtxROI[2].start_time , calc.mu_p_VtxROI[2].end_wire , calc.mu_p_VtxROI[2].end_time
+    mu_p_features = [calc.run   , calc.subrun   , calc.event,
+                     ivtx       , itrk_mu       , itrk_p    ,
+                     calc.ROItrk_NuSelMuon[0].start_wire    , calc.ROItrk_NuSelMuon[0].start_time , calc.ROItrk_NuSelMuon[0].end_wire , calc.ROItrk_NuSelMuon[0].end_time,
+                     calc.ROItrk_NuSelMuon[1].start_wire    , calc.ROItrk_NuSelMuon[1].start_time , calc.ROItrk_NuSelMuon[1].end_wire , calc.ROItrk_NuSelMuon[1].end_time,
+                     calc.ROItrk_NuSelMuon[2].start_wire    , calc.ROItrk_NuSelMuon[2].start_time , calc.ROItrk_NuSelMuon[2].end_wire , calc.ROItrk_NuSelMuon[2].end_time,
+                     calc.ROItrk_GBDTproton[0].start_wire   , calc.ROItrk_GBDTproton[0].start_time , calc.ROItrk_GBDTproton[0].end_wire , calc.ROItrk_GBDTproton[0].end_time,
+                     calc.ROItrk_GBDTproton[1].start_wire   , calc.ROItrk_GBDTproton[1].start_time , calc.ROItrk_GBDTproton[1].end_wire , calc.ROItrk_GBDTproton[1].end_time,
+                     calc.ROItrk_GBDTproton[2].start_wire   , calc.ROItrk_GBDTproton[2].start_time , calc.ROItrk_GBDTproton[2].end_wire , calc.ROItrk_GBDTproton[2].end_time,
+                     calc.mu_p_VtxROI[0].start_wire         , calc.mu_p_VtxROI[0].start_time , calc.mu_p_VtxROI[0].end_wire , calc.mu_p_VtxROI[0].end_time,
+                     calc.mu_p_VtxROI[1].start_wire         , calc.mu_p_VtxROI[1].start_time , calc.mu_p_VtxROI[1].end_wire , calc.mu_p_VtxROI[1].end_time,
+                     calc.mu_p_VtxROI[2].start_wire         , calc.mu_p_VtxROI[2].start_time , calc.mu_p_VtxROI[2].end_wire , calc.mu_p_VtxROI[2].end_time
                      ]
                      
     writer_mu_p.writerow( ['{:.3f}'.format(x) for x in mu_p_features] )
@@ -519,7 +519,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     #                calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                     output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
                     calc.CreateROIsCCQE( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
-                    stream_mu_p_vertex_features_to_file ( calc , writer_mu_p )
+                    stream_mu_p_vertex_features_to_file ( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton , calc , writer_mu_p )
 
 # - # - # - # - # for i in range(calc.Ntracks)
                 for i in range(calc.Ntracks):
