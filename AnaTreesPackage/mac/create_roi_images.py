@@ -20,7 +20,7 @@ latlitefilename = "larlite_BNB5e19_mu-p_vertex_maxscoredprotons_score_0.9_917evn
 print_filename( latlitefilename ,"input (1): larlite input file" )
 
 # input (2): roi map for muon-proton vertices
-roi_map_name    = rois_path + '/' + "roi_Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv"
+roi_map_name    = rois_path + '/' + "ROIs_Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv"
 print_filename( roi_map_name , "input (2): roi map" )
 # ---------------------------------------------------------------- #
 

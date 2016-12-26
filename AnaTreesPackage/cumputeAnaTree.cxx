@@ -804,9 +804,22 @@ void cumputeAnaTree::CreateROIsCCQE( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t it
     
     TVector3 vtx_position = TVector3( vtxx_pandoraNu[ivtx] , vtxy_pandoraNu[ivtx] , vtxz_pandoraNu[ivtx] );
     
+    bool found_muon_track = false , found_proton_track = false;
     for (auto t:tracks) {
-        if (t.track_id == itrk_NuSelMuon)   for (int plane = 0 ; plane < 3 ; plane++ )  ROItrk_NuSelMuon[plane] = t.roi[plane];
-        if (t.track_id == itrk_GBDTproton)  for (int plane = 0 ; plane < 3 ; plane++ )  ROItrk_GBDTproton[plane] = t.roi[plane];
+        
+        if ( found_muon_track && found_proton_track ) break;
+        
+        if ( !found_muon_track && t.track_id == itrk_NuSelMuon)   {
+            found_muon_track = true;
+            for (int plane = 0 ; plane < 3 ; plane++ ){
+                ROItrk_NuSelMuon[plane] = t.roi[plane];}
+        }
+        
+        if ( !found_proton_track && t.track_id == itrk_GBDTproton)  {
+            for (int plane = 0 ; plane < 3 ; plane++ ){
+                found_proton_track = true;
+                ROItrk_GBDTproton[plane] = t.roi[plane];}
+        }
     }
     
     
