@@ -399,8 +399,8 @@ def stream_tracks_features_to_file ( track , writer ):
 # ----------------------------------------------------------------------------------------------------
 def stream_mu_p_vertex_features_to_file ( calc , writer_mu_p ):
     
-    mu_p_features = [ calc.run , calc.subrun , calc.event
-                      calc.ivtx , itrk_NuSelMuon , itrk_GBDTproton
+    mu_p_features = [calc.run , calc.subrun , calc.event
+                     calc.ivtx , calc.itrk_NuSelMuon , calc.itrk_GBDTproton
                      calc.ROItrk_NuSelMuon[0].start_wire , calc.ROItrk_NuSelMuon[0].start_time , calc.ROItrk_NuSelMuon[0].end_wire , calc.ROItrk_NuSelMuon[0].end_time
                      calc.ROItrk_NuSelMuon[1].start_wire , calc.ROItrk_NuSelMuon[1].start_time , calc.ROItrk_NuSelMuon[1].end_wire , calc.ROItrk_NuSelMuon[1].end_time
                      calc.ROItrk_NuSelMuon[2].start_wire , calc.ROItrk_NuSelMuon[2].start_time , calc.ROItrk_NuSelMuon[2].end_wire , calc.ROItrk_NuSelMuon[2].end_time
