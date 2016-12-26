@@ -423,7 +423,7 @@ def stream_mu_p_vertex_features_to_file ( ivtx, itrk_mu, itrk_p, calc , writer_m
                      vROI_Y.start_wire  , vROI_Y.start_time , vROI_Y.end_wire   , vROI_Y.end_time
                      ]
                      
-    writer_mu_p.writerow( ['{:.d}'.format(x) for x in mu_p_features] )
+    writer_mu_p.writerow( mu_p_features )
 # ----------------------------------------------------------------------------------------------------
 
 
