@@ -138,6 +138,7 @@ void PandoraNuTrack::CreateROIs(){
     double time_shift =  802;
 
     
+    // there is a bug here! it sometimes won't generate the ROIs correctly for muon tracks - why?? it seems to generate protons ROIs fine...
     for (int plane = 0; plane < 3; plane++){
         
         // geoHelper is a set of utility functions that help with geometric stuff..
