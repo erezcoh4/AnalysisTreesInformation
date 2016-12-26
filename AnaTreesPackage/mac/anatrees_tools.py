@@ -97,6 +97,10 @@ def Sel2muons_intersection_list_csv_name( GBDTmodelName, TracksListName, p_score
 def good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score ):
     return Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + "_mindistance_%dcm.csv"%min_trk_vtx_distance
 # ----------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
+def good_mu_p_roi_list_name( GBDTmodelName, TracksListName, p_score ):
+    return "ROIs_" + Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + "_mindistance_%dcm.csv"%min_trk_vtx_distance
+# ----------------------------------------------------------------------------------------------------
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -268,14 +272,17 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
                                                     TreeName="analysistree/anatree",
                                                     AddEventsList=False ,
                                                     EventsListName="",
-                                                    output_mupRSEFileName="" ):
+                                                    output_mupRSEFileName="",
+                                                    output_mupROIFileName=""):
     
     in_chain = ROOT.TChain( TreeName )
     in_chain.Add( InputFileName )
     extract_anatrees_tracks_information_with_all_features( in_chain=in_chain, Option=Option,
                                                           MCmode=MCmode, AddEventsList=AddEventsList,
-                                                          EventsListName=EventsListName , AnaTreesListName=DataType+"_AnalysisTrees" ,
-                                                          output_mupRSEFileName=output_mupRSEFileName )
+                                                          EventsListName=EventsListName ,
+                                                          AnaTreesListName=DataType+"_AnalysisTrees" ,
+                                                          output_mupRSEFileName=output_mupRSEFileName ,
+                                                          output_mupROIFileName=output_mupROIFileName )
 # ----------------------------------------------------------------------------------------------------
 
 
@@ -416,7 +423,7 @@ def stream_mu_p_vertex_features_to_file ( ivtx, itrk_mu, itrk_p, calc , writer_m
                      vROI_Y.start_wire  , vROI_Y.start_time , vROI_Y.end_wire   , vROI_Y.end_time
                      ]
                      
-    writer_mu_p.writerow( ['{:.3f}'.format(x) for x in mu_p_features] )
+    writer_mu_p.writerow( ['{:.d}'.format(x) for x in mu_p_features] )
 # ----------------------------------------------------------------------------------------------------
 
 
@@ -428,7 +435,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                                           AddEventsList=False,
                                                           EventsListName="",
                                                           AnaTreesListName="",
-                                                          output_mupRSEFileName="" ):
+                                                          output_mupRSEFileName="",
+                                                          output_mupROIFileName="" ):
     
     import csv
     if 'extract all tracks information' not in Option and 'find common muon-proton vertices' not in Option:
@@ -445,7 +453,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     g4info_file_name    = g4_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    rois_file_name      = rois_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
 
     writer = csv.writer(open(resutls_file_name, 'wb'))
     if first_anatree_file==0:
@@ -458,7 +465,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
     if Option=="find common muon-proton vertices":
         output_rse_file = open( output_mupRSEFileName , 'w' )
-        writer_mu_p = csv.writer(open(rois_file_name, 'wb'))
+        writer_mu_p = csv.writer(open(output_mupROIFileName, 'wb'))
         if first_anatree_file==0:
             writer_mu_p.writerow( mu_p_features_names )
     
@@ -555,7 +562,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     
     if Option=="find common muon-proton vertices":
         print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
-        print_filename( rois_file_name , "muon / proton ROIs ")
+        print_filename( output_mupROIFileName , "muon / proton ROIs ")
         output_rse_file.close()
 
     if MCmode:

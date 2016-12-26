@@ -118,6 +118,9 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
     print_filename( IntersectionListName , "mu-p intersection lise" )
     output_mupRSEFileName   = mu_p_intersection_path + "/" + good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score  )
     print_filename( output_mupRSEFileName , "output mu-p R/S/E File Name" )
+    output_mupROIFileName   = rois_path + "/" + good_mu_p_roi_list_name( GBDTmodelName, TracksListName, p_score  )
+    print_filename( output_mupROIFileName , "output mu-p ROIs File Name" )
+
     extract_anatrees_tracks_information_from_a_file( flags.DataType ,
                                                     SchemedResultFileName ,
                                                     Option = "find common muon-proton vertices" ,
@@ -125,7 +128,8 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
                                                     TreeName = "anatree",
                                                     AddEventsList = True,
                                                     EventsListName = IntersectionListName,
-                                                    output_mupRSEFileName = output_mupRSEFileName )
+                                                    output_mupRSEFileName = output_mupRSEFileName,
+                                                    output_mupROIFileName = output_mupROIFileName)
 
 
 
