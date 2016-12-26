@@ -402,7 +402,6 @@ def stream_mu_p_vertex_features_to_file ( ivtx, itrk_mu, itrk_p, calc , writer_m
     muROI_U, muROI_V, muROI_Y= calc.GetROItrk_NuSelMuon(0) , calc.GetROItrk_NuSelMuon(1) , calc.GetROItrk_NuSelMuon(2)
     pROI_U , pROI_V , pROI_Y = calc.GetROItrk_GBDTproton(0) , calc.GetROItrk_GBDTproton(1) , calc.GetROItrk_GBDTproton(2)
     vROI_U , vROI_V , vROI_Y = calc.Getmu_p_VtxROI(0) , calc.Getmu_p_VtxROI(1) , calc.Getmu_p_VtxROI(2)
-    box muROI = ROItrk_NuSelMuon[plane];
     
     mu_p_features = [calc.run           , calc.subrun       , calc.event,
                      ivtx               , itrk_mu           , itrk_p    ,
