@@ -757,10 +757,20 @@ bool cumputeAnaTree::VertexContained(TVector3 v){
     
     if (debug>4) {Printf("checking if contained: "); SHOW3(v.x(),v.y(),v.z());}
     // check if contained
+    
+    // Katherine' Fiducial volume definitions
     if( ( v.x() < 3.45 )    | ( v.x() > 249.8 ) )   return false;
     if( ( v.y() < -110.53 ) | ( v.y() > 112.47 ) )  return false;
     if( ( v.z() < 5.1 )     | ( v.z() > 1031.9 ) )  return false;
     return true;
+    
+    //    // Tingjun' Fiducial volume definitions
+    //    // [https://cdcvs.fnal.gov/redmine/projects/ccinclusive/repository/revisions/761e07f65665275fecce7447d79a1ed9183fdaea/entry/SelectionII/NeutrinoSelection.C]
+    //    if( ( v.x() < 20. )             | ( v.x() > (256.35 - 20.) ) )  return false;
+    //    if( ( v.y() < (-233./2 + 20.) ) | ( v.y() > (233./2 - 20.) ) )  return false;
+    //    if( ( v.z() < (10.) )           | ( v.z() > (1036.8 - 10.) ) )  return false;
+    //    return true;
+
     
 }
 
@@ -1040,6 +1050,13 @@ void cumputeAnaTree::PrintData(int entry){
     
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::IsGoodTrack ( int fTrackID ){
+    for (auto t: tracks) {
+        if (t.track_id==fTrackID) return true;
+    }
+    return false;
+}
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

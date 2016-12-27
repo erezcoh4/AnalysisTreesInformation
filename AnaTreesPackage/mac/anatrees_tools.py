@@ -519,7 +519,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
             
             if "find common muon-proton vertices" in Option:
                 
-                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
+                do_continue = True if ( calc.IsGoodTrack( itrk_NuSelMuon ) and calc.IsGoodTrack( itrk_GBDTproton ) # tracks are contained
+                                       and itrk_NuSelMuon != itrk_GBDTproton
+                                       and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
         
             if flags.verbose>3: print 'loooping over Ntracks=',calc.Ntracks,'contained tracks in this event'
 
