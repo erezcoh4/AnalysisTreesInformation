@@ -248,14 +248,15 @@ void PandoraNuTrack::Print(){
         << " deg.";
     }
     cout << "\033[0m" << endl;
-    cout << "MC information: " << endl;
-    SHOW ( process_primary );
-    SHOW (MCpdgCode);
-    PrintPhys (truth_P , "GeV/c");
-    SHOW3(truth_Eng , truth_theta , truth_phi);
-    SHOWTVector3(truth_start_pos);
-    SHOWTVector3(truth_end_pos);
-
+    if ( truth_Eng && truth_theta && truth_phi){
+        cout << "MC information: " << endl;
+        SHOW ( process_primary );
+        SHOW ( MCpdgCode );
+        PrintPhys (truth_P , "GeV/c");
+        SHOW3(truth_Eng , truth_theta , truth_phi);
+        SHOWTVector3(truth_start_pos);
+        SHOWTVector3(truth_end_pos);
+    }
 
 
 }

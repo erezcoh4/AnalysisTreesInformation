@@ -379,7 +379,12 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                               ,trkphi_pandoraNu[j]                                                               // phi
                               );
         
-        if (!TrackContained( c_track.start_pos   , c_track.end_pos )) continue;
+        if (!TrackContained( c_track.start_pos   , c_track.end_pos )){
+            if(debug>2) {
+                Printf("track %d is not contained {(%.1f,%.1f,%.1f)->(%.1f,%.1f,%.1f)}...",j,c_track.start_pos.x(),c_track.start_pos.y(),c_track.start_pos.z(),c_track.end_pos.x(),c_track.end_pos.y(),c_track.end_pos.z());
+            }
+            continue;
+        }
         Ntracks ++ ;
         if(debug>3) Printf("created (contained) track %d...",j);
         
