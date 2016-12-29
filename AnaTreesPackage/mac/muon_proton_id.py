@@ -10,6 +10,8 @@ from anatrees_tools import *
         intersect   {"intersect GBDT protons with Sel2 muons"}
         scheme      {"scheme analysis trees events"} --DataType=BNB -ff=0.01
         find_mu_p   {"find common muon-proton vertices"} --DataType=BNB
+        images      {"create ROI images"}
+        larlite     {"analyze larlite file"}
 '''
 
 
@@ -143,13 +145,14 @@ if flags.option=="find common muon-proton vertices" or 'find_mu_p' in flags.opti
 
 # (10) create ROI images
 # -------------------------------------------------------------------
-if flags.option=="create ROI images" or 'roi' in flags.option or 'ROI' in flags.option:
+if flags.option=="create ROI images" or 'roi' in flags.option or 'images' in flags.option or 'ROI' in flags.option:
     print_important('python $AnalysisTreesAna/mac/create_roi_images.py -wuboone -v2 -evf=3')
 
 
 # (11) further analysis
 # -------------------------------------------------------------------
-# ....
+if flags.option=="analyze larlite file" or 'larlite' in flags.option or 'Larlite' in flags.option:
+    print_important('python $AnalysisTreesAna/mac/analyze_larlite_file.py -w%s -v2 -evf=10'%flags.worker)
 
 
 
