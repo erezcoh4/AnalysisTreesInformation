@@ -243,50 +243,50 @@ void cumputeAnaTree::InitOutputTree(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::InitOutputCSV(){
     
-    csvfile.open(CSVFileName);
+//    csvfile.open(CSVFileName);
     
-    if (option == "extract all tracks information"){
-        
-        CSVHeader =
-        TString("run subrun event trackid ")
-        +TString("flip nhits length ")
-        +TString("startx starty startz ")
-        +TString("endx endy endz ")
-        +TString("theta phi distlenratio ")
-        +TString("startdqdx enddqdx ")
-        +TString("dqdxdiff dqdxratio totaldqdx averagedqdx ")
-        +TString("cosmicscore coscontscore pidpida pidchi ")
-        +TString("cftime cftimewidth cfzcenter cfzwidth ")
-        +TString("cfycenter cfywidth cftotalpe cfdistance ")
-        +TString("MCpdgCode ")
-        +TString("U_start_wire U_start_time U_end_wire U_end_time ")
-        +TString("V_start_wire V_start_time V_end_wire V_end_time ")
-        +TString("Y_start_wire Y_start_time Y_end_wire Y_end_time ");
-        
-    }
-
-    else if (option == "find common muon-proton vertices"){
-        
-        CSVHeader =
-        TString("run subrun event ")
-        +TString("ivtx itrk_NuSelMuon itrk_GBDTproton ")
-        +TString("muon-U_start_wire muon-U_start_time muon-U_end_wire muon-U_end_time ")
-        +TString("muon-V_start_wire muon-V_start_time muon-V_end_wire muon-V_end_time ")
-        +TString("muon-Y_start_wire muon-Y_start_time muon-Y_end_wire muon-Y_end_time ");
-        +TString("proton-U_start_wire proton-U_start_time proton-U_end_wire proton-U_end_time ")
-        +TString("proton-V_start_wire proton-V_start_time proton-V_end_wire proton-V_end_time ")
-        +TString("proton-Y_start_wire proton-Y_start_time proton-Y_end_wire proton-Y_end_time ");
-        +TString("vertex-U_start_wire vertex-U_start_time vertex-U_end_wire vertex-U_end_time ")
-        +TString("vertex-V_start_wire vertex-V_start_time vertex-V_end_wire vertex-V_end_time ")
-        +TString("vertex-Y_start_wire vertex-Y_start_time vertex-Y_end_wire vertex-Y_end_time ");
-    }
-    else {
-        std::cerr
-        << "no csv-header! options are\n"
-        << "(1) extract all tracks information"      << "\n"
-        << "(2) find common muon-proton vertices"    << "\n";
-    }
-    csvfile << CSVHeader << endl;
+//    if (option == "extract all tracks information"){
+//        
+//        CSVHeader =
+//        TString("run subrun event trackid ")
+//        +TString("flip nhits length ")
+//        +TString("startx starty startz ")
+//        +TString("endx endy endz ")
+//        +TString("theta phi distlenratio ")
+//        +TString("startdqdx enddqdx ")
+//        +TString("dqdxdiff dqdxratio totaldqdx averagedqdx ")
+//        +TString("cosmicscore coscontscore pidpida pidchi ")
+//        +TString("cftime cftimewidth cfzcenter cfzwidth ")
+//        +TString("cfycenter cfywidth cftotalpe cfdistance ")
+//        +TString("MCpdgCode ")
+//        +TString("U_start_wire U_start_time U_end_wire U_end_time ")
+//        +TString("V_start_wire V_start_time V_end_wire V_end_time ")
+//        +TString("Y_start_wire Y_start_time Y_end_wire Y_end_time ");
+//        
+//    }
+//
+//    else if (option == "find common muon-proton vertices"){
+//        
+//        CSVHeader =
+//        TString("run subrun event ")
+//        +TString("ivtx itrk_NuSelMuon itrk_GBDTproton ")
+//        +TString("muon-U_start_wire muon-U_start_time muon-U_end_wire muon-U_end_time ")
+//        +TString("muon-V_start_wire muon-V_start_time muon-V_end_wire muon-V_end_time ")
+//        +TString("muon-Y_start_wire muon-Y_start_time muon-Y_end_wire muon-Y_end_time ");
+//        +TString("proton-U_start_wire proton-U_start_time proton-U_end_wire proton-U_end_time ")
+//        +TString("proton-V_start_wire proton-V_start_time proton-V_end_wire proton-V_end_time ")
+//        +TString("proton-Y_start_wire proton-Y_start_time proton-Y_end_wire proton-Y_end_time ");
+//        +TString("vertex-U_start_wire vertex-U_start_time vertex-U_end_wire vertex-U_end_time ")
+//        +TString("vertex-V_start_wire vertex-V_start_time vertex-V_end_wire vertex-V_end_time ")
+//        +TString("vertex-Y_start_wire vertex-Y_start_time vertex-Y_end_wire vertex-Y_end_time ");
+//    }
+//    else {
+//        std::cerr
+//        << "no csv-header! options are\n"
+//        << "(1) extract all tracks information"      << "\n"
+//        << "(2) find common muon-proton vertices"    << "\n";
+//    }
+//    csvfile << CSVHeader << endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -379,7 +379,12 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                               ,trkphi_pandoraNu[j]                                                               // phi
                               );
         
-        if (!TrackContained( c_track.start_pos   , c_track.end_pos )) continue;
+        if (!TrackContained( c_track.start_pos   , c_track.end_pos )){
+            if(debug>2) {
+                Printf("track %d is not contained {(%.1f,%.1f,%.1f)->(%.1f,%.1f,%.1f)}...",j,c_track.start_pos.x(),c_track.start_pos.y(),c_track.start_pos.z(),c_track.end_pos.x(),c_track.end_pos.y(),c_track.end_pos.z());
+            }
+            continue;
+        }
         Ntracks ++ ;
         if(debug>3) Printf("created (contained) track %d...",j);
         
@@ -752,10 +757,20 @@ bool cumputeAnaTree::VertexContained(TVector3 v){
     
     if (debug>4) {Printf("checking if contained: "); SHOW3(v.x(),v.y(),v.z());}
     // check if contained
+    
+    // Katherine' Fiducial volume definitions
     if( ( v.x() < 3.45 )    | ( v.x() > 249.8 ) )   return false;
     if( ( v.y() < -110.53 ) | ( v.y() > 112.47 ) )  return false;
     if( ( v.z() < 5.1 )     | ( v.z() > 1031.9 ) )  return false;
     return true;
+    
+    //    // Tingjun' Fiducial volume definitions
+    //    // [https://cdcvs.fnal.gov/redmine/projects/ccinclusive/repository/revisions/761e07f65665275fecce7447d79a1ed9183fdaea/entry/SelectionII/NeutrinoSelection.C]
+    //    if( ( v.x() < 20. )             | ( v.x() > (256.35 - 20.) ) )  return false;
+    //    if( ( v.y() < (-233./2 + 20.) ) | ( v.y() > (233./2 - 20.) ) )  return false;
+    //    if( ( v.z() < (10.) )           | ( v.z() > (1036.8 - 10.) ) )  return false;
+    //    return true;
+
     
 }
 
@@ -1035,6 +1050,13 @@ void cumputeAnaTree::PrintData(int entry){
     
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::IsGoodTrack ( int fTrackID ){
+    for (auto t: tracks) {
+        if (t.track_id==fTrackID) return true;
+    }
+    return false;
+}
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

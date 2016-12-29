@@ -60,14 +60,14 @@ track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
 
 mu_p_features_names = ['run','subrun','event',
                        'ivtx','itrk_NuSelMuon','itrk_GBDTproton',
-                       'mu_U_start_wire','mu_U_start_time','mu_U_end_wire','mu_U_end_time'
-                       'mu_V_start_wire','mu_V_start_time','mu_V_end_wire','mu_V_end_time'
-                       'mu_Y_start_wire','mu_Y_start_time','mu_Y_end_wire','mu_Y_end_time'
-                       'p_U_start_wire','p_U_start_time','p_U_end_wire','p_U_end_time'
-                       'p_V_start_wire','p_V_start_time','p_V_end_wire','p_V_end_time'
-                       'p_Y_start_wire','p_Y_start_time','p_Y_end_wire','p_Y_end_time'
-                       'v_U_start_wire','v_U_start_time','v_U_end_wire','v_U_end_time'
-                       'v_V_start_wire','v_V_start_time','v_V_end_wire','v_V_end_time'
+                       'mu_U_start_wire','mu_U_start_time','mu_U_end_wire','mu_U_end_time',
+                       'mu_V_start_wire','mu_V_start_time','mu_V_end_wire','mu_V_end_time',
+                       'mu_Y_start_wire','mu_Y_start_time','mu_Y_end_wire','mu_Y_end_time',
+                       'p_U_start_wire','p_U_start_time','p_U_end_wire','p_U_end_time',
+                       'p_V_start_wire','p_V_start_time','p_V_end_wire','p_V_end_time',
+                       'p_Y_start_wire','p_Y_start_time','p_Y_end_wire','p_Y_end_time',
+                       'v_U_start_wire','v_U_start_time','v_U_end_wire','v_U_end_time',
+                       'v_V_start_wire','v_V_start_time','v_V_end_wire','v_V_end_time',
                        'v_Y_start_wire','v_Y_start_time','v_Y_end_wire','v_Y_end_time'
                        ]
 
@@ -519,7 +519,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
             
             if "find common muon-proton vertices" in Option:
                 
-                do_continue = True if ( itrk_NuSelMuon != itrk_GBDTproton and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
+                do_continue = True if ( calc.IsGoodTrack( itrk_NuSelMuon ) and calc.IsGoodTrack( itrk_GBDTproton ) # tracks are contained
+                                       and itrk_NuSelMuon != itrk_GBDTproton
+                                       and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
         
             if flags.verbose>3: print 'loooping over Ntracks=',calc.Ntracks,'contained tracks in this event'
 

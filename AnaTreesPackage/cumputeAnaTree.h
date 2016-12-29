@@ -108,7 +108,7 @@ public:
     bool         TrackContained ( TVector3 , TVector3 );
     void              PrintData ( int);
     Float_t      TrkVtxDistance ( Int_t ivtx , Int_t itrk ) ;
-    
+    bool            IsGoodTrack ( int fTrackID );
     
     
     
