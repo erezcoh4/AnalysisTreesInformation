@@ -35,7 +35,7 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
 
 
 # ---------------
-if flags.option=="extract MC-CORSIKA tracks information from AnalysisTrees" or 'extract_CORSIKA' in flags.option:
+if flags.option=="extract MC-CORSIKA tracks information from AnalysisTrees" or 'extract_MCCORSIKA' in flags.option:
     print_important( "extract MC-CORSIKA tracks information from AnalysisTrees" )
     extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , MCmode = True )
 
