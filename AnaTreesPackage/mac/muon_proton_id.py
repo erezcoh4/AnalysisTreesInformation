@@ -26,6 +26,8 @@ first_anatree_file = flags.run
 last_anatree_file = first_anatree_file + splitjobs_files
 
 
+print 'running option ',flags.option
+
 
 # (1) extract all tracks information from BNB-MC and COSMIC-MC analysis trees to train GBDTs
 # -------------------------------------------------------------------
@@ -35,7 +37,7 @@ if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractM
 
 
 # ---------------
-if flags.option=="extract MC-CORSIKA tracks information from AnalysisTrees" or 'extract_MCCORSIKA' in flags.option:
+if flags.option=="extract MC-CORSIKA tracks information from AnalysisTrees" or 'extract_CORSIKA' in flags.option:
     print_important( "extract MC-CORSIKA tracks information from AnalysisTrees" )
     extract_anatrees_tracks_information_from_files_list( "openCOSMIC_MC" , "extract all tracks information" , first_anatree_file , last_anatree_file  , MCmode = True )
 
