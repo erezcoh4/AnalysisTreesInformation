@@ -153,6 +153,9 @@ if flags.option=="create ROI images" or 'roi' in flags.option or 'images' in fla
 
 # (11) further analysis
 # -------------------------------------------------------------------
+if flags.option=="mix events" or 'mix' in flags.option or 'MIX' in flags.option:
+    print_important('python $AnalysisTreesAna/mac/mix_events.py -w%s -v2 -evf=10'%flags.worker)
+
 if flags.option=="analyze larlite file" or 'larlite' in flags.option or 'Larlite' in flags.option:
     print_important('python $AnalysisTreesAna/mac/analyze_larlite_file.py -w%s -v2 -evf=10'%flags.worker)
 
