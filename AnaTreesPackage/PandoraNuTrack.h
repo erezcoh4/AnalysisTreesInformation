@@ -103,6 +103,7 @@ public:
     void       SetMCpdgCode (Int_t _mcpdg)  {MCpdgCode = _mcpdg;};
     void  SetCalorimetryPDG (Int_t _pdg[3]) {for (int i=0 ; i < 3 ; i++ ) CalorimetryPDG[i] = _pdg[i];};
     void  SetProcessPrimary (Int_t fpp)     {process_primary = fpp;};
+    void            SetCCNC (Int_t fccnc)   {truth_ccnc = fccnc;};
 
     void       SetCosScores (Float_t fcscore, Float_t fccscore)
     {cosmicscore = fcscore; coscontscore = fccscore;};
@@ -136,6 +137,7 @@ public:
     size_t   GetEdepYNsteps (){return residual_range_Y.size();};
     box              GetROI (int plane) {return roi[plane];};
     Int_t        GetCaloPDG (int plane) {return CalorimetryPDG[plane];};
+    Int_t           GetCCNC (){return truth_ccnc;}
     std::vector<Float_t> GetEdepYInfo (int step)
     {
         std::vector<Float_t> result = {residual_range_Y.at(step), dqdx_Y.at(step), dEdx_Y.at(step), Edep_Y.at(step)};
@@ -183,6 +185,7 @@ public:
     Int_t       run         , subrun    , event;
     Int_t       nhits       , is_flipped;
     Int_t       NNeighborTracks;
+    Int_t       truth_ccnc;
     Short_t     track_id    , process_primary;
     
     TVector3    start_pos   , end_pos   ;

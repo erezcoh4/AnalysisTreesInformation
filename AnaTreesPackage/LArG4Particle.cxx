@@ -10,7 +10,8 @@ LArG4Particle::LArG4Particle(Int_t frun, Int_t fsubrun , Int_t fevent ,
                              Float_t fP, Float_t fEng, Float_t fMass, Float_t ftheta, Float_t fphi,
                              Int_t fpp,
                              TVector3 fstart_pos , TVector3 fend_pos,
-                             Int_t fMother):
+                             Int_t fMother,
+                             Int_t fccnc):
 pdg(-100),
 ig4(-100),
 TrackId(-100),
@@ -20,6 +21,7 @@ theta(-100),
 phi(-100),
 process_primary(-100),
 Mother(-100),
+ccnc(-100),
 start_pos(TVector3()),
 end_pos(TVector3())
 {
@@ -35,6 +37,7 @@ end_pos(TVector3())
     SetPhi (fphi);
     SetPrimaryProcess (fpp);
     SetMother (fMother);
+    SetCCNC (fccnc);
     SetStartPos (fstart_pos);
     SetEndPos (fend_pos);
     SetTrackLength ();
@@ -61,6 +64,7 @@ void LArG4Particle::Print(){
     SHOWTVector3 ( end_pos ) ;
     PrintPhys ( length , "cm" );
     SHOW ( Mother );
+    SHOW ( ccnc );
 }
 
 

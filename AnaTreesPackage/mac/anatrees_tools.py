@@ -29,7 +29,7 @@ g4_features_names = [ 'run'         ,'subrun'       ,'event'
                      ,'primary'
                      ,'startx'      ,'starty'       ,'startz'
                      ,'endx'        ,'endy'         ,'endz'
-                     ,'length'      ,'Mother'
+                     ,'length'      ,'Mother'       ,'truth_ccnc'
                      ]
 
 
@@ -50,7 +50,7 @@ track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
                         ,'CaloPDG_U'    ,'CaloPDG_V'    ,'CaloPDG_Y'
                         ,'truth_P'      ,'truth_Eng'    ,'truth_KE'   ,'truth_theta' , 'truth_phi'  , 'process_primary'
                         ,'truth_startx' ,'truth_starty' ,'truth_startz'
-                        ,'truth_endx'   ,'truth_endy'   ,'truth_endz'
+                        ,'truth_endx'   ,'truth_endy'   ,'truth_endz' ,'truth_ccnc'
                         ,'residual_range_Y'
                         ,'dqdx_Y'
                         ,'dEdx_Y'
@@ -351,7 +351,7 @@ def stream_g4_features_to_file ( g4particle , writer_g4 ):
                     g4particle.process_primary ,
                     g4particle.start_pos.x() , g4particle.start_pos.y()  , g4particle.start_pos.z(),
                     g4particle.end_pos.x()   , g4particle.end_pos.y()    , g4particle.end_pos.z(),
-                    g4particle.length        , g4particle.Mother
+                    g4particle.length        , g4particle.Mother         , g4particle.truth_ccnc
                     ]
             
     writer_g4.writerow( ['{:.3f}'.format(x) for x in g4_features]  )
@@ -382,6 +382,7 @@ def stream_tracks_features_to_file ( track , writer ):
                       , track.truth_P          , track.truth_Eng        , track.truth_KE        , track.truth_theta     , track.truth_phi       , track.process_primary
                       , track.truth_start_pos.x()   , track.truth_start_pos.y()     , track.truth_start_pos.z()
                       , track.truth_end_pos.x()     , track.truth_end_pos.y()       , track.truth_end_pos.z()
+                      , track.truth_ccnc
                       ]
         
     track_features = ['{:.3f}'.format(x) for x in track_features]

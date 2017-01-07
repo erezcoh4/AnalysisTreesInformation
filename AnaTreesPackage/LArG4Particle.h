@@ -26,7 +26,7 @@ class LArG4Particle{
 
 public:
               LArG4Particle (){};
-              LArG4Particle (Int_t , Int_t , Int_t , Int_t , Int_t , Int_t , Float_t , Float_t , Float_t , Float_t , Float_t , Int_t , TVector3 , TVector3 , Int_t );
+              LArG4Particle (Int_t , Int_t , Int_t , Int_t , Int_t , Int_t , Float_t , Float_t , Float_t , Float_t , Float_t , Int_t , TVector3 , TVector3 , Int_t , Int_t );
              ~LArG4Particle (){}
     
     
@@ -50,7 +50,8 @@ public:
     void       SetStartPos (TVector3 fp)    {start_pos = fp;};
     void         SetEndPos (TVector3 fp)    {end_pos = fp;};
     void    SetTrackLength ();
-    
+    void           SetCCNC (Int_t fccnc)    {ccnc = fccnc;};
+
     // getters
     Int_t           Get_ig4 () {return ig4;};
     Int_t        GetTrackId () {return TrackId;};
@@ -61,9 +62,10 @@ public:
     Float_t        GetTheta () {return theta;};
     Float_t          GetPhi () {return phi;};
     Int_t GetPrimaryProcess () {return process_primary;};
+    Int_t           GetCCNC () {return ccnc;}
+
     
-    
-    Int_t       run , subrun    , event , Mother;
+    Int_t       run , subrun    , event , Mother , ccnc;
     Int_t       ig4 , TrackId   , pdg;
     
     
