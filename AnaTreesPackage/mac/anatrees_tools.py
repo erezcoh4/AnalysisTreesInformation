@@ -351,7 +351,7 @@ def stream_g4_features_to_file ( g4particle , writer_g4 ):
                     g4particle.process_primary ,
                     g4particle.start_pos.x() , g4particle.start_pos.y()  , g4particle.start_pos.z(),
                     g4particle.end_pos.x()   , g4particle.end_pos.y()    , g4particle.end_pos.z(),
-                    g4particle.length        , g4particle.Mother         , g4particle.truth_ccnc
+                    g4particle.length        , g4particle.Mother         , g4particle.ccnc
                     ]
             
     writer_g4.writerow( ['{:.3f}'.format(x) for x in g4_features]  )
