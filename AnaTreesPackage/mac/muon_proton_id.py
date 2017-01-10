@@ -111,9 +111,9 @@ if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
 #    scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
 
     # scheme CCQE candidates from anatrees for Varuna (Jan. 2017)
-    scheme_anatrees_files( anatrees_list_name="BNB_5e19POT_AnalysisTrees.list",
+    scheme_anatrees_files( anatrees_list_name="BNB_5e19POT_AnalysisTrees",
                           rsemap2selectfrom = mu_p_intersection_path + "/Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv",
-                          output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017" )
+                          output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017.root" )
 
 
 
