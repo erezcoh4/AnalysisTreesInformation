@@ -669,11 +669,20 @@ bool cumputeAnaTree::GetTruthInformation(){
     if (debug > 3) SHOW(mcevts_truth);
     for (Int_t n = 0; n < mcevts_truth && n < kMaxTruth ; n++) {
         
-        if (debug>2) {
+        if (debug>1) {
             Printf("mc event %d",n);
-            cout << "," << run << "," <<subrun<< "," <<event<< ","
-            <<nuvtxx_truth[n] << "," << nuvtxy_truth[n] << "," << nuvtxz_truth[n]<< ","
-            <<ccnc_truth[n]<< "," <<nuPDG_truth[n]<< "," <<X_truth[n]<< "," << Q2_truth[n] << "..."<< endl;
+            cout
+            << ", run " << run
+            << ", subrun " << subrun
+            << ", event " << event
+            << ", nuvtxx_truth " << nuvtxx_truth[n]
+            << ", nuvtxy_truth " << nuvtxy_truth[n]
+            << ", nuvtxz_truth " << nuvtxz_truth[n]
+            << ", ccnc_truth " << ccnc_truth[n]
+            << ", nuPDG_truth " << nuPDG_truth[n]
+            << ", X_truth " << X_truth[n]
+            << ", Q2_truth " << Q2_truth[n]
+            << "..."<< endl;
         }
         
         c_nu_interaction = nuInteraction(
