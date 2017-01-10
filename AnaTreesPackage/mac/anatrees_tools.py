@@ -165,7 +165,7 @@ def read_files_from_a_list( ListName , first_anatree_file = 0 , last_anatree_fil
     if flags.verbose>4: print files
     return files
 # ----------------------------------------------------------------------------------------------------
-
+    
 
 # ----------------------------------------------------------------------------------------------------
 def get_analysistrees_chain(files):
