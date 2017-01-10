@@ -108,7 +108,12 @@ if flags.option=="intersect GBDT protons with Sel2 muons" or 'intersect' in flag
 # -------------------------------------------------------------------
 if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
     if flags.verbose: print_important( "scheme analysis trees events" )
-    scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
+#    scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
+
+    # scheme CCQE candidates from anatrees for Varuna (Jan. 2017)
+    scheme_anatrees_files( anatrees_list_name="BNB_5e19POT_AnalysisTrees.list",
+                          rsemap2selectfrom = mu_p_intersection_path + "/Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv",
+                          output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017" )
 
 
 

@@ -221,6 +221,32 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
 
 
 # ----------------------------------------------------------------------------------------------------
+def scheme_anatrees_files( anatrees_list_name=None, rsemap2selectfrom=None, output_anatree_filename=None ):
+    '''
+        This functionallity schemes (big) analysis trees
+        and returns a tree containing only entries with a Run/Subrun/Event
+        of a given list (RSE map)
+        '''
+    # input: (1) analysis trees
+    print_filename( anatrees_list_name , "input: (1) analysis trees ")
+    # input: (2) RSE list to select from
+    print_filename( rsemap2selectfrom , "input (2): RSE list to select from ")
+    
+    it = ImportantTools()
+    files = read_files_from_a_list( anatrees_list_name )
+    in_chain = get_analysistrees_chain(files)
+    OutFile = ROOT.TFile( output_anatree_filename , "recreate" )
+    OutTree = it.SchemeTreeRSEList( in_chain , rsemap2selectfrom , flags.verbose )
+    
+    # output: schemed analysis trees file
+    print_filename(output_anatree_filename , "schemed anatrees file (%d events, %.2f MB):"%(OutTree.GetEntries(),float(os.path.getsize(output_anatree_filename)/1048576.0)))
+    
+    OutTree.Write()
+    OutFile.Close()
+# ----------------------------------------------------------------------------------------------------
+
+
+# ----------------------------------------------------------------------------------------------------
 def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     '''
     This functionallity schemes (big) analysis trees
@@ -228,7 +254,7 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     of a given list (RSE map)
     '''
     # input: (1) analysis trees
-    AnaTreesListName = flags.DataType + "_AnalysisTrees" # AnalysisTreesListName   = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
+    AnaTreesListName = flags.DataType + "_AnalysisTrees" # AnalysisTreesListName = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
     print_filename( AnaTreesListName , "input: (1) analysis trees ")
     # input: (2) intersected mu-p list
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName , p_score )
