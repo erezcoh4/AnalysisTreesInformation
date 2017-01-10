@@ -16,25 +16,27 @@ from gbdt_tools import *
 from larlite import *
 
 
-features_names = [
-                  'run','subrun','event',
-                  'ivtx','itrk_NuSelMuon','itrk_GBDTproton',
-                  'mu_P','mu_theta','mu_phi',
-                  'mu_start_x','mu_start_y','mu_start_z',
-                  'mu_end_x','mu_end_y','mu_end_z',
-                  'p_P','p_theta','p_phi',
-                  'p_start_x','p_start_y','p_start_z',
-                  'p_end_x','p_end_y','p_end_z',
-                  'mu_U_start_wire','mu_U_start_time','mu_U_end_wire','mu_U_end_time'
-                  'mu_V_start_wire','mu_V_start_time','mu_V_end_wire','mu_V_end_time'
-                  'mu_Y_start_wire','mu_Y_start_time','mu_Y_end_wire','mu_Y_end_time'
-                  'p_U_start_wire','p_U_start_time','p_U_end_wire','p_U_end_time'
-                  'p_V_start_wire','p_V_start_time','p_V_end_wire','p_V_end_time'
-                  'p_Y_start_wire','p_Y_start_time','p_Y_end_wire','p_Y_end_time'
-                  'v_U_start_wire','v_U_start_time','v_U_end_wire','v_U_end_time'
-                  'v_V_start_wire','v_V_start_time','v_V_end_wire','v_V_end_time'
-                  'v_Y_start_wire','v_Y_start_time','v_Y_end_wire','v_Y_end_time'
-                  ]
+#features_names = [
+#                  'run','subrun','event',
+#                  'ivtx','itrk_NuSelMuon','itrk_GBDTproton',
+#                  'mu_P','mu_theta','mu_phi',
+#                  'mu_Px','mu_Py','mu_Pz',
+#                  'mu_start_x','mu_start_y','mu_start_z',
+#                  'mu_end_x','mu_end_y','mu_end_z',
+#                  'p_P','p_theta','p_phi',
+#                  'p_Px','p_Py','p_Pz',
+#                  'p_start_x','p_start_y','p_start_z',
+#                  'p_end_x','p_end_y','p_end_z',
+#                  'mu_U_start_wire','mu_U_start_time','mu_U_end_wire','mu_U_end_time'
+#                  'mu_V_start_wire','mu_V_start_time','mu_V_end_wire','mu_V_end_time'
+#                  'mu_Y_start_wire','mu_Y_start_time','mu_Y_end_wire','mu_Y_end_time'
+#                  'p_U_start_wire','p_U_start_time','p_U_end_wire','p_U_end_time'
+#                  'p_V_start_wire','p_V_start_time','p_V_end_wire','p_V_end_time'
+#                  'p_Y_start_wire','p_Y_start_time','p_Y_end_wire','p_Y_end_time'
+#                  'v_U_start_wire','v_U_start_time','v_U_end_wire','v_U_end_time'
+#                  'v_V_start_wire','v_V_start_time','v_V_end_wire','v_V_end_time'
+#                  'v_Y_start_wire','v_Y_start_time','v_Y_end_wire','v_Y_end_time'
+#                  ]
 
 # ----------------------- file names ----------------------------- #
 my_fwk = fmwk.ana_processor()
