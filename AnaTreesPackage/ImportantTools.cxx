@@ -10,7 +10,7 @@ TTree* ImportantTools::SchemeTreeRSEList ( TTree * InTree , TString RSEfileName 
     // This functionallity schemes (big) analysis trees
     // and returns a tree containing only entries with a Run/Subrun/Event
     // of a given list (RSE map)
-    std::map < int , std::map < int , int > > RSEMap = LoadRSEMap( RSEfileName , true );
+    std::map < int , std::map < int , int > > RSEMap = LoadRSEMap( RSEfileName , true , (debug>2) ? true : false );
     
     // scheme tree to contain only events from RSE list
     TTree* OutTree = InTree -> CloneTree(0);
@@ -77,6 +77,7 @@ std::map < int , std::map < int , int > > ImportantTools::LoadRSEMap( TString RS
     }
     // check
     if (DoCheck) {
+        Printf("RSE map to scheme from: ");
         for(auto it : RSEMap) {
             std::cout << "run "  << it.first ;
             for(auto inner_it : it.second ) {
