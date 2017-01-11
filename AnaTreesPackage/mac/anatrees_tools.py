@@ -219,6 +219,32 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
 
 
 
+# ----------------------------------------------------------------------------------------------------
+def scheme_anatrees_file( input_anatree_file=None, rsemap2selectfrom=None, output_anatree_filename=None ):
+    '''
+        This functionallity schemes an analysis tree file
+        and returns a tree containing only entries with a Run/Subrun/Event
+        of a given list (RSE map)
+        '''
+    # input: (1) analysis trees
+    print_filename( input_anatree_file , "input: (1) analysis trees ")
+    # input: (2) RSE list to select from
+    print_filename( rsemap2selectfrom , "input (2): RSE list to select from ")
+    
+    it = ImportantTools()
+    chain = ROOT.TChain("analysistree/anatree")
+    chain.Add( input_anatree_file )
+    OutFile = ROOT.TFile( output_anatree_filename , "recreate" )
+    OutTree = it.SchemeTreeRSEList( in_chain , rsemap2selectfrom , flags.verbose )
+    
+    # output: schemed analysis trees file
+    print_filename(output_anatree_filename , "schemed anatrees file (%d events, %.2f MB):"%(OutTree.GetEntries(),float(os.path.getsize(output_anatree_filename)/1048576.0)))
+    
+    OutTree.Write()
+    OutFile.Close()
+
+# ----------------------------------------------------------------------------------------------------
+
 
 # ----------------------------------------------------------------------------------------------------
 def scheme_anatrees_files( anatrees_list_name=None, rsemap2selectfrom=None, output_anatree_filename=None ):

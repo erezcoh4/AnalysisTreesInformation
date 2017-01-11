@@ -111,7 +111,10 @@ if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
 #    scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
 
     # scheme CCQE candidates from anatrees for Varuna (Jan. 2017)
-    scheme_anatrees_files( anatrees_list_name="BNB_5e19POT_AnalysisTrees",
+#    scheme_anatrees_files( anatrees_list_name="BNB_5e19POT_AnalysisTrees",
+#                          rsemap2selectfrom = mu_p_intersection_path + "/Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv",
+#                          output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017.root" )
+    scheme_anatrees_file( input_anatree_file="/uboone/data/users/ecohen/AnalysisTreeData/SchemedFiles/data_AnalysisTrees_Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection.root",
                           rsemap2selectfrom = mu_p_intersection_path + "/Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv",
                           output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017.root" )
 
