@@ -232,8 +232,8 @@ def scheme_anatrees_file( input_anatree_file=None, rsemap2selectfrom=None, outpu
     print_filename( rsemap2selectfrom , "input (2): RSE list to select from ")
     
     it = ImportantTools()
-    chain = ROOT.TChain("analysistree/anatree")
-    chain.Add( input_anatree_file )
+    in_chain = ROOT.TChain("analysistree/anatree")
+    in_chain.Add( input_anatree_file )
     OutFile = ROOT.TFile( output_anatree_filename , "recreate" )
     OutTree = it.SchemeTreeRSEList( in_chain , rsemap2selectfrom , flags.verbose )
     
