@@ -15,7 +15,7 @@ from uboone_tools import *
 from gbdt_tools import *
 from larlite import *
 
-
+# delete Jan. 20
 #features_names = [
 #                  'run','subrun','event',
 #                  'ivtx','itrk_NuSelMuon','itrk_GBDTproton',
