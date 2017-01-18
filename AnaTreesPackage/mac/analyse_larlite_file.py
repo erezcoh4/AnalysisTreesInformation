@@ -2,7 +2,7 @@
     
     usage:
     ------
-    python $AnalysisTreesAna/mac/analyse_larlite_file.py -wuboone -v2 -evf=10
+    python mac/analyse_larlite_file.py -wuboone -v2 -evf=10
     
     evf represents the maximal number of images it will create (=n_max_entries)
 '''
