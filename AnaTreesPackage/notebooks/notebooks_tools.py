@@ -5,7 +5,6 @@ import matplotlib as mpl , seaborn as sns; sns.set(style="white", color_codes=Tr
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/mySoftware/MySoftwarePackage/mac')
 import GeneralPlot as gp , Initiation as init
 from plot_tools import *
-dirname = init.createnewdir()
 generic = lambda x: ast.literal_eval(x)
 from matplotlib.colors import LogNorm
 
