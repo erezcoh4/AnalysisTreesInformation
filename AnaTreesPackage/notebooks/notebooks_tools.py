@@ -7,6 +7,7 @@ import GeneralPlot as gp , Initiation as init
 from plot_tools import *
 generic = lambda x: ast.literal_eval(x)
 from matplotlib.colors import LogNorm
+from matplotlib.ticker import NullFormatter,MultipleLocator, FormatStrFormatter
 
 
 # hits data frame
