@@ -30,6 +30,7 @@ g4_features_names = [ 'run'         ,'subrun'       ,'event'
                      ,'startx'      ,'starty'       ,'startz'
                      ,'endx'        ,'endy'         ,'endz'
                      ,'length'      ,'Mother'       ,'truth_ccnc'
+                     ,'reconstructed',
                      ,'rec_nhits'   , 'rec_is_flipped'
                      ,'rec_startx'  , 'rec_starty'  , 'rec_startz'
                      ,'rec_endx'    , 'rec_endy'    , 'rec_endz'
@@ -414,6 +415,7 @@ def stream_g4_features_to_file ( g4particle , writer_g4 ):
                     g4particle.end_pos.x()   , g4particle.end_pos.y()    , g4particle.end_pos.z(),
                     g4particle.length        , g4particle.Mother         , g4particle.ccnc,
 
+                    g4particle.reconstructed    ,
                     g4particle.rec_nhits        , g4particle.rec_is_flipped    ,
                     g4particle.rec_start_pos.x(), g4particle.rec_start_pos.y() , g4particle.rec_start_pos.z() ,
                     g4particle.rec_end_pos.x()  , g4particle.rec_end_pos.y()   , g4particle.rec_end_pos.z()   ,
