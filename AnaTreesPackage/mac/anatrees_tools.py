@@ -616,6 +616,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
 
 # - # - # - # if NCosmicTracks > 0
+            if flags.verbose>4: print 'do_pandora_cosmic:',do_pandora_cosmic,',calc.Ncosmictracks:',calc.Ncosmictracks
+
             if do_pandora_cosmic and calc.Ncosmictracks>0 and do_continue:
                 
                 # - # - # - # - # for i in range(Ncosmictracks)
