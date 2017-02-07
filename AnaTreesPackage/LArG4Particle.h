@@ -75,6 +75,16 @@ public:
     
     TVector3    start_pos , end_pos;
 
+    
+    // reconstrcuted features
+    Int_t       rec_nhits       , rec_is_flipped;
+    Float_t     rec_length      , rec_theta     , rec_phi , rec_distlenratio , rec_momentum;
+    Float_t     rec_start_dqdx  , rec_end_dqdx  , rec_tot_dqdx , rec_avg_dqdx;
+    Float_t     rec_dqdx_diff   , rec_dqdx_ratio;
+    Float_t     rec_pidpida     , rec_pidchi    , rec_cosmicscore   , rec_coscontscore;
+    Float_t     rec_cftime;
+    TVector3    rec_start_pos   , rec_end_pos;
+
 };
 
 #endif

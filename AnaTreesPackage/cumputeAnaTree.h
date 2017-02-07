@@ -80,7 +80,7 @@ public:
     // initializations
     void    InitInputTree ();
     void   InitOutputTree ();
-    void    InitOutputCSV ();
+//    void    InitOutputCSV ();
     void        InitEntry ();
     void        InitTrack ();
     
@@ -307,6 +307,7 @@ public:
     mutual_vertex c_mutual_vertex;
     std::vector<mutual_vertex> mutual_vertices;
     
+    LArG4Particle c_g4particle;
     std::vector<LArG4Particle> g4particles;
 
 

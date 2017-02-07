@@ -30,6 +30,15 @@ g4_features_names = [ 'run'         ,'subrun'       ,'event'
                      ,'startx'      ,'starty'       ,'startz'
                      ,'endx'        ,'endy'         ,'endz'
                      ,'length'      ,'Mother'       ,'truth_ccnc'
+                     ,'rec_nhits'   , 'rec_is_flipped'
+                     ,'rec_startx'  , 'rec_starty'  , 'rec_startz'
+                     ,'rec_endx'    , 'rec_endy'    , 'rec_endz'
+                     ,'rec_length'       , 'rec_theta'     , 'rec_phi'
+                     ,'rec_distlenratio' , 'rec_momentum'
+                     ,'rec_start_dqdx'   , 'rec_end_dqdx'  , 'rec_tot_dqdx'
+                     ,'rec_avg_dqdx'     , 'rec_dqdx_diff' , 'rec_dqdx_ratio'
+                     ,'rec_pidpida'      , 'rec_pidchi'    , 'rec_cosmicscore'
+                     ,'rec_coscontscore' , 'rec_cftime'
                      ]
 
 
@@ -396,15 +405,25 @@ def do_pass_geometrical_cuts( track ):
 # ----------------------------------------------------------------------------------------------------
 def stream_g4_features_to_file ( g4particle , writer_g4 ):
 
-    g4_features = [ g4particle.run  , g4particle.subrun     , g4particle.event  ,
-                    g4particle.ig4   , g4particle.TrackId    , g4particle.pdg    ,
-                    g4particle.P     , g4particle.Mass       , g4particle.Eng    ,
-                    g4particle.KE    , g4particle.theta      , g4particle.phi    ,
+    g4_features = [ g4particle.run      , g4particle.subrun     , g4particle.event  ,
+                    g4particle.ig4      , g4particle.TrackId    , g4particle.pdg    ,
+                    g4particle.P        , g4particle.Mass       , g4particle.Eng    ,
+                    g4particle.KE       , g4particle.theta      , g4particle.phi    ,
                     g4particle.process_primary ,
                     g4particle.start_pos.x() , g4particle.start_pos.y()  , g4particle.start_pos.z(),
                     g4particle.end_pos.x()   , g4particle.end_pos.y()    , g4particle.end_pos.z(),
-                    g4particle.length        , g4particle.Mother         , g4particle.ccnc
-                    ]
+                    g4particle.length        , g4particle.Mother         , g4particle.ccnc,
+
+                    g4particle.rec_nhits        , g4particle.rec_is_flipped    ,
+                    g4particle.rec_start_pos.x(), g4particle.rec_start_pos.y() , g4particle.rec_start_pos.z() ,
+                    g4particle.rec_end_pos.x()  , g4particle.rec_end_pos.y()   , g4particle.rec_end_pos.z()   ,
+                    g4particle.rec_length       , g4particle.rec_theta     , g4particle.rec_phi ,
+                    g4particle.rec_distlenratio , g4particle.rec_momentum  ,
+                    g4particle.rec_start_dqdx   , g4particle.rec_end_dqdx  , g4particle.rec_tot_dqdx ,
+                    g4particle.rec_avg_dqdx     , g4particle.rec_dqdx_diff , g4particle.rec_dqdx_ratio ,
+                    g4particle.rec_pidpida      , g4particle.rec_pidchi    , g4particle.rec_cosmicscore ,
+                    g4particle.rec_coscontscore , g4particle.rec_cftime
+                   ]
             
     writer_g4.writerow( ['{:.3f}'.format(x) for x in g4_features]  )
 # ----------------------------------------------------------------------------------------------------

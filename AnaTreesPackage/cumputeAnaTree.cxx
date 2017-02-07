@@ -43,7 +43,7 @@ cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TString fCSVF
     if (MCmode) SetGENIETree(fGENIETree);
     InitInputTree();
     InitOutputTree();
-    InitOutputCSV();
+//    InitOutputCSV();
     
 }
 
@@ -241,8 +241,9 @@ void cumputeAnaTree::InitOutputTree(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void cumputeAnaTree::InitOutputCSV(){
-    
+// deprecated, delete by Feb-15, 2017
+//void cumputeAnaTree::InitOutputCSV(){
+
 //    csvfile.open(CSVFileName);
     
 //    if (option == "extract all tracks information"){
@@ -287,7 +288,7 @@ void cumputeAnaTree::InitOutputCSV(){
 //        << "(2) find common muon-proton vertices"    << "\n";
 //    }
 //    csvfile << CSVHeader << endl;
-}
+//}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetEntry (int entry){
@@ -641,24 +642,48 @@ bool cumputeAnaTree::GetTruthInformation(){
         // keep contained tracks with kinetic energy > 10 MeV (we are mainly interested in protons eventually...)
         
         Ng4particles ++ ;
-        g4particles.push_back( LArG4Particle(run ,
-                                             subrun ,
-                                             event ,
-                                             ig4 ,
-                                             TrackId[ig4],
-                                             pdg[ig4],
-                                             P[ig4],
-                                             Eng[ig4],
-                                             Mass[ig4],
-                                             theta[ig4],
-                                             phi[ig4],
-                                             process_primary[ig4],
-                                             TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ),
-                                             TVector3(EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ),
-                                             Mother[ig4] ,
-                                             ccnc_truth[ig4]
-                                             ) );
+        c_g4particle = LArG4Particle(run ,subrun ,   event ,
+                                     ig4 , TrackId[ig4], pdg[ig4],
+                                     P[ig4], Eng[ig4], Mass[ig4],
+                                     theta[ig4], phi[ig4],
+                                     process_primary[ig4],
+                                     TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ),
+                                     TVector3(EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ),
+                                     Mother[ig4] ,  ccnc_truth[ig4]);
         
+        // match generated to reconstructed for the same track
+        // in a reverse logic to the way we matched reconstructed to generated
+        // (1) find track-id match of MC and pandoraNu
+        // (2) extract the info from pandoraNu
+        if(!tracks.empty()){
+            
+            for (auto t: tracks) {
+                if (t.track_id == TrackId[ig4]){
+                    if(debug>3) Printf("t.track_id == TrackId[%d] = %d",ig4,TrackId[ig4]);
+                    c_g4particle.rec_nhits = t.nhits;
+                    c_g4particle.rec_is_flipped = t.is_flipped;
+                    c_g4particle.rec_start_pos = t.start_pos;
+                    c_g4particle.rec_end_pos = t.end_pos;
+                    c_g4particle.rec_length  = t.length;
+                    c_g4particle.rec_theta = t.theta;
+                    c_g4particle.rec_phi = t.phi;
+                    c_g4particle.rec_distlenratio = t.distlenratio ;
+                    c_g4particle.rec_momentum = t.momentum;
+                    c_g4particle.rec_start_dqdx = t.start_dqdx;
+                    c_g4particle.rec_end_dqdx = t.end_dqdx;
+                    c_g4particle.rec_tot_dqdx = t.tot_dqdx;
+                    c_g4particle.rec_avg_dqdx = t.avg_dqdx;
+                    c_g4particle.rec_dqdx_diff = t.dqdx_diff;
+                    c_g4particle.rec_dqdx_ratio = t.dqdx_ratio;
+                    c_g4particle.rec_pidpida = t.pidpida;
+                    c_g4particle.rec_pidchi = t.pidchi;
+                    c_g4particle.rec_cosmicscore = t.cosmicscore;
+                    c_g4particle.rec_coscontscore = t.coscontscore;
+                    c_g4particle.rec_cftime = t.cftime;
+                }
+            }
+        }
+        g4particles.push_back(c_g4particle);
         
     }
     if (debug > 3) SHOW(Ng4particles);
@@ -916,9 +941,9 @@ bool cumputeAnaTree::FillOutTree (){
     
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
-    
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
+
     // deprecated, delete by Jan-17 2017!
 //    
 //    if (option.Contains("extract all tracks information")){
@@ -1001,7 +1026,7 @@ void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GB
 //    else {
 //        Printf("nothing to write to csv file...");
 //    }
-}
+//}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::PrintData(int entry){
