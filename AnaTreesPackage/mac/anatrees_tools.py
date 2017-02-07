@@ -1,8 +1,10 @@
 import sys
 sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
+sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/mySoftware/MySoftware/mac')
 from uboone_tools import *
 from gbdt_tools import *
+from my_tools import *
 from larlite import *
 from ROOT import PandoraNuTrack
 from ROOT import cumputeAnaTree
