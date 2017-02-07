@@ -739,8 +739,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
     #    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
     
-    print_filename( events_features_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_features_file_name))
-    print_filename( resutls_file_name , "%d tracks features (%.2f MB)"%(counter,ffilesize_in_MB(resutls_file_name) )
+    print_filename( events_features_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_features_file_name)) )
+    print_filename( resutls_file_name , "%d tracks features (%.2f MB)"%(counter,ffilesize_in_MB(resutls_file_name) ) )
     print_filename( TracksAnaFileName , "root file (%.2f MB)"%filesize_in_MB(TracksAnaFileName) )
 
     if do_pandora_cosmic:
