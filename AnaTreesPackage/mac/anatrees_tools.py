@@ -30,7 +30,7 @@ g4_features_names = [ 'run'         ,'subrun'       ,'event'
                      ,'startx'      ,'starty'       ,'startz'
                      ,'endx'        ,'endy'         ,'endz'
                      ,'length'      ,'Mother'       ,'truth_ccnc'
-                     ,'reconstructed',
+                     ,'reconstructed'
                      ,'rec_nhits'   , 'rec_is_flipped'
                      ,'rec_startx'  , 'rec_starty'  , 'rec_startz'
                      ,'rec_endx'    , 'rec_endy'    , 'rec_endz'
