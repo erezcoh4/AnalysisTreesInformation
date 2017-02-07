@@ -611,12 +611,14 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                        and itrk_NuSelMuon != itrk_GBDTproton
                                        and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
         
-            if flags.verbose>3: print 'loooping over Ntracks=',calc.Ntracks,'contained tracks in this event'
+            if flags.verbose>3:
+                print 'looping over Ntracks=',calc.Ntracks,'contained tracks in this event'
 
 
 
 # - # - # - # if NCosmicTracks > 0
-            if flags.verbose>4: print 'do_pandora_cosmic:',do_pandora_cosmic,',calc.Ncosmictracks:',calc.Ncosmictracks
+            if flags.verbose>4:
+                print 'Ncosmictracks=',calc.Ncosmictracks
 
             if do_pandora_cosmic and calc.Ncosmictracks>0 and do_continue:
                 
@@ -629,7 +631,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     stream_tracks_features_to_file ( cosmic_track , cosmic_writer )
                     cosmic_counter += 1
                     
-                    if flags.verbose>2: print 'saving cosmic track to file from R/S/E ',calc.run,calc.subrun,calc.event
+                    if flags.verbose>2:
+                        print 'saved cosmic track R-%d/S-%d/E-%d (%d)'%(calc.run,calc.subrun,calc.event,cosmic_track.track_id)
 
 
                     if flags.verbose>2: print_line()

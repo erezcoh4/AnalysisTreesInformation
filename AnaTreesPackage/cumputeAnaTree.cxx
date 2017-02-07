@@ -325,7 +325,7 @@ void cumputeAnaTree::InitEntry(){
     if (!mutual_vertices.empty())       mutual_vertices.clear();
     if (!g4particles.empty())           g4particles.clear();
     
-    NnuInteractions = Ntracks = ntracks_pandoraNu = Ng4particles = 0;
+    NnuInteractions = Ntracks = Ncosmictracks = ntracks_pandoraNu = ntracks_pandoraCosmic = Ng4particles = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -1115,7 +1115,6 @@ bool cumputeAnaTree::IsGoodTrack ( int fTrackID ){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetPandoraCosmicTracks(){
 
-    if(debug>2) Printf("ntracks_pandoraCosmic: %d",ntracks_pandoraCosmic);
     if (ntracks_pandoraCosmic==0 || ntracks_pandoraCosmic>100) return;
     if(debug>2) Printf("loop over pandoraCosmic %d tracks",ntracks_pandoraCosmic);
 
