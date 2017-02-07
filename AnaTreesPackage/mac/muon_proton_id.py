@@ -81,7 +81,7 @@ if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA
 if flags.option=="extract tracks information from extBNB AnalysisTrees" or 'extractEXTDATA' in flags.option:
     MCCversion = "MCC8"
     print_important("extract AnalysisTrees information from %s (files %d-%d)"%(MCCversion,first_anatree_file,last_anatree_file) )
-    extract_anatrees_tracks_information_from_files_list( "extBNB" , "extract all tracks information" ,
+    extract_anatrees_tracks_information_from_files_list( MCCversion+"_extBNB" , "extract all tracks information" ,
                                                         first_anatree_file , last_anatree_file ,
                                                         MCCversion=MCCversion , do_pandora_cosmic=True )
     # can also add the option: 'add hard geometrical cuts' (Dec-2016)

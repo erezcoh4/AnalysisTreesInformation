@@ -165,10 +165,14 @@ def tracks_anafile_name( ListName , first_anatree_file = 0 , last_anatree_file =
 
 # methods
 # ----------------------------------------------------------------------------------------------------
-def read_files_from_a_list( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
+def read_files_from_a_list( ListName , first_anatree_file = 0 , last_anatree_file = 0 , MCCversion="MCC7" ):
     # returns the files
-    if flags.verbose: print_filename(lists_path + "/analysis_trees/" + ListName + ".list","reading list of files (collecting files %d to %d)..."%(first_anatree_file , last_anatree_file))
-    with open( lists_path + "/analysis_trees/" + ListName + ".list") as f:
+    list_full_name = lists_path + "/analysis_trees/" MCCversion + "/" + ListName + ".list"
+    
+    if flags.verbose:
+        print_filename( list_full_name, "reading list of files (%d to %d)..."%(first_anatree_file , last_anatree_file))
+    
+    with open( list_full_name ) as f:
         files = f.read().splitlines()
     if last_anatree_file > first_anatree_file:
         files = files[ first_anatree_file : last_anatree_file ]
@@ -319,8 +323,8 @@ def extract_anatrees_tracks_information_from_files_list( DataType, Option,
                                                         MCCversion="MCC7" , do_pandora_cosmic=False ):
     # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT / single particles....
     
-    AnaTreesListName = MCCversion + "/" + DataType + "_AnalysisTrees"
-    files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file )
+    AnaTreesListName = DataType + "_AnalysisTrees"
+    files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file , MCCversion=MCCversion )
     in_chain    = get_analysistrees_chain(files)
     
     extract_anatrees_tracks_information_with_all_features( in_chain , Option,
@@ -524,7 +528,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         print "\t exiting..."
         exit(0)
 
-    g4_counter , counter = 0 , 0
+    g4_counter , counter , cosmic_counter = 0 , 0 , 0
 
     FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
@@ -614,7 +618,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 # - # - # - # if NCosmicTracks > 0
             if do_pandora_cosmic and calc.Ncosmictracks>0 and do_continue:
                 
-                # - # - # - # - # for i in range(calc.Ntracks)
+                # - # - # - # - # for i in range(Ncosmictracks)
                 for i in range(calc.Ncosmictracks):
                     
                     cosmic_track = calc.GetCosmicTrack(i)
@@ -622,7 +626,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                         
                         stream_tracks_features_to_file ( cosmic_track , cosmic_writer )
                         if flags.verbose>2: print 'saving cosmic track to file from R/S/E ',calc.run,calc.subrun,calc.event
-                        counter = counter+1
+                        cosmic_counter += 1
                     
                     if flags.verbose>2: print_line()
 # - # - # - # end if NCosmicTracks > 0
@@ -661,12 +665,22 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 # - # - # - # - # end for i in range(calc.Ntracks)
                 calc.FillOutTree()
 # - # - # end do-continue for finding RSE
+
+
+
+
+
+
 # - # end main events loop
 
     #    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
-    print_filename( resutls_file_name , "wrote csv file with all %d tracks features (%.2f MB)"%(counter,float(os.path.getsize(resutls_file_name)/1048576.0)) )
-    print_filename( TracksAnaFileName , "wrote root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
     
+    print_filename( resutls_file_name , "%d tracks features (%.2f MB)"%(counter,float(os.path.getsize(resutls_file_name)/1048576.0)) )
+    print_filename( TracksAnaFileName , "root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
+
+    if do_pandora_cosmic:
+        print_filename( cosmics_file_name , "%d cosmic tracks features (%.2f MB)"%(cosmic_counter,float(os.path.getsize(cosmics_file_name)/1048576.0)) )
+
     if Option=="find common muon-proton vertices":
         print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
         print_filename( output_mupROIFileName , "muon / proton ROIs ")
