@@ -625,9 +625,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     if flags.verbose>4: print 'grabbed cosmic track',i
                         
                     stream_tracks_features_to_file ( cosmic_track , cosmic_writer )
-                    if flags.verbose>2: print 'saving cosmic track to file from R/S/E ',calc.run,calc.subrun,calc.event
-                        cosmic_counter += 1
+                    cosmic_counter += 1
                     
+                    if flags.verbose>2: print 'saving cosmic track to file from R/S/E ',calc.run,calc.subrun,calc.event
+
+
                     if flags.verbose>2: print_line()
 # - # - # - # end if NCosmicTracks > 0
 # - # - # - # - # end for i in range(calc.Ntracks)
