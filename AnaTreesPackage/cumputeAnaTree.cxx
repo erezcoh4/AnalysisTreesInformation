@@ -1112,6 +1112,7 @@ bool cumputeAnaTree::IsGoodTrack ( int fTrackID ){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetPandoraCosmicTracks(){
 
+    if(debug>2) Printf("ntracks_pandoraCosmic: %d",ntracks_pandoraCosmic);
     if (ntracks_pandoraCosmic==0 || ntracks_pandoraCosmic>100) return;
     if(debug>2) Printf("loop over pandoraCosmic %d tracks",ntracks_pandoraCosmic);
 
