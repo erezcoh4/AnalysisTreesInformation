@@ -22,6 +22,17 @@ neutrinoSel2_path       = lists_path + "/NeutrinoSelection2"
 mu_p_intersection_path  = lists_path + "/muon_proton_intersection"
 schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
+
+event_features_names = [ 'run'  ,'subrun'   ,'event'
+                        ,'MCmode
+                        ,'Ntracks_kalmanhit'
+                        ,'Ntracks_pandoraNu'            ,'Ncosmictracks_pandoraCosmic'
+                        ,'Ntracks_pandoraNu_Contained'  ,'Ncosmictracks_pandoraCosmic_Contained'
+                        ,'Ng4particles'
+                        ,'nvtx_pandoraCosmic
+                        ]
+
+
 g4_features_names = [ 'run'         ,'subrun'       ,'event'
                      ,'ig4'         ,'track_id'     ,'pdg'
                      ,'P'           ,'Mass'         ,'Eng'
@@ -125,6 +136,14 @@ def tracks_features_file_name( ListName , first_anatree_file = 0 , last_anatree_
         return featuresfiles_path + "/" + "features_" + ListName + ".csv"
     else:
         return featuresfiles_path + "/" + "features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+# ----------------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------------
+def events_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
+    if first_anatree_file==last_anatree_file:
+        return featuresfiles_path + "/" + "events_features_" + ListName + ".csv"
+    else:
+        return featuresfiles_path + "/" + "events_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
@@ -409,6 +428,22 @@ def do_pass_geometrical_cuts( track ):
         return False
 # ----------------------------------------------------------------------------------------------------
 
+
+
+# ----------------------------------------------------------------------------------------------------
+def stream_event_features_to_file( calc , writer ):
+    event_features = [ calc.run                 , calc.subrun           , calc.event
+                      , calc.MCmode
+                      , calc.ntracks_trackkalmanhit
+                      , calc.ntracks_pandoraNu  , calc.ntracks_pandoraCosmic
+                      , calc.Ntracks            , calc.Ncosmictracks    , calc.Ng4particles
+                      , calc.nvtx_pandoraCosmic
+                      ]
+        
+    event_features = ['{:.3f}'.format(x) for x in event_features]
+    writer.writerow( event_features )
+# ----------------------------------------------------------------------------------------------------
+
 # ----------------------------------------------------------------------------------------------------
 def stream_g4_features_to_file ( g4particle , writer_g4 ):
 
@@ -530,8 +565,9 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
     g4_counter , counter , cosmic_counter = 0 , 0 , 0
 
-    FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+#    FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+    events_file_name    = events_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     cosmics_file_name   = tracks_full_features_file_name( AnaTreesListName+'_cosmic_' , first_anatree_file , last_anatree_file )
     g4info_file_name    = g4_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
@@ -549,6 +585,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         cosmic_writer = csv.writer(open(cosmics_file_name, 'wb'))
         if first_anatree_file==0:
             cosmic_writer.writerow( track_features_names )
+
+    events_writer = csv.writer(open(events_features_file_name, 'wb'))
+    if first_anatree_file==0:
+        writer.writerow( event_features_names )
 
 
     if Option=="find common muon-proton vertices":
@@ -587,6 +627,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         if do_continue:
             
             calc.extract_information()
+            
+            # event features
+            stream_event_features_to_file ( calc , events_writer )
+            # end event features
             
             # geant4 particles
             if MCmode:

@@ -46,14 +46,18 @@ public:
     ~cumputeAnaTree(){}
     
     // construct w/ input and output TTree-s
-    cumputeAnaTree (TTree * fInTree, TTree * fOutTree, TString fCSVFileName,
+    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
+//                    TString fCSVFileName,
                     TString foption="extract all tracks information", int fdebug=0,
                     bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
     
-    cumputeAnaTree (TChain * fInChain, TTree * fOutTree, TString fCSVFileName,
+    cumputeAnaTree (TChain * fInChain, TTree * fOutTree,
+//                    TString fCSVFileName,
                     TString foption="extract all tracks information", int fdebug=0,
                     bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
-    {cumputeAnaTree((TTree*) fInChain, fOutTree, fCSVFileName, foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
+    {cumputeAnaTree((TTree*) fInChain, fOutTree,
+//                    fCSVFileName,
+                    foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
     
     
     
@@ -107,7 +111,7 @@ public:
     void         CreateROIsCCQE ( Int_t, Int_t, Int_t );
     void              Write2CSV ( Int_t, Int_t, Int_t  );
     void    GetEnergyDeposition ( int j );
-
+    void     GetSoftwareTrigger ();
     
     
     
@@ -202,6 +206,11 @@ public:
     
     // PandoraCosmic
     // -------------------------------------------------------
+    Short_t     ntracks_trackkalmanhit;
+
+    
+    // PandoraCosmic
+    // -------------------------------------------------------
     Short_t     ntracks_pandoraCosmic;
     Short_t     trkId_pandoraCosmic[MAX_cosmic_tracks];
     Short_t     ntrkhits_pandoraCosmic[MAX_cosmic_tracks][3];
@@ -279,6 +288,12 @@ public:
     Int_t    genie_trackID[40];       //trackID of the GENIE particle (different from the GEANT-assigned track ID)
     Int_t    genie_ND[40];            //number of daughters of the GENIE particle
     Int_t    genie_mother[40];        //mother trackID of the GENIE particle
+    
+    
+    // software trigger
+    std::vector<std::string> swtrigger_name;       // the name of the trigger algorithm
+    std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
+
     
     
     

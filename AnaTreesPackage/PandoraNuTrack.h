@@ -223,6 +223,12 @@ public:
     Float_t     truth_theta         , truth_phi;
     TVector3    truth_start_pos     , truth_end_pos;
 
+    
+    
+    // software trigger
+    std::vector<std::string> swtrigger_name;       // the name of the trigger algorithm
+    std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
+
 };
 #endif
 /** @} */ // end of doxygen group

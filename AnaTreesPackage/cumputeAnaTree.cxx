@@ -8,6 +8,8 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::extract_information (){ // main event loop....
     
+    GetSoftwareTrigger();
+    
     GetInTimeFlashes();
     
     GetPandoraNuTracks();
@@ -32,14 +34,15 @@ bool cumputeAnaTree::extract_information (){ // main event loop....
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TString fCSVFileName,
+cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree,
+//                               TString fCSVFileName,
                                TString foption, int fdebug,
                                bool fMCmode, TTree * fGENIETree,
                                bool fDoPandoraCosmic){
     
     SetInTree(fInTree);
     SetOutTree(fOutTree);
-    SetCSVFileName (fCSVFileName);
+//    SetCSVFileName (fCSVFileName);
     SetOption(foption);
     SetDebug(fdebug);
     SetMCMode(fMCmode);
@@ -62,6 +65,10 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("subrun"                                         , &subrun);
     InTree -> SetBranchAddress("event"                                          , &event);
 
+    // Kalman-Hit
+    InTree -> SetBranchAddress("ntracks_trackkalmanhit"                         , &ntracks_trackkalmanhit);
+    
+    
     // pandoraNu
     // ----------------------------------------------------------------------------------------------
     InTree -> SetBranchAddress("ntracks_pandoraNu"                              , &ntracks_pandoraNu);
@@ -110,12 +117,14 @@ void cumputeAnaTree::InitInputTree(){
     
     
     // vertex
-    InTree -> SetBranchAddress("nvtx_pandoraNu"                                  , &nvtx_pandoraNu);
-    InTree -> SetBranchAddress("vtxx_pandoraNu"                                  , &vtxx_pandoraNu);
-    InTree -> SetBranchAddress("vtxy_pandoraNu"                                  , &vtxy_pandoraNu);
-    InTree -> SetBranchAddress("vtxz_pandoraNu"                                  , &vtxz_pandoraNu);
+    InTree -> SetBranchAddress("nvtx_pandoraNu"                                 , &nvtx_pandoraNu);
+    InTree -> SetBranchAddress("vtxx_pandoraNu"                                 , &vtxx_pandoraNu);
+    InTree -> SetBranchAddress("vtxy_pandoraNu"                                 , &vtxy_pandoraNu);
+    InTree -> SetBranchAddress("vtxz_pandoraNu"                                 , &vtxz_pandoraNu);
 
-    
+    InTree -> SetBranchAddress("swtrigger_name"                                 , &swtrigger_name);
+    InTree -> SetBranchAddress("swtrigger_triggered"                            , &swtrigger_triggered);
+
     
     // pandoraCosmic
     // ----------------------------------------------------------------------------------------------
@@ -312,6 +321,21 @@ void cumputeAnaTree::GetEntry (int entry){
     InitEntry();
     InTree -> GetEntry(entry);
 }
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::GetSoftwareTrigger(){
+    for (size_t trigger = 0; trigger < swtrigger_name.size(); trigger++) {
+        if (debug>2){
+            cout << "SW Trigger name: " << swtrigger_name[trigger] << endl;
+            cout << " -> was triggered? " << swtrigger_triggered[trigger] << endl;
+        }
+    }
+}
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::InitEntry(){
@@ -539,6 +563,9 @@ void cumputeAnaTree::GetPandoraNuTracks(){
             c_track.SetTrackPurity(-9999,-9999,-9999);
         }
 
+        // software trigger
+        c_track.swtrigger_name = swtrigger_name;
+        c_track.swtrigger_triggered = swtrigger_triggered;
         
         tracks.push_back(c_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",tracks.size());
@@ -1252,6 +1279,10 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
             if(debug>3) Printf("this is data, so no MC information");
             c_cosmic_track.SetMCpdgCode(-9999);
         }
+
+        // software trigger
+        c_track.swtrigger_name = swtrigger_name;
+        c_track.swtrigger_triggered = swtrigger_triggered;
 
 
         cosmic_tracks.push_back(c_cosmic_track);
