@@ -22,8 +22,8 @@ rec_nhits(-100)       , rec_is_flipped(-100),
 rec_length(-100)      , rec_theta(-100)     , rec_phi(-100) , rec_distlenratio(-100) , rec_momentum(-100),
 rec_start_dqdx(-100)  , rec_end_dqdx(-100)  , rec_tot_dqdx(-100) , rec_avg_dqdx(-100),
 rec_dqdx_diff(-100)   , rec_dqdx_ratio(-100),
-rec_pidpida(-100)     , rec_pidchi(-100)    , rec_cosmicscore(-100)   , rec_coscontscore(-100)
-rec_cftime(-100)
+rec_pidpida(-100)     , rec_pidchi(-100)    , rec_cosmicscore(-100)   , rec_coscontscore(-100),
+rec_cftime(-100),
 rec_start_pos(TVector3())   , rec_end_pos(TVector3())
 
 {
