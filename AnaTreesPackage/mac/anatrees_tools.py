@@ -575,7 +575,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         print "\t exiting..."
         exit(0)
 
-    g4_counter , counter , cosmic_counter = 0 , 0 , 0
+    g4_counter , counter , cosmic_counter , evts_counter = 0 , 0 , 0 , 0
 
 #    FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
@@ -642,6 +642,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
             
             # event features
             stream_event_features_to_file ( calc , events_writer )
+            evts_counter += 1
             # end event features
             
             # geant4 particles
@@ -738,11 +739,12 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
     #    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
     
-    print_filename( resutls_file_name , "%d tracks features (%.2f MB)"%(counter,float(os.path.getsize(resutls_file_name)/1048576.0)) )
-    print_filename( TracksAnaFileName , "root file (%.2f MB)"%float(os.path.getsize(TracksAnaFileName)/1048576.0) )
+    print_filename( events_features_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_features_file_name))
+    print_filename( resutls_file_name , "%d tracks features (%.2f MB)"%(counter,ffilesize_in_MB(resutls_file_name) )
+    print_filename( TracksAnaFileName , "root file (%.2f MB)"%filesize_in_MB(TracksAnaFileName) )
 
     if do_pandora_cosmic:
-        print_filename( cosmics_file_name , "%d cosmic tracks features (%.2f MB)"%(cosmic_counter,float(os.path.getsize(cosmics_file_name)/1048576.0)) )
+        print_filename( cosmics_file_name , "%d cosmic tracks features (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name) ) )
 
     if Option=="find common muon-proton vertices":
         print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
@@ -750,7 +752,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         output_rse_file.close()
 
     if MCmode:
-        print_filename( resutls_file_name , "wrote csv file with all %d g4 generated tracks (%.2f MB)"%(g4_counter,float(os.path.getsize(g4info_file_name)/1048576.0)) )
+        print_filename( resutls_file_name , "%d g4 generated particles (%.2f MB)"%(g4_counter,filesize_in_MB(g4info_file_name)) )
         GENIETree.Write()
     
     TracksTree.Write()
