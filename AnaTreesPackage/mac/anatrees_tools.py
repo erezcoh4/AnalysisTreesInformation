@@ -315,16 +315,18 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
 # ----------------------------------------------------------------------------------------------------
 def extract_anatrees_tracks_information_from_files_list( DataType, Option,
                                                         first_anatree_file , last_anatree_file ,
-                                                        MCmode=False, AddEventsList=False , EventsListName="" ):
+                                                        MCmode=False, AddEventsList=False , EventsListName="" ,
+                                                        MCCversion="MCC7" , do_pandora_cosmic=False ):
     # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT / single particles....
     
-    AnaTreesListName = DataType + "_AnalysisTrees"
+    AnaTreesListName = MCCversion + "/" + DataType + "_AnalysisTrees"
     files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file )
     in_chain    = get_analysistrees_chain(files)
     
     extract_anatrees_tracks_information_with_all_features( in_chain , Option,
                                                           first_anatree_file , last_anatree_file,
-                                                          MCmode, AddEventsList , EventsListName , AnaTreesListName )
+                                                          MCmode, AddEventsList , EventsListName , AnaTreesListName ,
+                                                          do_pandora_cosmic=do_pandora_cosmic )
 # ----------------------------------------------------------------------------------------------------
 
 
@@ -510,7 +512,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                                           EventsListName="",
                                                           AnaTreesListName="",
                                                           output_mupRSEFileName="",
-                                                          output_mupROIFileName="" ):
+                                                          output_mupROIFileName="" ,
+                                                          do_pandora_cosmic=False ):
     
     import csv
     if 'extract all tracks information' not in Option and 'find common muon-proton vertices' not in Option:
@@ -526,6 +529,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+    cosmics_file_name   = tracks_full_features_file_name( AnaTreesListName+'_cosmic_' , first_anatree_file , last_anatree_file )
     g4info_file_name    = g4_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
 
     writer = csv.writer(open(resutls_file_name, 'wb'))
@@ -536,6 +540,12 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
         writer_g4 = csv.writer(open(g4info_file_name, 'wb'))
         if first_anatree_file==0:
             writer_g4.writerow( g4_features_names )
+
+    if do_pandora_cosmic:
+        cosmic_writer = csv.writer(open(cosmics_file_name, 'wb'))
+        if first_anatree_file==0:
+            cosmic_writer.writerow( track_features_names )
+
 
     if Option=="find common muon-proton vertices":
         output_rse_file = open( output_mupRSEFileName , 'w' )
@@ -598,6 +608,27 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                        and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
         
             if flags.verbose>3: print 'loooping over Ntracks=',calc.Ntracks,'contained tracks in this event'
+
+
+
+# - # - # - # if NCosmicTracks > 0
+            if do_pandora_cosmic and calc.Ncosmictracks>0 and do_continue:
+                
+                # - # - # - # - # for i in range(calc.Ntracks)
+                for i in range(calc.Ncosmictracks):
+                    
+                    cosmic_track = calc.GetCosmicTrack(i)
+                    if flags.verbose>4: print 'grabbed cosmic track',i
+                        
+                        stream_tracks_features_to_file ( cosmic_track , cosmic_writer )
+                        if flags.verbose>2: print 'saving cosmic track to file from R/S/E ',calc.run,calc.subrun,calc.event
+                        counter = counter+1
+                    
+                    if flags.verbose>2: print_line()
+# - # - # - # end if NCosmicTracks > 0
+# - # - # - # - # end for i in range(calc.Ntracks)
+
+
 
 # - # - # - # if Ntracks > 0
             if calc.Ntracks>0 and do_continue:

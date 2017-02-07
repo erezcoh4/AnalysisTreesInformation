@@ -32,8 +32,11 @@ print 'running option ',flags.option
 # (1) extract all tracks information from BNB-MC and COSMIC-MC analysis trees to train GBDTs
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
+    MCCversion = "MCC7"
     print_important( "extract tracks information from MC AnalysisTrees" )
-    extract_anatrees_tracks_information_from_files_list( "MC_BNB" , "extract all tracks information" , first_anatree_file , last_anatree_file , MCmode = True )
+    extract_anatrees_tracks_information_from_files_list(  "MC_BNB" , "extract all tracks information" ,
+                                                        first_anatree_file , last_anatree_file , MCmode = True ,
+                                                        MCCversion=MCCversion , do_pandora_cosmic=True )
 
 
 # ---------------
@@ -76,9 +79,14 @@ if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA
 
 # ---------------
 if flags.option=="extract tracks information from extBNB AnalysisTrees" or 'extractEXTDATA' in flags.option:
-    print_important("extract AnalysisTrees information (files %d-%d)"%(first_anatree_file,last_anatree_file) )
-    extract_anatrees_tracks_information_from_files_list( "extBNB" , "extract all tracks information" , first_anatree_file , last_anatree_file )
+    MCCversion = "MCC8"
+    print_important("extract AnalysisTrees information from %s (files %d-%d)"%(MCCversion,first_anatree_file,last_anatree_file) )
+    extract_anatrees_tracks_information_from_files_list( "extBNB" , "extract all tracks information" ,
+                                                        first_anatree_file , last_anatree_file ,
+                                                        MCCversion=MCCversion , do_pandora_cosmic=True )
     # can also add the option: 'add hard geometrical cuts' (Dec-2016)
+
+
 
 
 # (4) Classify proton tracks

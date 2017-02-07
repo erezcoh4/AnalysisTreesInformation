@@ -27,6 +27,7 @@
 
 #define MAX_vertices 20
 #define MAX_tracks 1000
+#define MAX_cosmic_tracks 100
 #define MAX_hits 50000
 #define kMaxTruth 10
 #define kMaxPrimaries 20000  //maximum number of primary particles
@@ -47,36 +48,43 @@ public:
     // construct w/ input and output TTree-s
     cumputeAnaTree (TTree * fInTree, TTree * fOutTree, TString fCSVFileName,
                     TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false, TTree * fGENIETree = nullptr);
+                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
     
     cumputeAnaTree (TChain * fInChain, TTree * fOutTree, TString fCSVFileName,
                     TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false, TTree * fGENIETree = nullptr)
-    {cumputeAnaTree((TTree*) fInChain, fOutTree, fCSVFileName, foption, fdebug, fMCmode, fGENIETree);};
+                    bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
+    {cumputeAnaTree((TTree*) fInChain, fOutTree, fCSVFileName, foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
     
     
     
  
     
     // setters
-    void        SetInTree (TTree * tree)    {InTree = tree;};
-    void       SetOutTree (TTree * tree)    {OutTree = tree;};
-    void     SetGENIETree (TTree * tree)    {GENIETree = tree;};
-    void   SetCSVFileName (TString name)    {CSVFileName = name;};
-    void         SetDebug (int _debug)      {debug = _debug;};
-    void        SetMCMode (bool _mc_mode)   {MCmode = _mc_mode;};
-    void        SetOption (TString foption) {option = foption;};
+    void             SetInTree (TTree * tree)    {InTree = tree;};
+    void            SetOutTree (TTree * tree)    {OutTree = tree;};
+    void          SetGENIETree (TTree * tree)    {GENIETree = tree;};
+    void        SetCSVFileName (TString name)    {CSVFileName = name;};
+    void              SetDebug (int _debug)      {debug = _debug;};
+    void             SetMCMode (bool _mc_mode)   {MCmode = _mc_mode;};
+    void             SetOption (TString foption) {option = foption;};
+    void    SetDoPandoraCosmic (bool fDo)        {DoPandoraCosmic = fDo;};
+    
     
     // getters
     TTree*             GetInTree ()            {return InTree;};
     TTree*            GetOutTree ()            {return OutTree;};
     void                GetEntry ( int );
-    PandoraNuTrack      GetTrack ( int i )     {return tracks.at(i);};
-    LArG4Particle  GetG4Particle ( int i )     {return g4particles.at(i);};
     box     GetROItrk_GBDTproton ( int plane ) {return ROItrk_GBDTproton[plane]; };
     box      GetROItrk_NuSelMuon ( int plane ) {return ROItrk_NuSelMuon[plane]; };
     box           Getmu_p_VtxROI ( int plane ) {return mu_p_VtxROI[plane]; };
 
+
+    // getters of my objects
+    PandoraNuTrack        GetTrack ( int i )     {return tracks.at(i);};
+    PandoraNuTrack  GetCosmicTrack ( int i )     {return cosmic_tracks.at(i);};
+    LArG4Particle    GetG4Particle ( int i )     {return g4particles.at(i);};
+
+    
     // initializations
     void    InitInputTree ();
     void   InitOutputTree ();
@@ -123,7 +131,7 @@ public:
     bool        MCmode;
     bool        foundMuonScattering;
     bool        track_already_included;
-    
+    bool        DoPandoraCosmic;
     
     // event information
     
@@ -192,39 +200,41 @@ public:
 
     
     
-    //    // PandoraCosmic
-    //    // -------------------------------------------------------
-    //    Short_t     ntracks_pandoraCosmic;
-    //    Short_t     trkId_pandoraCosmic[MAX_cosmic_tracks];
-    //    Short_t     ntrkhits_pandoraCosmic[MAX_cosmic_tracks][3];
-    //    Short_t     trkncosmictags_tagger_pandoraCosmic[MAX_cosmic_tracks];
-    //    Short_t     trkcosmictype_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
-    //    Short_t     trkcosmictype_containmenttagger_pandoraCosmic[MAX_tracks][10] ;
-    //    Short_t     trkpidbestplane_pandoraCosmic[MAX_tracks];
-    //
-    //    Int_t       trkg4id_pandoraCosmic[MAX_cosmic_tracks]  ;
-    //    Int_t       trkpidpdg_pandoraCosmic[MAX_cosmic_tracks][3];
-    //
-    //    Float_t     trklen_pandoraCosmic[MAX_cosmic_tracks]                 , trkstartx_pandoraCosmic[MAX_cosmic_tracks]                , trkstarty_pandoraCosmic[MAX_cosmic_tracks];
-    //    Float_t     trkstartz_pandoraCosmic[MAX_cosmic_tracks]              , trkendx_pandoraCosmic[MAX_cosmic_tracks]                  , trkendy_pandoraCosmic[MAX_cosmic_tracks];
-    //    Float_t     trkendz_pandoraCosmic[MAX_cosmic_tracks]                , trktheta_pandoraCosmic[MAX_cosmic_tracks]                 , trkphi_pandoraCosmic[MAX_cosmic_tracks];
-    //
-    //    // calorimetry
-    //    Float_t     trkdqdx_pandoraCosmic[MAX_cosmic_tracks][3][2000]       , trkresrg_pandoraCosmic[MAX_cosmic_tracks][3][2000]    ;
-    //    Float_t     trkdedx_pandoraCosmic[MAX_cosmic_tracks][3][2000]       ;
-    //
-    //    // tagging
-    //    Float_t     trkcosmicscore_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
-    //    Float_t     trkcosmicscore_containmenttagger_pandoraCosmic[MAX_cosmic_tracks][10];
-    //    Float_t     trkpidchi_pandoraCosmic[MAX_cosmic_tracks][3]           , trkpidpida_pandoraCosmic[MAX_cosmic_tracks][3]  ;
-    //
-    //
-    //    // vertex information
-    //
-    //    Short_t     nvtx_pandoraCosmic;
-    //    Float_t     vtxx_pandoraCosmic[MAX_vertices];     //the X location (in cm) for a given vertex
-    //    Float_t     vtxy_pandoraCosmic[MAX_vertices];     //the Y location (in cm) for a given vertex
-    //    Float_t     vtxz_pandoraCosmic[MAX_vertices];     //the Z location (in cm) for a given vertex
+    // PandoraCosmic
+    // -------------------------------------------------------
+    Short_t     ntracks_pandoraCosmic;
+    Short_t     trkId_pandoraCosmic[MAX_cosmic_tracks];
+    Short_t     ntrkhits_pandoraCosmic[MAX_cosmic_tracks][3];
+    Short_t     trkncosmictags_tagger_pandoraCosmic[MAX_cosmic_tracks];
+    Short_t     trkcosmictype_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
+    Short_t     trkcosmictype_containmenttagger_pandoraCosmic[MAX_tracks][10] ;
+    Short_t     trkpidbestplane_pandoraCosmic[MAX_tracks];
+    
+    Int_t       trkg4id_pandoraCosmic[MAX_cosmic_tracks]  ;
+    Int_t       trkpidpdg_pandoraCosmic[MAX_cosmic_tracks][3];
+    
+    Float_t     trklen_pandoraCosmic[MAX_cosmic_tracks]     , trkstartx_pandoraCosmic[MAX_cosmic_tracks]    , trkstarty_pandoraCosmic[MAX_cosmic_tracks];
+    Float_t     trkstartz_pandoraCosmic[MAX_cosmic_tracks]  , trkendx_pandoraCosmic[MAX_cosmic_tracks]      , trkendy_pandoraCosmic[MAX_cosmic_tracks];
+    Float_t     trkendz_pandoraCosmic[MAX_cosmic_tracks]    , trktheta_pandoraCosmic[MAX_cosmic_tracks]     , trkphi_pandoraCosmic[MAX_cosmic_tracks];
+    
+    
+    // x/y/z positions
+    Float_t     trkxyz_pandoraCosmic[MAX_tracks][3][2000][3];
+    // calorimetery
+    Float_t     trkdqdx_pandoraCosmic[MAX_tracks][3][2000]  ,   trkdedx_pandoraCosmic[MAX_tracks][3][2000] , trkresrg_pandoraCosmic[MAX_tracks][3][2000]; // (dE/dx in MeV/cm)
+
+    
+    // tagging
+    Float_t     trkcosmicscore_tagger_pandoraCosmic[MAX_cosmic_tracks][10];
+    Float_t     trkcosmicscore_containmenttagger_pandoraCosmic[MAX_cosmic_tracks][10];
+    Float_t     trkpidchi_pandoraCosmic[MAX_cosmic_tracks][3]           , trkpidpida_pandoraCosmic[MAX_cosmic_tracks][3]  ;
+    
+    
+    // vertex information
+    Short_t     nvtx_pandoraCosmic;
+    Float_t     vtxx_pandoraCosmic[MAX_vertices];     //the X location (in cm) for a given vertex
+    Float_t     vtxy_pandoraCosmic[MAX_vertices];     //the Y location (in cm) for a given vertex
+    Float_t     vtxz_pandoraCosmic[MAX_vertices];     //the Z location (in cm) for a given vertex
     
     
     

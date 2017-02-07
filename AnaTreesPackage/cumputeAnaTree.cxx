@@ -12,7 +12,9 @@ bool cumputeAnaTree::extract_information (){ // main event loop....
     
     GetPandoraNuTracks();
 
-    // GetPandoraCosmicTracks();
+    if (DoPandoraCosmic){
+        GetPandoraCosmicTracks();
+    }
     
     if (MCmode){
         GetTruthInformation();
@@ -32,7 +34,8 @@ bool cumputeAnaTree::extract_information (){ // main event loop....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TString fCSVFileName,
                                TString foption, int fdebug,
-                               bool fMCmode, TTree * fGENIETree){
+                               bool fMCmode, TTree * fGENIETree,
+                               bool fDoPandoraCosmic){
     
     SetInTree(fInTree);
     SetOutTree(fOutTree);
@@ -41,6 +44,7 @@ cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TString fCSVF
     SetDebug(fdebug);
     SetMCMode(fMCmode);
     if (MCmode) SetGENIETree(fGENIETree);
+    SetDoPandoraCosmic(fDoPandoraCosmic);
     InitInputTree();
     InitOutputTree();
 //    InitOutputCSV();
@@ -110,40 +114,50 @@ void cumputeAnaTree::InitInputTree(){
 
     
     
-    //    // pandoraCosmic
-    //    // ----------------------------------------------------------------------------------------------
-    //    InTree -> SetBranchAddress("ntracks_pandoraCosmic"                          , &ntracks_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkId_pandoraCosmic"                            , &trkId_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trklen_pandoraCosmic"                           , &trklen_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkstartx_pandoraCosmic"                        , &trkstartx_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkstarty_pandoraCosmic"                        , &trkstarty_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkstartz_pandoraCosmic"                        , &trkstartz_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkendx_pandoraCosmic"                          , &trkendx_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkendy_pandoraCosmic"                          , &trkendy_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkendz_pandoraCosmic"                          , &trkendz_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trktheta_pandoraCosmic"                         , &trktheta_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkphi_pandoraCosmic"                           , &trkphi_pandoraCosmic);
-    //    InTree -> SetBranchAddress("ntrkhits_pandoraCosmic"                         , &ntrkhits_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkdqdx_pandoraCosmic"                          , &trkdqdx_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkresrg_pandoraCosmic"                         , &trkresrg_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkncosmictags_tagger_pandoraCosmic"            , &trkncosmictags_tagger_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkcosmicscore_tagger_pandoraCosmic"            , &trkcosmicscore_tagger_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkcosmictype_tagger_pandoraCosmic"             , &trkcosmictype_tagger_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkcosmicscore_containmenttagger_pandoraCosmic" , &trkcosmicscore_containmenttagger_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkcosmictype_containmenttagger_pandoraCosmic"  , &trkcosmictype_containmenttagger_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkpidchi_pandoraCosmic"                        , &trkpidchi_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkpidpida_pandoraCosmic"                       , &trkpidpida_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkpidbestplane_pandoraCosmic"                  , &trkpidbestplane_pandoraCosmic);
-    //    InTree -> SetBranchAddress("trkpidpdg_pandoraCosmic"                        , &trkpidpdg_pandoraCosmic);
-    //    // vertex
-    //    InTree -> SetBranchAddress("nvtx_pandoraCosmic"                             , &nvtx_pandoraCosmic);
-    //    InTree -> SetBranchAddress("vtxx_pandoraCosmic"                             , &vtxx_pandoraCosmic);
-    //    InTree -> SetBranchAddress("vtxy_pandoraCosmic"                             , &vtxy_pandoraCosmic);
-    //    InTree -> SetBranchAddress("vtxz_pandoraCosmic"                             , &vtxz_pandoraCosmic);
-    
+    // pandoraCosmic
+    // ----------------------------------------------------------------------------------------------
+    if (DoPandoraCosmic){
+        
+        InTree -> SetBranchAddress("ntracks_pandoraCosmic"                          , &ntracks_pandoraCosmic);
+        InTree -> SetBranchAddress("trkId_pandoraCosmic"                            , &trkId_pandoraCosmic);
+        InTree -> SetBranchAddress("trklen_pandoraCosmic"                           , &trklen_pandoraCosmic);
+        InTree -> SetBranchAddress("trkstartx_pandoraCosmic"                        , &trkstartx_pandoraCosmic);
+        InTree -> SetBranchAddress("trkstarty_pandoraCosmic"                        , &trkstarty_pandoraCosmic);
+        InTree -> SetBranchAddress("trkstartz_pandoraCosmic"                        , &trkstartz_pandoraCosmic);
+        InTree -> SetBranchAddress("trkendx_pandoraCosmic"                          , &trkendx_pandoraCosmic);
+        InTree -> SetBranchAddress("trkendy_pandoraCosmic"                          , &trkendy_pandoraCosmic);
+        InTree -> SetBranchAddress("trkendz_pandoraCosmic"                          , &trkendz_pandoraCosmic);
+        InTree -> SetBranchAddress("trktheta_pandoraCosmic"                         , &trktheta_pandoraCosmic);
+        InTree -> SetBranchAddress("trkphi_pandoraCosmic"                           , &trkphi_pandoraCosmic);
+        InTree -> SetBranchAddress("ntrkhits_pandoraCosmic"                         , &ntrkhits_pandoraCosmic);
+        InTree -> SetBranchAddress("trkdqdx_pandoraCosmic"                          , &trkdqdx_pandoraCosmic);
+        InTree -> SetBranchAddress("trkresrg_pandoraCosmic"                         , &trkresrg_pandoraCosmic);
+        InTree -> SetBranchAddress("trkncosmictags_tagger_pandoraCosmic"            , &trkncosmictags_tagger_pandoraCosmic);
+        InTree -> SetBranchAddress("trkcosmicscore_tagger_pandoraCosmic"            , &trkcosmicscore_tagger_pandoraCosmic);
+        InTree -> SetBranchAddress("trkcosmictype_tagger_pandoraCosmic"             , &trkcosmictype_tagger_pandoraCosmic);
+        InTree -> SetBranchAddress("trkcosmicscore_containmenttagger_pandoraCosmic" , &trkcosmicscore_containmenttagger_pandoraCosmic);
+        InTree -> SetBranchAddress("trkcosmictype_containmenttagger_pandoraCosmic"  , &trkcosmictype_containmenttagger_pandoraCosmic);
+        InTree -> SetBranchAddress("trkpidchi_pandoraCosmic"                        , &trkpidchi_pandoraCosmic);
+        InTree -> SetBranchAddress("trkpidpida_pandoraCosmic"                       , &trkpidpida_pandoraCosmic);
+        InTree -> SetBranchAddress("trkpidbestplane_pandoraCosmic"                  , &trkpidbestplane_pandoraCosmic);
+        InTree -> SetBranchAddress("trkpidpdg_pandoraCosmic"                        , &trkpidpdg_pandoraCosmic);
+        
+        // calorimetery
+        InTree -> SetBranchAddress("trkxyz_pandoraNu"                               , &trkxyz_pandoraCosmic);
+        InTree -> SetBranchAddress("trkdqdx_pandoraNu"                              , &trkdqdx_pandoraCosmic);
+        InTree -> SetBranchAddress("trkdedx_pandoraNu"                              , &trkdedx_pandoraCosmic);
+        
+        // vertex
+        InTree -> SetBranchAddress("nvtx_pandoraCosmic"                             , &nvtx_pandoraCosmic);
+        InTree -> SetBranchAddress("vtxx_pandoraCosmic"                             , &vtxx_pandoraCosmic);
+        InTree -> SetBranchAddress("vtxy_pandoraCosmic"                             , &vtxy_pandoraCosmic);
+        InTree -> SetBranchAddress("vtxz_pandoraCosmic"                             , &vtxz_pandoraCosmic);
+    }
 
 
     
+    // MC information
+    // ----------------------------------------------------------------------------------------------
     if (MCmode) {
         
         if (debug>1)  Printf ("\n\nrunning on MC mode...\n\n");
@@ -1096,152 +1110,150 @@ bool cumputeAnaTree::IsGoodTrack ( int fTrackID ){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//void cumputeAnaTree::GetPandoraCosmicTracks(){
-//
-//    if (ntracks_pandoraCosmic==0 || ntracks_pandoraCosmic>1000) return;
-//    if(debug>2) Printf("loop over pandoraCosmic %d tracks",ntracks_pandoraCosmic);
-//
-//
-//
-//    // loop over all reconstructed tracks
-//    for(Int_t j=0; j < ntracks_pandoraCosmic && j < MAX_cosmic_tracks; j++){
-//
-//        InitTrack();
-//
-//
-//        c_cosmic_track = PandoraNuTrack(
-//                                        run                                                                                // run
-//                                        ,subrun                                                                            // subrun
-//                                        ,event                                                                             // event
-//                                        ,trkId_pandoraNu[j]                                                                // track id
-//                                        ,TVector3(trkstartx_pandoraNu[j], trkstarty_pandoraNu[j], trkstartz_pandoraNu[j])  // start position
-//                                        ,TVector3(trkendx_pandoraNu[j]  , trkendy_pandoraNu[j]  , trkendz_pandoraNu[j])    // end position
-//                                        ,trklen_pandoraNu[j]                                                               // track length
-//                                        ,trktheta_pandoraNu[j]                                                             // theta
-//                                        ,trkphi_pandoraNu[j]                                                               // phi
-//                                        );
-//
-//        if (!TrackContained( c_cosmic_track.start_pos   , c_cosmic_track.end_pos )) continue;
-//        Ncosmictracks ++ ;
-//        if(debug>3) Printf("created (contained) track %d...",j);
-//
-//        // get flash info
-//        // compare reconstructed track to list of flashes in beam to find closest
-//        float tzcenter = (c_cosmic_track.start_pos.z() + c_cosmic_track.end_pos.z())/2.;
-//        if(debug>3) Printf("with tzcenter = %.2f, goodflashidx.size() = %lu",tzcenter,goodflashidx.size());
-//
-//        if(goodflashidx.size() > 0) {
-//            int   minzi    = goodflashidx.at(0);
-//            float minzdiff = TMath::Abs(flash_zcenter[minzi] - tzcenter);
-//            if(debug>3) {SHOW(minzi);SHOW(minzdiff);}
-//            for(size_t k=0; k < goodflashidx.size(); k++)
-//            {
-//                int   fidx     = goodflashidx.at(k);
-//                float fzcenter = flash_zcenter[fidx];
-//                if(debug>3) {SHOW(fidx);SHOW(fzcenter);}
-//                if(TMath::Abs(fzcenter - tzcenter) < minzdiff)
-//                {
-//                    minzi    = fidx;
-//                    minzdiff = TMath::Abs(fzcenter = tzcenter);
-//                }
-//            }
-//            cftime      = flash_time[minzi];
-//            cftimewidth = flash_timewidth[minzi];
-//            cfzcenter   = flash_zcenter[minzi];
-//            cfzwidth    = flash_zwidth[minzi];
-//            cfycenter   = flash_ycenter[minzi];
-//            cfywidth    = flash_ywidth[minzi];
-//            cftotalpe   = flash_pe[minzi];
-//            cfdistance  = tzcenter - cfzcenter;
-//        }
-//        else {
-//            cftime = cftimewidth = cfzcenter = cfzwidth = cfycenter = cfywidth = cftotalpe = cfdistance = -9999;
-//        }
-//        c_cosmic_track.SetFlashInfo(cftime , cftimewidth , cfzcenter , cfzwidth , cfycenter , cfywidth , cftotalpe , cfdistance);
-//        if(debug>3) Printf("Set Flash Info...");
-//
-//
-//        // get cosmic scores
-//        c_cosmic_track.SetCosScores( trkcosmicscore_tagger_pandoraCosmic[j][0] , trkcosmicscore_containmenttagger_pandoraCosmic[j][0] );
-//        // get pid info
-//        c_cosmic_track.Set_pid_info( trkpidpida_pandoraCosmic[j][trkpidbestplane_pandoraCosmic[j]] , trkpidchi_pandoraCosmic[j][trkpidbestplane_pandoraCosmic[j]] );
-//
-//
-//        // get dqdx info: loop over range from end of track to find start and end
-//        int   rmin[3] , rmax[3];
-//        if(debug>3) Printf("before for(Int_t fr=0; fr<3;fr++) ...");
-//        for(Int_t fr=0; fr<3;fr++) {
-//
-//            if(ntrkhits_pandoraCosmic[j][fr] >= 0) {
-//
-//                nhits     += ntrkhits_pandoraCosmic[j][fr];
-//                rmin[fr]   = rmax[fr]   = trkresrg_pandoraCosmic[j][fr][0];
-//                totaldqdx += trkdqdx_pandoraCosmic[j][fr][0];
-//                int minidx = 0 , maxidx = 0;
-//
-//                for(Int_t ridx=0; ridx < ntrkhits_pandoraCosmic[j][fr]; ridx++) {
-//                    if(trkresrg_pandoraCosmic[j][fr][ridx] < rmin[fr] && trkdqdx_pandoraCosmic[j][fr][ridx] != 0) {
-//                        rmin[fr] = trkresrg_pandoraCosmic[j][fr][ridx];
-//                        minidx   = ridx;
-//                    }
-//                    if(trkresrg_pandoraCosmic[j][fr][ridx] > rmax[fr]) {
-//                        rmax[fr] = trkresrg_pandoraCosmic[j][fr][ridx];
-//                        maxidx   = ridx;
-//                    }
-//                    totaldqdx += trkdqdx_pandoraCosmic[j][fr][ridx];
-//                }
-//                if(maxidx >= 3) {
-//                    startdqdx   += (trkdqdx_pandoraCosmic[j][fr][maxidx] + trkdqdx_pandoraCosmic[j][fr][maxidx-1]
-//                                    + trkdqdx_pandoraCosmic[j][fr][maxidx-2]);
-//                    enddqdx     += (trkdqdx_pandoraCosmic[j][fr][minidx] + trkdqdx_pandoraCosmic[j][fr][minidx+1]
-//                                    + trkdqdx_pandoraCosmic[j][fr][minidx+2]);
-//                } else {
-//                    startdqdx   += trkdqdx_pandoraCosmic[j][fr][maxidx];
-//                    enddqdx     += trkdqdx_pandoraCosmic[j][fr][minidx];
-//                }
-//            }
-//        }
-//        if(debug>3) Printf("after for(Int_t fr=0; fr<3;fr++) ...");
-//        c_cosmic_track.Set_dqdx( startdqdx , enddqdx , totaldqdx , nhits );
-//        if(debug>3) Printf("Set dq/dx ...");
-//        c_cosmic_track.CreateROIs();
-//        if(debug>3) Printf("Created ROIs...");
-//        c_cosmic_track.Calorimetry();
-//        if(debug>3) Printf("made some Calorimetry ...");
-//        c_cosmic_track.Straightness();
-//        if(debug>3) Printf("calculated the Straightness of the track ...");
-//        c_cosmic_track.Momentum();
-//        if(debug>3) Printf("calculated the Momentum of the track ...");
-//        c_cosmic_track.SetCalorimetryPDG( trkpidpdg_pandoraCosmic[j] );
-//        if(debug>3) Printf("set track pid pdg ...");
-//
-//        // if its MC, plug also MC information
-//        if(MCmode){
-//            if(debug>3) Printf("plugging also MC information:");
-//            bool FoundMCtrack = false;
-//            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
-//                if(debug>3) Printf("trkg4id_pandoraCosmic[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraCosmic[j],ig4,TrackId[ig4]);
-//                if(TrackId[ig4] == trkg4id_pandoraCosmic[j]){
-//                    // lets start with only the MC pdg code, for training purposes
-//                    if(debug>3) Printf("truth pdg is: %d",pdg[ig4]);
-//                    FoundMCtrack = true;
-//                    c_cosmic_track.SetMCpdgCode(pdg[ig4]);
-//                }
-//            }
-//            if (!FoundMCtrack) {
-//                if(debug>3) Printf("could not find g4 information for this track");
-//                c_cosmic_track.SetMCpdgCode(-9999);
-//            }
-//        }
-//        else {
-//            if(debug>3) Printf("this is data, so no MC information");
-//            c_cosmic_track.SetMCpdgCode(-9999);
-//        }
-//
-//
-//        cosmic_tracks.push_back(c_cosmic_track);
-//        if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",cosmic_tracks.size());
-//    }
-//}
+void cumputeAnaTree::GetPandoraCosmicTracks(){
+
+    if (ntracks_pandoraCosmic==0 || ntracks_pandoraCosmic>100) return;
+    if(debug>2) Printf("loop over pandoraCosmic %d tracks",ntracks_pandoraCosmic);
+
+
+    // loop over all reconstructed tracks
+    for(Int_t j=0; j < ntracks_pandoraCosmic && j < MAX_cosmic_tracks; j++){
+
+        InitTrack();
+
+        c_cosmic_track = PandoraNuTrack(
+                                        run                                                                                // run
+                                        ,subrun                                                                            // subrun
+                                        ,event                                                                             // event
+                                        ,trkId_pandoraNu[j]                                                                // track id
+                                        ,TVector3(trkstartx_pandoraNu[j], trkstarty_pandoraNu[j], trkstartz_pandoraNu[j])  // start position
+                                        ,TVector3(trkendx_pandoraNu[j]  , trkendy_pandoraNu[j]  , trkendz_pandoraNu[j])    // end position
+                                        ,trklen_pandoraNu[j]                                                               // track length
+                                        ,trktheta_pandoraNu[j]                                                             // theta
+                                        ,trkphi_pandoraNu[j]                                                               // phi
+                                        );
+
+        if (!TrackContained( c_cosmic_track.start_pos   , c_cosmic_track.end_pos )) continue;
+        Ncosmictracks ++ ;
+        if(debug>3) Printf("created (contained) track %d...",j);
+
+        // get flash info
+        // compare reconstructed track to list of flashes in beam to find closest
+        float tzcenter = (c_cosmic_track.start_pos.z() + c_cosmic_track.end_pos.z())/2.;
+        if(debug>3) Printf("with tzcenter = %.2f, goodflashidx.size() = %lu",tzcenter,goodflashidx.size());
+
+        if(goodflashidx.size() > 0) {
+            int   minzi    = goodflashidx.at(0);
+            float minzdiff = TMath::Abs(flash_zcenter[minzi] - tzcenter);
+            if(debug>3) {SHOW(minzi);SHOW(minzdiff);}
+            for(size_t k=0; k < goodflashidx.size(); k++)
+            {
+                int   fidx     = goodflashidx.at(k);
+                float fzcenter = flash_zcenter[fidx];
+                if(debug>3) {SHOW(fidx);SHOW(fzcenter);}
+                if(TMath::Abs(fzcenter - tzcenter) < minzdiff)
+                {
+                    minzi    = fidx;
+                    minzdiff = TMath::Abs(fzcenter = tzcenter);
+                }
+            }
+            cftime      = flash_time[minzi];
+            cftimewidth = flash_timewidth[minzi];
+            cfzcenter   = flash_zcenter[minzi];
+            cfzwidth    = flash_zwidth[minzi];
+            cfycenter   = flash_ycenter[minzi];
+            cfywidth    = flash_ywidth[minzi];
+            cftotalpe   = flash_pe[minzi];
+            cfdistance  = tzcenter - cfzcenter;
+        }
+        else {
+            cftime = cftimewidth = cfzcenter = cfzwidth = cfycenter = cfywidth = cftotalpe = cfdistance = -9999;
+        }
+        c_cosmic_track.SetFlashInfo(cftime , cftimewidth , cfzcenter , cfzwidth , cfycenter , cfywidth , cftotalpe , cfdistance);
+        if(debug>3) Printf("Set Flash Info...");
+
+
+        // get cosmic scores
+        c_cosmic_track.SetCosScores( trkcosmicscore_tagger_pandoraCosmic[j][0] , trkcosmicscore_containmenttagger_pandoraCosmic[j][0] );
+        // get pid info
+        c_cosmic_track.Set_pid_info( trkpidpida_pandoraCosmic[j][trkpidbestplane_pandoraCosmic[j]] , trkpidchi_pandoraCosmic[j][trkpidbestplane_pandoraCosmic[j]] );
+
+
+        // get dqdx info: loop over range from end of track to find start and end
+        int   rmin[3] , rmax[3];
+        if(debug>3) Printf("before for(Int_t fr=0; fr<3;fr++) ...");
+        for(Int_t fr=0; fr<3;fr++) {
+
+            if(ntrkhits_pandoraCosmic[j][fr] >= 0) {
+
+                nhits     += ntrkhits_pandoraCosmic[j][fr];
+                rmin[fr]   = rmax[fr]   = trkresrg_pandoraCosmic[j][fr][0];
+                totaldqdx += trkdqdx_pandoraCosmic[j][fr][0];
+                int minidx = 0 , maxidx = 0;
+
+                for(Int_t ridx=0; ridx < ntrkhits_pandoraCosmic[j][fr]; ridx++) {
+                    if(trkresrg_pandoraCosmic[j][fr][ridx] < rmin[fr] && trkdqdx_pandoraCosmic[j][fr][ridx] != 0) {
+                        rmin[fr] = trkresrg_pandoraCosmic[j][fr][ridx];
+                        minidx   = ridx;
+                    }
+                    if(trkresrg_pandoraCosmic[j][fr][ridx] > rmax[fr]) {
+                        rmax[fr] = trkresrg_pandoraCosmic[j][fr][ridx];
+                        maxidx   = ridx;
+                    }
+                    totaldqdx += trkdqdx_pandoraCosmic[j][fr][ridx];
+                }
+                if(maxidx >= 3) {
+                    startdqdx   += (trkdqdx_pandoraCosmic[j][fr][maxidx] + trkdqdx_pandoraCosmic[j][fr][maxidx-1]
+                                    + trkdqdx_pandoraCosmic[j][fr][maxidx-2]);
+                    enddqdx     += (trkdqdx_pandoraCosmic[j][fr][minidx] + trkdqdx_pandoraCosmic[j][fr][minidx+1]
+                                    + trkdqdx_pandoraCosmic[j][fr][minidx+2]);
+                } else {
+                    startdqdx   += trkdqdx_pandoraCosmic[j][fr][maxidx];
+                    enddqdx     += trkdqdx_pandoraCosmic[j][fr][minidx];
+                }
+            }
+        }
+        if(debug>3) Printf("after for(Int_t fr=0; fr<3;fr++) ...");
+        c_cosmic_track.Set_dqdx( startdqdx , enddqdx , totaldqdx , nhits );
+        if(debug>3) Printf("Set dq/dx ...");
+        c_cosmic_track.CreateROIs();
+        if(debug>3) Printf("Created ROIs...");
+        c_cosmic_track.Calorimetry();
+        if(debug>3) Printf("made some Calorimetry ...");
+        c_cosmic_track.Straightness();
+        if(debug>3) Printf("calculated the Straightness of the track ...");
+        c_cosmic_track.Momentum();
+        if(debug>3) Printf("calculated the Momentum of the track ...");
+        c_cosmic_track.SetCalorimetryPDG( trkpidpdg_pandoraCosmic[j] );
+        if(debug>3) Printf("set track pid pdg ...");
+
+        // if its MC, plug also MC information
+        if(MCmode){
+            if(debug>3) Printf("plugging also MC information:");
+            bool FoundMCtrack = false;
+            for(Int_t ig4=0; ig4 < geant_list_size && ig4 < MAX_tracks; ig4++) {
+                if(debug>3) Printf("trkg4id_pandoraCosmic[%d] = %d, TrackId[%d] = %d",j,trkg4id_pandoraCosmic[j],ig4,TrackId[ig4]);
+                if(TrackId[ig4] == trkg4id_pandoraCosmic[j]){
+                    // lets start with only the MC pdg code, for training purposes
+                    if(debug>3) Printf("truth pdg is: %d",pdg[ig4]);
+                    FoundMCtrack = true;
+                    c_cosmic_track.SetMCpdgCode(pdg[ig4]);
+                }
+            }
+            if (!FoundMCtrack) {
+                if(debug>3) Printf("could not find g4 information for this track");
+                c_cosmic_track.SetMCpdgCode(-9999);
+            }
+        }
+        else {
+            if(debug>3) Printf("this is data, so no MC information");
+            c_cosmic_track.SetMCpdgCode(-9999);
+        }
+
+
+        cosmic_tracks.push_back(c_cosmic_track);
+        if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",cosmic_tracks.size());
+    }
+}
 
 #endif
