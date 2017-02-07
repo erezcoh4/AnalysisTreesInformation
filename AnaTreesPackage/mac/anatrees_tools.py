@@ -24,12 +24,12 @@ schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 
 event_features_names = [ 'run'  ,'subrun'   ,'event'
-                        ,'MCmode
+                        ,'MCmode'
                         ,'Ntracks_kalmanhit'
                         ,'Ntracks_pandoraNu'            ,'Ncosmictracks_pandoraCosmic'
                         ,'Ntracks_pandoraNu_Contained'  ,'Ncosmictracks_pandoraCosmic_Contained'
                         ,'Ng4particles'
-                        ,'nvtx_pandoraCosmic
+                        ,'nvtx_pandoraCosmic'
                         ]
 
 

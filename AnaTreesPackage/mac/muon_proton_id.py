@@ -19,6 +19,7 @@ TracksListName          = "BNB_5e19POT"
 GBDTmodelName           = "multi_BNB_TrainedOn_MCBNB_MCCOSMIC"  # options: 'BNB_TrainedOn_only_MC_BNB'
 maxscore                = 'protons'
 p_score                 = 0.9
+MCCversion              = "MCC%d"%flags.MCCversion
 
 
 splitjobs_files = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
@@ -26,13 +27,12 @@ first_anatree_file = flags.run
 last_anatree_file = first_anatree_file + splitjobs_files
 
 
-print 'running option ',flags.option
+print 'running option ',flags.option,' on MCC version: ',MCCversion
 
 
 # (1) extract all tracks information from BNB-MC and COSMIC-MC analysis trees to train GBDTs
 # -------------------------------------------------------------------
 if flags.option=="extract tracks information from MC AnalysisTrees" or 'extractMC' in flags.option:
-    MCCversion = "MCC7"
     print_important( "extract tracks information from MC AnalysisTrees" )
     extract_anatrees_tracks_information_from_files_list(  "MC_BNB" , "extract all tracks information" ,
                                                         first_anatree_file , last_anatree_file , MCmode = True ,
@@ -79,7 +79,6 @@ if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA
 
 # ---------------
 if flags.option=="extract tracks information from extBNB AnalysisTrees" or 'extractEXTDATA' in flags.option:
-    MCCversion = "MCC7"
     print_important("extract AnalysisTrees information from %s (files %d-%d)"%(MCCversion,first_anatree_file,last_anatree_file) )
     extract_anatrees_tracks_information_from_files_list( MCCversion+"_extBNB" , "extract all tracks information" ,
                                                         first_anatree_file , last_anatree_file ,
