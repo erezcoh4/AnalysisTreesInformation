@@ -562,7 +562,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
     TracksTree , GENIETree  = ROOT.TTree("TracksTree","pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
 
-    calc = cumputeAnaTree( in_chain, TracksTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree )
+    calc = cumputeAnaTree( in_chain, TracksTree, FeaturesFileName, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
     
     if AddEventsList:
         rse_events_list = add_event_list( EventsListName )

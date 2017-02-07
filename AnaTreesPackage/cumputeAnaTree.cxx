@@ -47,6 +47,9 @@ cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree, TString fCSVF
     SetDoPandoraCosmic(fDoPandoraCosmic);
     InitInputTree();
     InitOutputTree();
+    if (debug>1){
+        Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
+    }
 //    InitOutputCSV();
     
 }
