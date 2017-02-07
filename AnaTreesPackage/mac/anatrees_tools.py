@@ -167,7 +167,7 @@ def tracks_anafile_name( ListName , first_anatree_file = 0 , last_anatree_file =
 # ----------------------------------------------------------------------------------------------------
 def read_files_from_a_list( ListName , first_anatree_file = 0 , last_anatree_file = 0 , MCCversion="MCC7" ):
     # returns the files
-    list_full_name = lists_path + "/analysis_trees/" MCCversion + "/" + ListName + ".list"
+    list_full_name = lists_path + "/analysis_trees/" + MCCversion + "/" + ListName + ".list"
     
     if flags.verbose:
         print_filename( list_full_name, "reading list of files (%d to %d)..."%(first_anatree_file , last_anatree_file))
