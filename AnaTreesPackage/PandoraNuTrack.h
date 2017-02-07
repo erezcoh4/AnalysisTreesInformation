@@ -175,8 +175,7 @@ public:
                 return dEdx_Y;
                 break;
         }};
-
-    
+    Int_t GetNSWtrigger () {return (int)swtrigger_name.size();};
     
         
 

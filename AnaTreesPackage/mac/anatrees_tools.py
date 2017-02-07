@@ -76,6 +76,8 @@ track_features_names = [ 'run'          ,'subrun'   ,'event'        ,'track_id'
                         ,'dqdx_Y'
                         ,'dEdx_Y'
                         ,'Edep_Y'
+                        ,'swtrigger_name'
+                        ,'swtrigger_triggered'
                         ]
 
 
@@ -493,7 +495,8 @@ def stream_tracks_features_to_file ( track , writer ):
                       , roi_Y.start_wire        , roi_Y.start_time      , roi_Y.end_wire        , roi_Y.end_time
                       , track.purtruth_Y
                       , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
-                      , track.truth_P          , track.truth_Eng        , track.truth_KE        , track.truth_theta     , track.truth_phi       , track.process_primary
+                      , track.truth_P          , track.truth_Eng        , track.truth_KE        , track.truth_theta     , track.truth_phi
+                      , track.process_primary
                       , track.truth_start_pos.x()   , track.truth_start_pos.y()     , track.truth_start_pos.z()
                       , track.truth_end_pos.x()     , track.truth_end_pos.y()       , track.truth_end_pos.z()
                       , track.truth_ccnc
@@ -508,12 +511,21 @@ def stream_tracks_features_to_file ( track , writer ):
         dqdx_Y.append( track.dqdx_Y.at(step) )
         dEdx_Y.append( track.dEdx_Y.at(step) )
         Edep_Y.append( track.Edep_Y.at(step) )
-                        
+
 
     track_features.append(residual_range_Y)
     track_features.append(dqdx_Y)
     track_features.append(dEdx_Y)
     track_features.append(Edep_Y)
+
+    SWtrigName , SSWtrigTriggered = [] , []
+    for trigger in range(track.GetNSWtrigger()):
+        SWtrigName.append( track.swtrigger_name.at(trigger) )
+        SSWtrigTriggered.append( track.swtrigger_triggered.at(trigger) )
+
+    track_features.append(SWtrigName)
+    track_features.append(SSWtrigTriggered)
+
 
     writer.writerow( track_features )
 # ----------------------------------------------------------------------------------------------------
