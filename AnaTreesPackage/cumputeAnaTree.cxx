@@ -660,6 +660,7 @@ bool cumputeAnaTree::GetTruthInformation(){
             for (auto t: tracks) {
                 if (t.track_id == TrackId[ig4]){
                     if(debug>3) Printf("t.track_id == TrackId[%d] = %d",ig4,TrackId[ig4]);
+                    c_g4particle.reconstructed = 1;
                     c_g4particle.rec_nhits = t.nhits;
                     c_g4particle.rec_is_flipped = t.is_flipped;
                     c_g4particle.rec_start_pos = t.start_pos;

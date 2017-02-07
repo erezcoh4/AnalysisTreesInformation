@@ -12,18 +12,20 @@ LArG4Particle::LArG4Particle(Int_t frun, Int_t fsubrun , Int_t fevent ,
                              TVector3 fstart_pos , TVector3 fend_pos,
                              Int_t fMother,
                              Int_t fccnc):
-pdg(-100),
-ig4(-100),
-TrackId(-100),
-Eng(-100),
-Mass(-100),
-theta(-100),
-phi(-100),
-process_primary(-100),
-Mother(-100),
-ccnc(-100),
-start_pos(TVector3()),
-end_pos(TVector3())
+
+pdg(-100),ig4(-100),TrackId(-100),Eng(-100),Mass(-100),
+theta(-100),phi(-100),process_primary(-100),
+Mother(-100) ,ccnc(-100),
+start_pos(TVector3()), end_pos(TVector3()),
+reconstructed(0)      ,
+rec_nhits(-100)       , rec_is_flipped(-100),
+rec_length(-100)      , rec_theta(-100)     , rec_phi(-100) , rec_distlenratio(-100) , rec_momentum(-100),
+rec_start_dqdx(-100)  , rec_end_dqdx(-100)  , rec_tot_dqdx(-100) , rec_avg_dqdx(-100),
+rec_dqdx_diff(-100)   , rec_dqdx_ratio(-100),
+rec_pidpida(-100)     , rec_pidchi(-100)    , rec_cosmicscore(-100)   , rec_coscontscore(-100)
+rec_cftime(-100)
+rec_start_pos(TVector3())   , rec_end_pos(TVector3())
+
 {
     SetRSE (frun, fsubrun , fevent);
     Set_ig4 (fig4) ;

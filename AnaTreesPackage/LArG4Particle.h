@@ -77,7 +77,7 @@ public:
 
     
     // reconstrcuted features
-    Int_t       rec_nhits       , rec_is_flipped;
+    Int_t       reconstructed   , rec_nhits     , rec_is_flipped;
     Float_t     rec_length      , rec_theta     , rec_phi , rec_distlenratio , rec_momentum;
     Float_t     rec_start_dqdx  , rec_end_dqdx  , rec_tot_dqdx , rec_avg_dqdx;
     Float_t     rec_dqdx_diff   , rec_dqdx_ratio;
