@@ -79,7 +79,7 @@ if flags.option=="extract tracks information from AnalysisTrees" or 'extractDATA
 
 # ---------------
 if flags.option=="extract tracks information from extBNB AnalysisTrees" or 'extractEXTDATA' in flags.option:
-    MCCversion = "MCC8"
+    MCCversion = "MCC7"
     print_important("extract AnalysisTrees information from %s (files %d-%d)"%(MCCversion,first_anatree_file,last_anatree_file) )
     extract_anatrees_tracks_information_from_files_list( MCCversion+"_extBNB" , "extract all tracks information" ,
                                                         first_anatree_file , last_anatree_file ,
