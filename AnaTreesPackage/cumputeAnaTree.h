@@ -98,7 +98,7 @@ public:
     
     
     // running
-    bool    extract_information ();
+    bool    extract_information (bool fDo=true);
     bool            FillOutTree ();
     bool    GetTruthInformation ();
     bool    GetGENIEInformation ();
