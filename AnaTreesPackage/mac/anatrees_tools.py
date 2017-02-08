@@ -602,7 +602,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
     events_writer = csv.writer(open(events_file_name, 'wb'))
     if first_anatree_file==0:
-        writer.writerow( event_features_names )
+        events_writer.writerow( event_features_names )
 
 
     if Option=="find common muon-proton vertices":
