@@ -642,9 +642,11 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 # - # - # do-continue for finding RSE
         if do_continue:
             
+            if flags.verbose>2: print 'extract information'            
             calc.extract_information()
             
             # event features
+            if flags.verbose>2: print 'stream event features to file'
             stream_event_features_to_file ( calc , events_writer )
             evts_counter += 1
             # end event features

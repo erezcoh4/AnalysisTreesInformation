@@ -9,17 +9,22 @@
 bool cumputeAnaTree::extract_information (){ // main event loop....
     
     GetSoftwareTrigger();
+    if (debug>3) Printf("Got Software Trigger");
     
     GetInTimeFlashes();
+    if (debug>3) Printf("Got In Time Flashes");
     
     GetPandoraNuTracks();
+    if (debug>3) Printf("Got PandoraNu Tracks");
 
     if (DoPandoraCosmic){
         GetPandoraCosmicTracks();
+        if (debug>3) Printf("Got PandoraCosmic Tracks");
     }
     
     if (MCmode){
         GetTruthInformation();
+        if (debug>3) Printf("Got Truth Information");
     }
 
     // if we want to collect vertices, these should be uncommented out
