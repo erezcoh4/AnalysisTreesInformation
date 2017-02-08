@@ -327,7 +327,7 @@ void cumputeAnaTree::GetEntry (int entry){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetSoftwareTrigger(){
-    for (size_t trigger = 0; trigger < swtrigger_name.size(); trigger++) {
+    for (size_t trigger = 0; trigger < sizeof(swtrigger_name)/sizeof(*swtrigger_name); trigger++) {
         if (debug>2){
             cout << "SW Trigger name: " << swtrigger_name[trigger] << endl;
             cout << " -> was triggered? " << swtrigger_triggered[trigger] << endl;
@@ -564,8 +564,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         }
 
         // software trigger
-        c_track.swtrigger_name = swtrigger_name;
-        c_track.swtrigger_triggered = swtrigger_triggered;
+        c_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
         
         tracks.push_back(c_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",tracks.size());
@@ -1281,9 +1280,7 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
         }
 
         // software trigger
-        c_track.swtrigger_name = swtrigger_name;
-        c_track.swtrigger_triggered = swtrigger_triggered;
-
+        c_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
 
         cosmic_tracks.push_back(c_cosmic_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",cosmic_tracks.size());

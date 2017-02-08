@@ -126,6 +126,15 @@ public:
 
     void    SetCalorimetry_Y (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>   );
     
+    void   SetSWtrigger (std::string fswtrigger_name[], bool fswtrigger_triggered[]){
+        for (size_t i=0 ; i < (sizeof(fswtrigger_name)/sizeof(*fswtrigger_name)) ; i++ ) {
+            swtrigger_name.push_back(fswtrigger_name[i]);
+            swtrigger_triggered.push_back(fswtrigger_triggered[i]);
+        }
+    };
+    
+    
+    
     
     
     // getters

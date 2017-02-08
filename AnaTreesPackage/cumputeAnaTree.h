@@ -291,8 +291,11 @@ public:
     
     
     // software trigger
-    std::vector<std::string> swtrigger_name;       // the name of the trigger algorithm
-    std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
+//    std::vector<std::string> swtrigger_name;       // the name of the trigger algorithm
+//    std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
+    std::string swtrigger_name[1];
+    bool        swtrigger_triggered[1];
+    
 
     
     
