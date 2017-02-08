@@ -122,8 +122,8 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("vtxy_pandoraNu"                                 , &vtxy_pandoraNu);
     InTree -> SetBranchAddress("vtxz_pandoraNu"                                 , &vtxz_pandoraNu);
 
-    InTree -> SetBranchAddress("swtrigger_name"                                 , swtrigger_name);
-    InTree -> SetBranchAddress("swtrigger_triggered"                            , swtrigger_triggered);
+    InTree -> SetBranchAddress("swtrigger_name"                                 , &swtrigger_name);
+    InTree -> SetBranchAddress("swtrigger_triggered"                            , &swtrigger_triggered);
 
     
     // pandoraCosmic
