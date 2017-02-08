@@ -44,7 +44,7 @@ if flags.option=="extract MC-CORSIKA tracks information from AnalysisTrees" or '
     print_important( "extract MC-CORSIKA tracks information from AnalysisTrees" )
     extract_anatrees_tracks_information_from_files_list( MCCversion+"_openCOSMIC_MC" , "extract all tracks information" ,
                                                         first_anatree_file , last_anatree_file  ,
-                                                        MCmode = True , MCCversion=MCCversion , do_pandora_cosmic=True )
+                                                        MCmode=True , MCCversion=MCCversion , do_pandora_cosmic=True )
 
 
 # single particle MC
