@@ -983,7 +983,7 @@ void cumputeAnaTree::CreateROIsCCQE( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t it
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::FillOutTree (){
+bool cumputeAnaTree::FillOutTree (bool fDo){
     
     OutTree -> Fill();
     return true;

@@ -99,7 +99,7 @@ public:
     
     // running
     bool    extract_information (bool fDo=true);
-    bool            FillOutTree ();
+    bool            FillOutTree (bool fDo=true);
     bool    GetTruthInformation ();
     bool    GetGENIEInformation ();
     void       GetInTimeFlashes ();
