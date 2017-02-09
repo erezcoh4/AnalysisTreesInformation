@@ -353,8 +353,9 @@ void cumputeAnaTree::InitEntry(){
     if (!tracks_vertices.empty())       tracks_vertices.clear();
     if (!mutual_vertices.empty())       mutual_vertices.clear();
     if (!g4particles.empty())           g4particles.clear();
-    
-    NnuInteractions = Ntracks = Ncosmictracks = ntracks_pandoraNu = ntracks_pandoraCosmic = Ng4particles = 0;
+    Ntracks = 0;
+    Ncosmictracks = 0;
+    NnuInteractions = ntracks_pandoraNu = ntracks_pandoraCosmic = Ng4particles = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
