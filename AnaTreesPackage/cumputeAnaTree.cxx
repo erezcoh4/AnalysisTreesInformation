@@ -550,8 +550,8 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     c_track.truth_theta = theta[ig4];
                     c_track.truth_phi   = phi[ig4];
                     // positions
-                    c_track.truth_start_pos = TVector3( StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ) ;
-                    c_track.truth_end_pos = TVector3( EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ) ;
+                    c_track.SetTruthStartPos( TVector3( StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ) );
+                    c_track.SetTruthEndPos( TVector3( EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ) );
                     c_track.truth_ccnc = ccnc_truth[ig4];
                 }
             }

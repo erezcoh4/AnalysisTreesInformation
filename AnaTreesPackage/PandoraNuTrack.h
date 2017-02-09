@@ -104,6 +104,11 @@ public:
     void  SetCalorimetryPDG (Int_t _pdg[3]) {for (int i=0 ; i < 3 ; i++ ) CalorimetryPDG[i] = _pdg[i];};
     void  SetProcessPrimary (Int_t fpp)     {process_primary = fpp;};
     void            SetCCNC (Int_t fccnc)   {truth_ccnc = fccnc;};
+    void   SetTruthStartPos (TVector3 pos)  {
+        truth_start_pos = pos;  truth_startx=truth_start_pos.x(); truth_starty=truth_start_pos.y(); truth_startz=truth_start_pos.z();
+    };
+    void     SetTruthEndPos (TVector3 pos)  {
+        truth_end_pos = pos; truth_endx=truth_end_pos.x(); truth_endy=truth_end_pos.y(); truth_endz=truth_end_pos.z();};
 
     void       SetCosScores (Float_t fcscore, Float_t fccscore)
     {cosmicscore = fcscore; coscontscore = fccscore;};
@@ -231,6 +236,7 @@ public:
     Int_t       MCpdgCode;
     Float_t     truth_Eng , truth_P , truth_Mass , truth_KE;
     Float_t     truth_theta         , truth_phi;
+    Float_t     truth_startx        , truth_starty , truth_startz , truth_endx , truth_endy , truth_endz;
     TVector3    truth_start_pos     , truth_end_pos;
 
     
