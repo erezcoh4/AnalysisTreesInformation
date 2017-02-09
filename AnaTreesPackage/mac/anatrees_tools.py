@@ -508,7 +508,7 @@ def stream_tracks_features_to_file ( track , writer ):
 
     residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
 
-    for step in range(track.NEdepYNsteps):
+    for step in range(track.NEdepYsteps):
         residual_range_Y.append( track.residual_range_Y.at(step) )
         dqdx_Y.append( track.dqdx_Y.at(step) )
         dEdx_Y.append( track.dEdx_Y.at(step) )
