@@ -476,7 +476,7 @@ def stream_g4_features_to_file ( g4particle , writer_g4 ):
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-def stream_tracks_features_to_file ( track , writer ):
+def stream_tracks_features_to_file ( track , writer , do_dEdx=False ):
 
     roi_U       , roi_V     , roi_Y     = track.GetROI(0)       , track.GetROI(1)       , track.GetROI(2)
     CaloPDG_U   , CaloPDG_V , CaloPDG_Y = track.GetCaloPDG(0)   , track.GetCaloPDG(1)   , track.GetCaloPDG(2)
@@ -508,11 +508,12 @@ def stream_tracks_features_to_file ( track , writer ):
 
     residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
 
-    for step in range(track.NEdepYsteps):
-        residual_range_Y.append( track.residual_range_Y.at(step) )
-        dqdx_Y.append( track.dqdx_Y.at(step) )
-        dEdx_Y.append( track.dEdx_Y.at(step) )
-        Edep_Y.append( track.Edep_Y.at(step) )
+    if do_dEdx:
+        for step in range(track.NEdepYsteps):
+            residual_range_Y.append( track.residual_range_Y.at(step) )
+            dqdx_Y.append( track.dqdx_Y.at(step) )
+            dEdx_Y.append( track.dEdx_Y.at(step) )
+            Edep_Y.append( track.Edep_Y.at(step) )
 
 
     track_features.append(residual_range_Y)
@@ -566,7 +567,8 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                                                           AnaTreesListName="",
                                                           output_mupRSEFileName="",
                                                           output_mupROIFileName="" ,
-                                                          do_pandora_cosmic=False ):
+                                                          do_pandora_cosmic=False ,
+                                                          do_dEdx=False ):
     
     import csv
     if 'extract all tracks information' not in Option and 'find common muon-proton vertices' not in Option:
@@ -691,7 +693,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     cosmic_track = calc.GetCosmicTrack(i)
                     if flags.verbose>4: print 'grabbed cosmic track',i
                         
-                    stream_tracks_features_to_file ( cosmic_track , cosmic_writer )
+                    stream_tracks_features_to_file ( cosmic_track , cosmic_writer , do_dEdx=do_dEdx )
                     cosmic_counter += 1
                     
                     if flags.verbose>2:
@@ -726,7 +728,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
                     if do_continue:
                         
-                        stream_tracks_features_to_file ( track , writer )
+                        stream_tracks_features_to_file ( track , writer , do_dEdx=do_dEdx )
                         if flags.verbose>2: print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
                         counter = counter+1
                     
