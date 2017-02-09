@@ -10,6 +10,62 @@ from matplotlib.colors import LogNorm
 from matplotlib.ticker import NullFormatter,MultipleLocator, FormatStrFormatter
 
 
+# ------------------------------------------------------------------------
+# Feb-09, 2017
+def add_retreat_label(xtext=None,ytext=None,label = 'cohen.erez7@gmail.com, mini-retreat (Feb-2017)'):
+    if xtext is not None and ytext is not None:
+        plt.text(xtext,ytext,label)
+    else:
+        plt.figtext(0.1,0.05,label)
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+# Feb-09, 2017
+def plot_2d_histogram(data=None , data_name = 'MCC8-extBNB, contained pandoraCosmic tracks',
+                      varx='startx' , vary='starty' , mul_x=1, mul_y=1,
+                      x_label = '$x_{start}$ [cm]', y_label='$y_{start}$ [cm]',
+                      cmap='hot_r',norm='normal',
+                      binsx=50, binsy=50,  figsize=(16,10) , ticks_color='black', fontsize=25,
+                      do_add_retreat_label=True,do_save_fig=True,do_add_title=False,
+                      ax=None):
+    
+    
+    plot2d = plot_2d_hist( mul_x*data[varx].astype(float) , mul_y*data[vary].astype(float) ,
+                          bins=(binsx,binsy) , cmap=cmap,
+                          xlabel=x_label , ylabel=y_label, norm=norm,
+                          figsize=figsize , fontsize=fontsize , ticks_color=ticks_color , ax=ax);
+    cb = plt.colorbar()
+    cb.ax.tick_params(labelsize=fontsize,labelcolor=ticks_color)
+                          
+    counts, xedges, yedges, Image, ax = plot2d
+    if do_add_title:
+        ax.set_title(data_name,fontsize=25,y=1.02)
+
+
+    if do_add_retreat_label:
+        add_retreat_label()
+    if do_save_fig:
+        plt.savefig('/Users/erezcohen/Desktop/uBoone/analysis/retreats/Feb2017/%s_%s_vs_%s.png'%(namestr(data, globals()),varx,vary))
+# ------------------------------------------------------------------------
+
+
+# ------------------------------------------------------------------------
+# Feb-09, 2017
+def plot_histstep(x,bins=None,color=None,label=None,linestyle='-',normed=1):
+    h,bins,_ = plt.hist( x , bins=bins, histtype='step', linewidth=0 ,normed=normed)
+    mid = 0.5*(bins[1:] + bins[:-1])+0.5*(bins[1] - bins[0])
+    plt.plot( mid , h , linestyle=linestyle, drawstyle='steps' , color=color, linewidth=3 , label=label )
+    return h,bins,mid
+# ------------------------------------------------------------------------
+
+# ------------------------------------------------------------------------
+# Feb-09, 2017
+def namestr(obj, namespace):
+    return [name for name in namespace if namespace[name] is obj][0]
+# ------------------------------------------------------------------------
+
+
+
 # hits data frame
 def DataFrame_hits( tracks_df ):
     resrng , dEdx , Edep = tracks_df.residual_range_Y , tracks_df.dEdx_Y , tracks_df.Edep_Y

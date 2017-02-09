@@ -1159,17 +1159,17 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
         c_cosmic_track = PandoraNuTrack(
                                         run                                     // run
                                         ,subrun                                 // subrun
-                                        ,event                                                                             // event
-                                        ,trkId_pandoraCosmic[j]                                                                // track id
+                                        ,event                                  // event
+                                        ,trkId_pandoraCosmic[j]                 // track id
                                         ,TVector3(trkstartx_pandoraCosmic[j],
                                                   trkstarty_pandoraCosmic[j],
-                                                  trkstartz_pandoraCosmic[j])  // start position
+                                                  trkstartz_pandoraCosmic[j])   // start position
                                         ,TVector3(trkendx_pandoraCosmic[j]  ,
                                                   trkendy_pandoraCosmic[j]  ,
                                                   trkendz_pandoraCosmic[j])    // end position
-                                        ,trklen_pandoraCosmic[j]                                                               // track length
-                                        ,trktheta_pandoraCosmic[j]                                                             // theta
-                                        ,trkphi_pandoraCosmic[j]                                                               // phi
+                                        ,trklen_pandoraCosmic[j]                // track length
+                                        ,trktheta_pandoraCosmic[j]              // theta
+                                        ,trkphi_pandoraCosmic[j]                // phi
                                         );
 
         if (!TrackContained( c_cosmic_track.start_pos   , c_cosmic_track.end_pos )) continue;
