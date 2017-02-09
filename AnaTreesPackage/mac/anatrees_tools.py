@@ -683,9 +683,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
 
 # - # - # - # if NCosmicTracks > 0
-            if flags.verbose>4:
-                print 'Ncosmictracks=',calc.Ncosmictracks
-
             if do_pandora_cosmic and calc.Ncosmictracks>0 and do_continue:
                 
                 # - # - # - # - # for i in range(Ncosmictracks)
@@ -699,9 +696,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     
                     if flags.verbose>2:
                         print 'saved cosmic track R-%d/S-%d/E-%d (%d)'%(calc.run,calc.subrun,calc.event,cosmic_track.track_id)
-
-
-                    if flags.verbose>2: print_line()
+                        print_line()
 # - # - # - # end if NCosmicTracks > 0
 # - # - # - # - # end for i in range(calc.Ntracks)
 
@@ -730,10 +725,10 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
                     if do_continue:
                         
                         stream_tracks_features_to_file ( track , writer , do_dEdx=do_dEdx , do_SWtrigger=do_SWtrigger )
-                        if flags.verbose>2: print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
+                        if flags.verbose>2:
+                            print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
+                            print_line()
                         counter = counter+1
-                    
-                    if flags.verbose>2: print_line()
 # - # - # - # end if Ntracks > 0
 # - # - # - # - # end for i in range(calc.Ntracks)
                 calc.FillOutTree()

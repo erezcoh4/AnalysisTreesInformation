@@ -1157,15 +1157,19 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
         InitTrack();
 
         c_cosmic_track = PandoraNuTrack(
-                                        run                                                                                // run
-                                        ,subrun                                                                            // subrun
+                                        run                                     // run
+                                        ,subrun                                 // subrun
                                         ,event                                                                             // event
-                                        ,trkId_pandoraNu[j]                                                                // track id
-                                        ,TVector3(trkstartx_pandoraNu[j], trkstarty_pandoraNu[j], trkstartz_pandoraNu[j])  // start position
-                                        ,TVector3(trkendx_pandoraNu[j]  , trkendy_pandoraNu[j]  , trkendz_pandoraNu[j])    // end position
-                                        ,trklen_pandoraNu[j]                                                               // track length
-                                        ,trktheta_pandoraNu[j]                                                             // theta
-                                        ,trkphi_pandoraNu[j]                                                               // phi
+                                        ,trkId_pandoraCosmic[j]                                                                // track id
+                                        ,TVector3(trkstartx_pandoraCosmic[j],
+                                                  trkstarty_pandoraCosmic[j],
+                                                  trkstartz_pandoraCosmic[j])  // start position
+                                        ,TVector3(trkendx_pandoraCosmic[j]  ,
+                                                  trkendy_pandoraCosmic[j]  ,
+                                                  trkendz_pandoraCosmic[j])    // end position
+                                        ,trklen_pandoraCosmic[j]                                                               // track length
+                                        ,trktheta_pandoraCosmic[j]                                                             // theta
+                                        ,trkphi_pandoraCosmic[j]                                                               // phi
                                         );
 
         if (!TrackContained( c_cosmic_track.start_pos   , c_cosmic_track.end_pos )) continue;
@@ -1218,7 +1222,6 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
         int   rmin[3] , rmax[3];
         if(debug>3) Printf("before for(Int_t fr=0; fr<3;fr++) ...");
         for(Int_t fr=0; fr<3;fr++) {
-
             if(ntrkhits_pandoraCosmic[j][fr] >= 0) {
 
                 nhits     += ntrkhits_pandoraCosmic[j][fr];
@@ -1286,7 +1289,7 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
         }
 
         // software trigger
-        c_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
+        c_cosmic_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
 
         cosmic_tracks.push_back(c_cosmic_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",cosmic_tracks.size());
