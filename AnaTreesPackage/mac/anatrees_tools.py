@@ -159,6 +159,15 @@ def tracks_full_features_file_name( ListName , first_anatree_file = 0 , last_ana
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
+def cosmic_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
+    if first_anatree_file==last_anatree_file:
+        return featuresfiles_path + "/" + "cosmic_features_" + ListName + ".csv"
+    else:
+        return featuresfiles_path + "/" + "cosmic_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+# ----------------------------------------------------------------------------------------------------
+
+
+# ----------------------------------------------------------------------------------------------------
 def g4_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
     if first_anatree_file==last_anatree_file:
         return featuresfiles_path + "/" + "g4_features_" + ListName + ".csv"
@@ -586,7 +595,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     events_file_name    = events_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    cosmics_file_name   = tracks_full_features_file_name( AnaTreesListName+'_cosmic' , first_anatree_file , last_anatree_file )
+    cosmics_file_name   = cosmic_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     g4info_file_name    = g4_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
 
     writer = csv.writer(open(resutls_file_name, 'wb'))
