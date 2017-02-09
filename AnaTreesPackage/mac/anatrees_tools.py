@@ -586,7 +586,7 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     events_file_name    = events_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
     resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    cosmics_file_name   = tracks_full_features_file_name( AnaTreesListName+'_cosmic_' , first_anatree_file , last_anatree_file )
+    cosmics_file_name   = tracks_full_features_file_name( AnaTreesListName+'_cosmic' , first_anatree_file , last_anatree_file )
     g4info_file_name    = g4_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
 
     writer = csv.writer(open(resutls_file_name, 'wb'))
