@@ -402,7 +402,7 @@ def do_pass_geometrical_cuts( track ):
         else:
             print_important( 'track length: %.1f cm'%track.length )
 
-        print 'track position: (%.1f,%.1f,%.1f)=>(%.1f,%.1f,%.1f)'%(track.start_pos.x(),track.start_pos.y(),track.start_pos.z(), track.end_pos.x(),track.end_pos.y(),track.end_pos.z())
+        print 'track position: (%.1f,%.1f,%.1f)=>(%.1f,%.1f,%.1f)'%(track.startx,track.starty,track.startz, track.endx,track.endy,track.endz)
 
         if track.cftime>2 or track.cftime==-9999:
             print 'track closest-flash time: %.1f ns'%track.cftime
@@ -413,12 +413,12 @@ def do_pass_geometrical_cuts( track ):
     length_cut = True if (track.length < 10) else False
     
     # (2) Far away from dead regions
-    fiducial_cuts = True if (    track.start_pos.x() < 40  or 210 < track.start_pos.x()
-                             or  track.end_pos.x()   < 40  or 210 < track.end_pos.x()
-                             or  track.start_pos.y() < -50 or 50  < track.start_pos.y()
-                             or  track.end_pos.y()   < -50 or 50  < track.end_pos.y()
-                             or  track.start_pos.z() < 420 or 620 < track.start_pos.z()
-                             or  track.end_pos.z()   < 420 or 620 < track.end_pos.z()    ) else False
+    fiducial_cuts = True if (    track.startx < 40  or 210 < track.startx
+                             or  track.endx   < 40  or 210 < track.endx
+                             or  track.starty < -50 or 50  < track.starty
+                             or  track.endy   < -50 or 50  < track.endy
+                             or  track.startz < 420 or 620 < track.startz
+                             or  track.endz   < 420 or 620 < track.endz    ) else False
                              
     # (3) Flash-matched 
     flashmatched_cut = True if ( track.cftime < 2 and track.cftime != -9999 ) else False
@@ -456,14 +456,14 @@ def stream_g4_features_to_file ( g4particle , writer_g4 ):
                     g4particle.P        , g4particle.Mass       , g4particle.Eng    ,
                     g4particle.KE       , g4particle.theta      , g4particle.phi    ,
                     g4particle.process_primary ,
-                    g4particle.start_pos.x() , g4particle.start_pos.y()  , g4particle.start_pos.z(),
-                    g4particle.end_pos.x()   , g4particle.end_pos.y()    , g4particle.end_pos.z(),
+                    g4particle.startx , g4particle.starty  , g4particle.startz,
+                    g4particle.endx   , g4particle.endy    , g4particle.endz,
                     g4particle.length        , g4particle.Mother         , g4particle.ccnc,
 
                     g4particle.reconstructed    ,
                     g4particle.rec_nhits        , g4particle.rec_is_flipped    ,
-                    g4particle.rec_start_pos.x(), g4particle.rec_start_pos.y() , g4particle.rec_start_pos.z() ,
-                    g4particle.rec_end_pos.x()  , g4particle.rec_end_pos.y()   , g4particle.rec_end_pos.z()   ,
+                    g4particle.rec_startx, g4particle.rec_starty , g4particle.rec_startz ,
+                    g4particle.rec_endx  , g4particle.rec_endy   , g4particle.rec_endz   ,
                     g4particle.rec_length       , g4particle.rec_theta     , g4particle.rec_phi ,
                     g4particle.rec_distlenratio , g4particle.rec_momentum  ,
                     g4particle.rec_start_dqdx   , g4particle.rec_end_dqdx  , g4particle.rec_tot_dqdx ,
@@ -483,8 +483,8 @@ def stream_tracks_features_to_file ( track , writer ):
         
     track_features = [ track.run                , track.subrun          , track.event           , track.track_id
                       , track.is_flipped        , track.nhits           , track.length
-                      , track.start_pos.x()     , track.start_pos.y()   , track.start_pos.z()
-                      , track.end_pos.x()       , track.end_pos.y()     , track.end_pos.z()
+                      , track.startx     , track.starty   , track.startz
+                      , track.endx       , track.endy     , track.endz
                       , track.theta             , track.phi             , track.distlenratio
                       , track.start_dqdx        , track.end_dqdx        , track.dqdx_diff       , track.dqdx_ratio
                       , track.tot_dqdx          , track.avg_dqdx
@@ -499,8 +499,8 @@ def stream_tracks_features_to_file ( track , writer ):
                       , track.CalorimetryPDG[0], track.CalorimetryPDG[1], track.CalorimetryPDG[2]
                       , track.truth_P          , track.truth_Eng        , track.truth_KE        , track.truth_theta     , track.truth_phi
                       , track.process_primary
-                      , track.truth_start_pos.x()   , track.truth_start_pos.y()     , track.truth_start_pos.z()
-                      , track.truth_end_pos.x()     , track.truth_end_pos.y()       , track.truth_end_pos.z()
+                      , track.truth_startx   , track.truth_starty     , track.truth_startz
+                      , track.truth_endx     , track.truth_endy       , track.truth_endz
                       , track.truth_ccnc
                       ]
         
@@ -508,7 +508,7 @@ def stream_tracks_features_to_file ( track , writer ):
 
     residual_range_Y , dqdx_Y , dEdx_Y , Edep_Y = [] , [] , [] , []
 
-    for step in range(track.GetEdepYNsteps()):
+    for step in range(track.NEdepYNsteps):
         residual_range_Y.append( track.residual_range_Y.at(step) )
         dqdx_Y.append( track.dqdx_Y.at(step) )
         dEdx_Y.append( track.dEdx_Y.at(step) )
@@ -521,7 +521,7 @@ def stream_tracks_features_to_file ( track , writer ):
     track_features.append(Edep_Y)
 
     SWtrigName , SSWtrigTriggered = [] , []
-    for trigger in range(track.GetNSWtrigger()):
+    for trigger in range(1):
         SWtrigName.append( track.swtrigger_name.at(trigger) )
         SSWtrigTriggered.append( track.swtrigger_triggered.at(trigger) )
 

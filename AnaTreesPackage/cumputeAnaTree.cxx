@@ -711,8 +711,8 @@ bool cumputeAnaTree::GetTruthInformation(){
                     c_g4particle.reconstructed = 1;
                     c_g4particle.rec_nhits = t.nhits;
                     c_g4particle.rec_is_flipped = t.is_flipped;
-                    c_g4particle.rec_start_pos = t.start_pos;
-                    c_g4particle.rec_end_pos = t.end_pos;
+                    c_g4particle.SetRecStartPos(t.start_pos);
+                    c_g4particle.SetRecendPos(t.end_pos);
                     c_g4particle.rec_length  = t.length;
                     c_g4particle.rec_theta = t.theta;
                     c_g4particle.rec_phi = t.phi;

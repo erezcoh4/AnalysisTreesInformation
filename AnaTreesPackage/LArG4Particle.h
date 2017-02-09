@@ -47,8 +47,8 @@ public:
     void             SetKE (Float_t fKE)    {KE = fKE;};
     void          SetTheta (Float_t ftheta) {theta = ftheta;};
     void            SetPhi (Float_t fphi)   {phi = fphi;};
-    void       SetStartPos (TVector3 fp)    {start_pos = fp;};
-    void         SetEndPos (TVector3 fp)    {end_pos = fp;};
+    void       SetStartPos (TVector3 fp)    {start_pos = fp; startx=start_pos.x(); starty=start_pos.y(); startz=start_pos.z();};
+    void         SetEndPos (TVector3 fp)    {end_pos = fp; endx=end_pos.x(); endy=end_pos.y(); endz=end_pos.z();};
     void    SetTrackLength ();
     void           SetCCNC (Int_t fccnc)    {ccnc = fccnc;};
 
@@ -73,6 +73,7 @@ public:
     Float_t     P , Eng  , Mass , KE , theta , phi , process_primary;
     Float_t     length;
     
+    Float_t     startx  , starty , startz , endx , endy , endz;
     TVector3    start_pos , end_pos;
 
     
@@ -83,7 +84,14 @@ public:
     Float_t     rec_dqdx_diff   , rec_dqdx_ratio;
     Float_t     rec_pidpida     , rec_pidchi    , rec_cosmicscore   , rec_coscontscore;
     Float_t     rec_cftime;
+    Float_t     rec_startx      , rec_starty , rec_startz , rec_endx , rec_endy , rec_endz;
     TVector3    rec_start_pos   , rec_end_pos;
+    void    SetRecStartPos (TVector3 fp)    {
+        rec_start_pos = fp; rec_startx=rec_start_pos.x(); rec_starty=rec_start_pos.y(); rec_startz=rec_start_pos.z();
+    };
+    void      SetRecEndPos (TVector3 fp)    {
+        rec_end_pos = fp; rec_endx=rec_end_pos.x(); rec_endy=rec_end_pos.y(); rec_endz=rec_end_pos.z();
+    };
 
 };
 

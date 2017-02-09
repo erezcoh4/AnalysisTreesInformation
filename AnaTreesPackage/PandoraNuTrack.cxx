@@ -94,6 +94,7 @@ void PandoraNuTrack::Set_dqdx (Float_t fstart_dqdx, Float_t fend_dqdx, Float_t f
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PandoraNuTrack::SetCalorimetry_Y ( std::vector <Float_t> fresidual_range_Y, std::vector <Float_t> fdEdx_Y, std::vector <Float_t> fEdep_Y, std::vector <Float_t> fdqdx_Y){
     residual_range_Y = fresidual_range_Y;
+    NEdepYsteps = residual_range_Y.size();
     dEdx_Y = fdEdx_Y;
     Edep_Y = fEdep_Y;
     dqdx_Y = fdqdx_Y;

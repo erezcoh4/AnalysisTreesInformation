@@ -90,8 +90,8 @@ public:
     void          SetSubrun (Int_t _subrun) {subrun = _subrun;};
     void           SetEvent (Int_t _event)  {event = _event;};
     void         SetTrackID (Short_t _id)   {track_id = _id;};
-    void        SetStartPos (TVector3 pos)  {start_pos = pos;};
-    void          SetEndPos (TVector3 pos)  {end_pos = pos;};
+    void        SetStartPos (TVector3 pos)  {start_pos = pos;  startx=start_pos.x(); starty=start_pos.y(); startz=start_pos.z();};
+    void          SetEndPos (TVector3 pos)  {end_pos = pos; endx=end_pos.x(); endy=end_pos.y(); endz=end_pos.z();};
     void          SetLength (Float_t l)     {length = l;};
     void           SetTheta (Float_t t)     {theta = t;};
     void             SetPhi (Float_t ph)    {phi = ph;};
@@ -143,7 +143,7 @@ public:
     Float_t       GetLength (){return length;};
     Float_t        GetTheta (){return theta;};
     Float_t          GetPhi (){return phi;};
-    size_t   GetEdepYNsteps (){return residual_range_Y.size();};
+//    size_t   GetEdepYNsteps (){return residual_range_Y.size();};
     box              GetROI (int plane) {return roi[plane];};
     Int_t        GetCaloPDG (int plane) {return CalorimetryPDG[plane];};
     Int_t           GetCCNC (){return truth_ccnc;}
@@ -196,6 +196,7 @@ public:
     Int_t       truth_ccnc;
     Short_t     track_id    , process_primary;
     
+    Float_t     startx  , starty , startz , endx , endy , endz;
     TVector3    start_pos   , end_pos   ;
     
     Float_t     length      , theta     , phi , distlenratio , momentum;
@@ -214,6 +215,7 @@ public:
     box         roi[3];
     
     // dE/dx
+    Int_t       NEdepYsteps;
     std::vector <Float_t> track_dx_U, residual_range_U, dEdx_U , Edep_U, dqdx_U;
     std::vector <Float_t> track_dx_V, residual_range_V, dEdx_V , Edep_V, dqdx_V;
     std::vector <Float_t> track_dx_Y, residual_range_Y, dEdx_Y , Edep_Y, dqdx_Y;
