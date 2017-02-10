@@ -462,7 +462,7 @@ def stream_event_features_to_file( calc , writer ):
 
     event_features = ['{:.0f}'.format(x) for x in event_features]
     
-    Ncosmictracks_ymax = [] , []
+    Ncosmictracks_ymax = []
     for i in range(calc.Nymax_cosmic):
             Ncosmictracks_ymax.append( calc.Ncosmictracks_ymax.at(i) )
     event_features.append(Ncosmictracks_ymax)
