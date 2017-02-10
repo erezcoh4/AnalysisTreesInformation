@@ -860,10 +860,34 @@ bool cumputeAnaTree::VertexContained(TVector3 v){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::VertexContainedSoft(TVector3 v){
+    
+    if (debug>4) {Printf("checking if softly contained: "); SHOW3(v.x(),v.y(),v.z());}
+    // check if contained
+    
+    // Katherine' Fiducial volume definitions
+    if( ( v.x() < 0 )    | ( v.x() > 260 ) )   return false;
+    if( ( v.y() < -120 ) | ( v.y() > 120 ) )  return false;
+    if( ( v.z() < 0 )    | ( v.z() > 1050 ) )  return false;
+    return true;
+    
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::TrackContained(TVector3 start , TVector3 end){
     
     if( ! VertexContained( start ) )   return false;
     if( ! VertexContained( end ) )      return false;
+    return true;
+    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::TrackContainedSoft{
+    //    for cosmic tracks - it is a softer containement requirement
+    if( ! VertexContainedSoft( start ) )   return false;
+    if( ! VertexContainedSoft( end ) )      return false;
     return true;
     
 }
@@ -991,93 +1015,6 @@ bool cumputeAnaTree::FillOutTree (bool fDo){
     
 }
 
-////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//void cumputeAnaTree::Write2CSV( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t itrk_GBDTproton ){
-
-    // deprecated, delete by Jan-17 2017!
-//    
-//    if (option.Contains("extract all tracks information")){
-//        for (auto t:tracks){
-//            csvfile
-//            << t.run                    << " " << t.subrun
-//            << " " << t.event           << " " << t.track_id
-//            << " " << t.is_flipped      << " " << t.nhits           << " " << t.length
-//            << " " << t.start_pos.x()   << " " << t.start_pos.y()   << " " << t.start_pos.z()
-//            << " " << t.end_pos.x()     << " " << t.end_pos.y()     << " " << t.end_pos.z()
-//            << " " << t.theta           << " " << t.phi             << " " << t.distlenratio
-//            << " " << t.start_dqdx      << " " << t.end_dqdx
-//            << " " << t.dqdx_diff       << " " << t.dqdx_ratio
-//            << " " << t.tot_dqdx        << " " << t.avg_dqdx
-//            << " " << t.cosmicscore     << " " << t.coscontscore
-//            << " " << t.pidpida         << " " << t.pidchi
-//            << " " << t.cftime          << " " << t.cftimewidth
-//            << " " << t.cfzcenter       << " " << t.cfzwidth
-//            << " " << t.cfycenter       << " " << t.cfywidth
-//            << " " << t.cftotalpe       << " " << t.cfdistance
-//            << " " << t.MCpdgCode
-//            << " " << t.roi[0].start_wire  << " " << t.roi[0].start_time
-//            << " " << t.roi[0].end_wire    << " " << t.roi[0].end_time
-//            << " " << t.roi[1].start_wire  << " " << t.roi[1].start_time
-//            << " " << t.roi[1].end_wire    << " " << t.roi[1].end_time
-//            << " " << t.roi[2].start_wire  << " " << t.roi[2].start_time
-//            << " " << t.roi[2].end_wire    << " " << t.roi[2].end_time
-//            << endl;
-//        }
-//    }
-//
-//    else
-//    if (option.Contains("find common muon-proton vertices")){
-//        // R/S/E
-//        // ivtx / itrk_NuSelMuon / itrk_GBDTproton
-//        // ROI for muon
-//        // ROI for proton
-//        // ROI for vertex
-//        
-//        csvfile
-//        << run          << " " << subrun            << " " << event
-//        << " " << ivtx  << " " << itrk_NuSelMuon    << " " << itrk_GBDTproton
-//        << " " << ROItrk_NuSelMuon[0].start_wire    << " " << ROItrk_NuSelMuon[0].start_time
-//        << " " << ROItrk_NuSelMuon[0].end_wire      << " " << ROItrk_NuSelMuon[0].end_time
-//        << " " << ROItrk_NuSelMuon[1].start_wire    << " " << ROItrk_NuSelMuon[1].start_time
-//        << " " << ROItrk_NuSelMuon[1].end_wire      << " " << ROItrk_NuSelMuon[1].end_time
-//        << " " << ROItrk_NuSelMuon[2].start_wire    << " " << ROItrk_NuSelMuon[2].start_time
-//        << " " << ROItrk_NuSelMuon[2].end_wire      << " " << ROItrk_NuSelMuon[2].end_time
-//        << " " << ROItrk_GBDTproton[0].start_wire   << " " << ROItrk_GBDTproton[0].start_time
-//        << " " << ROItrk_GBDTproton[0].end_wire     << " " << ROItrk_GBDTproton[0].end_time
-//        << " " << ROItrk_GBDTproton[1].start_wire   << " " << ROItrk_GBDTproton[1].start_time
-//        << " " << ROItrk_GBDTproton[1].end_wire     << " " << ROItrk_GBDTproton[1].end_time
-//        << " " << ROItrk_GBDTproton[2].start_wire   << " " << ROItrk_GBDTproton[2].start_time
-//        << " " << ROItrk_GBDTproton[2].end_wire     << " " << ROItrk_GBDTproton[2].end_time
-//        << " " << mu_p_VtxROI[0].start_wire         << " " << mu_p_VtxROI[0].start_time
-//        << " " << mu_p_VtxROI[0].end_wire           << " " << mu_p_VtxROI[0].end_time
-//        << " " << mu_p_VtxROI[1].start_wire         << " " << mu_p_VtxROI[1].start_time
-//        << " " << mu_p_VtxROI[1].end_wire           << " " << mu_p_VtxROI[1].end_time
-//        << " " << mu_p_VtxROI[2].start_wire         << " " << mu_p_VtxROI[2].start_time
-//        << " " << mu_p_VtxROI[2].end_wire           << " " << mu_p_VtxROI[2].end_time
-//        << endl;
-//        
-//        
-//        if(!mutual_vertices.empty()){
-//            for (auto m_v:mutual_vertices){
-//                csvfile
-//                << m_v.run                       << " " << m_v.subrun             << " " << m_v.event
-//                << " " << m_v.roi[0].start_wire  << " " << m_v.roi[0].start_time
-//                << " " << m_v.roi[0].end_wire    << " " << m_v.roi[0].end_time
-//                << " " << m_v.roi[1].start_wire  << " " << m_v.roi[1].start_time
-//                << " " << m_v.roi[1].end_wire    << " " << m_v.roi[1].end_time
-//                << " " << m_v.roi[2].start_wire  << " " << m_v.roi[2].start_time
-//                << " " << m_v.roi[2].end_wire    << " " << m_v.roi[2].end_time
-//                << endl;
-//                
-//                if (debug>2) cout << "wrote mutual vertex " << m_v.vertex_id << " to csv output file " << endl;
-//            }
-//        }
-//    }
-//    else {
-//        Printf("nothing to write to csv file...");
-//    }
-//}
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::PrintData(int entry){
     
@@ -1172,7 +1109,7 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
                                         ,trkphi_pandoraCosmic[j]                // phi
                                         );
 
-        if (!TrackContained( c_cosmic_track.start_pos   , c_cosmic_track.end_pos )) continue;
+        if ( !TrackContainedSoft( c_cosmic_track.start_pos   , c_cosmic_track.end_pos )) continue;
         Ncosmictracks ++ ;
         if(debug>3) Printf("created (contained) track %d...",j);
 

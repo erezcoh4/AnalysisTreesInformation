@@ -47,16 +47,13 @@ public:
     
     // construct w/ input and output TTree-s
     cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
-//                    TString fCSVFileName,
                     TString foption="extract all tracks information", int fdebug=0,
                     bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
     
     cumputeAnaTree (TChain * fInChain, TTree * fOutTree,
-//                    TString fCSVFileName,
                     TString foption="extract all tracks information", int fdebug=0,
                     bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
     {cumputeAnaTree((TTree*) fInChain, fOutTree,
-//                    fCSVFileName,
                     foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
     
     
@@ -92,7 +89,6 @@ public:
     // initializations
     void    InitInputTree ();
     void   InitOutputTree ();
-//    void    InitOutputCSV ();
     void        InitEntry ();
     void        InitTrack ();
     
@@ -118,6 +114,8 @@ public:
     // helpers
     bool        VertexContained ( TVector3 );
     bool         TrackContained ( TVector3 , TVector3 );
+    bool    VertexContainedSoft ( TVector3 );
+    bool     TrackContainedSoft ( TVector3 , TVector3 );
     void              PrintData ( int);
     Float_t      TrkVtxDistance ( Int_t ivtx , Int_t itrk ) ;
     bool            IsGoodTrack ( int fTrackID );

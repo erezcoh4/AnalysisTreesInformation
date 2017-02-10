@@ -16,6 +16,12 @@ from ROOT import AnalyzeTracksFile
 # -------------------------
 min_trk_vtx_distance = 10 # [cm], this distance needs to be studied wisely
 
+splitjobs_files = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
+first_anatree_file = flags.run
+last_anatree_file = first_anatree_file + splitjobs_files
+
+
+
 
 # paths
 # -------------------------
@@ -349,8 +355,8 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
 
 
 # ----------------------------------------------------------------------------------------------------
-def extract_anatrees_tracks_information_from_files_list( DataType, Option,
-                                                        first_anatree_file , last_anatree_file ,
+def extract_anatrees_tracks_information_from_files_list( DataType="BNB_5e19POT", Option="extract all tracks information",
+                                                        first_anatree_file=0 , last_anatree_file=0 ,
                                                         MCmode=False, AddEventsList=False , EventsListName="" ,
                                                         MCCversion="MCC7" , do_pandora_cosmic=False ):
     # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT / single particles....

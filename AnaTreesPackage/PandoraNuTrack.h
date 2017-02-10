@@ -148,7 +148,6 @@ public:
     Float_t       GetLength (){return length;};
     Float_t        GetTheta (){return theta;};
     Float_t          GetPhi (){return phi;};
-//    size_t   GetEdepYNsteps (){return residual_range_Y.size();};
     box              GetROI (int plane) {return roi[plane];};
     Int_t        GetCaloPDG (int plane) {return CalorimetryPDG[plane];};
     Int_t           GetCCNC (){return truth_ccnc;}
