@@ -162,7 +162,7 @@ public:
     Int_t       nhits       , primary;
     Int_t       Ntracks     , NnuInteractions   , Ncosmictracks     , Ng4particles;
     Int_t       Nymax_cosmic;
-    std::vector<Int_t>      ymax_cosmictracks;
+    std::vector<Float_t>    ymax_cosmictracks;
     std::vector<Int_t>      Ncosmictracks_ymax;
     Int_t       trkg4id_pandoraNu[MAX_tracks]   , TrackId[MAX_tracks];
     Int_t       trkpidpdg_pandoraNu[MAX_tracks][3];
