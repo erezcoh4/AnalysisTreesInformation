@@ -40,14 +40,12 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree,
-//                               TString fCSVFileName,
                                TString foption, int fdebug,
                                bool fMCmode, TTree * fGENIETree,
                                bool fDoPandoraCosmic){
     
     SetInTree(fInTree);
     SetOutTree(fOutTree);
-//    SetCSVFileName (fCSVFileName);
     SetOption(foption);
     SetDebug(fdebug);
     SetMCMode(fMCmode);
@@ -58,8 +56,11 @@ cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree,
     if (debug>1){
         Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
     }
-//    InitOutputCSV();
-    
+
+    for ( Int_t ymax_cosmictrack = 120.0; ymax_cosmictracks > 110.0 ; ymax_cosmictrack-=0.5 ){
+        ymax_cosmictracks.push_back(ymax_cosmictrack);
+    }
+    Nymax_cosmic = (int)ymax_cosmictracks.size();
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -269,57 +270,6 @@ void cumputeAnaTree::InitOutputTree(){
 
     if(debug>1) cout << "cumputeAnaTree output-tree ready (" << OutTree -> GetTitle() << ")" << endl;
 }
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// deprecated, delete by Feb-15, 2017
-//void cumputeAnaTree::InitOutputCSV(){
-
-//    csvfile.open(CSVFileName);
-    
-//    if (option == "extract all tracks information"){
-//        
-//        CSVHeader =
-//        TString("run subrun event trackid ")
-//        +TString("flip nhits length ")
-//        +TString("startx starty startz ")
-//        +TString("endx endy endz ")
-//        +TString("theta phi distlenratio ")
-//        +TString("startdqdx enddqdx ")
-//        +TString("dqdxdiff dqdxratio totaldqdx averagedqdx ")
-//        +TString("cosmicscore coscontscore pidpida pidchi ")
-//        +TString("cftime cftimewidth cfzcenter cfzwidth ")
-//        +TString("cfycenter cfywidth cftotalpe cfdistance ")
-//        +TString("MCpdgCode ")
-//        +TString("U_start_wire U_start_time U_end_wire U_end_time ")
-//        +TString("V_start_wire V_start_time V_end_wire V_end_time ")
-//        +TString("Y_start_wire Y_start_time Y_end_wire Y_end_time ");
-//        
-//    }
-//
-//    else if (option == "find common muon-proton vertices"){
-//        
-//        CSVHeader =
-//        TString("run subrun event ")
-//        +TString("ivtx itrk_NuSelMuon itrk_GBDTproton ")
-//        +TString("muon-U_start_wire muon-U_start_time muon-U_end_wire muon-U_end_time ")
-//        +TString("muon-V_start_wire muon-V_start_time muon-V_end_wire muon-V_end_time ")
-//        +TString("muon-Y_start_wire muon-Y_start_time muon-Y_end_wire muon-Y_end_time ");
-//        +TString("proton-U_start_wire proton-U_start_time proton-U_end_wire proton-U_end_time ")
-//        +TString("proton-V_start_wire proton-V_start_time proton-V_end_wire proton-V_end_time ")
-//        +TString("proton-Y_start_wire proton-Y_start_time proton-Y_end_wire proton-Y_end_time ");
-//        +TString("vertex-U_start_wire vertex-U_start_time vertex-U_end_wire vertex-U_end_time ")
-//        +TString("vertex-V_start_wire vertex-V_start_time vertex-V_end_wire vertex-V_end_time ")
-//        +TString("vertex-Y_start_wire vertex-Y_start_time vertex-Y_end_wire vertex-Y_end_time ");
-//    }
-//    else {
-//        std::cerr
-//        << "no csv-header! options are\n"
-//        << "(1) extract all tracks information"      << "\n"
-//        << "(2) find common muon-proton vertices"    << "\n";
-//    }
-//    csvfile << CSVHeader << endl;
-//}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetEntry (int entry){
@@ -864,8 +814,6 @@ bool cumputeAnaTree::VertexContainedSoft(TVector3 v){
     
     if (debug>4) {Printf("checking if softly contained: "); SHOW3(v.x(),v.y(),v.z());}
     // check if contained
-    
-    // Katherine' Fiducial volume definitions
     if( ( v.x() < 0 )    | ( v.x() > 260 ) )   return false;
     if( ( v.y() < -120 ) | ( v.y() > 120 ) )  return false;
     if( ( v.z() < 0 )    | ( v.z() > 1050 ) )  return false;
@@ -1231,6 +1179,18 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
         cosmic_tracks.push_back(c_cosmic_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",cosmic_tracks.size());
     }
+    
+    if(debug>2) Printf("checking y_max for pandoraCosmic %d tracks",Ncosmictracks);
+    for (auto ymax_cosmictrack: ymax_cosmictracks){
+        Ncosmictracks_ymax.push_back(0);
+        for(auto c_cosmic_track:cosmic_tracks){
+            if (c_cosmic_track.starty < ymax_cosmictrack){
+                Ncosmictracks_ymax.back()++;
+            }
+        }
+    }
+    if(debug>2) {SHOWstdVector(ymax_cosmictracks); SHOWstdVector(Ncosmictracks_ymax);}
+    
 }
 
 #endif
