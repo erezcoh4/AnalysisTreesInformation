@@ -57,7 +57,7 @@ cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree,
         Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
     }
 
-    for ( Float_t ymax_cosmictrack = 120.0; ymax_cosmictracks > 110.0 ; ymax_cosmictrack-=0.5 ){
+    for ( Float_t ymax_cosmictrack = 120.0; ymax_cosmictrack > 110.0 ; ymax_cosmictrack-=0.5 ){
         ymax_cosmictracks.push_back(ymax_cosmictrack);
     }
     Nymax_cosmic = (int)ymax_cosmictracks.size();
