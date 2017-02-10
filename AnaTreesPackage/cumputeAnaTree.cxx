@@ -884,7 +884,7 @@ bool cumputeAnaTree::TrackContained(TVector3 start , TVector3 end){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::TrackContainedSoft{
+bool cumputeAnaTree::TrackContainedSoft(TVector3 start , TVector3 end){
     //    for cosmic tracks - it is a softer containement requirement
     if( ! VertexContainedSoft( start ) )   return false;
     if( ! VertexContainedSoft( end ) )      return false;
