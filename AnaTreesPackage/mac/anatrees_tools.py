@@ -38,7 +38,6 @@ event_features_names = [ 'run'  ,'subrun'   ,'event'
                         ,'Ntracks_pandoraNu_Contained'  ,'Ncosmictracks_pandoraCosmic_Contained'
                         ,'Ng4particles'
                         ,'nvtx_pandoraCosmic'
-                        ,'ymax_cosmictracks'
                         ,'Ncosmictracks_ymax'
                         ]
 
@@ -463,12 +462,9 @@ def stream_event_features_to_file( calc , writer ):
 
     event_features = ['{:.0f}'.format(x) for x in event_features]
     
-    ymax_cosmictracks , Ncosmictracks_ymax = [] , []
+    Ncosmictracks_ymax = [] , []
     for i in range(calc.Nymax_cosmic):
-            ymax_cosmictracks.append( calc.ymax_cosmictracks.at(i) )
             Ncosmictracks_ymax.append( calc.Ncosmictracks_ymax.at(i) )
-
-    event_features.append(ymax_cosmictracks)
     event_features.append(Ncosmictracks_ymax)
 
     writer.writerow( event_features )

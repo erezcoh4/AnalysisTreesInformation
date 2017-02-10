@@ -1181,6 +1181,7 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
     }
     
     if(debug>2) Printf("checking y_max for pandoraCosmic %d tracks",Ncosmictracks);
+    if (!Ncosmictracks_ymax.empty()) Ncosmictracks_ymax.clear();
     for (auto ymax_cosmictrack: ymax_cosmictracks){
         Ncosmictracks_ymax.push_back(0);
         for(auto c_cosmic_track:cosmic_tracks){
