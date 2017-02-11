@@ -8,8 +8,8 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
     
-    GetSoftwareTrigger();
-    if (debug>3) Printf("Got Software Trigger");
+    //    GetSoftwareTrigger();
+    //    if (debug>3) Printf("Got Software Trigger");
     
     GetInTimeFlashes();
     if (debug>3) Printf("Got In Time Flashes");
@@ -128,8 +128,6 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("vtxy_pandoraNu"                                 , &vtxy_pandoraNu);
     InTree -> SetBranchAddress("vtxz_pandoraNu"                                 , &vtxz_pandoraNu);
 
-    InTree -> SetBranchAddress("swtrigger_name"                                 , &swtrigger_name);
-    InTree -> SetBranchAddress("swtrigger_triggered"                            , &swtrigger_triggered);
 
     
     // pandoraCosmic
@@ -169,6 +167,8 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("nvtx_pandoraCosmic"                             , &nvtx_pandoraCosmic);
         InTree -> SetBranchAddress("vtxx_pandoraCosmic"                             , &vtxx_pandoraCosmic);
         InTree -> SetBranchAddress("vtxy_pandoraCosmic"                             , &vtxy_pandoraCosmic);
+        InTree -> SetBranchAddress("swtrigger_name"                                 , &swtrigger_name);
+        InTree -> SetBranchAddress("swtrigger_triggered"                            , &swtrigger_triggered);
         InTree -> SetBranchAddress("vtxz_pandoraCosmic"                             , &vtxz_pandoraCosmic);
     }
 
@@ -519,8 +519,8 @@ void cumputeAnaTree::GetPandoraNuTracks(){
             c_track.SetTrackPurity(-9999,-9999,-9999);
         }
 
-        // software trigger
-        c_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
+        //        // software trigger
+        //        c_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
         
         tracks.push_back(c_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",tracks.size());
@@ -1173,8 +1173,8 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
             c_cosmic_track.SetMCpdgCode(-9999);
         }
 
-        // software trigger
-        c_cosmic_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
+        //        // software trigger
+        //        c_cosmic_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
 
         cosmic_tracks.push_back(c_cosmic_track);
         if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",cosmic_tracks.size());

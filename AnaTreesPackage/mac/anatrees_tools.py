@@ -702,7 +702,6 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
             if calc.Ntracks>0 and do_continue:
                 
                 if "find common muon-proton vertices" in Option:
-                    #                calc.Write2CSV( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                     output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
                     calc.CreateROIsCCQE( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
                     stream_mu_p_vertex_features_to_file ( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton , calc , writer_mu_p )
