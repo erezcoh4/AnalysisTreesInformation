@@ -16,9 +16,6 @@ from ROOT import AnalyzeTracksFile
 # -------------------------
 min_trk_vtx_distance = 10 # [cm], this distance needs to be studied wisely
 
-splitjobs_files = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
-first_anatree_file = flags.run
-last_anatree_file = first_anatree_file + splitjobs_files
 
 
 
@@ -142,83 +139,82 @@ def schemed_anatrees_file_name( anatrees_list_name , scheming_name ):
 
 
 # ----------------------------------------------------------------------------------------------------
-def tracks_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
-    if first_anatree_file==last_anatree_file:
+def tracks_features_file_name( ListName , first_file = 0 , last_file = 0 ):
+    if first_file==last_file:
         return featuresfiles_path + "/" + "features_" + ListName + ".csv"
     else:
-        return featuresfiles_path + "/" + "features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+        return featuresfiles_path + "/" + "features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_file,last_file)
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-def events_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
-    if first_anatree_file==last_anatree_file:
+def events_features_file_name( ListName , first_file = 0 , last_file = 0 ):
+    if first_file==last_file:
         return featuresfiles_path + "/" + "events_features_" + ListName + ".csv"
     else:
-        return featuresfiles_path + "/" + "events_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+        return featuresfiles_path + "/" + "events_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_file,last_file)
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-def tracks_full_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
-    if first_anatree_file==last_anatree_file:
+def tracks_full_features_file_name( ListName , first_file = 0 , last_file = 0 ):
+    if first_file==last_file:
         return featuresfiles_path + "/" + "full_features_" + ListName + ".csv"
     else:
-        return featuresfiles_path + "/" + "full_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+        return featuresfiles_path + "/" + "full_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_file,last_file)
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-def cosmic_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
-    if first_anatree_file==last_anatree_file:
+def cosmic_features_file_name( ListName , first_file = 0 , last_file = 0 ):
+    if first_file==last_file:
         return featuresfiles_path + "/" + "cosmic_features_" + ListName + ".csv"
     else:
-        return featuresfiles_path + "/" + "cosmic_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+        return featuresfiles_path + "/" + "cosmic_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_file,last_file)
 # ----------------------------------------------------------------------------------------------------
 
 
 # ----------------------------------------------------------------------------------------------------
-def g4_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
-    if first_anatree_file==last_anatree_file:
+def g4_features_file_name( ListName , first_file = 0 , last_file = 0 ):
+    if first_file==last_file:
         return featuresfiles_path + "/" + "g4_features_" + ListName + ".csv"
     else:
-        return featuresfiles_path + "/" + "g4_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+        return featuresfiles_path + "/" + "g4_features_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_file,last_file)
 # ----------------------------------------------------------------------------------------------------
 
 
 # ----------------------------------------------------------------------------------------------------
-def rois_features_file_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
-    if first_anatree_file==last_anatree_file:
+def rois_features_file_name( ListName , first_file = 0 , last_file = 0 ):
+    if first_file==last_file:
         return rois_path + "/" + "rois_" + ListName + ".csv"
     else:
-        return rois_path + "/" + "rois_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_anatree_file,last_anatree_file)
+        return rois_path + "/" + "rois_" + ListName + "_anatreefiles_%d_to_%d.csv"%(first_file,last_file)
 # ----------------------------------------------------------------------------------------------------
 
 
 
 # ----------------------------------------------------------------------------------------------------
-def tracks_anafile_name( ListName , first_anatree_file = 0 , last_anatree_file = 0 ):
-    if first_anatree_file==last_anatree_file:
+def tracks_anafile_name( ListName , first_file = 0 , last_file = 0 ):
+    if first_file==last_file:
         return anafiles_path + "/" + "Tracks_" + ListName + ".root"
     else:
-        return anafiles_path + "/" + "Tracks_" + ListName + "_anatreefiles_%d_to_%d.root"%(first_anatree_file,last_anatree_file)
+        return anafiles_path + "/" + "Tracks_" + ListName + "_anatreefiles_%d_to_%d.root"%(first_file,last_file)
 # ----------------------------------------------------------------------------------------------------
 
 
 # methods
 # ----------------------------------------------------------------------------------------------------
-def read_files_from_a_list( ListName , first_anatree_file = 0 , last_anatree_file = 0 , MCCversion="MCC7" ):
+def read_files_from_a_list( ListName , first_file = 0 , last_file = 0 , MCCversion="MCC7" ):
     # returns the files
     list_full_name = lists_path + "/analysis_trees/" + MCCversion + "/" + ListName + ".list"
     
     if flags.verbose:
-        print_filename( list_full_name, "reading list of files (%d to %d)..."%(first_anatree_file , last_anatree_file))
+        print_filename( list_full_name, "reading list of files (%d to %d)..."%(first_file , last_file))
     
     with open( list_full_name ) as f:
         files = f.read().splitlines()
-    if last_anatree_file > first_anatree_file:
-        files = files[ first_anatree_file : last_anatree_file ]
+    if last_file > first_file:
+        files = files[ first_file : last_file ]
     if flags.verbose>4: print files
     return files
 # ----------------------------------------------------------------------------------------------------
-    
 
 # ----------------------------------------------------------------------------------------------------
 def get_analysistrees_chain(files):
@@ -231,7 +227,6 @@ def get_analysistrees_chain(files):
     return chain
 # ----------------------------------------------------------------------------------------------------
 
-
 # ----------------------------------------------------------------------------------------------------
 def search_rse( RSE , EventsList ):
     run,subrun,event = RSE[0],RSE[1],RSE[2]
@@ -240,8 +235,6 @@ def search_rse( RSE , EventsList ):
             return True , e['ivtx-NuSel'], e['itrk-NuSelMuon'], e['itrk-GBDTproton']
     return False , -1 , -1 , -1
 # ----------------------------------------------------------------------------------------------------
-
-
 
 # ----------------------------------------------------------------------------------------------------
 def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_score ):
@@ -271,54 +264,25 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
 # ----------------------------------------------------------------------------------------------------
 
 
-
 # ----------------------------------------------------------------------------------------------------
-def scheme_anatrees_file( input_anatree_file=None, rsemap2selectfrom=None, output_anatree_filename=None ):
-    '''
-        This functionallity schemes an analysis tree file
-        and returns a tree containing only entries with a Run/Subrun/Event
-        of a given list (RSE map)
-        '''
-    # input: (1) analysis trees
-    print_filename( input_anatree_file , "input: (1) analysis trees ")
-    # input: (2) RSE list to select from
-    print_filename( rsemap2selectfrom , "input (2): RSE list to select from ")
-    
-    it = ImportantTools()
-    in_chain = ROOT.TChain("anatree")
-    in_chain.Add( input_anatree_file )
-    OutFile = ROOT.TFile( output_anatree_filename , "recreate" )
-    OutTree = it.SchemeTreeRSEList( in_chain , rsemap2selectfrom , flags.verbose )
-    
-    # output: schemed analysis trees file
-    print_filename(output_anatree_filename , "schemed anatrees file (%d events, %.2f MB):"%(OutTree.GetEntries(),float(os.path.getsize(output_anatree_filename)/1048576.0)))
-    
-    OutTree.Write()
-    OutFile.Close()
-
-# ----------------------------------------------------------------------------------------------------
-
-
-# ----------------------------------------------------------------------------------------------------
-def scheme_anatrees_files( anatrees_list_name=None, rsemap2selectfrom=None, output_anatree_filename=None ):
+def scheme_anatrees_files( anatrees_listname=None, rse_mapname=None, outfname=None , MCCversion="MCC7"):
     '''
         This functionallity schemes (big) analysis trees
         and returns a tree containing only entries with a Run/Subrun/Event
         of a given list (RSE map)
         '''
-    # input: (1) analysis trees
-    print_filename( anatrees_list_name , "input: (1) analysis trees ")
-    # input: (2) RSE list to select from
+    print_filename( anatrees_listname , "input (1): analysis trees ")
     print_filename( rsemap2selectfrom , "input (2): RSE list to select from ")
     
     it = ImportantTools()
-    files = read_files_from_a_list( anatrees_list_name )
+    files = read_files_from_a_list( ListName = anatrees_listname )
+    rsemap2selectfrom = sel2_path + "/" + MCCversion + "/" + rse_map_name + ".list"
+
     in_chain = get_analysistrees_chain(files)
-    OutFile = ROOT.TFile( output_anatree_filename , "recreate" )
+    OutFile = ROOT.TFile( outfname , "recreate" )
     OutTree = it.SchemeTreeRSEList( in_chain , rsemap2selectfrom , flags.verbose )
     
-    # output: schemed analysis trees file
-    print_filename(output_anatree_filename , "schemed anatrees file (%d events, %.2f MB):"%(OutTree.GetEntries(),float(os.path.getsize(output_anatree_filename)/1048576.0)))
+    print_filename(out_fname , "schemed anatrees (%d events, %.2f MB):"%(OutTree.GetEntries(),filesize_in_MB(out_fname)))
     
     OutTree.Write()
     OutFile.Close()
@@ -333,16 +297,16 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
     of a given list (RSE map)
     '''
     # input: (1) analysis trees
-    AnaTreesListName = flags.DataType + "_AnalysisTrees" # AnalysisTreesListName = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
-    print_filename( AnaTreesListName , "input: (1) analysis trees ")
+    anatrees_listname = flags.DataType + "_AnalysisTrees" # AnalysisTreesListName = anatrees_lists_path + "/GOOD" + flags.DataType + "/filesana.list"
+    print_filename( anatrees_listname , "input: (1) analysis trees ")
     # input: (2) intersected mu-p list
     IntersectionListName    = mu_p_intersection_path + "/" + Sel2muons_intersection_list_csv_name( GBDTmodelName ,TracksListName , p_score )
     print_filename( IntersectionListName , "input (2): intersected Sel2/GBDTprotons lists ")
     
     # output: schemed analysis trees file
-    SchemedResultFileName   = schemed_anatrees_file_name( AnaTreesListName , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
+    SchemedResultFileName   = schemed_anatrees_file_name( anatrees_listname , Sel2muons_intersection_list_name( GBDTmodelName ,TracksListName , p_score ) )
     it = ImportantTools()
-    files = read_files_from_a_list( AnaTreesListName )
+    files = read_files_from_a_list( anatrees_listname )
     in_chain = get_analysistrees_chain(files)
     OutFile = ROOT.TFile( SchemedResultFileName , "recreate" )
     OutTree = it.SchemeTreeRSEList( in_chain , IntersectionListName , flags.verbose )
@@ -355,20 +319,32 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
 # ----------------------------------------------------------------------------------------------------
 
 
+
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+# extract data from anatrees
+# ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # ----------------------------------------------------------------------------------------------------
-def extract_anatrees_tracks_information_from_files_list( DataType="BNB_5e19POT", Option="extract all tracks information",
-                                                        first_anatree_file=0 , last_anatree_file=0 ,
-                                                        MCmode=False, AddEventsList=False , EventsListName="" ,
-                                                        MCCversion="MCC7" , do_pandora_cosmic=False ):
-    # flags.DataType options:   openCOSMIC_MC / extBNB / MC_BNB / BNB_5e19POT / single particles....
+def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
+                                                        Option="extract all tracks information",
+                                                        first_file=0 , last_file=0 ,
+                                                        MCmode=False,
+                                                        AddEventsList=False ,
+                                                        EventsListName="" ,
+                                                        MCCversion="MCC7" ,
+                                                        do_pandora_cosmic=False ):
     
-    AnaTreesListName = DataType + "_AnalysisTrees"
-    files       = read_files_from_a_list( AnaTreesListName , first_anatree_file , last_anatree_file , MCCversion=MCCversion )
-    in_chain    = get_analysistrees_chain(files)
+    data_name = MCCversion + "_" + data_type
+    anatrees_listname = data_name + "_AnalysisTrees"
+    files       = read_files_from_a_list( ListName=anatrees_listname, first_file=first_file, last_file=last_file, MCCversion=MCCversion )
+    in_chain    = get_analysistrees_chain( files )
     
-    extract_anatrees_tracks_information_with_all_features( in_chain , Option,
-                                                          first_anatree_file , last_anatree_file,
-                                                          MCmode, AddEventsList , EventsListName , AnaTreesListName ,
+    extract_anatrees_tracks_information_with_all_features(in_chain=in_chain ,
+                                                          Option=Option,
+                                                          first_file=first_file , last_file=last_file,
+                                                          MCmode=MCmode,
+                                                          AddEventsList=AddEventsList ,
+                                                          EventsListName=EventsListName ,
+                                                          anatrees_listname=anatrees_listname ,
                                                           do_pandora_cosmic=do_pandora_cosmic )
 # ----------------------------------------------------------------------------------------------------
 
@@ -387,7 +363,7 @@ def extract_anatrees_tracks_information_from_a_file( DataType, InputFileName, Op
     extract_anatrees_tracks_information_with_all_features( in_chain=in_chain, Option=Option,
                                                           MCmode=MCmode, AddEventsList=AddEventsList,
                                                           EventsListName=EventsListName ,
-                                                          AnaTreesListName=DataType+"_AnalysisTrees" ,
+                                                          anatrees_listname=DataType+"_AnalysisTrees" ,
                                                           output_mupRSEFileName=output_mupRSEFileName ,
                                                           output_mupROIFileName=output_mupROIFileName )
 # ----------------------------------------------------------------------------------------------------
@@ -447,8 +423,6 @@ def do_pass_geometrical_cuts( track ):
     else:
         return False
 # ----------------------------------------------------------------------------------------------------
-
-
 
 # ----------------------------------------------------------------------------------------------------
 def stream_event_features_to_file( calc , writer ):
@@ -583,12 +557,13 @@ def stream_mu_p_vertex_features_to_file ( ivtx, itrk_mu, itrk_p, calc , writer_m
 
 
 # ----------------------------------------------------------------------------------------------------
-def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
-                                                          first_anatree_file=0, last_anatree_file=0,
+def extract_anatrees_tracks_information_with_all_features(in_chain,
+                                                          Option,
+                                                          anatrees_listname="",
+                                                          first_file=0, last_file=0,
                                                           MCmode=False,
                                                           AddEventsList=False,
                                                           EventsListName="",
-                                                          AnaTreesListName="",
                                                           output_mupRSEFileName="",
                                                           output_mupROIFileName="" ,
                                                           do_pandora_cosmic=False ,
@@ -605,45 +580,43 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
 
     g4_counter , counter , cosmic_counter , evts_counter = 0 , 0 , 0 , 0
 
-#    FeaturesFileName    = tracks_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    TracksAnaFileName   = tracks_anafile_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    events_file_name    = events_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    resutls_file_name   = tracks_full_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    cosmics_file_name   = cosmic_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
-    g4info_file_name    = g4_features_file_name( AnaTreesListName , first_anatree_file , last_anatree_file )
+    TracksAnaFileName   = tracks_anafile_name( anatrees_listname , first_file , last_file )
+    events_file_name    = events_features_file_name( anatrees_listname , first_file , last_file )
+    resutls_file_name   = tracks_full_features_file_name( anatrees_listname , first_file , last_file )
+    cosmics_file_name   = cosmic_features_file_name( anatrees_listname , first_file , last_file )
+    g4info_file_name    = g4_features_file_name( anatrees_listname , first_file , last_file )
 
     writer = csv.writer(open(resutls_file_name, 'wb'))
-    if first_anatree_file==0:
+    if first_file==0:
         writer.writerow( track_features_names )
 
     if MCmode:
         writer_g4 = csv.writer(open(g4info_file_name, 'wb'))
-        if first_anatree_file==0:
+        if first_file==0:
             writer_g4.writerow( g4_features_names )
 
     if do_pandora_cosmic:
         cosmic_writer = csv.writer(open(cosmics_file_name, 'wb'))
-        if first_anatree_file==0:
+        if first_file==0:
             cosmic_writer.writerow( track_features_names )
 
     events_writer = csv.writer(open(events_file_name, 'wb'))
-    if first_anatree_file==0:
+    if first_file==0:
         events_writer.writerow( event_features_names )
 
 
     if Option=="find common muon-proton vertices":
         output_rse_file = open( output_mupRSEFileName , 'w' )
         writer_mu_p = csv.writer(open(output_mupROIFileName, 'wb'))
-        if first_anatree_file==0:
+        if first_file==0:
             writer_mu_p.writerow( mu_p_features_names )
     
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
     OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
-    TracksTree , GENIETree  = ROOT.TTree("TracksTree","pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
+    TracksTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
 
     calc = cumputeAnaTree( in_chain, TracksTree,
-#                          FeaturesFileName,
                           Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
     
     if AddEventsList:
@@ -652,7 +625,6 @@ def extract_anatrees_tracks_information_with_all_features( in_chain, Option,
     if flags.verbose: print_important( "starting run on %d events"%Nreduced )
 
 # - # main events loop
-    # main events loop
     for entry in range(Nreduced):
         
         do_continue = True

@@ -57,13 +57,13 @@ data --> muon inclusive sel. II --> Ncc2 events with CC candidate muon
             <--option> <--ff=0.01> <--evf=0.01>
     
     options (chronologically):
-        (1) extractMC       {"extract tracks information from MC AnalysisTrees for protons training and testing"}
-        (2) Sel2Muons       {"run Sel-II to select muons from data"}
-        (3) SchemeAnaTrees  {"scheme analsis trees to CC-inclusive events"}
-        (4) extractDATA     {"extract tracks information from analysistrees of CC-inclusive events"} 
-        (5) applyGBDTs      {"apply GBDTs"}
-        (6) groupEvents     {"group events with a muon and a proton"}
-        (7) images          {"create event-display images"}
+        (1) extract     {SingleParticleMC / openCOSMIC_MC / MC_BNB / BNB_5e19POT / extBNB}
+        (2) selIImuons
+        (3) scheme      { openCOSMIC_MC / MC_BNB / BNB_5e19POT / extBNB }
+        (4) extractDATA
+        (5) applyGBDTs
+        (6) groupEvents
+        (7) images
 
 
 --------------------------------------------------------------------------------------------------------------------------------------------
@@ -81,14 +81,14 @@ if 'extract' in flags.option:
     data_type = flags.option[6:]
     print_important( "extract tracks info from analysistrees %s, (files %d-%d)"%(data_type,first_anatree_file,last_anatree_file) )
     
-    if 'SingleParticleMC' in flags.option:
+    if 'SingleParticleMC' in data_type:
         for DataType,lf in zip(["p_0.02-1.5GeV_isotropic" , "muminus_0-2.0GeV_isotropic" , "piminus_0-2.0GeV_isotropic"],[377,395,377]):
-            extract_anatrees_tracks_information_from_files_list( DataType=DataType,
+            extract_anatrees_tracks_information_from_files_list( DataType = MCCversion+"_"+data_type,
                                                                 first_anatree_file=0 , last_anatree_file=lf ,
                                                                 MCmode=True )
 
     if 'openCOSMIC_MC' in data_type or 'MC_BNB' in data_type or 'BNB_5e19POT' in data_type or 'extBNB' in data_type:
-        extract_anatrees_tracks_information_from_files_list( DataType=MCCversion+data_type ,
+        extract_anatrees_tracks_information_from_files_list( DataType = MCCversion+"_"+data_type ,
                                                             first_anatree_file=first_anatree_file , last_anatree_file=last_anatree_file ,
                                                             MCmode = True ,
                                                             MCCversion=MCCversion , do_pandora_cosmic=False )
@@ -96,24 +96,28 @@ if 'extract' in flags.option:
 # ---------------------------------------------------------------------------------------
 
 
+# extract all tracks information from BNB-MC and COSMIC-MC analysis trees to train GBDTs
+# ---------------------------------------------------------------------------------------
+if 'selIImuons' in flags.option:
+    # [https://github.com/erezcoh4/neutrinoEventsSelection]
+    print_important( "selection II muons" )
 
 
 
 
+if 'scheme' in flags.option:
+    data_type = flags.option[6:]
+    print_important( "scheme analysis trees to selection II events from %s" % data_type )
 
-# (2) train, build, test the GBDT models
-# -------------------------------------------------------------------
-# use GBDTprotons/GBDTprotonsPackage
-
-
-
-
+    anatrees_listname = MCCversion + "_" + data_type
+    rse_map_name = sel2_path + MCCversion + "/" + MCCversion + "_" + data_type + ".list"
 
 
+    scheme_anatrees_files(anatrees_listname = MCCversion + "_" + data_type,
+                          rse_mapname = MCCversion + "_" + data_type + ".list",
+                          outfname = "CC1p_candidates_" + MCCversion + "_" + data_type + ".root")
 
-# (4) Classify proton tracks
-# -------------------------------------------------------------------
-# use GBDTprotons/GBDTprotonsPackage
+
 
 
 
