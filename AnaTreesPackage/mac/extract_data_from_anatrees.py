@@ -33,7 +33,6 @@
 
 '''
 from anatrees_tools import *
-print 'running option ',flags.option,' on MCC version: ',MCCversion
 
 
 first_file  = flags.run
@@ -41,6 +40,7 @@ splitjobs   = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting 
 last_file   = first_file + splitjobs
 MCCversion  = "MCC%d"%flags.MCCversion
 do_pandora_cosmic = False
+print 'running option ',flags.option,' on MCC version: ',MCCversion
 
 
 
