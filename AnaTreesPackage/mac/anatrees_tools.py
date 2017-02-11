@@ -425,7 +425,7 @@ def do_pass_geometrical_cuts( track ):
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-def stream_event_features_to_file( calc , writer ):
+def stream_event_features_to_file( calc , writer , do_pandora_cosmic=False  ):
     event_features = [ calc.run                 , calc.subrun           , calc.event
                       , calc.MCmode
                       , calc.ntracks_trackkalmanhit
@@ -436,11 +436,12 @@ def stream_event_features_to_file( calc , writer ):
 
     event_features = ['{:.0f}'.format(x) for x in event_features]
     
-    Ncosmictracks_ymax = []
-    if calc.Nymax_cosmic>0:
-        for i in range(calc.Nymax_cosmic):
-            Ncosmictracks_ymax.append( calc.Ncosmictracks_ymax.at(i) )
-    event_features.append(Ncosmictracks_ymax)
+    if do_pandora_cosmic:
+        Ncosmictracks_ymax = []
+        if calc.Nymax_cosmic>0:
+            for i in range(calc.Nymax_cosmic):
+                Ncosmictracks_ymax.append( calc.Ncosmictracks_ymax.at(i) )
+        event_features.append(Ncosmictracks_ymax)
 
     writer.writerow( event_features )
 # ----------------------------------------------------------------------------------------------------
