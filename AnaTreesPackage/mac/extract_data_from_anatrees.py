@@ -50,7 +50,7 @@ print 'running option ',flags.option,' on MCC version: ',MCCversion
 # ---------------------------------------------------------------------------------------
 if 'extract' in flags.option:
     data_type = flags.option[7:]
-    print_important( "extract tracks info from analysistrees %s, (files %d-%d)"%(data_type,first_anatree_file,last_anatree_file) )
+    print_important( "extract tracks info from analysistrees %s, (files %d-%d)"%(data_type,first_file,last_file) )
 
     MCmode = True if 'isotropic' in data_type or 'MC_BNB' in data_type or 'openCOSMIC_MC' in data_type else False
     
