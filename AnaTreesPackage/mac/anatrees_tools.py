@@ -14,7 +14,11 @@ from ROOT import AnalyzeTracksFile
 
 # globals
 # -------------------------
-min_trk_vtx_distance = 10 # [cm], this distance needs to be studied wisely
+max_trk_vtx_distance = 10 # [cm], this distance needs to be decided form vertex reconstruction resolution
+first_file  = flags.run
+splitjobs   = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
+last_file   = first_file + splitjobs
+MCCversion  = "MCC%d"%flags.MCCversion
 
 
 
@@ -124,11 +128,11 @@ def Sel2muons_intersection_list_csv_name( GBDTmodelName, TracksListName, p_score
 
 # ----------------------------------------------------------------------------------------------------
 def good_mu_p_rse_list_name( GBDTmodelName, TracksListName, p_score ):
-    return Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + "_mindistance_%dcm.csv"%min_trk_vtx_distance
+    return Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + "_mindistance_%dcm.csv"%max_trk_vtx_distance
 # ----------------------------------------------------------------------------------------------------
 # ----------------------------------------------------------------------------------------------------
 def good_mu_p_roi_list_name( GBDTmodelName, TracksListName, p_score ):
-    return "ROIs_" + Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + "_mindistance_%dcm.csv"%min_trk_vtx_distance
+    return "ROIs_" + Sel2muons_intersection_list_name( GBDTmodelName, TracksListName, p_score ) + "_mindistance_%dcm.csv"%max_trk_vtx_distance
 # ----------------------------------------------------------------------------------------------------
 
 
@@ -193,9 +197,16 @@ def rois_features_file_name( ListName , first_file = 0 , last_file = 0 ):
 # ----------------------------------------------------------------------------------------------------
 def tracks_anafile_name( ListName , first_file = 0 , last_file = 0 ):
     if first_file==last_file:
-        return anafiles_path + "/" + "Events_" + ListName + ".root"
+        return eventsfiles_path + "/" + "Events_" + ListName + ".root"
     else:
-        return anafiles_path + "/" + "Events_" + ListName + "_anatreefiles_%d_to_%d.root"%(first_file,last_file)
+        return eventsfiles_path + "/" + "Events_" + ListName + "_anatreefiles_%d_to_%d.root"%(first_file,last_file)
+# ----------------------------------------------------------------------------------------------------
+
+
+
+# ----------------------------------------------------------------------------------------------------
+def ccqe_candidates_filename( data_name=None ):
+    return ccqe_candidates_path + "/" + "ccqe_candidates_" + data_name + ".csv"
 # ----------------------------------------------------------------------------------------------------
 
 
@@ -671,7 +682,7 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
                 
                 do_continue = True if ( calc.IsGoodTrack( itrk_NuSelMuon ) and calc.IsGoodTrack( itrk_GBDTproton ) # tracks are contained
                                        and itrk_NuSelMuon != itrk_GBDTproton
-                                       and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < min_trk_vtx_distance ) else False
+                                       and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < max_trk_vtx_distance ) else False
         
             if flags.verbose>3:
                 print 'looping over Ntracks=',calc.Ntracks,'contained tracks in this event'

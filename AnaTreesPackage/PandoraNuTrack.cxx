@@ -217,8 +217,6 @@ void PandoraNuTrack::AddNeighborTrack( Int_t ftrack_id , Float_t fClosestDistanc
 
 
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PandoraNuTrack::Print(){
 
@@ -261,6 +259,28 @@ void PandoraNuTrack::Print(){
     }
 
 
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+Float_t PandoraNuTrack::ClosestDistanceToOtherTrack( PandoraNuTrack other_track ){
+    Float_t MinDistanceToOtherTrack = 10000;
+    
+    Float_t DistanceStartStart = (start_pos - other_track.start_pos).Mag();
+    if (MinDistanceToOtherTrack>DistanceStartStart)     MinDistanceToOtherTrack = DistanceStartStart;
+    
+    Float_t DistanceStartEnd = (start_pos - other_track.end_pos).Mag();
+    if (MinDistanceToOtherTrack>DistanceStartEnd)       MinDistanceToOtherTrack = DistanceStartEnd;
+    
+    Float_t DistanceEndStart = (end_pos - other_track.start_pos).Mag();
+    if (MinDistanceToOtherTrack>DistanceEndStart)       MinDistanceToOtherTrack = DistanceEndStart;
+    
+    Float_t DistanceEndEnd = (end_pos - other_track.end_pos).Mag();
+    if (MinDistanceToOtherTrack>DistanceEndEnd)         MinDistanceToOtherTrack = DistanceEndEnd;
+    
+    
+    
+    return MinDistanceToOtherTrack;
 }
 
 

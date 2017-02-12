@@ -282,7 +282,7 @@ void cumputeAnaTree::GetEntry (int entry){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetSoftwareTrigger(){
-    for (size_t trigger = 0; trigger < sizeof(swtrigger_name)/sizeof(*swtrigger_name); trigger++) {
+    for (size_t trigger = 0; trigger < (size_t)(sizeof(swtrigger_name)/sizeof(*swtrigger_name)); trigger++) {
         if (debug>2){
             cout << "SW Trigger name: " << swtrigger_name[trigger] << endl;
             cout << " -> was triggered? " << swtrigger_triggered[trigger] << endl;
@@ -503,7 +503,14 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     // positions
                     c_track.SetTruthStartPos( TVector3( StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ) );
                     c_track.SetTruthEndPos( TVector3( EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ) );
-                    c_track.truth_ccnc = ccnc_truth[ig4];
+                    // does it match a truth neutrino interaction?
+                    for (Int_t n = 0; n < mcevts_truth && n < kMaxTruth ; n++) {
+                        if (   fabs(nuvtxx_truth[n]-StartPointx[ig4])<2
+                            && fabs(nuvtxy_truth[n]-StartPointy[ig4])<2
+                            && fabs(nuvtxz_truth[n]-StartPointz[ig4])<2 ){
+                            c_track.truth_ccnc = ccnc_truth[n];
+                        }
+                    }
                 }
             }
             if (!FoundMCtrack) {

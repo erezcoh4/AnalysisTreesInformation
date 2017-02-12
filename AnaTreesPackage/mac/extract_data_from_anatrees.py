@@ -23,9 +23,9 @@
     (3) relevant flags
     
             --option                'extract<data_type>' in most cases
-            --ff                    files fraction (default 0.01)
-            --evf                   events fraction (default 0.01)
-            -mccv/--MCCversion      MCC-version (default 7)
+            -ff                     files fraction      (default 0.01)
+            -evf                    events fraction     (default 0.01)
+            -mccv/--MCCversion      MCC-version         (default 7)
         
         
     
@@ -33,12 +33,6 @@
 
 '''
 from anatrees_tools import *
-
-
-first_file  = flags.run
-splitjobs   = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
-last_file   = first_file + splitjobs
-MCCversion  = "MCC%d"%flags.MCCversion
 do_pandora_cosmic = False
 print 'running option ',flags.option,' on MCC version: ',MCCversion
 

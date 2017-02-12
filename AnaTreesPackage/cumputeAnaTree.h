@@ -121,7 +121,6 @@ public:
     bool            IsGoodTrack ( int fTrackID );
     
     
-    
   
     // variables
     

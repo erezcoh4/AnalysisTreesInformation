@@ -131,15 +131,17 @@ public:
 
     void    SetCalorimetry_Y (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>   );
     
-    void   SetSWtrigger (std::string fswtrigger_name[], bool fswtrigger_triggered[]){
-        for (size_t i=0 ; i < (sizeof(fswtrigger_name)/sizeof(*fswtrigger_name)) ; i++ ) {
+    void   SetSWtrigger (std::string * fswtrigger_name, bool * fswtrigger_triggered){
+        for (size_t i=0 ; i < (int)(sizeof(fswtrigger_triggered)/sizeof(fswtrigger_triggered[0])) ; i++ ) {
             swtrigger_name.push_back(fswtrigger_name[i]);
             swtrigger_triggered.push_back(fswtrigger_triggered[i]);
         }
     };
     
     
-    
+    // finders
+    Float_t ClosestDistanceToOtherTrack( PandoraNuTrack other_track );
+
     
     
     // getters
@@ -197,7 +199,7 @@ public:
     Int_t       run         , subrun    , event;
     Int_t       nhits       , is_flipped;
     Int_t       NNeighborTracks;
-    Int_t       truth_ccnc;
+    Int_t       truth_ccnc; // 0=CC interaction , 1=NC interaction
     Short_t     track_id    , process_primary;
     
     Float_t     startx  , starty , startz , endx , endy , endz;
