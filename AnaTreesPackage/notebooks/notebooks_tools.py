@@ -26,7 +26,7 @@ def plot_2d_histogram(data=None , data_name = 'MCC8-extBNB, contained pandoraCos
                       x_label = '$x_{start}$ [cm]', y_label='$y_{start}$ [cm]',
                       cmap='hot_r',norm='normal',
                       binsx=50, binsy=50,  figsize=(16,10) , ticks_color='black', fontsize=25,
-                      do_add_retreat_label=True,do_save_fig=True,do_add_title=False,
+                      do_add_retreat_label=False,do_save_fig=False,do_add_title=False,
                       ax=None):
     
     
