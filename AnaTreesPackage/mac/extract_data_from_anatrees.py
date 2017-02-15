@@ -1,7 +1,7 @@
 '''
     extract data from analysis trees
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    > python $AnalysisTreesAna/mac/extract_data_from_anatrees.py --option=extractMC_BNB --ff=0.01
+    > python $AnalysisTreesAna/mac/extract_data_from_anatrees.py --option=extractMC_BNB -ff=0.01
  
  
  --------------------------------------------------------------------------------------------------------------------------------------------

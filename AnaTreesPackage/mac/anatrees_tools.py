@@ -346,6 +346,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     
     data_name = MCCversion + "_" + data_type
     anatrees_listname = data_name + "_AnalysisTrees"
+    print_filename(anatrees_listname , "reading anatrees listname")
     files       = read_files_from_a_list( ListName=anatrees_listname, first_file=first_file, last_file=last_file, MCCversion=MCCversion )
     in_chain    = get_analysistrees_chain( files )
     
