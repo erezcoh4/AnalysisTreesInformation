@@ -47,7 +47,7 @@ if 'extract' in flags.option:
     data_type = flags.option[7:]
     print_important( "extract tracks info from analysistrees %s, (files %d-%d)"%(data_type,first_file,last_file) )
 
-    MCmode = True if 'isotropic' in data_type or 'MC_BNB' in data_type or 'openCOSMIC_MC' in data_type else False
+    MCmode = True if 'isotropic' in data_type or 'MC_BNB' in data_type or 'openCOSMIC_MC' in data_type or 'InTimeCOSMIC_MC' in data_type else False
     
     if 'SingleParticleMC' in data_type:
         for DataType,last_file in zip(["p_0.02-1.5GeV_isotropic","muminus_0-2.0GeV_isotropic"   ,"piminus_0-2.0GeV_isotropic"]
