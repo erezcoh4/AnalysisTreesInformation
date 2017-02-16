@@ -138,7 +138,7 @@ public:
     
     Int_t       run         , subrun    , event ;
     Int_t       Nentries    , entry     ;
-    
+    Double_t    pot; // protons on target
     
     
     

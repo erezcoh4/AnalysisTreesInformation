@@ -70,6 +70,7 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("run"                                            , &run);
     InTree -> SetBranchAddress("subrun"                                         , &subrun);
     InTree -> SetBranchAddress("event"                                          , &event);
+    InTree -> SetBranchAddress("pot"                                            , &pot);
 
     // Kalman-Hit
     InTree -> SetBranchAddress("ntracks_trackkalmanhit"                         , &ntracks_trackkalmanhit);
@@ -255,6 +256,8 @@ void cumputeAnaTree::InitOutputTree(){
     OutTree -> Branch("run"             ,&run               ,"run/I");
     OutTree -> Branch("subrun"          ,&subrun            ,"subrun/I");
     OutTree -> Branch("event"           ,&event             ,"event/I");
+    OutTree -> Branch("pot"             ,&pot               ,"pot/D");
+    
     OutTree -> Branch("Ntracks"         ,&Ntracks           ,"Ntracks/I"); // number of contained tracks, not ntracks_pandoraNu...
     OutTree -> Branch("Ng4particles"    ,&Ng4particles      ,"Ng4particles/I"); // number of g4 particles
     
