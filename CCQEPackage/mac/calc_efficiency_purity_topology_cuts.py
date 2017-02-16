@@ -19,9 +19,9 @@ def reduce_dataframe( data=None , var='distance' , type='lower' , ref=0 ): #{
 
 
 # true CC1p pairs
-if flags.worker is 'erez':
+if 'erez' in flags.worker :
     ccqe_candidates_path = '/Users/erezcohen/Desktop/uBoone/analysis/ccqe_candidates'
-elif flags.worker is 'helion':
+elif 'helion' in flags.worker :
     ccqe_candidates_path = '/extra/Erez/uBoone/analysis/ccqe_candidates'
 
 
