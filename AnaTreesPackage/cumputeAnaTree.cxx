@@ -6,8 +6,8 @@
 
 // main event loop
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
     
+bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
     //    GetSoftwareTrigger();
     //    if (debug>3) Printf("Got Software Trigger");
     
@@ -655,7 +655,7 @@ bool cumputeAnaTree::GetTruthInformation(){
                                      process_primary[ig4],
                                      TVector3(StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ),
                                      TVector3(EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ),
-                                     Mother[ig4] ,  ccnc_truth[ig4]);
+                                     Mother[ig4] ,  ccnc_truth[0]);
         
         // match generated to reconstructed for the same track
         // in a reverse logic to the way we matched reconstructed to generated
@@ -722,7 +722,7 @@ bool cumputeAnaTree::GetTruthInformation(){
                                         ,subrun                                                         // subrun
                                         ,event                                                          // event
                                         ,TVector3(nuvtxx_truth[n] , nuvtxy_truth[n] , nuvtxz_truth[n])  // position
-                                        ,ccnc_truth[n]                                                  // CC / NC
+                                        ,ccnc_truth[0]                                                  // CC / NC
                                         ,nuPDG_truth[n]                                                 // pdg code
                                         ,X_truth[n]                                                     // Bjorken x
                                         ,Q2_truth[n]                                                    // momentum transfer
@@ -735,21 +735,20 @@ bool cumputeAnaTree::GetTruthInformation(){
             if (debug>3) { cout<<"vertex contained "<< endl;}
             
             // we want CCνµ
-            if ( c_nu_interaction.ccnc == 0 && c_nu_interaction.pdg == 14 ){
+            //            if ( c_nu_interaction.ccnc == 0 && c_nu_interaction.pdg == 14 ){
+            
+            if (debug>3) { cout<<"CC nu mu event "<< endl;}
+            
+            c_nu_interaction.SetNuMomentum( enu_truth[n] , nu_dcosx_truth[n] , nu_dcosy_truth[n] , nu_dcosz_truth[n] );
+            c_nu_interaction.SetLeptonMomentum( lep_mom_truth[n] , lep_dcosx_truth[n] , lep_dcosy_truth[n] , lep_dcosz_truth[n] );
+            c_nu_interaction.Set_q_vector();
+            nu_interactions.push_back(c_nu_interaction);
+            
+            GetGENIEInformation( n );
+            GENIETree -> Fill();
 
-                if (debug>3) { cout<<"CC nu mu event "<< endl;}
-
-                c_nu_interaction.SetNuMomentum( enu_truth[n] , nu_dcosx_truth[n] , nu_dcosy_truth[n] , nu_dcosz_truth[n] );
-                c_nu_interaction.SetLeptonMomentum( lep_mom_truth[n] , lep_dcosx_truth[n] , lep_dcosy_truth[n] , lep_dcosz_truth[n] );
-                c_nu_interaction.Set_q_vector();
-                nu_interactions.push_back(c_nu_interaction);
-                
-                GetGENIEInformation();
-                
-                NnuInteractions++;
-
-                
-            }// end of if interaction is CCνµ
+            NnuInteractions++;
+            //            }// end of if interaction is CCνµ
             
         }// end of if interaction contained
         
@@ -759,25 +758,36 @@ bool cumputeAnaTree::GetTruthInformation(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::GetGENIEInformation(){
+bool cumputeAnaTree::GetGENIEInformation(int n){
     if (debug > 3) Printf("getting GENIE information");
     
-    GENIEinteraction c_genie_interaction( genie_no_primaries , nu_interactions.back().nu );
+    c_genie_interaction = GENIEinteraction( genie_no_primaries , nu_interactions.back().nu );
+    c_genie_interaction.SetRSE( run , subrun , event );
+    c_genie_interaction.SetCCNC( ccnc_truth[n] ); // it is very rarely that mcevents > 1 so that we should care about ccnc_truth[i>0]
     
     for ( Int_t primary = 0 ; primary < genie_no_primaries ; primary ++ ) {
+        PandoraNuTrack primary_pandoraNutrack;
+        if(!tracks.empty()){
+            for (auto t: tracks) {
+                if (t.track_id == genie_trackID[primary]){
+                    primary_pandoraNutrack = t;
+                }
+            }
+        }
         c_genie_interaction.AddPrimary(
-                                     genie_pdg[primary]
-                                     ,genie_Eng[primary]
-                                     ,genie_Px[primary]
-                                     ,genie_Py[primary]
-                                     ,genie_Pz[primary]
-                                     ,genie_P[primary]
-                                     ,genie_status_code[primary]
-                                     ,genie_mass[primary]
-                                     ,genie_trackID[primary]
-                                     ,genie_ND[primary]
-                                     ,genie_mother[primary]
-                                     );
+                                       genie_pdg[primary]
+                                       ,genie_Eng[primary]
+                                       ,genie_Px[primary]
+                                       ,genie_Py[primary]
+                                       ,genie_Pz[primary]
+                                       ,genie_P[primary]
+                                       ,genie_status_code[primary]
+                                       ,genie_mass[primary]
+                                       ,genie_trackID[primary]
+                                       ,genie_ND[primary]
+                                       ,genie_mother[primary]
+                                       ,primary_pandoraNutrack
+                                       );
     }
     
     if(debug>3) Printf("added primaries");
@@ -787,9 +797,10 @@ bool cumputeAnaTree::GetGENIEInformation(){
     if(debug>3) Printf("computed kinematics");
     c_genie_interaction.ComputePmissPrec();
     if(debug>3) Printf("computed p(miss) and p(rec)");
-    
-    genie_interaction = c_genie_interaction;
+
+    genie_interaction = c_genie_interaction; // for genie-interactions tree...
     GENIETree -> Fill();
+    
     genie_interactions.push_back( c_genie_interaction );
     return true;
 }
@@ -970,6 +981,7 @@ bool cumputeAnaTree::FillOutTree (bool fDo){
     
 }
 
+    
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::PrintData(int entry){
     

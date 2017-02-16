@@ -16,6 +16,8 @@ GENIEinteraction::GENIEinteraction( Int_t fNprimaries, TLorentzVector fnu ){
     Nprimaries = fNprimaries;
     nu = fnu;
     Np = Nn = Npi = Nmu = Nel = 0;
+    ccnc = 0;
+    IsCC1p = false;
 }
 
 
@@ -35,6 +37,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                                    ,Int_t ftrackID
                                    ,Int_t fND
                                    ,Int_t fmother
+                                   ,PandoraNuTrack fprimarPandoraNuTrack
                                    ){
     
     pdg.push_back(fpdg);
@@ -43,11 +46,12 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
     ND.push_back(fND);
     mother.push_back(fmother);
     status_code.push_back(fstatus_code);
+    tracks.push_back(fprimarPandoraNuTrack);
     
     momentum.SetVectM( TVector3 ( fPx , fPy , fPz ) , fmass );
     
-    if (status_code.back()==1) {
-        
+    if (status_code.back()==1) { // status code 0 particles are unstable or do not exit the nucleus are are thus irrelevant
+
         switch (pdg.back()) {
                 
             case 14: // ν
@@ -56,12 +60,14 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                 
             case 13: // µ
                 muon = momentum;
+                muonTrack = fprimarPandoraNuTrack;
                 Nmu++;
                 break;
                 
                 
             case 2212: // p
                 p3vect.push_back( momentum.Vect() ) ;
+                protonTracks.push_back(fprimarPandoraNuTrack);
                 Np++;
                 break;
                 
@@ -70,7 +76,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                 n3vect.push_back( momentum.Vect() ) ;
                 Nn++;
                 break;
-
+                
             case 211: // π+
             case -211: // π-
             case 111: // π0
@@ -86,9 +92,22 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                 break;
         }
     }
+
     
     
     return true;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool GENIEinteraction::FindCC1p(){
+    
+    if ( ccnc==1 && Nmu==1 && Np==1 && Nprimaries==2 ){
+        IsCC1p = true;
+        return true;
+    }
+    IsCC1p = false;
+    return false;
 }
 
 
@@ -171,6 +190,14 @@ void GENIEinteraction::Print(){
     SHOW(Xb);
     SHOW(Q2);
     SHOW3(theta_pq,p_over_q,Mmiss);
+    
+    if(!tracks.empty()){
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
+        for (auto t: tracks) {
+            t.Print();
+        }
+    }
+
 
 }
 

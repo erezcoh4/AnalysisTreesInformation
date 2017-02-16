@@ -97,7 +97,7 @@ public:
     bool    extract_information (bool fDo=true);
     bool            FillOutTree (bool fDo=true);
     bool    GetTruthInformation ();
-    bool    GetGENIEInformation ();
+    bool    GetGENIEInformation (int n=0);
     void       GetInTimeFlashes ();
     void GetPandoraCosmicTracks ();
     void     GetPandoraNuTracks ();
@@ -323,7 +323,7 @@ public:
     nuInteraction c_nu_interaction;
     std::vector<nuInteraction> nu_interactions;
     
-    GENIEinteraction genie_interaction;
+    GENIEinteraction c_genie_interaction , genie_interaction;
     std::vector<GENIEinteraction> genie_interactions;
 
 

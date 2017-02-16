@@ -665,23 +665,24 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
     if flags.verbose: print_important( "starting run on %d events"%Nreduced )
 
 # - # main events loop
-    for entry in range(Nreduced):
-        
+    for entry in range(Nreduced): #{
+    
         do_continue = True
         calc.GetEntry( entry )
         entry_rse = [calc.run,calc.subrun,calc.event]
         if flags.verbose>3: print entry_rse
         
-        if AddEventsList:
+        if AddEventsList: #{
             
             do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = search_rse( entry_rse , rse_events_list )
             if (do_continue and flags.verbose>1): print_important("found r-%d/s-%d/e-%d, extracting information....\n"%(calc.run,calc.subrun,calc.event))
+        #}
         
 # - # - # do-continue for finding RSE
-        if do_continue:
-            
+        if do_continue: #{
+    
             if flags.verbose>2: print 'extract information'
-            calc.extract_information(True)
+            calc.extract_information( True )
             
             # event features
             if flags.verbose>2: print 'stream event features to file'
@@ -712,8 +713,7 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
                                        and itrk_NuSelMuon != itrk_GBDTproton
                                        and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < max_trk_vtx_distance ) else False
         
-            if flags.verbose>3:
-                print 'looping over Ntracks=',calc.Ntracks,'contained tracks in this event'
+            if flags.verbose>3: print 'looping over Ntracks=',calc.Ntracks,'contained tracks in this event'
 
 
 
@@ -768,10 +768,10 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
                 calc.FillOutTree()
 # - # - # end do-continue for finding RSE
 
+        #}
 
 
-
-
+    #}
 
 # - # end main events loop
 
@@ -796,6 +796,181 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
     TracksTree.Write()
     OutFile.Close()
 # ----------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+# ----------------------------------------------------------------------------------------------------
+def extract_anatrees_information(in_chain, Option,
+                                 anatrees_listname="", first_file=0, last_file=0,
+                                 MCmode=False,do_pandora_cosmic=False, do_dEdx=False, do_SWtrigger=False ):
+    
+    g4_counter , counter , cosmic_counter , evts_counter = 0 , 0 , 0 , 0
+    
+    # root file
+    TracksAnaFileName   = tracks_anafile_name( anatrees_listname , first_file , last_file )
+    # event features file
+    events_file_name    = events_features_file_name( anatrees_listname , first_file , last_file )
+    events_writer = csv.writer(open(events_file_name, 'wb'))
+    if first_file==0: events_writer.writerow( event_features_names )
+    # pandoraNu tracks features file
+    resutls_file_name   = tracks_full_features_file_name( anatrees_listname , first_file , last_file )
+    tracks_writer = csv.writer(open(resutls_file_name, 'wb'))
+    if first_file==0: tracks_writer.writerow( track_features_names )
+    # pandoraCosmic tracks features file
+    if do_pandora_cosmic:
+        cosmics_file_name   = cosmic_features_file_name( anatrees_listname , first_file , last_file )
+        cosmic_writer = csv.writer(open(cosmics_file_name, 'wb'))
+        if first_file==0: cosmic_writer.writerow( track_features_names )
+    # MC mode - g4 features
+    if MCmode:
+        g4info_file_name    = g4_features_file_name( anatrees_listname , first_file , last_file )
+        writer_g4 = csv.writer(open(g4info_file_name, 'wb'))
+        if first_file==0: writer_g4.writerow( g4_features_names )
+
+
+    Nentries    = in_chain.GetEntries()
+    Nreduced    = int(flags.evnts_frac*(Nentries))
+    if flags.verbose: print_important( "proceesing %d events"%Nreduced )
+
+    OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
+    TracksTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
+    
+    calc = cumputeAnaTree( in_chain, TracksTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
+    
+    
+    # - # main events loop
+    for entry in range(Nreduced): #{
+        
+        do_continue = True
+        calc.GetEntry( entry )
+        entry_rse = [calc.run,calc.subrun,calc.event]
+
+
+        if do_continue: #{
+            
+            if flags.verbose>2: print 'extract information from ', entry_rse
+            calc.extract_information( True )
+            
+            if flags.verbose>2: print 'stream event features to file'
+            stream_event_features_to_file ( calc , events_writer )
+            evts_counter += 1
+            
+
+            if flags.verbose>2: print 'stream genie interactions'
+                
+            # geant4 particles
+            if MCmode:
+                for i in range(calc.Ng4particles):
+                    g4particle = calc.GetG4Particle(i)
+                    stream_g4_features_to_file ( g4particle , writer_g4 )
+                    g4_counter = g4_counter + 1
+            # end geant4 particles
+            
+            
+            if (flags.verbose and entry%flags.print_mod==0):
+                
+                calc.PrintData( entry )
+            
+            if "extract all tracks information" in Option:
+                
+                do_continue , ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton = True , 0 , 0 , 0
+
+if "find common muon-proton vertices" in Option:
+    
+    do_continue = True if ( calc.IsGoodTrack( itrk_NuSelMuon ) and calc.IsGoodTrack( itrk_GBDTproton ) # tracks are contained
+                           and itrk_NuSelMuon != itrk_GBDTproton
+                           and calc.TrkVtxDistance( ivtx_nuselection , itrk_GBDTproton ) < max_trk_vtx_distance ) else False
+        
+        if flags.verbose>3: print 'looping over Ntracks=',calc.Ntracks,'contained tracks in this event'
+            
+            
+            
+            # - # - # - # if NCosmicTracks > 0
+            if do_pandora_cosmic and calc.Ncosmictracks>0 and do_continue:
+                
+                # - # - # - # - # for i in range(Ncosmictracks)
+                for i in range(calc.Ncosmictracks):
+                    
+                    cosmic_track = calc.GetCosmicTrack(i)
+                    if flags.verbose>4: print 'grabbed cosmic track',i
+                    
+                    stream_tracks_features_to_file ( cosmic_track , cosmic_writer , do_dEdx=do_dEdx , do_SWtrigger=do_SWtrigger )
+                    cosmic_counter += 1
+                    
+                    if flags.verbose>2:
+                        print 'saved cosmic track R-%d/S-%d/E-%d (%d)'%(calc.run,calc.subrun,calc.event,cosmic_track.track_id)
+                        print_line()
+            # - # - # - # end if NCosmicTracks > 0
+            # - # - # - # - # end for i in range(calc.Ntracks)
+            
+            
+            
+            # - # - # - # if Ntracks > 0
+            if calc.Ntracks>0 and do_continue:
+                
+                if "find common muon-proton vertices" in Option:
+                    output_rse_file.write( "%d %d %d\n"%(calc.run, calc.subrun, calc.event ))
+                    calc.CreateROIsCCQE( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton )
+                    stream_mu_p_vertex_features_to_file ( ivtx_nuselection , itrk_NuSelMuon , itrk_GBDTproton , calc , writer_mu_p )
+            
+                # - # - # - # - # for i in range(calc.Ntracks)
+                for i in range(calc.Ntracks):
+                    
+                    track = calc.GetTrack(i)
+                    if flags.verbose>4: print 'grabbed track',i
+                    
+                    if "add hard geometrical cuts" in Option:
+                        
+                        do_continue = do_pass_geometrical_cuts(track)
+                        if flags.verbose>4: print 'do_continue:', do_continue
+                    
+                    if do_continue:
+                        
+                        stream_tracks_features_to_file ( track , tracks_writer , do_dEdx=do_dEdx , do_SWtrigger=do_SWtrigger )
+                        if flags.verbose>2:
+                            print 'saving track to file from R/S/E ',calc.run,calc.subrun,calc.event
+                            print_line()
+                        counter = counter+1
+                           # - # - # - # end if Ntracks > 0
+                           # - # - # - # - # end for i in range(calc.Ntracks)
+                            calc.FillOutTree()
+                        # - # - # end do-continue for finding RSE
+
+#}
+
+
+#}
+
+# - # end main events loop
+
+#    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
+
+print_filename( events_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_file_name)) )
+    print_filename( resutls_file_name , "%d tracks features (%.2f MB)"%(counter,filesize_in_MB(resutls_file_name) ) )
+    print_filename( TracksAnaFileName , "root file (%.2f MB)"%filesize_in_MB(TracksAnaFileName) )
+    
+    if do_pandora_cosmic:
+        print_filename( cosmics_file_name , "%d cosmic tracks features (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name) ) )
+
+if Option=="find common muon-proton vertices":
+    print_filename( output_mupRSEFileName , "output RSE map for argofiltering muon-proton vertices" )
+        print_filename( output_mupROIFileName , "muon / proton ROIs ")
+        output_rse_file.close()
+    
+    if MCmode:
+        print_filename( resutls_file_name , "%d g4 generated particles (%.2f MB)"%(g4_counter,filesize_in_MB(g4info_file_name)) )
+        GENIETree.Write()
+
+TracksTree.Write()
+    OutFile.Close()
+# ----------------------------------------------------------------------------------------------------
+
 
 
 

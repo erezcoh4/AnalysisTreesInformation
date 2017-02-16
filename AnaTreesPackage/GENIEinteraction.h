@@ -16,6 +16,7 @@
 
 #include "LArUtil/Geometry.h"
 #include "../../mySoftware/MySoftwarePackage/myIncludes.h"
+#include "PandoraNuTrack.h"
 
 /**
  \class GENIEinteraction
@@ -45,20 +46,21 @@ public:
     
     
     // running
-    bool         AddPrimary ( Int_t,Float_t,Float_t,Float_t,Float_t,Float_t,Int_t,Float_t,Int_t,Int_t,Int_t );
+    bool         AddPrimary ( Int_t,Float_t,Float_t,Float_t,Float_t,Float_t,Int_t,Float_t,Int_t,Int_t,Int_t,PandoraNuTrack );
     vector<size_t> sort_by_momentum_magnitude(const vector<TVector3> &v);
     bool       SortNucleons ();
     bool  ComputeKinematics ();
     bool   ComputePmissPrec ();
-
+    bool           FindCC1p ();
     
-
+    void            SetRSE (int frun , int fsubrun , int fevent)    {run=frun; subrun=fsubrun;event=fevent;};
+    void           SetCCNC (int fccnc)                              {ccnc = fccnc;};
     
     
     Float_t                 Xb , Q2 ;
     Float_t                 theta_pq , p_over_q , Mmiss;
     
-    
+    Int_t                   run , subrun , event , ccnc;
     Int_t                   Nprimaries , Np , Nn , Npi , Nmu , Nel;
     
     std::vector<Int_t>      pdg;          //particle type (pdg) of the GENIE particle
@@ -81,6 +83,14 @@ public:
     TLorentzVector              n_miss  , Pcm   , Prec;
     std::vector<TLorentzVector> protons , neutrons;
     std::vector<TVector3>       p3vect  , n3vect;
+    
+    
+    bool                        IsCC1p; // topology of the interaction: CC1p;
+    std::vector<PandoraNuTrack> tracks; // pandoraNu tracks that are associated with the genie interacion
+    
+    PandoraNuTrack muonTrack;
+    std::vector<PandoraNuTrack> protonTracks;
+
     
 };
 #endif
