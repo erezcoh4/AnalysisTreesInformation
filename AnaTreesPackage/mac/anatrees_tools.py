@@ -1,7 +1,7 @@
 import sys
 sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
-sys.path.insert(0, '/home/erez/larlite/UserDev/UserDev/GBDTprotons/GBDTprotonPackage/mac')
+sys.path.insert(0, '/home/erez/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/mySoftware/MySoftware/mac')
 from uboone_tools import *
 from gbdt_tools import *
