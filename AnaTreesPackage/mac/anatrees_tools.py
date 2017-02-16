@@ -1,6 +1,7 @@
 import sys
 sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 sys.path.insert(0, '/Users/erezcohen/larlite/UserDev/GBDTprotons/GBDTprotonPackage/mac')
+sys.path.insert(0, '/home/erez/larlite/UserDev/UserDev/GBDTprotons/GBDTprotonPackage/mac')
 sys.path.insert(0, '/uboone/app/users/ecohen/larlite/UserDev/mySoftware/MySoftware/mac')
 from uboone_tools import *
 from gbdt_tools import *
@@ -276,6 +277,32 @@ def intersectlists_GBDTprotons_Sel2muons( GBDTmodelName, TracksListName , p_scor
 
 
 # ----------------------------------------------------------------------------------------------------
+def scheme_anatrees_single_file( in_anatrees_file=None, in_treename=None, rse_mapname=None, outfname=None , MCCversion="MCC7"):
+    '''
+        This functionallity schemes a single analysis trees file
+        and returns a tree containing only entries with a Run/Subrun/Event
+        of a given list (RSE map)
+        '''
+    print_filename( in_anatrees_file , "input (1): analysis trees ")
+    
+    it = ImportantTools()
+    in_chain = ROOT.TChain(in_treename)
+    in_chain.Add( in_anatrees_file )
+    if flags.verbose: print "input chain entries from "+in_anatrees_file + ": ",in_chain    .GetEntries()
+
+    rsemap2selectfrom = neutrinoSel2_path + "/" + MCCversion + "/" + MCCversion + "_"+ rse_mapname + ".list"
+    print_filename( rsemap2selectfrom , "input (2): RSE list to select from ")
+    
+    OutFile = ROOT.TFile( outfname , "recreate" )
+    OutTree = it.SchemeTreeRSEList( in_chain , rsemap2selectfrom , flags.verbose )
+
+    print_filename(outfname , "schemed anatrees (%d events, %.2f MB):"%(OutTree.GetEntries(),filesize_in_MB(outfname)))
+
+    OutTree.Write()
+    OutFile.Close()
+# ----------------------------------------------------------------------------------------------------
+
+# ----------------------------------------------------------------------------------------------------
 def scheme_anatrees_files( anatrees_listname=None, rse_mapname=None, outfname=None , MCCversion="MCC7"):
     '''
         This functionallity schemes (big) analysis trees
@@ -283,17 +310,17 @@ def scheme_anatrees_files( anatrees_listname=None, rse_mapname=None, outfname=No
         of a given list (RSE map)
         '''
     print_filename( anatrees_listname , "input (1): analysis trees ")
-    print_filename( rsemap2selectfrom , "input (2): RSE list to select from ")
+    print_filename( rse_mapname , "input (2): RSE list to select from ")
     
     it = ImportantTools()
     files = read_files_from_a_list( ListName = anatrees_listname )
-    rsemap2selectfrom = sel2_path + "/" + MCCversion + "/" + rse_map_name + ".list"
-
+    rsemap2selectfrom = neutrinoSel2_path + "/" + MCCversion + "/" + rse_mapname + ".list"
+    
     in_chain = get_analysistrees_chain(files)
     OutFile = ROOT.TFile( outfname , "recreate" )
-    OutTree = it.SchemeTreeRSEList( in_chain , rsemap2selectfrom , flags.verbose )
+    OutTree = it.SchemeTreeRSEList( in_chain , rse_mapname , flags.verbose )
     
-    print_filename(out_fname , "schemed anatrees (%d events, %.2f MB):"%(OutTree.GetEntries(),filesize_in_MB(out_fname)))
+    print_filename(outfname , "schemed anatrees (%d events, %.2f MB):"%(OutTree.GetEntries(),filesize_in_MB(outfname)))
     
     OutTree.Write()
     OutFile.Close()

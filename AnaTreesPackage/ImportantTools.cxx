@@ -66,7 +66,7 @@ std::map < int , std::map < int , int > > ImportantTools::LoadRSEMap( TString RS
     ifstream fin(RSEfileName);
     std::cout << "loading data from file \n" << RSEfileName << endl;
     
-    Int_t run , subrun , event;
+    Int_t run , subrun , event , counter=0;
     // Read one line at a time.
     string line ;
     
@@ -74,7 +74,9 @@ std::map < int , std::map < int , int > > ImportantTools::LoadRSEMap( TString RS
         istringstream ss(line);
         ss >> run >> subrun >>  event ;
         RSEMap[run][subrun] = event;
+        counter++;
     }
+    cout << "in total, loaded " << counter << " events into RSEMap" << endl;
     // check
     if (DoCheck) {
         Printf("RSE map to scheme from: ");

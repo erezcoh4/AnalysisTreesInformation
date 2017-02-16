@@ -15,16 +15,16 @@ from anatrees_tools import *
 '''
 
 
-TracksListName          = "BNB_5e19POT"
-GBDTmodelName           = "multi_BNB_TrainedOn_MCBNB_MCCOSMIC"  # options: 'BNB_TrainedOn_only_MC_BNB'
-maxscore                = 'protons'
-p_score                 = 0.9
-MCCversion              = "MCC%d"%flags.MCCversion
+#TracksListName          = "BNB_5e19POT"
+#GBDTmodelName           = "multi_BNB_TrainedOn_MCBNB_MCCOSMIC"  # options: 'BNB_TrainedOn_only_MC_BNB'
+#maxscore                = 'protons'
+#p_score                 = 0.9
+#MCCversion              = "MCC%d"%flags.MCCversion
 
 
-splitjobs_files = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
-first_anatree_file = flags.run
-last_anatree_file = first_anatree_file + splitjobs_files
+#splitjobs_files = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
+#first_anatree_file = flags.run
+#last_anatree_file = first_anatree_file + splitjobs_files
 
 
 print 'running option ',flags.option,' on MCC version: ',MCCversion
@@ -117,15 +117,25 @@ if flags.option=="intersect GBDT protons with Sel2 muons" or 'intersect' in flag
 # -------------------------------------------------------------------
 if flags.option=="scheme analysis trees events" or 'scheme' in flags.option:
     if flags.verbose: print_important( "scheme analysis trees events" )
-#    scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
-
+    #    scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score )
+    
     # scheme CCQE candidates from anatrees for Varuna (Jan. 2017)
-#    scheme_anatrees_files( anatrees_list_name="BNB_5e19POT_AnalysisTrees",
-#                          rsemap2selectfrom = mu_p_intersection_path + "/Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv",
-#                          output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017.root" )
-    scheme_anatrees_file( input_anatree_file="/uboone/data/users/ecohen/AnalysisTreeData/SchemedFiles/data_AnalysisTrees_Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection.root",
-                          rsemap2selectfrom = mu_p_intersection_path + "/Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv",
-                          output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017.root" )
+    #    scheme_anatrees_files( anatrees_list_name="BNB_5e19POT_AnalysisTrees",
+    #                          rsemap2selectfrom = mu_p_intersection_path + "/Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv",
+    #                          output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017.root" )
+    #    scheme_anatrees_file( input_anatree_file="/uboone/data/users/ecohen/AnalysisTreeData/SchemedFiles/data_AnalysisTrees_Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection.root",
+    #                          rsemap2selectfrom = mu_p_intersection_path + "/Sel2muons_BNB_5e19POT_multi_BNB_TrainedOn_MCBNB_MCCOSMIC_pscore_0.90_intersection_mindistance_10cm.csv",
+    #                          output_anatree_filename="Preliminary_CCQE_candidates_BNB5e19POT_Jan2017.root" )
+
+    # Feb-15,2017
+    # scheme Events tracks files of MCBNB + InTimeCosmic to neutrino filter 2
+    print 'neutrinoSel2_path:',neutrinoSel2_path
+    scheme_anatrees_single_file(in_anatrees_file = eventsfiles_path+"/Events_MCC7_MCBNB_MCInTimeCOSMIC_AnalysisTrees.root",
+                                in_treename = "eventsTree",
+                                rse_mapname = "BNBCosmicMC",
+                                outfname = eventsfiles_path+"/Events_MCC7_MCBNB_MCInTimeCOSMIC_AnalysisTrees_Sel2filtered.root" )
+
+
 
 
 
