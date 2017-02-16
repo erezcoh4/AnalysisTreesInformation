@@ -5,7 +5,7 @@ generic = lambda x: ast.literal_eval(x)
 
 
 
-Npoints = 2
+Npoints = flags.NumberOfRuns if flags.NumberOfRuns > 0 and flags.NumberOfRuns < 1000 else 2
 
 
 # reduce the data
