@@ -797,7 +797,8 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     if(debug>3) Printf("computed kinematics");
     c_genie_interaction.ComputePmissPrec();
     if(debug>3) Printf("computed p(miss) and p(rec)");
-
+    c_genie_interaction.FindCC1p();
+    
     genie_interaction = c_genie_interaction; // for genie-interactions tree...
     GENIETree -> Fill();
     

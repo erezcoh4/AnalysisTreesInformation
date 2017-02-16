@@ -61,7 +61,7 @@ public:
     Float_t                 theta_pq , p_over_q , Mmiss;
     
     Int_t                   run , subrun , event , ccnc;
-    Int_t                   Nprimaries , Np , Nn , Npi , Nmu , Nel;
+    Int_t                   Nprimaries , Np , Nn , Npi , Nmu , Nel , Ntot;
     
     std::vector<Int_t>      pdg;          //particle type (pdg) of the GENIE particle
     std::vector<Float_t>    Eng;           //Energy of the GENIE particle in GeV

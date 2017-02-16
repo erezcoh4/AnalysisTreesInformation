@@ -15,7 +15,7 @@ Q2(-100)
 GENIEinteraction::GENIEinteraction( Int_t fNprimaries, TLorentzVector fnu ){
     Nprimaries = fNprimaries;
     nu = fnu;
-    Np = Nn = Npi = Nmu = Nel = 0;
+    Np = Nn = Npi = Nmu = Nel = Ntot = 0;
     ccnc = 0;
     IsCC1p = false;
 }
@@ -51,7 +51,9 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
     momentum.SetVectM( TVector3 ( fPx , fPy , fPz ) , fmass );
     
     if (status_code.back()==1) { // status code 0 particles are unstable or do not exit the nucleus are are thus irrelevant
-
+        
+        Ntot++;
+        
         switch (pdg.back()) {
                 
             case 14: // ν
@@ -102,7 +104,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool GENIEinteraction::FindCC1p(){
     
-    if ( ccnc==1 && Nmu==1 && Np==1 && Nprimaries==2 ){
+    if ( ccnc==1 && Nmu==1 && Np==1 && Ntot==2 ){
         IsCC1p = true;
         return true;
     }
