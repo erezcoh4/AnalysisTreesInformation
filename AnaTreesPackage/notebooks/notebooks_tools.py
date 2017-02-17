@@ -8,6 +8,25 @@ from plot_tools import *
 generic = lambda x: ast.literal_eval(x)
 from matplotlib.colors import LogNorm
 from matplotlib.ticker import NullFormatter,MultipleLocator, FormatStrFormatter
+from matplotlib import ticker
+
+
+
+
+
+# ------------------------------------------------------------------------
+# Feb-16, 2017
+def cbar(im=None,title=None):
+    cbar = plt.colorbar(im)
+    tick_locator = ticker.MaxNLocator(nbins=5)
+    cbar.locator = tick_locator
+    cbar.update_ticks()
+    for t in cbar.ax.get_yticklabels(): t.set_fontsize(20)
+    cbar.ax.get_yaxis().labelpad = 35
+    cbar.ax.set_ylabel(title, rotation=270,fontsize=30)
+# ------------------------------------------------------------------------
+
+
 
 
 # ------------------------------------------------------------------------

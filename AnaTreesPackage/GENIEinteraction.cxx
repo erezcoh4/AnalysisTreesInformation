@@ -8,7 +8,8 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 GENIEinteraction::GENIEinteraction():
 Xb(-100),
-Q2(-100)
+Q2(-100),
+ccnc(-100)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -16,7 +17,7 @@ GENIEinteraction::GENIEinteraction( Int_t fNprimaries, TLorentzVector fnu ){
     Nprimaries = fNprimaries;
     nu = fnu;
     Np = Nn = Npi = Nmu = Nel = Ntot = 0;
-    ccnc = 0;
+    ccnc = -100;
     IsCC1p = false;
 }
 
@@ -104,7 +105,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool GENIEinteraction::FindCC1p(){
     
-    if ( ccnc==1 && Nmu==1 && Np==1 && Ntot==2 ){
+    if ( ccnc==0 && Nmu==1 && Np==1 && Ntot==2 ){
         IsCC1p = true;
         return true;
     }
