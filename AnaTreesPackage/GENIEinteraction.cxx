@@ -16,7 +16,7 @@ ccnc(-100)
 GENIEinteraction::GENIEinteraction( Int_t fNprimaries ){
     Nprimaries = fNprimaries;
     muonTrackReconstructed = protonTrackReconstructed = false;
-    Np = Nn = Npi = Nmu = Nel = Ntot = 0;
+    Np = Nn = Npi = Nmu = Nel = Ntot = Nnu = 0;
     ccnc = -100;
     IsCC1p = false;
 }
@@ -54,18 +54,19 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
     ND.push_back(fND);
     mother.push_back(fmother);
     status_code.push_back(fstatus_code);
-    tracks.push_back(fprimarPandoraNuTrack);
     
     momentum.SetVectM( TVector3 ( fPx , fPy , fPz ) , fmass );
     
     if (status_code.back()==1) { // status code 0 particles are unstable or do not exit the nucleus and are thus irrelevant
         
-        if (pdg.back()!=14) Ntot++;
+        Ntot++;
+        if (track_reconstructed) tracks.push_back(fprimarPandoraNuTrack);
         
         switch (pdg.back()) {
                 
             case 14: // ν
                 nu = momentum;
+                Nnu ++;
                 break;
                 
             case 13: // µ

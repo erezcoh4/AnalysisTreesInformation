@@ -68,7 +68,7 @@ public:
     Float_t                 theta_pq , p_over_q , Mmiss;
     
     Int_t                   run , subrun , event , ccnc;
-    Int_t                   Nprimaries , Np , Nn , Npi , Nmu , Nel , Ntot;
+    Int_t                   Nprimaries , Nnu , Np , Nn , Npi , Nmu , Nel , Ntot;
     
     
     TVector3                vertex_position;
@@ -89,7 +89,7 @@ public:
 
     
     TLorentzVector              momentum, Plead ;
-    TLorentzVector              nu      ,  muon , q;
+    TLorentzVector              nu      ,  muon , q ;
     TLorentzVector              n_miss  , Pcm   , Prec;
     std::vector<TLorentzVector> protons , neutrons;
     std::vector<TVector3>       p3vect  , n3vect;

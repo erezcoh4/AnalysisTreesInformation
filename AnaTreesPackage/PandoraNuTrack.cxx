@@ -7,7 +7,7 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PandoraNuTrack::PandoraNuTrack():
-MCpdgCode(-100),
+MCpdgCode(-1000),
 run(-100),
 subrun(-100),
 event(-100),
