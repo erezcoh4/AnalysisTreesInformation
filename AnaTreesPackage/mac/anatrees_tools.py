@@ -904,16 +904,22 @@ def extract_anatrees_information(in_chain, Option,
 
 
     print_filename( events_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_file_name)) )
-    print_filename( resutls_file_name, "%d tracks features (%.2f MB)"%(counter,filesize_in_MB(resutls_file_name) ) )
-    print_filename( TracksAnaFileName, "root file (%.2f MB)"%filesize_in_MB(TracksAnaFileName) )
+    print_filename( resutls_file_name,"%d tracks features (%.2f MB)"%(counter,filesize_in_MB(resutls_file_name) ) )
+    print_filename( TracksAnaFileName,"%d events/%d genie root file (%.2f MB)"%(TracksTree.GetEntries(),GENIETree.GetEntries(),filesize_in_MB(TracksAnaFileName)) )
     
-    if do_pandora_cosmic: print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
+    if do_pandora_cosmic:
+            print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
+    
     if MCmode:
         print_filename( resutls_file_name , "%d g4 particles (%.2f MB)"%(g4_counter,filesize_in_MB(g4info_file_name)) )
         GENIETree.Write()
+        print "wrote GENIE Tree"
     
     TracksTree.Write()
+    print "wrote Tracks Tree (events)"
+
     OutFile.Close()
+    print "closed output file"
 # ----------------------------------------------------------------------------------------------------
 
 
