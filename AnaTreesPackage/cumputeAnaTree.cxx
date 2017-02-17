@@ -775,9 +775,10 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
                 // in order to match genie primary to a pandoraNu track
                 // one can not use track-id, since geant4 and genie assign differnet track-ids...
                 // so we match the momentum and energy to within 1 MeV
-                if ( t.MCpdgCode == genie_pdg[primary] &&
-                    fabs(t.truth_P - genie_P[primary])<0.001 &&
-                    fabs(t.truth_Eng - genie_Eng[primary])<0.001
+                if ( t.MCpdgCode == genie_pdg[primary]  &&
+                    t.truth_P == genie_P[primary]       &&
+                    t.truth_Mass == genie_mass[primary] &&
+                    t.truth_Eng == genie_Eng[primary]
                     ){
                     primary_pandoraNutrack = t;
                 }

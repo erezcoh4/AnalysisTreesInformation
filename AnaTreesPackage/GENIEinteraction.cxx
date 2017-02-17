@@ -51,9 +51,9 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
     
     momentum.SetVectM( TVector3 ( fPx , fPy , fPz ) , fmass );
     
-    if (status_code.back()==1) { // status code 0 particles are unstable or do not exit the nucleus are are thus irrelevant
+    if (status_code.back()==1) { // status code 0 particles are unstable or do not exit the nucleus and are thus irrelevant
         
-        Ntot++;
+        if (pdg.back()!=14) Ntot++;
         
         switch (pdg.back()) {
                 
