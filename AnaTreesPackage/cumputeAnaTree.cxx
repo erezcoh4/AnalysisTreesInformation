@@ -766,13 +766,19 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     
     c_genie_interaction = GENIEinteraction( genie_no_primaries , nu_interactions.back().nu );
     c_genie_interaction.SetRSE( run , subrun , event );
-    c_genie_interaction.SetCCNC( ccnc_truth[n] ); // it is very rarely that mcevents > 1 so that we should care about ccnc_truth[i>0]
+    c_genie_interaction.SetCCNC( ccnc_truth[n] ); // only very rarely mcevents > 1 ....
     
     for ( Int_t primary = 0 ; primary < genie_no_primaries ; primary ++ ) {
         PandoraNuTrack primary_pandoraNutrack;
         if(!tracks.empty()){
             for (auto t: tracks) {
-                if (t.track_id == genie_trackID[primary]){
+                // in order to match genie primary to a pandoraNu track
+                // one can not use track-id, since geant4 and genie assign differnet track-ids...
+                // so we match the momentum and energy to within 1 MeV
+                if ( t.MCpdgCode == genie_pdg[primary] &&
+                    fabs(t.truth_P - genie_P[primary])<0.001 &&
+                    fabs(t.truth_Eng - genie_Eng[primary])<0.001
+                    ){
                     primary_pandoraNutrack = t;
                 }
             }
