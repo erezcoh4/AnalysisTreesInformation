@@ -46,7 +46,7 @@ public:
     
     
     // running
-    bool         AddPrimary ( Int_t,Float_t,Float_t,Float_t,Float_t,Float_t,Int_t,Float_t,Int_t,Int_t,Int_t,bool,PandoraNuTrack );
+    bool         AddPrimary ( Int_t,Float_t,Float_t,Float_t,Float_t,Float_t,Int_t,Float_t,Int_t,Int_t,Int_t,Int_t,PandoraNuTrack );
     vector<size_t> sort_by_momentum_magnitude(const vector<TVector3> &v);
     bool       SortNucleons ();
     bool  ComputeKinematics ();
