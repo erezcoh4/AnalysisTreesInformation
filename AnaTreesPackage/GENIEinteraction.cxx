@@ -15,6 +15,7 @@ ccnc(-100)
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 GENIEinteraction::GENIEinteraction( Int_t fNprimaries, TLorentzVector fnu ){
     Nprimaries = fNprimaries;
+    muonTrackReconstructed = protonTrackReconstructed = false;
     nu = fnu;
     Np = Nn = Npi = Nmu = Nel = Ntot = 0;
     ccnc = -100;
@@ -73,7 +74,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
             case 2212: // p
                 p3vect.push_back( momentum.Vect() ) ;
                 protonTracks.push_back(fprimarPandoraNuTrack);
-                protonTrack = fprimarPandoraNuTrack; // for CC1p, there is only one proton track, protonTrack. 
+                protonTrack = fprimarPandoraNuTrack; // for CC1p, there is only one proton track, protonTrack.
                 protonTrackReconstructed = track_reconstructed;
                 Np++;
                 break;
