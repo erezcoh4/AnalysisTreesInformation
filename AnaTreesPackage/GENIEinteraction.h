@@ -36,7 +36,7 @@ public:
     
     /// Default constructor
     GENIEinteraction();
-    GENIEinteraction(Int_t fNprimaries, TLorentzVector fnu);
+    GENIEinteraction(Int_t fNprimaries);
     ~GENIEinteraction();
     
     
@@ -53,8 +53,15 @@ public:
     bool   ComputePmissPrec ();
     bool           FindCC1p ();
     
-    void            SetRSE (int frun , int fsubrun , int fevent)    {run=frun; subrun=fsubrun;event=fevent;};
-    void           SetCCNC (int fccnc)                              {ccnc = fccnc;};
+    
+    // SETters
+    void      SetNuMomentum (Float_t, Float_t, Float_t, Float_t );
+    
+    void  SetVertexPosition (TVector3 fpos)                         {vertex_position = fpos;};
+    void             SetRSE (int frun , int fsubrun , int fevent)   {run=frun; subrun=fsubrun;event=fevent;};
+    void            SetCCNC (int fccnc)                             {ccnc = fccnc;};
+    void SetVertexContained (bool fcontained)                       {IsVertexContained = fcontained;};
+    
     
     
     Float_t                 Xb , Q2 ;
@@ -62,6 +69,9 @@ public:
     
     Int_t                   run , subrun , event , ccnc;
     Int_t                   Nprimaries , Np , Nn , Npi , Nmu , Nel , Ntot;
+    
+    
+    TVector3                vertex_position;
     
     std::vector<Int_t>      pdg;          //particle type (pdg) of the GENIE particle
     std::vector<Float_t>    Eng;           //Energy of the GENIE particle in GeV
@@ -85,8 +95,9 @@ public:
     std::vector<TVector3>       p3vect  , n3vect;
     
     
-    Int_t                       IsCC1p; // topology of the interaction: CC1p;
-    Int_t                       muonTrackReconstructed, protonTrackReconstructed;
+    // booleans on the genie interaction
+    bool                       IsVertexContained,  IsCC1p; // topology of the interaction: CC1p;
+    bool                       muonTrackReconstructed, protonTrackReconstructed;
     std::vector<PandoraNuTrack> tracks; // pandoraNu tracks that are associated with the genie interacion
     
     PandoraNuTrack              muonTrack, protonTrack;

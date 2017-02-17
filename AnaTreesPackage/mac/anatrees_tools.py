@@ -856,7 +856,7 @@ def extract_anatrees_information(in_chain, Option,
     for entry in range(Nreduced): #{
         
         calc.GetEntry( entry )
-        entry_rse = [calc.run,calc.subrun,calc.event]
+        rse = [calc.run,calc.subrun,calc.event]
         
         if flags.verbose>2: print 'extract information from ', entry_rse
         calc.extract_information( True )
@@ -874,8 +874,12 @@ def extract_anatrees_information(in_chain, Option,
                 g4particle = calc.GetG4Particle(i)
                 stream_g4_features_to_file ( g4particle , writer_g4 )
                 g4_counter = g4_counter + 1
-            calc.FillGENIETree()
             #}
+            
+            if calc.mcevts_truth > 0: #{
+                calc.FillGENIETree()
+            #}
+
         #} end geant4 particles
         
         

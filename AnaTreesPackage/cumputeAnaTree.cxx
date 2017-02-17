@@ -307,7 +307,7 @@ void cumputeAnaTree::InitEntry(){
     if (!mutual_vertices.empty())       mutual_vertices.clear();
     if (!g4particles.empty())           g4particles.clear();
     Ntracks = 0;
-    Ncosmictracks = 0;
+    Ncosmictracks = mcevts_truth = 0;
     NnuInteractions = ntracks_pandoraNu = ntracks_pandoraCosmic = Ng4particles = 0;
 }
 
@@ -703,7 +703,9 @@ bool cumputeAnaTree::GetTruthInformation(){
     //loop over neutrino interactions
     if (debug > 3) SHOW(mcevts_truth);
     for (Int_t n = 0; n < mcevts_truth && n < kMaxTruth ; n++) {
-        
+
+        GetGENIEInformation( n );
+
         if (debug>1) {
             Printf("mc event %d",n);
             cout
@@ -733,6 +735,7 @@ bool cumputeAnaTree::GetTruthInformation(){
         
         if (debug>2) { SHOWTVector3(c_nu_interaction.Vertex ); SHOW(c_nu_interaction.ccnc ); }
         
+        
         if ( VertexContained( c_nu_interaction.Vertex ) ) {
             
             if (debug>3) { cout<<"vertex contained "<< endl;}
@@ -746,10 +749,6 @@ bool cumputeAnaTree::GetTruthInformation(){
             c_nu_interaction.SetLeptonMomentum( lep_mom_truth[n] , lep_dcosx_truth[n] , lep_dcosy_truth[n] , lep_dcosz_truth[n] );
             c_nu_interaction.Set_q_vector();
             nu_interactions.push_back(c_nu_interaction);
-            
-            GetGENIEInformation( n );
-            GENIETree -> Fill();
-
             NnuInteractions++;
             //            }// end of if interaction is CCνµ
             
@@ -764,29 +763,40 @@ bool cumputeAnaTree::GetTruthInformation(){
 bool cumputeAnaTree::GetGENIEInformation(int n){
     if (debug > 3) Printf("getting GENIE information");
     
-    c_genie_interaction = GENIEinteraction( genie_no_primaries , nu_interactions.back().nu );
+    c_genie_interaction = GENIEinteraction( genie_no_primaries  );
+    c_nu_interaction.SetNuMomentum( enu_truth[n] , nu_dcosx_truth[n] , nu_dcosy_truth[n] , nu_dcosz_truth[n] );
+    
     c_genie_interaction.SetRSE( run , subrun , event );
     c_genie_interaction.SetCCNC( ccnc_truth[n] ); // only very rarely mcevents > 1 ....
     
+    c_genie_interaction.SetVertexPosition( TVector3(nuvtxx_truth[n] , nuvtxy_truth[n] , nuvtxz_truth[n]) );
+    c_genie_interaction.SetVertexContained( VertexContained( c_genie_interaction.vertex_position ) );
+    
     for ( Int_t primary = 0 ; primary < genie_no_primaries ; primary ++ ) {
         PandoraNuTrack primary_pandoraNutrack;
-        Int_t track_reconstructed = 0;
-        if(!tracks.empty()){
-            for (auto t: tracks) {
-                // in order to match genie primary to a pandoraNu track
-                // one can not use track-id, since geant4 and genie assign differnet track-ids...
-                // so we match the momentum and energy to within 1 MeV
-                if ( t.MCpdgCode == genie_pdg[primary]  &&
-                    t.truth_P == genie_P[primary]       &&
-                    t.truth_Mass == genie_mass[primary] &&
-                    t.truth_Eng == genie_Eng[primary]
-                    ){
-                    primary_pandoraNutrack = t;
-                    track_reconstructed = 1;
-                    break;
+        bool track_reconstructed = false;
+        
+        if (c_genie_interaction.IsVertexContained && genie_status_code[primary]==1 ){ // status_code=0 are unstable/intermediate particles
+            
+            if(!tracks.empty()){
+                for (auto t: tracks) {
+                    // in order to match genie primary to a pandoraNu track
+                    // one can not use track-id, since geant4 and genie assign differnet track-ids...
+                    // so we match the momentum and energy to within 1 MeV
+                    if (t.MCpdgCode == genie_pdg[primary]   &&
+                        t.truth_P == genie_P[primary]       &&
+                        t.truth_start_pos == c_genie_interaction.vertex_position
+                        ){
+                        primary_pandoraNutrack = t;
+                        track_reconstructed = true;
+                        if (debug>3) Printf("track %d reconstructed as primary no. %d! ",t.track_id,primary);
+                        break;
+                    }
                 }
             }
         }
+        if (debug>4 && track_reconstructed) primary_pandoraNutrack.Print();
+        
         c_genie_interaction.AddPrimary(
                                        genie_pdg[primary]
                                        ,genie_Eng[primary]
@@ -995,7 +1005,7 @@ bool cumputeAnaTree::FillOutTree (bool fDo){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::FillGNEIETree (bool fDo){
+bool cumputeAnaTree::FillGENIETree (bool fDo){
     
     GENIETree -> Fill();
     return true;

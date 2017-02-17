@@ -13,13 +13,18 @@ ccnc(-100)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-GENIEinteraction::GENIEinteraction( Int_t fNprimaries, TLorentzVector fnu ){
+GENIEinteraction::GENIEinteraction( Int_t fNprimaries ){
     Nprimaries = fNprimaries;
     muonTrackReconstructed = protonTrackReconstructed = false;
-    nu = fnu;
     Np = Nn = Npi = Nmu = Nel = Ntot = 0;
     ccnc = -100;
-    IsCC1p = -100;
+    IsCC1p = false;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void GENIEinteraction::SetNuMomentum( Float_t magnitude , Float_t dcosx , Float_t dcosy , Float_t dcosz ){
+    nu.SetVectMag( TVector3( magnitude*dcosx , magnitude*dcosy , magnitude*dcosz ) , 0 );
 }
 
 
@@ -110,11 +115,11 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool GENIEinteraction::FindCC1p(){
     
-    if ( ccnc==0 && Nmu==1 && Np==1 && Ntot==2 ){
-        IsCC1p = 1;
+    if ( ccnc==0 && Nmu==1 && Np==1 && Npi==0 && Nn==0 && Nel==0 ){
+        IsCC1p = true;
         return true;
     }
-    IsCC1p = 0;
+    IsCC1p = true;
     return false;
 }
 
