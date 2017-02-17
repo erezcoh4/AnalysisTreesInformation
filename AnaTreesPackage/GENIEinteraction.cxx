@@ -19,7 +19,7 @@ GENIEinteraction::GENIEinteraction( Int_t fNprimaries, TLorentzVector fnu ){
     nu = fnu;
     Np = Nn = Npi = Nmu = Nel = Ntot = 0;
     ccnc = -100;
-    IsCC1p = false;
+    IsCC1p = -100;
 }
 
 
@@ -39,7 +39,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                                    ,Int_t ftrackID
                                    ,Int_t fND
                                    ,Int_t fmother
-                                   ,bool track_reconstructed
+                                   ,Int_t track_reconstructed
                                    ,PandoraNuTrack fprimarPandoraNuTrack
                                    ){
     
@@ -111,10 +111,10 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
 bool GENIEinteraction::FindCC1p(){
     
     if ( ccnc==0 && Nmu==1 && Np==1 && Ntot==2 ){
-        IsCC1p = true;
+        IsCC1p = 1;
         return true;
     }
-    IsCC1p = false;
+    IsCC1p = 0;
     return false;
 }
 

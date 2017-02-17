@@ -770,7 +770,7 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     
     for ( Int_t primary = 0 ; primary < genie_no_primaries ; primary ++ ) {
         PandoraNuTrack primary_pandoraNutrack;
-        bool track_reconstructed = false;
+        Int_t track_reconstructed = 0;
         if(!tracks.empty()){
             for (auto t: tracks) {
                 // in order to match genie primary to a pandoraNu track
@@ -782,7 +782,7 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
                     t.truth_Eng == genie_Eng[primary]
                     ){
                     primary_pandoraNutrack = t;
-                    track_reconstructed = true;
+                    track_reconstructed = 1;
                     break;
                 }
             }
@@ -814,8 +814,6 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     c_genie_interaction.FindCC1p();
     
     genie_interaction = c_genie_interaction; // for genie-interactions tree...
-    GENIETree -> Fill();
-    
     genie_interactions.push_back( c_genie_interaction );
     return true;
 }
@@ -996,7 +994,15 @@ bool cumputeAnaTree::FillOutTree (bool fDo){
     
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::FillGNEIETree (bool fDo){
     
+    GENIETree -> Fill();
+    return true;
+    
+}
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::PrintData(int entry){
     

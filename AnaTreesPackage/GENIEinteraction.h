@@ -85,8 +85,8 @@ public:
     std::vector<TVector3>       p3vect  , n3vect;
     
     
-    bool                        IsCC1p; // topology of the interaction: CC1p;
-    bool                        muonTrackReconstructed, protonTrackReconstructed;
+    Int_t                       IsCC1p; // topology of the interaction: CC1p;
+    Int_t                       muonTrackReconstructed, protonTrackReconstructed;
     std::vector<PandoraNuTrack> tracks; // pandoraNu tracks that are associated with the genie interacion
     
     PandoraNuTrack              muonTrack, protonTrack;

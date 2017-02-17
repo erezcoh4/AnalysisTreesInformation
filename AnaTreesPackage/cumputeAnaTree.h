@@ -95,6 +95,7 @@ public:
     
     // running
     bool    extract_information (bool fDo=true);
+    bool          FillGNEIETree (bool fDo=true);
     bool            FillOutTree (bool fDo=true);
     bool    GetTruthInformation ();
     bool    GetGENIEInformation (int n=0);

@@ -874,6 +874,7 @@ def extract_anatrees_information(in_chain, Option,
                 g4particle = calc.GetG4Particle(i)
                 stream_g4_features_to_file ( g4particle , writer_g4 )
                 g4_counter = g4_counter + 1
+            calc.FillGENIETree()
             #}
         #} end geant4 particles
         
