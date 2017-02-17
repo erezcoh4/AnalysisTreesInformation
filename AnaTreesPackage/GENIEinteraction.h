@@ -86,7 +86,7 @@ public:
     
     
     bool                        IsCC1p; // topology of the interaction: CC1p;
-    bool                        muonTrackReconstructed, protonTrackReconstructed
+    bool                        muonTrackReconstructed, protonTrackReconstructed;
     std::vector<PandoraNuTrack> tracks; // pandoraNu tracks that are associated with the genie interacion
     
     PandoraNuTrack              muonTrack, protonTrack;
