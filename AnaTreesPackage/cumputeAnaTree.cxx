@@ -770,6 +770,7 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     
     for ( Int_t primary = 0 ; primary < genie_no_primaries ; primary ++ ) {
         PandoraNuTrack primary_pandoraNutrack;
+        bool track_reconstructed = false;
         if(!tracks.empty()){
             for (auto t: tracks) {
                 // in order to match genie primary to a pandoraNu track
@@ -781,6 +782,8 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
                     t.truth_Eng == genie_Eng[primary]
                     ){
                     primary_pandoraNutrack = t;
+                    track_reconstructed = true;
+                    break;
                 }
             }
         }
@@ -796,6 +799,7 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
                                        ,genie_trackID[primary]
                                        ,genie_ND[primary]
                                        ,genie_mother[primary]
+                                       ,track_reconstructed
                                        ,primary_pandoraNutrack
                                        );
     }

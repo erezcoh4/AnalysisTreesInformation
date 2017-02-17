@@ -38,6 +38,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                                    ,Int_t ftrackID
                                    ,Int_t fND
                                    ,Int_t fmother
+                                   ,bool track_reconstructed
                                    ,PandoraNuTrack fprimarPandoraNuTrack
                                    ){
     
@@ -64,6 +65,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
             case 13: // µ
                 muon = momentum;
                 muonTrack = fprimarPandoraNuTrack;
+                muonTrackReconstructed = track_reconstructed;
                 Nmu++;
                 break;
                 
@@ -71,6 +73,8 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
             case 2212: // p
                 p3vect.push_back( momentum.Vect() ) ;
                 protonTracks.push_back(fprimarPandoraNuTrack);
+                protonTrack = fprimarPandoraNuTrack; // for CC1p, there is only one proton track, protonTrack. 
+                protonTrackReconstructed = track_reconstructed;
                 Np++;
                 break;
                 

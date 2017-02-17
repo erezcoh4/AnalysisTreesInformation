@@ -46,7 +46,7 @@ public:
     
     
     // running
-    bool         AddPrimary ( Int_t,Float_t,Float_t,Float_t,Float_t,Float_t,Int_t,Float_t,Int_t,Int_t,Int_t,PandoraNuTrack );
+    bool         AddPrimary ( Int_t,Float_t,Float_t,Float_t,Float_t,Float_t,Int_t,Float_t,Int_t,Int_t,Int_t,bool,PandoraNuTrack );
     vector<size_t> sort_by_momentum_magnitude(const vector<TVector3> &v);
     bool       SortNucleons ();
     bool  ComputeKinematics ();
@@ -86,9 +86,10 @@ public:
     
     
     bool                        IsCC1p; // topology of the interaction: CC1p;
+    bool                        muonTrackReconstructed, protonTrackReconstructed
     std::vector<PandoraNuTrack> tracks; // pandoraNu tracks that are associated with the genie interacion
     
-    PandoraNuTrack muonTrack;
+    PandoraNuTrack              muonTrack, protonTrack;
     std::vector<PandoraNuTrack> protonTracks;
 
     
