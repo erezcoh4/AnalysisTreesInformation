@@ -858,7 +858,7 @@ def extract_anatrees_information(in_chain, Option,
         calc.GetEntry( entry )
         rse = [calc.run,calc.subrun,calc.event]
         
-        if flags.verbose>2: print 'extract information from ', entry_rse
+        if flags.verbose>2: print 'extract information from ', rse
         calc.extract_information( True )
         if flags.verbose and entry%flags.print_mod==0:
             print'%.0f'%(100.*float(entry)/Nreduced) + '%'
