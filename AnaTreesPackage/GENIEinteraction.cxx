@@ -13,7 +13,7 @@ ccnc(-100)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-GENIEinteraction::GENIEinteraction( Int_t fNprimaries, Int_t fmcevent_id ){
+GENIEinteraction::GENIEinteraction( Int_t fmcevent_id, Int_t fNprimaries ){
     // main vertex properties
     mcevent_id = fmcevent_id;
     Nprimaries = fNprimaries;
@@ -125,7 +125,7 @@ bool GENIEinteraction::FindCC1p(){
         IsCC1p = true;
         return true;
     }
-    IsCC1p = true;
+    IsCC1p = false;
     return false;
 }
 
@@ -214,6 +214,8 @@ void GENIEinteraction::Print(bool DoPrintTracks){
     
     SHOW(mcevent_id);
     SHOW(Nprimaries);
+    SHOW3( Np , Nn , Npi );
+    SHOW2( Nmu , Nel );
     SHOW3( ccnc , IsCC1p , IsVertexContained );
     if (IsCC1p){
         SHOW2( muonTrackReconstructed, protonTrackReconstructed );
@@ -221,7 +223,7 @@ void GENIEinteraction::Print(bool DoPrintTracks){
 
     SHOWstdVector( trackID );
     if(DoPrintTracks && !tracks.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
+        cout << "\033[33m" << tracks.size() << " pandoraNu tracks in GENIE interaction " << mcevent_id << "\033[37m" << endl;
         for (auto t: tracks) {
             t.Print();
         }

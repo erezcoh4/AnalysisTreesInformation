@@ -833,6 +833,9 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     c_genie_interaction.ComputePmissPrec();
     if(debug>3) Printf("computed p(miss) and p(rec)");
     c_genie_interaction.FindCC1p();
+    if(debug>3) Printf("found GENIE cc1p");
+
+    
     
     genie_interaction = c_genie_interaction; // for genie-interactions tree...
     genie_interactions.push_back( c_genie_interaction );
@@ -1009,28 +1012,39 @@ void cumputeAnaTree::CreateROIsCCQE( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t it
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::TagCC1pTracks(){
+    if(debug>3) Printf("cumputeAnaTree::TagCC1pTracks()");
+    
     // Match pandoraNu tracks to true-CC1p (GENIE interactions),
     // and if they come from GENIE-CC1p, tag them as comming form
     // this CC1p.
     // Add the CC1p id (mcevts_truth number) so that we know later if
     // the proton and the muon came from the same CC1p
-    
+
     // loop over all tracks reconstructed in this event
-    for (auto pandoraNu_track:tracks){
+    for (auto & pandoraNu_track:tracks){
+        //        SHOW(pandoraNu_track.track_id);
         
         if(!genie_interactions.empty()){
-            
             // loop over all tracks in all GENIE neutrino interactions
-            for (auto genie_interaction:genie_interactions){
-                for (auto genie_interaction_reconstructed_track: genie_interaction.tracks) {
+            for (auto & genie_interaction:genie_interactions){
+                //                SHOW(genie_interaction.mcevent_id);
+                
+                for (auto & genie_interaction_reconstructed_track: genie_interaction.tracks) {
+                    //                    SHOW(genie_interaction_reconstructed_track.track_id);
+                    
                     // match reconstructed track from the GENIE neutrino interaction to the pandoraNu track at interest
                     if (genie_interaction_reconstructed_track.track_id == pandoraNu_track.track_id){
+                        //                        Printf("matched reconstructed to GENIE track!");
+                        //                        SHOW(genie_interaction.IsCC1p);
+                        
                         // if match, flag the track as true (GENIE) CC1p or not
                         if (genie_interaction.IsCC1p==true){
                             pandoraNu_track.IsGENIECC1p = true;
                             pandoraNu_track.mcevent_id = genie_interaction.mcevent_id;
+                            
+                            genie_interaction_reconstructed_track.IsGENIECC1p = true;
+                            genie_interaction_reconstructed_track.mcevent_id = genie_interaction.mcevent_id;
                         }
-                        
                     }
                 }
             }
@@ -1248,7 +1262,7 @@ void cumputeAnaTree::PrintData(int entry){
     if(!genie_interactions.empty()){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << genie_interactions.size() << " genie interactions\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
         for (auto genie_interaction: genie_interactions) {
-            genie_interaction.Print();
+            genie_interaction.Print(true);
         }
     }
     if(!cosmic_tracks.empty()){

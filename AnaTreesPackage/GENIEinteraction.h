@@ -36,7 +36,7 @@ public:
     
     /// Default constructor
     GENIEinteraction();
-    GENIEinteraction(Int_t fNprimaries, Int_t fmcevent_id);
+    GENIEinteraction(Int_t fmcevent_id, Int_t fNprimaries);
     ~GENIEinteraction();
     
     

@@ -27,7 +27,8 @@ cosmicscore(-100),
 coscontscore(-100),
 process_primary(-100),
 IsGENIECC1p(-100),
-mcevent_id(-100)
+mcevent_id(-100),
+truth_ccnc(-100)
 {}
 
 
@@ -57,7 +58,7 @@ PandoraNuTrack::PandoraNuTrack (
     SetTheta(ftheta);
     SetPhi(fphi);
     NNeighborTracks = 0;
-    
+    IsGENIECC1p = false;
     
 }
 
