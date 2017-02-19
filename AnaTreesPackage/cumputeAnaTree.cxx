@@ -25,6 +25,7 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
     if (MCmode){
         GetTruthInformation();
         if (debug>3) Printf("Got Truth Information");
+        TagCC1pTracks();
     }
 
     // if we want to collect vertices, these should be uncommented out
@@ -712,8 +713,8 @@ bool cumputeAnaTree::GetTruthInformation(){
 
         GetGENIEInformation( n );
 
-        if (debug>1) {
-            Printf("mc event %d",n);
+        if (debug>5) {
+            Printf("blah mc event %d",n);
             cout
             << ", run " << run
             << ", subrun " << subrun
@@ -739,6 +740,7 @@ bool cumputeAnaTree::GetTruthInformation(){
                                         ,Q2_truth[n]                                                    // momentum transfer
                                         );
         
+        
         if (debug>2) { SHOWTVector3(c_nu_interaction.Vertex ); SHOW(c_nu_interaction.ccnc ); }
         
         
@@ -754,7 +756,7 @@ bool cumputeAnaTree::GetTruthInformation(){
             c_nu_interaction.SetNuMomentum( enu_truth[n] , nu_dcosx_truth[n] , nu_dcosy_truth[n] , nu_dcosz_truth[n] );
             c_nu_interaction.SetLeptonMomentum( lep_mom_truth[n] , lep_dcosx_truth[n] , lep_dcosy_truth[n] , lep_dcosz_truth[n] );
             c_nu_interaction.Set_q_vector();
-            nu_interactions.push_back(c_nu_interaction);
+            nu_interactions.push_back(c_nu_interaction );
             NnuInteractions++;
             //            }// end of if interaction is CCνµ
             
@@ -769,7 +771,9 @@ bool cumputeAnaTree::GetTruthInformation(){
 bool cumputeAnaTree::GetGENIEInformation(int n){
     if (debug > 3) Printf("getting GENIE information");
     
-    c_genie_interaction = GENIEinteraction( genie_no_primaries  );
+    c_genie_interaction = GENIEinteraction(n,                                   // MC event-id
+                                           genie_no_primaries                   // No. of primaries
+                                           );
     c_nu_interaction.SetNuMomentum( enu_truth[n] , nu_dcosx_truth[n] , nu_dcosy_truth[n] , nu_dcosz_truth[n] );
     
     c_genie_interaction.SetRSE( run , subrun , event );
@@ -812,10 +816,11 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
                                        ,genie_P[primary]
                                        ,genie_status_code[primary]
                                        ,genie_mass[primary]
-                                       ,genie_trackID[primary]
+                                       //                                       ,genie_trackID[primary] // useless
                                        ,genie_ND[primary]
                                        ,genie_mother[primary]
                                        ,track_reconstructed
+                                       ,primary_pandoraNutrack.track_id
                                        ,primary_pandoraNutrack
                                        );
     }
@@ -1003,6 +1008,38 @@ void cumputeAnaTree::CreateROIsCCQE( Int_t ivtx , Int_t itrk_NuSelMuon, Int_t it
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::TagCC1pTracks(){
+    // Match pandoraNu tracks to true-CC1p (GENIE interactions),
+    // and if they come from GENIE-CC1p, tag them as comming form
+    // this CC1p.
+    // Add the CC1p id (mcevts_truth number) so that we know later if
+    // the proton and the muon came from the same CC1p
+    
+    // loop over all tracks reconstructed in this event
+    for (auto pandoraNu_track:tracks){
+        
+        if(!genie_interactions.empty()){
+            
+            // loop over all tracks in all GENIE neutrino interactions
+            for (auto genie_interaction:genie_interactions){
+                for (auto genie_interaction_reconstructed_track: genie_interaction.tracks) {
+                    // match reconstructed track from the GENIE neutrino interaction to the pandoraNu track at interest
+                    if (genie_interaction_reconstructed_track.track_id == pandoraNu_track.track_id){
+                        // if match, flag the track as true (GENIE) CC1p or not
+                        if (genie_interaction.IsCC1p==true){
+                            pandoraNu_track.IsGENIECC1p = true;
+                            pandoraNu_track.mcevent_id = genie_interaction.mcevent_id;
+                        }
+                        
+                    }
+                }
+            }
+        }
+    }
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::FillOutTree (bool fDo){
     
     OutTree -> Fill();
@@ -1018,63 +1055,6 @@ bool cumputeAnaTree::FillGENIETree (bool fDo){
     
 }
 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void cumputeAnaTree::PrintData(int entry){
-    
-    EndEventBlock();
-    printf("\t[%.1f%%]\t",100.*(float)entry/Nentries);
-    SHOW(entry);
-    SHOW3(run , subrun , event);
-    if(!nu_interactions.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << nu_interactions.size() << " neutrino interactions\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
-        for (auto nu_interaction: nu_interactions) {
-            nu_interaction.Print();
-        }
-    }
-    if(!genie_interactions.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << genie_interactions.size() << " genie interactions\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
-        for (auto genie_interaction: genie_interactions) {
-            genie_interaction.Print();
-        }
-    }
-    if(!cosmic_tracks.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << cosmic_tracks.size() << " pandoraCosmic tracks\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
-        
-        for (auto t: cosmic_tracks) {
-            t.Print();
-        }
-    }
-    if(!tracks.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
-        
-        for (auto t: tracks) {
-            t.Print();
-        }
-    }
-    if(!tracks_vertices.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks_vertices.size() << " tracks vertices\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
-        
-        for (auto v: tracks_vertices) {
-            v.Print();
-        }
-    }
-    if(!mutual_vertices.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << mutual_vertices.size() << " mutual vertices\n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
-        for (auto v: mutual_vertices) {
-            v.Print();
-        }
-    }
-    if(!g4particles.empty()){
-        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << g4particles.size() << " g4 particles \n\n" << "xxxxxxxxxxxxxx\n\n"<< "\033[37m" << endl;
-        for (auto v: g4particles) {
-            v.Print();
-        }
-    }
-    
-    EndEventBlock();
-    
-}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::IsGoodTrack ( int fTrackID ){
@@ -1249,5 +1229,65 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
     if(debug>2) {SHOWstdVector(ymax_cosmictracks); SHOWstdVector(Ncosmictracks_ymax);}
     
 }
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::PrintData(int entry){
+    
+    PrintLine();
+    // printf("\t[%.1f%%]\t",100.*(float)entry/Nentries);
+    // SHOW(entry);
+    SHOW3(run , subrun , event);
+    //    if(!nu_interactions.empty()){
+    //        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << nu_interactions.size() << " neutrino interactions\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
+    //        for (auto nu_interaction: nu_interactions) {
+    //            nu_interaction.Print();
+    //        }
+    //    }
+    if(!genie_interactions.empty()){
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << genie_interactions.size() << " genie interactions\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
+        for (auto genie_interaction: genie_interactions) {
+            genie_interaction.Print();
+        }
+    }
+    if(!cosmic_tracks.empty()){
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << cosmic_tracks.size() << " pandoraCosmic tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
+        
+        for (auto t: cosmic_tracks) {
+            t.Print();
+        }
+    }
+    if(!tracks.empty()){
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
+        
+        for (auto t: tracks) {
+            t.Print();
+        }
+    }
+    if(!tracks_vertices.empty()){
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks_vertices.size() << " tracks vertices\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
+        
+        for (auto v: tracks_vertices) {
+            v.Print();
+        }
+    }
+    if(!mutual_vertices.empty()){
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << mutual_vertices.size() << " mutual vertices\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
+        for (auto v: mutual_vertices) {
+            v.Print();
+        }
+    }
+    if(!g4particles.empty()){
+        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << g4particles.size() << " g4 particles \n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
+        for (auto v: g4particles) {
+            v.Print();
+        }
+    }
+    
+    EndEventBlock();
+    
+}
+
 
 #endif

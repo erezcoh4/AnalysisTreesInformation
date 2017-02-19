@@ -109,6 +109,7 @@ public:
     void              Write2CSV ( Int_t, Int_t, Int_t  );
     void    GetEnergyDeposition ( int j );
     void     GetSoftwareTrigger ();
+    void          TagCC1pTracks ();
     
     
     

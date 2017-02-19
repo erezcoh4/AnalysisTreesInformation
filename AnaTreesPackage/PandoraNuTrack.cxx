@@ -25,7 +25,9 @@ pidpida(-100),
 pidchi(-100),
 cosmicscore(-100),
 coscontscore(-100),
-process_primary(0)
+process_primary(-100),
+IsGENIECC1p(-100),
+mcevent_id(-100)
 {}
 
 
@@ -238,24 +240,24 @@ void PandoraNuTrack::Print(){
         PrintPhys( CalorimetryPDG[plane] , Form(" for plane %d",plane) );
         PrintBox(roi[plane]);
     }
-    cout << "\033[33m" << NNeighborTracks << " neighboring tracks" ;
-    for (size_t i = 0 ; i < NNeighborTracks ; i++ ){
-        cout
-        << "\ntrack "               << NeighborTracks[i]
-        << ", distance: "           << NeighborTracksDistance[i]
-        << " cm, relative angle:"   << NeighborTracksAngles[i]
-        << " deg.";
-    }
-    cout << "\033[0m" << endl;
-    if ( truth_Eng && truth_theta && truth_phi){
+    //    cout << "\033[33m" << NNeighborTracks << " neighboring tracks" ;
+    //    for (size_t i = 0 ; i < NNeighborTracks ; i++ ){
+    //        cout
+    //        << "\ntrack "               << NeighborTracks[i]
+    //        << ", distance: "           << NeighborTracksDistance[i]
+    //        << " cm, relative angle:"   << NeighborTracksAngles[i]
+    //        << " deg.";
+    //    }
+    //    cout << "\033[0m" << endl;
+    if ( truth_Eng>0 && truth_P>0 ){
         cout << "MC information: " << endl;
-        SHOW ( process_primary );
-        SHOW ( MCpdgCode );
+        SHOW ( mcevent_id );
+        SHOW2 ( process_primary , MCpdgCode );
         PrintPhys (truth_P , "GeV/c");
         SHOW3(truth_Eng , truth_theta , truth_phi);
         SHOWTVector3(truth_start_pos);
         SHOWTVector3(truth_end_pos);
-        SHOW(truth_ccnc);
+        SHOW2( truth_ccnc, IsGENIECC1p );
     }
 
 

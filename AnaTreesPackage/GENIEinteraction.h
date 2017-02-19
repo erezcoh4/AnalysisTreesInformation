@@ -36,17 +36,31 @@ public:
     
     /// Default constructor
     GENIEinteraction();
-    GENIEinteraction(Int_t fNprimaries);
+    GENIEinteraction(Int_t fNprimaries, Int_t fmcevent_id);
     ~GENIEinteraction();
     
     
     
-    void Print();
+    void              Print (bool DoPrintTracks=false);
     
     
     
     // running
-    bool         AddPrimary ( Int_t,Float_t,Float_t,Float_t,Float_t,Float_t,Int_t,Float_t,Int_t,Int_t,Int_t,Int_t,PandoraNuTrack );
+    bool         AddPrimary (Int_t fpdg=-1000
+                             ,Float_t fEng=-1000
+                             ,Float_t fPx=-1000
+                             ,Float_t fPy=-1000
+                             ,Float_t fPz=-1000
+                             ,Float_t fP=-1000
+                             ,Int_t fstatus_code=-1000
+                             ,Float_t fmass=-1000
+                             ,Int_t fND=-1000
+                             ,Int_t fmother=-1000
+                             ,Int_t track_reconstructed=-1000
+                             ,Int_t ftrackID=-1000
+                             ,PandoraNuTrack fprimarPandoraNuTrack=PandoraNuTrack()
+                             );
+
     vector<size_t> sort_by_momentum_magnitude(const vector<TVector3> &v);
     bool       SortNucleons ();
     bool  ComputeKinematics ();
@@ -67,7 +81,7 @@ public:
     Float_t                 Xb , Q2 ;
     Float_t                 theta_pq , p_over_q , Mmiss;
     
-    Int_t                   run , subrun , event , ccnc;
+    Int_t                   run , subrun , event , ccnc, mcevent_id;
     Int_t                   Nprimaries , Nnu , Np , Nn , Npi , Nmu , Nel , Ntot;
     
     

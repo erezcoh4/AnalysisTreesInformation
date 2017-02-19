@@ -858,11 +858,10 @@ def extract_anatrees_information(in_chain, Option,
         calc.GetEntry( entry )
         rse = [calc.run,calc.subrun,calc.event]
         
-        if flags.verbose>2: print 'extract information from ', rse
         calc.extract_information( True )
         if flags.verbose and entry%flags.print_mod==0:
             print'%.0f'%(100.*float(entry)/Nreduced) + '%'
-            if flags.verbose>2 and entry%flags.print_mod==0: calc.PrintData( entry )
+            if flags.verbose>1 and entry%flags.print_mod==0: calc.PrintData( entry )
         
         if flags.verbose>2: print 'stream event features to file'
         stream_event_features_to_file ( calc , events_writer )

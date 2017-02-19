@@ -239,6 +239,10 @@ public:
     Float_t     truth_theta         , truth_phi;
     Float_t     truth_startx        , truth_starty , truth_startz , truth_endx , truth_endy , truth_endz;
     TVector3    truth_start_pos     , truth_end_pos;
+    
+    // true CC1p (GENIE interaction)
+    bool        IsGENIECC1p;
+    Int_t       mcevent_id;
 
     
     
