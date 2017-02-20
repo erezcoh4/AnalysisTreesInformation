@@ -1,3 +1,10 @@
+'''
+    
+    find combinations of topological cuts that maximize the 
+    classification efficiency and purity of CC1p selecion
+    
+    '''
+
 import sys,ast; sys.path.insert(0, '../AnaTreesPackage/mac')
 from anatrees_tools import *
 from calc_tools import *

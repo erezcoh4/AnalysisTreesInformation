@@ -18,13 +18,9 @@
 #include "../../mySoftware/MySoftwarePackage/myIncludes.h"
 #include "PandoraNuTrack.h"
 #include "myVertex.h"
+#include "GENIEinteraction.h"
 
-//#include "GeoAlgo.h"
-//#include "nuInteraction.h"
-//#include "GENIEinteraction.h"
-//#include "track_vertex.h"
-//#include "mutual_vertex.h"
-//#include "LArG4Particle.h"
+
 
 /**
  \class calcEventTopologies
@@ -40,7 +36,7 @@ public:
     /// Default constructor
     calcEventTopologies(){};
     ~calcEventTopologies(){}
-    calcEventTopologies( TTree * fInTree,
+    calcEventTopologies( TTree * fInTree,std::string o="CC1pTopology",
                         int fdebug=0,
                         bool fMCmode=false,
                         float fmax_mu_p_distance=10);
@@ -73,14 +69,19 @@ public:
     // running
     bool        extract_information ();
     void                   GetEntry ( int );
+    void              GetGENIEEntry ( int );
+    
     bool    ClusterTracksToVertices ();
+    bool     ClusterGENIEToVertices ();
     bool            AnalyzeVertices ();
+    bool      FindGENIECC1pVertices ();
     bool      FindTruthCC1pVertices ();
     bool FindVerticesWithCC1pTopology();
+    bool        Find2tracksVertices ();
+    bool               TagGENIECC1p ();
     
     bool TrackAlreadyIncludedInVerticesList (int ftrack_id);
-    void                      Print (bool DoTracks=false, bool DoVertices=true);
-    
+    void                      Print (bool DoPrintTracks=false, bool DoVertices=false);
     
     // getters
     PandoraNuTrack         GetTrack ( int i )        {return tracks.at(i);};
@@ -88,10 +89,11 @@ public:
     TTree * InTree;
     
     int     debug ;
-    bool    MCmode;
-    Int_t   Nentries,   run, 	subrun,     event;
-    Int_t   Ntracks ,   c_entry;
-    
+    bool    MCmode,     IsGENIECC1p;
+    Int_t   Nentries,   run, 	subrun, event;
+    Int_t   Ntracks,    c_entry;
+    Int_t   Nprimaries, Np,     Nmu,    Npi ,   Nn,   Nel,  ccnc;
+
     
     float   max_mu_p_distance,  min_length_long, max_length_short, PIDA_short_min,  PIDA_short_max, PIDA_long_min,  PIDA_long_max;
     float   delta_phi_min,      delta_phi_max;
@@ -99,12 +101,19 @@ public:
     
     
     PandoraNuTrack              c_track;
-    std::vector<PandoraNuTrack> tracks;
+    std::vector<PandoraNuTrack> tracks,     protonTracks;
     
     myVertex                    c_vertex;
     std::vector<myVertex>       vertices,   CC1p_vertices;
     std::vector<int>            CC1pVerticesID;
 
+
+    std::vector<TLorentzVector> protons;
+    TLorentzVector              GENIEproton, GENIEmuon;
+    PandoraNuTrack              protonTrack, muonTrack;
+    
+    
+    std::vector<GENIEinteraction> genie_interactions;
 
 };
 

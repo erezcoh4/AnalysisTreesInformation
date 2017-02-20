@@ -58,7 +58,7 @@ namespace ROOT {
       ::calcEventTopologies *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::calcEventTopologies));
       static ::ROOT::TGenericClassInfo 
-         instance("calcEventTopologies", "calcEventTopologies.h", 34,
+         instance("calcEventTopologies", "calcEventTopologies.h", 30,
                   typeid(::calcEventTopologies), DefineBehavior(ptr, ptr),
                   &calcEventTopologies_Dictionary, isa_proxy, 4,
                   sizeof(::calcEventTopologies) );
@@ -103,7 +103,7 @@ namespace ROOT {
       ::myVertex *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::myVertex));
       static ::ROOT::TGenericClassInfo 
-         instance("myVertex", "myVertex.h", 28,
+         instance("myVertex", "myVertex.h", 30,
                   typeid(::myVertex), DefineBehavior(ptr, ptr),
                   &myVertex_Dictionary, isa_proxy, 4,
                   sizeof(::myVertex) );
@@ -428,6 +428,69 @@ namespace ROOT {
 } // end of namespace ROOT for class vector<float>
 
 namespace ROOT {
+   static TClass *vectorlETLorentzVectorgR_Dictionary();
+   static void vectorlETLorentzVectorgR_TClassManip(TClass*);
+   static void *new_vectorlETLorentzVectorgR(void *p = 0);
+   static void *newArray_vectorlETLorentzVectorgR(Long_t size, void *p);
+   static void delete_vectorlETLorentzVectorgR(void *p);
+   static void deleteArray_vectorlETLorentzVectorgR(void *p);
+   static void destruct_vectorlETLorentzVectorgR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<TLorentzVector>*)
+   {
+      vector<TLorentzVector> *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<TLorentzVector>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<TLorentzVector>", -2, "vector", 457,
+                  typeid(vector<TLorentzVector>), DefineBehavior(ptr, ptr),
+                  &vectorlETLorentzVectorgR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<TLorentzVector>) );
+      instance.SetNew(&new_vectorlETLorentzVectorgR);
+      instance.SetNewArray(&newArray_vectorlETLorentzVectorgR);
+      instance.SetDelete(&delete_vectorlETLorentzVectorgR);
+      instance.SetDeleteArray(&deleteArray_vectorlETLorentzVectorgR);
+      instance.SetDestructor(&destruct_vectorlETLorentzVectorgR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<TLorentzVector> >()));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const vector<TLorentzVector>*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlETLorentzVectorgR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const vector<TLorentzVector>*)0x0)->GetClass();
+      vectorlETLorentzVectorgR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlETLorentzVectorgR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlETLorentzVectorgR(void *p) {
+      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<TLorentzVector> : new vector<TLorentzVector>;
+   }
+   static void *newArray_vectorlETLorentzVectorgR(Long_t nElements, void *p) {
+      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<TLorentzVector>[nElements] : new vector<TLorentzVector>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlETLorentzVectorgR(void *p) {
+      delete ((vector<TLorentzVector>*)p);
+   }
+   static void deleteArray_vectorlETLorentzVectorgR(void *p) {
+      delete [] ((vector<TLorentzVector>*)p);
+   }
+   static void destruct_vectorlETLorentzVectorgR(void *p) {
+      typedef vector<TLorentzVector> current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class vector<TLorentzVector>
+
+namespace ROOT {
    static TClass *vectorlEPandoraNuTrackgR_Dictionary();
    static void vectorlEPandoraNuTrackgR_TClassManip(TClass*);
    static void *new_vectorlEPandoraNuTrackgR(void *p = 0);
@@ -489,6 +552,69 @@ namespace ROOT {
       ((current_t*)p)->~current_t();
    }
 } // end of namespace ROOT for class vector<PandoraNuTrack>
+
+namespace ROOT {
+   static TClass *vectorlEGENIEinteractiongR_Dictionary();
+   static void vectorlEGENIEinteractiongR_TClassManip(TClass*);
+   static void *new_vectorlEGENIEinteractiongR(void *p = 0);
+   static void *newArray_vectorlEGENIEinteractiongR(Long_t size, void *p);
+   static void delete_vectorlEGENIEinteractiongR(void *p);
+   static void deleteArray_vectorlEGENIEinteractiongR(void *p);
+   static void destruct_vectorlEGENIEinteractiongR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<GENIEinteraction>*)
+   {
+      vector<GENIEinteraction> *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<GENIEinteraction>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<GENIEinteraction>", -2, "vector", 457,
+                  typeid(vector<GENIEinteraction>), DefineBehavior(ptr, ptr),
+                  &vectorlEGENIEinteractiongR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<GENIEinteraction>) );
+      instance.SetNew(&new_vectorlEGENIEinteractiongR);
+      instance.SetNewArray(&newArray_vectorlEGENIEinteractiongR);
+      instance.SetDelete(&delete_vectorlEGENIEinteractiongR);
+      instance.SetDeleteArray(&deleteArray_vectorlEGENIEinteractiongR);
+      instance.SetDestructor(&destruct_vectorlEGENIEinteractiongR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<GENIEinteraction> >()));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const vector<GENIEinteraction>*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlEGENIEinteractiongR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const vector<GENIEinteraction>*)0x0)->GetClass();
+      vectorlEGENIEinteractiongR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlEGENIEinteractiongR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlEGENIEinteractiongR(void *p) {
+      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<GENIEinteraction> : new vector<GENIEinteraction>;
+   }
+   static void *newArray_vectorlEGENIEinteractiongR(Long_t nElements, void *p) {
+      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<GENIEinteraction>[nElements] : new vector<GENIEinteraction>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlEGENIEinteractiongR(void *p) {
+      delete ((vector<GENIEinteraction>*)p);
+   }
+   static void deleteArray_vectorlEGENIEinteractiongR(void *p) {
+      delete [] ((vector<GENIEinteraction>*)p);
+   }
+   static void destruct_vectorlEGENIEinteractiongR(void *p) {
+      typedef vector<GENIEinteraction> current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class vector<GENIEinteraction>
 
 namespace {
   void TriggerDictionaryInitialization_libAnalysisTreesInformation_CCQEPackage_Impl() {

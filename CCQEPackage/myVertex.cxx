@@ -6,8 +6,9 @@
 myVertex::myVertex(Int_t fID){
     SetVertexID(fID);
     AddTrackID(fID);
+    GENIECC1p = CC1pTopology = false;
+//    TruthCC1p = false; // deprecated
 }
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::IncludesTrack (Int_t ftrack_id){
@@ -17,8 +18,6 @@ bool myVertex::IncludesTrack (Int_t ftrack_id){
     return false;
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::SortTracksByLength(){
     for (auto i:sort_l( tracks )){
@@ -26,13 +25,19 @@ bool myVertex::SortTracksByLength(){
     }
     ShortestTrack = tracks_lengthsorted.at( tracks.size() - 1 );
     LongestTrack = tracks_lengthsorted.at( 0 );
-
-    //    cout << "shortest track:" << endl;
-    //    ShortestTrack.Print();
-    //    cout << "longest track:" << endl;
-    //    LongestTrack.Print();
     return true;
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::SortTracksByPIDA(){
+    for (auto i:sort_pida( tracks )){
+        tracks_pidasorted.push_back( tracks.at(i) );
+    }
+    SmallPIDATrack = tracks_pidasorted.at( tracks.size() - 1 );
+    LargePIDATrack = tracks_pidasorted.at( 0 );
+    return true;
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 vector<size_t> myVertex::sort_l(const vector<PandoraNuTrack> &v) {
@@ -42,51 +47,56 @@ vector<size_t> myVertex::sort_l(const vector<PandoraNuTrack> &v) {
     return idx;
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void myVertex::SetDeltaPhiLongestandShortestTracks(){
-    delta_phi_LongestShortestTracks = r2d*fabs(ShortestTrack.phi - LongestTrack.phi);
+vector<size_t> myVertex::sort_pida(const vector<PandoraNuTrack> &v) {
+    std::vector<size_t> idx(v.size());
+    for (size_t i = 0; i != idx.size(); ++i) idx[i] = i;
+    std::sort(idx.begin(), idx.end(), [&v](size_t i1, size_t i2) {return v[i1].pidpida > v[i2].pidpida;});
+    return idx;
 }
 
 
-
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//void myVertex::SetDeltaPhiLongestandShortestTracks(){
+//    delta_phi_LongestShortestTracks = r2d*fabs(ShortestTrack.phi - LongestTrack.phi);
+//}
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool myVertex::SetTruthTopology(){
-    // I definde a truth - CC1p vertex by the following:
-    // (1) two tracks, and only two tracks
-    //      - one is a muon (13)
-    //      - the other is a proton (2212)
-    // (2) they both come from a truth cc interaction (ccnc=0)
-    // (3) the truth start positions of the muon and the proton is as small as the ideal vertex resolution
-
-
-    TruthCC1p = false;
-    TruthTopologyString = "truly not a CC1p";
-    if ( tracks.size()!=2 || tracks[0].truth_ccnc!=0 || tracks[1].truth_ccnc!=0) return false;
-
-    if (tracks[0].MCpdgCode==2212 && tracks[1].MCpdgCode==13){
-        protonTruth = tracks[0];
-        muonTruth = tracks[1];
-    }
-    else if (tracks[0].MCpdgCode==13 && tracks[1].MCpdgCode==2212){
-        muonTruth = tracks[0];
-        protonTruth = tracks[1];
-    }
-    else {
-        return false;
-    }
-    
-    if ( (protonTruth.truth_start_pos - muonTruth.truth_start_pos).Mag() < 2 )
-    {
-        TruthCC1p = true;
-        TruthTopologyString = "Truth CC1p";
-        return true;
-    }
-    return false;
-}
+// deprecated: we are using GENIE to tag true CC1p
+//bool myVertex::SetTruthTopology(){
+//    // I definde a truth - CC1p vertex by the following:
+//    // (1) two tracks, and only two tracks
+//    //      - one is a muon (13)
+//    //      - the other is a proton (2212)
+//    // (2) they both come from a truth cc interaction (ccnc=0)
+//    // (3) the truth start positions of the muon and the proton is as small as the ideal vertex resolution
+//
+//
+//    TruthCC1p = false;
+//    TruthTopologyString = "truly not a CC1p";
+//    if ( tracks.size()!=2 || tracks[0].truth_ccnc!=0 || tracks[1].truth_ccnc!=0) return false;
+//
+//    if (tracks[0].MCpdgCode==2212 && tracks[1].MCpdgCode==13){
+//        protonTruth = tracks[0];
+//        muonTruth = tracks[1];
+//    }
+//    else if (tracks[0].MCpdgCode==13 && tracks[1].MCpdgCode==2212){
+//        muonTruth = tracks[0];
+//        protonTruth = tracks[1];
+//    }
+//    else {
+//        return false;
+//    }
+//    
+//    if ( (protonTruth.truth_start_pos - muonTruth.truth_start_pos).Mag() < 2 )
+//    {
+//        TruthCC1p = true;
+//        TruthTopologyString = "Truth CC1p";
+//        return true;
+//    }
+//    return false;
+//}
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -109,7 +119,7 @@ bool myVertex::SetKinematicalTopology(float min_length_long,
         tracks.size() == 2
         && LongestTrack.length > min_length_long
         && ShortestTrack.length < max_length_short
-        && (delta_phi_min < delta_phi_LongestShortestTracks && delta_phi_LongestShortestTracks < delta_phi_max)
+        && (delta_phi_min < delta_phi_ij[0] && delta_phi_ij[0] < delta_phi_max)
         && (PIDA_short_min < ShortestTrack.pidpida && ShortestTrack.pidpida < PIDA_short_max)
         && (PIDA_long_min < LongestTrack.pidpida && LongestTrack.pidpida < PIDA_long_max)
         ){
@@ -157,12 +167,50 @@ void myVertex::SetTracksRelations(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::SetIsReconstructed(){
+    if (IsVertexContained && muonTrackReconstructed && protonTrackReconstructed){
+        IsVertexReconstructed = true;
+        return true;
+    }
+    else {
+        IsVertexReconstructed = false;
+        return false;
+    }
+}
+
+
+
+
+//
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//bool myVertex::SetReconstructedInfo(){
+//}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::SubtractFarTracks (){
+    // narrow down the set of tracks associated to the vertices by looking only
+    // at those tracks that are close enough to the vertices
+
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void myVertex::Print(){
     SHOW( vertex_id );
+    SHOW3( run , subrun , event );
     // tracks
     if (!tracks.empty()){
         cout << "\033[33m" << tracks.size() << " tracks in vertex " << "\033[37m" << endl;
-        for (auto t: tracks) t.Print();
+        for (auto t: tracks) {
+            SHOW(t.track_id);
+            if (t.track_id!=-100){
+                t.Print();
+            }
+            else{
+                Printf("unidentified/non-reconstructed track. continuing...");
+            }
+        }
 
         // inter-tracks distances
         cout << "\033[33m" << tracks.size()*tracks.size() << " inter-tracks distances " << "\033[37m" << endl;
@@ -177,6 +225,10 @@ void myVertex::Print(){
 
     cout << "topology: " << TopologyString << endl;
     cout << "truth topology: " << TruthTopologyString << endl;
+    if (GENIECC1p){
+        cout << "This vertex is a GENIE true CC1p" << endl;
+        SHOW3( muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed );
+    }
     
 }
 

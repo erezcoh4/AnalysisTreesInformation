@@ -392,7 +392,8 @@ calcEventTopologies.o: calcEventTopologies.cxx calcEventTopologies.h \
   /Users/erezcohen/larlite/core/LArUtil/LArUtilException.h \
   /Users/erezcohen/larlite/core/LArUtil/LArUtilConstants.h \
   /Users/erezcohen/larlite/core/Base/GeoConstants.h \
-  /Users/erezcohen/larlite/core/LArUtil/LArUtilConfig.h myVertex.h
+  /Users/erezcohen/larlite/core/LArUtil/LArUtilConfig.h myVertex.h \
+  /Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage/GENIEinteraction.h
 myVertex.o: myVertex.cxx myVertex.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \
@@ -787,4 +788,5 @@ myVertex.o: myVertex.cxx myVertex.h \
   /Users/erezcohen/larlite/core/LArUtil/LArUtilException.h \
   /Users/erezcohen/larlite/core/LArUtil/LArUtilConstants.h \
   /Users/erezcohen/larlite/core/Base/GeoConstants.h \
-  /Users/erezcohen/larlite/core/LArUtil/LArUtilConfig.h
+  /Users/erezcohen/larlite/core/LArUtil/LArUtilConfig.h \
+  /Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage/GENIEinteraction.h
