@@ -19,7 +19,7 @@ GENIEinteraction::GENIEinteraction( Int_t fmcevent_id, Int_t fNprimaries ){
     Nprimaries = fNprimaries;
     
     muonTrackReconstructed = protonTrackReconstructed = false;
-    Np = Nn = Npi = Nmu = Nel = Ntot = Nnu = 0;
+    Np = Nn = Npi = Nmu = Nel = Ntot = Nnu = Ngamma = 0;
     ccnc = -100;
     IsCC1p = false;
 }
@@ -205,7 +205,7 @@ bool GENIEinteraction::ComputePmissPrec(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void GENIEinteraction::Print(bool DoPrintTracks){
 
-    cout << "\033[31m" << "GENIE interaction " << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
+    cout << "\033[31m" << "GENIE interaction " << mcevent_id << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
     SHOW(mcevent_id);
     SHOWTLorentzVector(nu);
     SHOWTLorentzVector(muon);
@@ -217,10 +217,10 @@ void GENIEinteraction::Print(bool DoPrintTracks){
     SHOW3(theta_pq,p_over_q,Mmiss);
     
     
-    SHOW(mcevent_id);
-    SHOW(Nprimaries);
-    SHOW3( Np , Nn , Npi );
-    SHOW2( Nmu , Nel );
+    SHOW( Nprimaries );
+    SHOW( Np );
+    SHOW2 ( Nn , Npi );
+    SHOW3( Nmu , Nel , Ngamma );
     SHOW3( ccnc , IsCC1p , IsVertexContained );
     if (IsCC1p){
         SHOW2( muonTrackReconstructed, protonTrackReconstructed );

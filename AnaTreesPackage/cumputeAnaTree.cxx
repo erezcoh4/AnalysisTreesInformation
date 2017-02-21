@@ -774,7 +774,7 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     c_genie_interaction = GENIEinteraction(n,                                   // MC event-id
                                            genie_no_primaries                   // No. of primaries
                                            );
-    c_nu_interaction.SetNuMomentum( enu_truth[n] , nu_dcosx_truth[n] , nu_dcosy_truth[n] , nu_dcosz_truth[n] );
+    c_genie_interaction.SetNuMomentum( enu_truth[n] , nu_dcosx_truth[n] , nu_dcosy_truth[n] , nu_dcosz_truth[n] );
     
     c_genie_interaction.SetRSE( run , subrun , event );
     c_genie_interaction.SetCCNC( ccnc_truth[n] ); // only very rarely mcevents > 1 ....
