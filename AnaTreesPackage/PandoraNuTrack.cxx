@@ -221,25 +221,31 @@ void PandoraNuTrack::AddNeighborTrack( Int_t ftrack_id , Float_t fClosestDistanc
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PandoraNuTrack::Print(){
+void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool DoPrintPlanes){
 
-    cout << "\033[31m" << "track " << track_id << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
+    cout << "\033[31m" << "~~~~~~~~~~~~~~~~~~~~~\n" << "track " << track_id << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
     SHOW3(run , subrun , event);
-    SHOWTVector3(start_pos);
-    SHOWTVector3(end_pos);
-    PrintPhys(length,"cm");
-    PrintPhys(momentum,"MeV/c");
-    SHOW(distlenratio);
-    PrintPhys(theta,"radians");
-    PrintPhys(phi,"radians");
-    PrintPhys(start_dqdx,"ADC/cm");
-    PrintPhys(end_dqdx,"ADC/cm");
-    PrintPhys(tot_dqdx,"ADC/cm");
-    SHOW3( cosmicscore, coscontscore , pidpida )
-    SHOW3( purtruth_U , purtruth_V   , purtruth_Y );
-    for (int plane = 0 ; plane < 3; plane++) {
-        PrintPhys( CalorimetryPDG[plane] , Form(" for plane %d",plane) );
-        PrintBox(roi[plane]);
+    if (DoPrintPos){
+        SHOWTVector3(start_pos);
+        SHOWTVector3(end_pos);
+    }
+    if (DoPrintPandoraNuFeatures){
+        PrintPhys(length,"cm");
+        PrintPhys(momentum,"MeV/c");
+        SHOW(distlenratio);
+        PrintPhys(theta,"radians");
+        PrintPhys(phi,"radians");
+        PrintPhys(start_dqdx,"ADC/cm");
+        PrintPhys(end_dqdx,"ADC/cm");
+        PrintPhys(tot_dqdx,"ADC/cm");
+        SHOW3( cosmicscore, coscontscore , pidpida )
+    }
+    if (DoPrintPlanes){
+        SHOW3( purtruth_U , purtruth_V   , purtruth_Y );
+        for (int plane = 0 ; plane < 3; plane++) {
+            PrintPhys( CalorimetryPDG[plane] , Form(" for plane %d",plane) );
+            PrintBox(roi[plane]);
+        }
     }
     //    cout << "\033[33m" << NNeighborTracks << " neighboring tracks" ;
     //    for (size_t i = 0 ; i < NNeighborTracks ; i++ ){
@@ -266,24 +272,45 @@ void PandoraNuTrack::Print(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-Float_t PandoraNuTrack::ClosestDistanceToOtherTrack( PandoraNuTrack other_track ){
+Float_t PandoraNuTrack::ClosestDistanceToOtherTrack( PandoraNuTrack other_track, std::string * fStartOrEnd ){
     Float_t MinDistanceToOtherTrack = 10000;
-    
+    std::string StartOrEnd = "None";
     Float_t DistanceStartStart = (start_pos - other_track.start_pos).Mag();
-    if (MinDistanceToOtherTrack>DistanceStartStart)     MinDistanceToOtherTrack = DistanceStartStart;
+    if (MinDistanceToOtherTrack>DistanceStartStart)     {MinDistanceToOtherTrack = DistanceStartStart; StartOrEnd = "Start";}
     
     Float_t DistanceStartEnd = (start_pos - other_track.end_pos).Mag();
-    if (MinDistanceToOtherTrack>DistanceStartEnd)       MinDistanceToOtherTrack = DistanceStartEnd;
+    if (MinDistanceToOtherTrack>DistanceStartEnd)       {MinDistanceToOtherTrack = DistanceStartEnd; StartOrEnd = "Start";}
     
     Float_t DistanceEndStart = (end_pos - other_track.start_pos).Mag();
-    if (MinDistanceToOtherTrack>DistanceEndStart)       MinDistanceToOtherTrack = DistanceEndStart;
+    if (MinDistanceToOtherTrack>DistanceEndStart)       {MinDistanceToOtherTrack = DistanceEndStart; StartOrEnd = "End";}
     
     Float_t DistanceEndEnd = (end_pos - other_track.end_pos).Mag();
-    if (MinDistanceToOtherTrack>DistanceEndEnd)         MinDistanceToOtherTrack = DistanceEndEnd;
+    if (MinDistanceToOtherTrack>DistanceEndEnd)         {MinDistanceToOtherTrack = DistanceEndEnd; StartOrEnd = "End";}
     
     
-    
+    if (fStartOrEnd!=nullptr) *fStartOrEnd = StartOrEnd;
+
     return MinDistanceToOtherTrack;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+Float_t PandoraNuTrack::DistanceFromPoint( TVector3 position, std::string * fStartOrEnd  ){
+    Float_t DistanceStart, DistanceEnd , distance = 1000;
+    std::string StartOrEnd = "None";
+
+    DistanceStart = ( start_pos - position).Mag();
+    DistanceEnd = ( end_pos - position).Mag();
+    if ( DistanceStart < DistanceEnd ){
+        StartOrEnd = "Start";
+        distance = DistanceStart;
+    }
+    else{
+        StartOrEnd = "End";
+        distance = DistanceEnd;
+    }
+
+    return distance;
 }
 
 

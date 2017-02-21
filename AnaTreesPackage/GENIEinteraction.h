@@ -80,9 +80,9 @@ public:
     
     Float_t                 Xb , Q2 ;
     Float_t                 theta_pq , p_over_q , Mmiss;
-    
+    Float_t                 reco_mu_p_distance;
     Int_t                   run , subrun , event , ccnc, mcevent_id;
-    Int_t                   Nprimaries , Nnu , Np , Nn , Npi , Nmu , Nel , Ntot;
+    Int_t                   Nprimaries , Nnu , Np , Nn , Npi , Nmu , Nel , Ntot , Ngamma;
     
     
     TVector3                vertex_position;

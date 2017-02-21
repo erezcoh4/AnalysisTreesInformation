@@ -106,6 +106,11 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
             case -11: // e+
                 Nel++;
                 break;
+
+            case 22: // photon
+                Ngamma++;
+                break;
+
                 
             default:
                 break;
@@ -121,7 +126,7 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool GENIEinteraction::FindCC1p(){
     
-    if ( ccnc==0 && Nmu==1 && Np==1 && Npi==0 && Nn==0 && Nel==0 ){
+    if ( ccnc==0 && Nmu==1 && Np==1 && Npi==0 && Nn==0 && Nel==0 && Ngamma==0 ){
         IsCC1p = true;
         return true;
     }

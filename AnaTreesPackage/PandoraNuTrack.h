@@ -74,7 +74,7 @@ public:
     PandoraNuTrack (Int_t , Int_t , Int_t , Short_t , TVector3, TVector3, Float_t, Float_t, Float_t);
     
     
-    void Print();
+    void            Print (bool DoPrintPos=false, bool DoPrintPandoraNuFeatures=false, bool DoPrintPlanes=false);
     
     
     void        FlipTrack (int debug=0);
@@ -140,9 +140,10 @@ public:
     
     
     // finders
-    Float_t ClosestDistanceToOtherTrack( PandoraNuTrack other_track );
+    Float_t ClosestDistanceToOtherTrack( PandoraNuTrack other_track , std::string * StartOrEnd=nullptr );
+    Float_t DistanceFromPoint( TVector3 position , std::string * StartOrEnd=nullptr );
 
-    
+
     
     // getters
     TVector3    GetStartPos (){return start_pos;};
