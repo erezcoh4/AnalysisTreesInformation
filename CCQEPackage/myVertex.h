@@ -18,6 +18,7 @@
 #include "../../mySoftware/MySoftwarePackage/myIncludes.h"
 #include "PandoraNuTrack.h"
 #include "GENIEinteraction.h"
+#include "MyLArTools.h"
 
 #define r2d TMath::RadToDeg()
 #define d2r TMath::DegToRad()
@@ -37,19 +38,23 @@ public:
     myVertex(Int_t fID);
 
     
+    void       SetCounterID (Int_t fid)                     {counter_id = fid;};
     void        SetVertexID (Int_t fvertex_id)              {vertex_id = fvertex_id;};
     void             SetRSE (Int_t r, Int_t s, Int_t e)     {run=r; subrun=s; event=e;};
     void         AddTrackID (Int_t ftrack_id)               {track_id.push_back(ftrack_id);};
-    void           AddTrack (PandoraNuTrack ftrack)         {tracks.push_back(ftrack); Ntracks=(int)tracks.size();};
+    void    AddGENIETrackID (Int_t ftrack_id)               {GENIEtrack_id.push_back(ftrack_id);};
+    void AddNonGENIETrackID (Int_t ftrack_id)               {NonGENIEtrack_id.push_back(ftrack_id);};
+    
+    void           AddTrack (PandoraNuTrack ftrack);
+    
     void        SetPosition (TVector3 fposition)            {position = fposition;};
     void              Print ();
     bool      IncludesTrack (Int_t ftrack_id);
     bool SortTracksByLength ();
     bool   SortTracksByPIDA ();
-    bool  SubtractFarTracks ();
+    bool    RemoveFarTracks (float max_mu_p_distance, Int_t debug );
 
     
-    //    bool   SetTruthTopology (); // deprecated: GENIE flags CC1p using GENIECC1p
     bool  SetKinematicalTopology (float min_length_long     =50,    // cm
                                   float max_length_short    =30,    // cm
                                   float delta_phi_min       =-360,  // deg.
@@ -61,58 +66,81 @@ public:
     
     vector<size_t>        sort_l (const vector<PandoraNuTrack> &v);
     vector<size_t>     sort_pida (const vector<PandoraNuTrack> &v);
+
     
+    
+    void              SetMyLArTools (MyLArTools  * flar_tools) {lar_tools = flar_tools;};
+    void    SetReconstructedMomenta ();
+    void     SetReconstructedBeamPz ();
+    void         SetReconstructed_q ();
+    void   SetReconstructedFeatures ();
+    void        FixTracksDirections ();
     
     // SETters
-    void SetTracksRelations ();
-    bool SetIsReconstructed ();
-    void SetGENIEinfo (GENIEinteraction fgenie_interaction){ genie_interaction = fgenie_interaction; }
-    void SetReconstructedInfo ();
+    void     SetTracksRelations ();
+    bool     SetIsReconstructed ();
+    void           SetGENIEinfo (GENIEinteraction fgenie_interaction){ genie_interaction = fgenie_interaction; }
+    void   SetReconstructedInfo ();
+    void        SetAssignTracks (PandoraNuTrack fAssignedMuonTrack, PandoraNuTrack fAssignedProtonTrack);
+    
     
     
     // GETters
-//    void SetDeltaPhiLongestandShortestTracks ();
-//    bool        IsTruthCC1p () {return TruthCC1p;}; // deprecated (GENIE flags true CC1p)
     bool     IsCC1pTopology () {return CC1pTopology;};
+    float  GetAngleBetween2tracks ();
     
+
     
+    // variables
+    TString             TopologyString , TruthTopologyString ;
+
     bool                GENIECC1p,  CC1pTopology; // , TruthCC1p deprecated
-    
-    Int_t               vertex_id,  Ntracks , run , subrun , event;
-    std::vector<Int_t>  track_id;
+    bool                IsVertexContained, muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed;
+
+    Int_t               counter_id, vertex_id,  Ntracks , run , subrun , event;
+    Int_t               reconstructed_Np, reconstructed_Nn, reconstructed_Npi, reconstructed_Nmu, reconstructed_Nel;
     
     
     float               delta_phi_LongestShortestTracks;
+    float               reconstructed_Xb, reconstructed_Q2 ;
+    float               reconstructed_theta_pq, reconstructed_p_over_q, reconstructed_Mmiss;
+    
+    // CC1p reconstructed features
+    float               reco_mu_p_distance;
+    float               reco_CC1p_BeamPz,   reco_CC1p_theta_pq, reco_CC1p_Pp_3momentum, reco_CC1p_Pmu_3momentum;
+
+    
     TVector3            position    ;
+    TVector3            reco_CC1p_Pp_3vect, reco_CC1p_Pmu_3vect;
     
     
-    TString             TopologyString , TruthTopologyString ;
     
-    std::vector<PandoraNuTrack> tracks, tracks_lengthsorted,  tracks_pidasorted;
-    PandoraNuTrack      muonTruth,      protonTruth;
+    TLorentzVector      reconstructed_nu, reconstructed_muon, reconstructed_q ;
+    TLorentzVector      reco_CC1p_Pnu,  reco_CC1p_Pp,   reco_CC1p_Pmu,  reco_CC1p_q;
+    
+    
+
+    PandoraNuTrack      muonTrueTrack,  protonTrueTrack;
     PandoraNuTrack      ShortestTrack,  LongestTrack;
     PandoraNuTrack      LargePIDATrack, SmallPIDATrack;
+    PandoraNuTrack      AssignedMuonTrack, AssignedProtonTrack;
     
-    std::vector <std::vector<float> > tracks_distances;
-    std::vector <std::vector<float> > tracks_delta_phi;
-    std::vector <std::vector<float> > tracks_delta_theta;
-    std::vector<float>  delta_phi_ij,    distances_ij , delta_theta_ij;
-    bool                IsVertexContained, muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed;
-    
-    
-    
-    
-    // true - GENIE - variables
     GENIEinteraction    genie_interaction;
+    
+    std::vector<Int_t>  track_id, GENIEtrack_id, NonGENIEtrack_id;
+    
+    std::vector <std::vector<float> >   tracks_distances;
+    std::vector <std::vector<float> >   tracks_delta_phi;
+    std::vector <std::vector<float> >   tracks_delta_theta;
+    std::vector<float>                  tracks_dis_from_vertex, delta_phi_ij,    distances_ij , delta_theta_ij;
+    
+    
+    std::vector<TLorentzVector> reconstructed_protons;
+    std::vector<PandoraNuTrack> tracks, tracks_lengthsorted,  tracks_pidasorted , GENIEtracks, NonGENIEtracks;
+
 
     
-    // reconstructed physical variables
-    Int_t               reconstructed_Np, reconstructed_Nn, reconstructed_Npi, reconstructed_Nmu, reconstructed_Nel;
-    TLorentzVector      reconstructed_nu, reconstructed_muon, reconstructed_q ;
-    Float_t             reconstructed_Xb, reconstructed_Q2 ;
-    Float_t             reconstructed_theta_pq, reconstructed_p_over_q, reconstructed_Mmiss;
-    std::vector<TLorentzVector> reconstructed_protons;
-
+    MyLArTools  * lar_tools;
 };
 
 #endif

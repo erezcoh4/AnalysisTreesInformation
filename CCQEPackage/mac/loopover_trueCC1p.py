@@ -26,7 +26,7 @@ from ccqe_tools import *
 
 
 if 'GENIE' not in flags.option:
-    print 'you have to choose Truth...'
+    print 'you have to choose GENIE...'
     exit(0)
 
 
@@ -44,7 +44,7 @@ if "CC1p" in flags.option: #{
 
     genie  = calcEventTopologies( inttree , flags.option , flags.verbose , MCmode )
     Nevents , Nreduced = genie.Nentries , int(flags.evnts_frac*genie.Nentries)
-    counter , contained_counter , reco_counter = 0 , 0 , 0
+    counter , contained_counter , reco_counter , reco_close_counter = 0 , 0 , 0 , 0
 
     if debug: print_important("running on %d events (out of %d)"%(Nreduced,Nevents))
 
@@ -52,32 +52,38 @@ if "CC1p" in flags.option: #{
         
         # get event
         genie.GetGENIEEntry(i)
+        # do_continue = True if genie.run == 7 and genie.subrun == 1951 and genie.event == 39002 else False
+        # if do_continue is False: continue
 
         # analyze the event
         genie.ClusterGENIEToVertices()
         genie.AnalyzeVertices()
-
-        # find vertices with CC1p topologies
-        event_has_CC1p_topology = genie.FindGENIECC1pVertices()
+        genie.CC1p_vertices = genie.vertices
 
 
         if debug and i%flags.print_mod==0:
-            print "processed so far %d events, found %d CC1p GENIE vertices, %d reconstructed "%(i,counter,reco_counter)
+            print "processed %d events, found %d CC1p, %d reconstructed, %d closer than %.0f cm "%(i,
+                                                                                                   counter,
+                                                                                                   reco_counter,
+                                                                                                   reco_close_counter,
+                                                                                                   ccqe_pars['max_mu_p_distance'])
             genie.Print()
 
 
 
-        # get the vertices with CC1p topologies and stream them into pandas.DataFrame
-        CC1p_vertices = [v for v  in genie.CC1p_vertices]
 
         for vertex in genie.CC1p_vertices: #{
             
+            
+            if vertex.IsVertexReconstructed: vertex.SetCounterID( reco_counter )
+
             stream_vertex_to_file( vertex , outcsvname )
             
             # counters
             counter += 1
             if vertex.IsVertexContained: contained_counter += 1
             if vertex.IsVertexReconstructed: reco_counter += 1
+            if vertex.IsVertexReconstructed and vertex.reco_mu_p_distance < ccqe_pars['max_mu_p_distance'] : reco_close_counter += 1
             if debug and i%flags.print_mod==0: print_line()
         #}
     #}
@@ -85,7 +91,10 @@ if "CC1p" in flags.option: #{
 
     infile.Close()
     print 'processed %d events'%Nreduced
-    print_filename(outcsvname,"%d CC1p GENIE vertices, %d reconstructed (%.1f MB)"%(counter,reco_counter,filesize_in_MB(outcsvname)) )
+
+    print_filename(outcsvname,
+                   "%d CC1p GENIE vertices, %d reconstructed, %d closer than %.0f cm (%.1f MB)"
+                   %(counter,reco_counter,reco_close_counter,ccqe_pars['max_mu_p_distance'],filesize_in_MB(outcsvname)) )
 #}
 
 

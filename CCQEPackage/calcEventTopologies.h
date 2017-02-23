@@ -19,6 +19,8 @@
 #include "PandoraNuTrack.h"
 #include "myVertex.h"
 #include "GENIEinteraction.h"
+#include "MyLArTools.h"
+#include "LArUtil/Geometry.h"
 
 
 
@@ -27,7 +29,7 @@
  User defined class calcEventTopologies ... these comments are used to generate
  doxygen documentation!
  */
-class calcEventTopologies{
+class calcEventTopologies: public myIncludes {
     
 public:
     
@@ -47,7 +49,7 @@ public:
     
     // setters
     void                  SetInTree (TTree * tree)       {InTree = tree;};
-    void                   SetDebug (int _debug)         {debug = _debug;};
+//    void                   SetDebug (int _debug)         {debug = _debug;};
     void                  SetMCMode (bool _mc_mode)      {MCmode = _mc_mode;};
     void          SetMaxmupDistance (float fmax)         {max_mu_p_distance = fmax;};
     void           SetMinLengthLong (float fmin)         {min_length_long = fmin;};
@@ -89,7 +91,7 @@ public:
     TTree * InTree;
     
     int     debug ;
-    bool    MCmode,     IsGENIECC1p;
+    bool    MCmode,     IsGENIECC1p,    FoundTruthCC1p;
     Int_t   Nentries,   run, 	subrun, event;
     Int_t   Ntracks,    c_entry;
     Int_t   Nprimaries, Np,     Nmu,    Npi ,   Nn,   Nel,  ccnc;
@@ -114,6 +116,9 @@ public:
     
     
     std::vector<GENIEinteraction> genie_interactions;
+    
+    
+    MyLArTools  * lar_tools;
 
 };
 

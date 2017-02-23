@@ -5,10 +5,29 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 myVertex::myVertex(Int_t fID){
     SetVertexID(fID);
-    AddTrackID(fID);
     GENIECC1p = CC1pTopology = false;
-//    TruthCC1p = false; // deprecated
+    TruthTopologyString = "not a GENIE CC1p";
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::AddTrack (PandoraNuTrack ftrack){
+    
+    tracks.push_back(ftrack);
+    Ntracks=(int)tracks.size();
+    AddTrackID(ftrack.track_id);
+    
+    if (ftrack.truth_Eng>0 && ftrack.truth_P>0){
+        GENIEtracks.push_back(ftrack);
+        AddGENIETrackID(ftrack.track_id);
+    }
+    else{
+        NonGENIEtracks.push_back(ftrack);
+        AddNonGENIETrackID(ftrack.track_id);
+    }
+
+}
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::IncludesTrack (Int_t ftrack_id){
@@ -20,20 +39,22 @@ bool myVertex::IncludesTrack (Int_t ftrack_id){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::SortTracksByLength(){
-    for (auto i:sort_l( tracks )){
-        tracks_lengthsorted.push_back( tracks.at(i) );
+    std::vector<PandoraNuTrack> tmp_tracks = tracks;
+    for (auto i:sort_l( tmp_tracks )){
+        tracks_lengthsorted.push_back( tmp_tracks.at(i) );
     }
-    ShortestTrack = tracks_lengthsorted.at( tracks.size() - 1 );
+    ShortestTrack = tracks_lengthsorted.at( tmp_tracks.size() - 1 );
     LongestTrack = tracks_lengthsorted.at( 0 );
     return true;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::SortTracksByPIDA(){
-    for (auto i:sort_pida( tracks )){
-        tracks_pidasorted.push_back( tracks.at(i) );
+    std::vector<PandoraNuTrack> tmp_tracks = tracks;
+    for (auto i:sort_pida( tmp_tracks )){
+        tracks_pidasorted.push_back( tmp_tracks.at(i) );
     }
-    SmallPIDATrack = tracks_pidasorted.at( tracks.size() - 1 );
+    SmallPIDATrack = tracks_pidasorted.at( tmp_tracks.size() - 1 );
     LargePIDATrack = tracks_pidasorted.at( 0 );
     return true;
 }
@@ -55,48 +76,6 @@ vector<size_t> myVertex::sort_pida(const vector<PandoraNuTrack> &v) {
     return idx;
 }
 
-
-////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//void myVertex::SetDeltaPhiLongestandShortestTracks(){
-//    delta_phi_LongestShortestTracks = r2d*fabs(ShortestTrack.phi - LongestTrack.phi);
-//}
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-// deprecated: we are using GENIE to tag true CC1p
-//bool myVertex::SetTruthTopology(){
-//    // I definde a truth - CC1p vertex by the following:
-//    // (1) two tracks, and only two tracks
-//    //      - one is a muon (13)
-//    //      - the other is a proton (2212)
-//    // (2) they both come from a truth cc interaction (ccnc=0)
-//    // (3) the truth start positions of the muon and the proton is as small as the ideal vertex resolution
-//
-//
-//    TruthCC1p = false;
-//    TruthTopologyString = "truly not a CC1p";
-//    if ( tracks.size()!=2 || tracks[0].truth_ccnc!=0 || tracks[1].truth_ccnc!=0) return false;
-//
-//    if (tracks[0].MCpdgCode==2212 && tracks[1].MCpdgCode==13){
-//        protonTruth = tracks[0];
-//        muonTruth = tracks[1];
-//    }
-//    else if (tracks[0].MCpdgCode==13 && tracks[1].MCpdgCode==2212){
-//        muonTruth = tracks[0];
-//        protonTruth = tracks[1];
-//    }
-//    else {
-//        return false;
-//    }
-//    
-//    if ( (protonTruth.truth_start_pos - muonTruth.truth_start_pos).Mag() < 2 )
-//    {
-//        TruthCC1p = true;
-//        TruthTopologyString = "Truth CC1p";
-//        return true;
-//    }
-//    return false;
-//}
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -131,18 +110,26 @@ bool myVertex::SetKinematicalTopology(float min_length_long,
     return false;
 }
 
-
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+float myVertex::GetAngleBetween2tracks(){
+    TVector3 t1_direction, t2_direction;
+    t1_direction.SetMagThetaPhi ( 1 , ShortestTrack.theta, ShortestTrack.phi );
+    t2_direction.SetMagThetaPhi ( 1 , LongestTrack.theta, LongestTrack.phi );
+    return t1_direction.Angle( t2_direction );
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void myVertex::SetTracksRelations(){
+
     for(int i = 0; i < Ntracks ; i++){
+        
+        tracks_dis_from_vertex.push_back( tracks[i].DistanceFromPoint( position ) );
         
         std::vector<float> distances_track_i;
         std::vector<float> delta_phi_track_i;
         std::vector<float> delta_theta_track_i;
         
         for(int j = 0; j < Ntracks ; j++){
-            
             distances_track_i.push_back( tracks[i].ClosestDistanceToOtherTrack(tracks[j]) );
             delta_phi_track_i.push_back( r2d*fabs(tracks[i].phi - tracks[j].phi) );
             delta_theta_track_i.push_back( r2d*fabs(tracks[i].theta - tracks[j].theta) );
@@ -164,12 +151,16 @@ void myVertex::SetTracksRelations(){
         delta_theta_track_i.clear();
     }
 
+
 }
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::SetIsReconstructed(){
     if (IsVertexContained && muonTrackReconstructed && protonTrackReconstructed){
         IsVertexReconstructed = true;
+        reco_mu_p_distance = muonTrueTrack.ClosestDistanceToOtherTrack( protonTrueTrack );
         return true;
     }
     else {
@@ -179,33 +170,131 @@ bool myVertex::SetIsReconstructed(){
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetAssignTracks(PandoraNuTrack fAssignedMuonTrack, PandoraNuTrack fAssignedProtonTrack){
+    
+    AssignedMuonTrack = fAssignedMuonTrack;
+    AssignedProtonTrack = fAssignedProtonTrack;
+    FixTracksDirections ();
+    SetReconstructedFeatures ();
 
+}
 
-//
-////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//bool myVertex::SetReconstructedInfo(){
-//}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::FixTracksDirections(){
+    // for CC1p events, we can fix the directions of the track
+    // by looking at the reconstructed vertex position
+    // and comparing the start/end point of the track to the vertex position
+    
+    if ( (AssignedMuonTrack.end_pos - position).Mag() < (AssignedMuonTrack.start_pos - position).Mag() ){
+        AssignedMuonTrack.FlipTrack();
+        // if (GENIECC1p) Printf("Flipped muon track");
+    }
+    if ( (AssignedProtonTrack.end_pos - position).Mag() < (AssignedProtonTrack.start_pos - position).Mag() ){
+        AssignedProtonTrack.FlipTrack();
+        // if (GENIECC1p) Printf("Flipped proton track");
+    }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetReconstructedMomenta(){
+    // reconstruct the µ and p momenta by using the minimal features possible
+    // theta / phi of the reconstructed track
+    // and the momentum from stopping range ( Get_protonMomentumFromRange which gives the answer in MeV/c )
+    // at a later stage we can maybe use calorimetery
+    
+    // p
+    reco_CC1p_Pp_3momentum = 0.001 * lar_tools -> Get_protonMomentumFromRange( AssignedProtonTrack.length );
+    reco_CC1p_Pp_3vect.SetMagThetaPhi( reco_CC1p_Pp_3momentum , AssignedProtonTrack.theta , AssignedProtonTrack.phi );
+    reco_CC1p_Pp.SetVectMag ( reco_CC1p_Pp_3vect , 0.9385 );
+    
+    // µ
+    reco_CC1p_Pmu_3momentum = 0.001 * lar_tools -> Get_muonMomentumFromRange( AssignedMuonTrack.length );
+    reco_CC1p_Pmu_3vect.SetMagThetaPhi( reco_CC1p_Pmu_3momentum , AssignedMuonTrack.theta , AssignedMuonTrack.phi );
+    reco_CC1p_Pmu.SetVectMag ( reco_CC1p_Pmu_3vect , 0.1056 );
+    
+    //        PrintPhys( (AssignedMuonTrack.truth_start_pos - AssignedMuonTrack.truth_end_pos).Mag() , "cm (true length)" );
+    //        PrintPhys(AssignedMuonTrack.truth_P,"GeV/c (true momentum)");
+    //        PrintPhys( AssignedMuonTrack.length , "cm (reco. length)" );
+    //        PrintPhys(reco_CC1p_Pmu_3momentum,"GeV/c (reco. momentum from stopping range)");
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetReconstructedBeamPz(){
+    // reconstruct the beam Pz by using the reconstructed Pµ and Pp
+    // in the z direction
+    // for only CC1p events
+    reco_CC1p_BeamPz = reco_CC1p_Pp.Pz() + reco_CC1p_Pmu.Pz();
+    reco_CC1p_Pnu = TLorentzVector( 0 , 0 , reco_CC1p_BeamPz , reco_CC1p_BeamPz );
+    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetReconstructed_q(){
+    // reconstruct the momentum transfer from minimal features of CC1p
+    // and stopping range
+    reco_CC1p_q = reco_CC1p_Pmu - reco_CC1p_Pnu;
+    // reconstructed 𝜃(p,q) based on these minimal features
+    reco_CC1p_theta_pq = r2d * reco_CC1p_Pp.Vect().Angle( reco_CC1p_q.Vect() );
+
+}
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool myVertex::SubtractFarTracks (){
+void myVertex::SetReconstructedFeatures(){
+    
+    // reconstructed distance between µ and p
+    reco_mu_p_distance = AssignedMuonTrack.ClosestDistanceToOtherTrack( AssignedProtonTrack );
+    
+    SetReconstructedMomenta();
+    SetReconstructedBeamPz();
+    SetReconstructed_q();
+
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::RemoveFarTracks(float max_mu_p_distance, Int_t debug){
     // narrow down the set of tracks associated to the vertices by looking only
     // at those tracks that are close enough to the vertices
+    float TrackStartDis2Vertex , TrackEndDis2Vertex;
+    std::vector<Int_t>          CloseEnoughTracksID;
+    std::vector<PandoraNuTrack> CloseEnoughTracks;
+
+    // if (debug>4)     {    SHOWstdVector( track_id ); } // toDelete!
+    for (auto t: tracks) {
+        if ( t.DistanceFromPoint(position) < max_mu_p_distance ){
+            CloseEnoughTracks.push_back( t );
+            CloseEnoughTracksID.push_back( t.track_id );
+        }
+    }
+    tracks = CloseEnoughTracks;
+    track_id = CloseEnoughTracksID;
+    Ntracks = tracks.size();
+    // if (debug>4)     {    SHOWstdVector( track_id );  } // toDelete!
 
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void myVertex::Print(){
-    SHOW( vertex_id );
-    SHOW3( run , subrun , event );
+    //    if(GENIECC1p && IsVertexReconstructed) Printf("in Print");
+    //    if(GENIECC1p && IsVertexReconstructed) SHOW2( reco_CC1p_Pmu.Phi() , reco_CC1p_Pmu.Theta());
+
+    
+    cout << "\033[35m" << "~~~~~\n" << "vertex " << counter_id << ", vertex-id " << vertex_id << "\n~~~~~~ "<< "\033[0m" << endl;
+    // SHOW3( run , subrun , event );
+    SHOWTVector3( position );
+    for (auto t: tracks) {
+        Printf("track %d (pdg %d), vertex distance %.1f cm",t.track_id,t.MCpdgCode,t.DistanceFromPoint( position ));
+    }
+    
     // tracks
     if (!tracks.empty()){
         cout << "\033[33m" << tracks.size() << " tracks in vertex " << "\033[37m" << endl;
         for (auto t: tracks) {
-            SHOW(t.track_id);
             if (t.track_id!=-100){
-                t.Print();
+                t.Print( true );
             }
             else{
                 Printf("unidentified/non-reconstructed track. continuing...");
@@ -214,22 +303,29 @@ void myVertex::Print(){
 
         // inter-tracks distances
         cout << "\033[33m" << tracks.size()*tracks.size() << " inter-tracks distances " << "\033[37m" << endl;
-        cout << "tracks_distances size : " << tracks_distances.size() << endl;
         for(auto vec : tracks_distances) {
             for(auto x : vec)
             std::cout << setprecision(2) << x << "\t";
             std::cout << std::endl;
         }
     }
-
-
     cout << "topology: " << TopologyString << endl;
     cout << "truth topology: " << TruthTopologyString << endl;
     if (GENIECC1p){
         cout << "This vertex is a GENIE true CC1p" << endl;
         SHOW3( muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed );
+        SHOWTLorentzVector( genie_interaction.muon );
+        SHOWTLorentzVector( reco_CC1p_Pmu );
+        SHOWTLorentzVector( genie_interaction.protons[0] );
+        SHOWTLorentzVector( reco_CC1p_Pp );
+        SHOW2(genie_interaction.theta_pq,reco_CC1p_theta_pq);
     }
+
     
+    //    Printf("truth muon");
+    //    SHOW4( genie_interaction.muon.Phi() , AssignedMuonTrack.truth_phi , AssignedMuonTrack.phi , reco_CC1p_Pmu.Phi() );
+    //    SHOW4( genie_interaction.muon.Theta() , AssignedMuonTrack.truth_theta , AssignedMuonTrack.theta  , reco_CC1p_Pmu.Theta() );
+
 }
 
 

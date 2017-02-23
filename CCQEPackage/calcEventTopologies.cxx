@@ -2,6 +2,8 @@
 #define CALCEVENTTOPOLOGIES_CXX
 
 #include "calcEventTopologies.h"
+#include "MyLArTools.cxx"
+#include "LArUtil/GeometryHelper.h"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 calcEventTopologies::calcEventTopologies(TTree * fInTree, std::string foption,
@@ -14,11 +16,9 @@ calcEventTopologies::calcEventTopologies(TTree * fInTree, std::string foption,
     SetMCMode(fMCmode);
     SetMaxmupDistance(fmax_mu_p_distance);
     SetOption(foption);
+    lar_tools = new MyLArTools();
     InitInputTree();
 }
-
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::InitInputTree(){
@@ -34,11 +34,10 @@ void calcEventTopologies::InitInputTree(){
     if(debug>1) cout << "calcEventTopologies input-tree ready (" << InTree -> GetName() <<"), " <<  Nentries << " entries" << endl;
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::InitEvent(){
     
-    if (debug>2) Printf("calcEventTopologies::InitEvent");
+    Debug ( 2 , "calcEventTopologies::InitEvent");
     
     if (!tracks.empty())            tracks.clear();
     if (!protonTracks.empty())      protonTracks.clear();
@@ -49,13 +48,13 @@ void calcEventTopologies::InitEvent(){
     if (!CC1pVerticesID.empty())    CC1pVerticesID.clear();
 
     Ntracks = 0;
+    FoundTruthCC1p = false;
 }
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::GetGENIEEntry (int entry){
     
-    if (debug>1) Printf("calcEventTopologies::GetGENIEEntry");
+    Debug ( 2 , "calcEventTopologies::GetGENIEEntry" );
     InitEvent();
     
     std::vector <GENIEinteraction> * finteractions = 0;
@@ -63,20 +62,26 @@ void calcEventTopologies::GetGENIEEntry (int entry){
     InTree -> GetEntry(entry);
     genie_interactions = *finteractions;
     c_entry = entry;
-}
 
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::GetEntry (int entry){
     InitEvent();
+    
     std::vector <PandoraNuTrack> * ftracks = 0;
     InTree -> SetBranchAddress("tracks" , &ftracks);
+    
+    std::vector <GENIEinteraction> * finteractions = 0;
+    InTree -> SetBranchAddress("genie_interactions" , &finteractions);
+
+    
     InTree -> GetEntry(entry);
     tracks = *ftracks;
+    genie_interactions = *finteractions;
+    
     c_entry = entry;
 }
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::extract_information(){
@@ -97,7 +102,6 @@ bool calcEventTopologies::extract_information(){
     
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::TrackAlreadyIncludedInVerticesList(int ftrack_id){
     for (auto v:vertices){
@@ -106,87 +110,140 @@ bool calcEventTopologies::TrackAlreadyIncludedInVerticesList(int ftrack_id){
     return false;
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::ClusterTracksToVertices(){
-    bool    track_already_included_in_vertex=false;
+    bool    track_already_included_in_vertex=false, FoundCloseTracks , AlreadySetPosition;
     float   closest_distance_ij;
-
+    TVector3 vertex_position;
+    
     for (int i=0; i < Ntracks; i++){
         
         // skip if track was clustered to a vertex by in one of the previous loop steps
         if (TrackAlreadyIncludedInVerticesList(tracks[i].track_id)) continue;
+        // is this wrong?! we need to go over all of the tracks, even if they are included in previous cluseters.
+        // however we need to avoid from counting twice!
         
+        // Debug(5, Form("looking for close tracks to track %d", tracks[i].track_id));
+
         c_vertex = myVertex( tracks[i].track_id );
         c_vertex.SetRSE( tracks[i].run, tracks[i].subrun, tracks[i].event);
         c_vertex.AddTrack( tracks[i] );
         
+        FoundCloseTracks = AlreadySetPosition = false;
         
-        for ( int j=i+1 ; j < Ntracks ; j++ ){
-            
-            // two close tracks (at a separation distance smaller that max_mu_p_distance)
-            closest_distance_ij = tracks[i].ClosestDistanceToOtherTrack(tracks[j]);
-            if ( closest_distance_ij < max_mu_p_distance ){
-                if (debug>5) Printf( "closest_distance_ij=%f, generating a new vertex", closest_distance_ij);
-                c_vertex.AddTrack( tracks[j] );
+        for ( int j=0 ; j < Ntracks ; j++ ){ // i+1
+            if (j!=i){
+                
+                // if this is the first time we go over these two tracks
+                // and they are close enough to define a vertex,
+                // we also define the position of their mutual vertex
+                if (!AlreadySetPosition){
+
+                    // two close tracks (at a separation distance smaller that max_mu_p_distance)
+                    std::string StartOrEnd = "None";
+                    closest_distance_ij = tracks[i].ClosestDistanceToOtherTrack(tracks[j],&StartOrEnd);
+                    
+                    // Debug(5, Form( "closest-distance(i=%d,j=%d)=%f",i,j, closest_distance_ij));
+                    
+                    if ( closest_distance_ij < max_mu_p_distance ){
+                        
+                        
+                        c_vertex.AddTrack( tracks[j] );
+                        FoundCloseTracks = true;
+                        
+                        if (StartOrEnd.compare("Start")==0)     vertex_position = tracks[i].start_pos ;
+                        else if (StartOrEnd.compare("End")==0)  vertex_position = tracks[i].end_pos ;
+                        else                                    vertex_position = TVector3(-1000,-1000,-1000) ;
+                        
+                        c_vertex.SetPosition( vertex_position );
+                        c_vertex.SetMyLArTools (lar_tools);
+                        AlreadySetPosition = true;
+                    }
+                }
+                
+                // else, namely if we have already clustered a vertex
+                // and positioned it in space,
+                // we only need to check wether the new track (j) is close enough to this vertex
+                // to be also associated with it
+                else {
+                    // Debug(3, Form("cheking track %d distance from vertex %d ",tracks[j].track_id,c_vertex.vertex_id));
+                    if ( tracks[j].DistanceFromPoint(c_vertex.position) < max_mu_p_distance ){
+                        
+                        // SHOWTVector3(c_vertex.position);
+                        // Printf("track %d close enough...",tracks[j].track_id);
+                        // SHOW(tracks[j].DistanceFromPoint(c_vertex.position));
+                        
+                        c_vertex.AddTrack( tracks[j] );
+                    }
+                }
             }
         }
         
-        vertices.push_back( c_vertex );
+        if (FoundCloseTracks){
+            vertices.push_back( c_vertex );
+        }
     }
     return true;
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::ClusterGENIEToVertices(){
-
-    if (debug>2) Printf("calcEventTopologies::ClusterGENIEToVertices()");
+    Debug (2 , "calcEventTopologies::ClusterGENIEToVertices()");
     for (auto genie_interaction : genie_interactions){
         
         if (genie_interaction.IsCC1p){
-        
+      
             GENIEmuon = genie_interaction.muon;
             protons = genie_interaction.protons;
             GENIEproton = protons[0];
             
-            c_vertex = myVertex( protonTrack.track_id );
+            c_vertex = myVertex( genie_interaction.muonTrack.track_id );
+            c_vertex.SetMyLArTools (lar_tools);
+            c_vertex.SetPosition( genie_interaction.vertex_position );
             c_vertex.SetRSE( genie_interaction.run, genie_interaction.subrun, genie_interaction.event );
             c_vertex.GENIECC1p = true;
             
             c_vertex.AddTrack( genie_interaction.protonTrack );
             c_vertex.AddTrack( genie_interaction.muonTrack );
+
+
             
             c_vertex.IsVertexContained = genie_interaction.IsVertexContained;
             c_vertex.protonTrackReconstructed = genie_interaction.protonTrackReconstructed;
             c_vertex.muonTrackReconstructed = genie_interaction.muonTrackReconstructed;
+            c_vertex.protonTrueTrack = genie_interaction.protonTrack ;
+            c_vertex.muonTrueTrack = genie_interaction.muonTrack;
             
             c_vertex.SetIsReconstructed();
             c_vertex.SetGENIEinfo( genie_interaction );
-            // c_vertex.SetReconstructedInfo();
+            c_vertex.SetAssignTracks( genie_interaction.muonTrack , genie_interaction.protonTrack );
+            c_vertex.TruthTopologyString = "true GENIE CC1p";
             
             vertices.push_back( c_vertex );
-            return true;
+            FoundTruthCC1p = true;
         }
     }
     
-    return false;
+    return FoundTruthCC1p;
     
 }
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::AnalyzeVertices(){
+    Debug( 2 , "calcEventTopologies::AnalyzeVertices()" );
+    
     for (auto & v:vertices){
-        // narrow down the set of tracks associated to the vertices by looking only
-        // at those tracks that are close enough to the vertices
-        v.SubtractFarTracks();
-
+        
+        if (option.compare("CC1pTopology")==0){
+            v.RemoveFarTracks( max_mu_p_distance , debug  );
+            
+        }
+        
         v.SortTracksByPIDA();
         v.SortTracksByLength();
         v.SetTracksRelations();
+
         if (option.compare("CC1pTopology")==0){
-            // Printf("setting Kinematical topology for vertex %d",v.vertex_id);
             v.SetKinematicalTopology(
                                      min_length_long,   max_length_short,
                                      delta_phi_min,     delta_phi_max,
@@ -194,42 +251,31 @@ bool calcEventTopologies::AnalyzeVertices(){
                                      PIDA_long_min,     PIDA_long_max
                                      );
         }
+        
+
     }
     
     return true;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool calcEventTopologies::FindGENIECC1pVertices(){
-    
-    if (debug>4) Printf("calcEventTopologies::FindGENIECC1pVertices");
-    bool FoundTruthCC1p = false;
-    for (auto v:vertices) {
-        if (v.GENIECC1p){
-            CC1p_vertices.push_back(v);
-            CC1pVerticesID.push_back(v.vertex_id);
-            FoundTruthCC1p = true;
-        }
-    }
-    if (debug>4) SHOW(FoundTruthCC1p);
-    return FoundTruthCC1p;
-}
-
-
-// deprecated. GENIE flags true CC1p
+// deprecated - delete!
 ////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//bool calcEventTopologies::FindTruthCC1pVertices(){
+//bool calcEventTopologies::FindGENIECC1pVertices(){
+//    Debug(4,"calcEventTopologies::FindGENIECC1pVertices");
+//    // method for finding GENIE CC1p when looping over
+//    // GENIE interactions
+//    // not for looping over events / 2-tracks clusters
 //    
-//    if (debug>4) Printf("calcEventTopologies::FindTruthCC1pVertices");
 //    bool FoundTruthCC1p = false;
-//    for (auto v:vertices) {
-//        if (v.TruthCC1p){
+//    for (auto & v:vertices) {
+//        if (v.GENIECC1p){
+//            v.TruthTopologyString = "true GENIE CC1p";
 //            CC1p_vertices.push_back(v);
 //            CC1pVerticesID.push_back(v.vertex_id);
 //            FoundTruthCC1p = true;
 //        }
 //    }
-//    if (debug>4) SHOW(FoundTruthCC1p);
+//    // if (debug>4) SHOW(FoundTruthCC1p);
 //    return FoundTruthCC1p;
 //}
 
@@ -247,28 +293,32 @@ bool calcEventTopologies::FindVerticesWithCC1pTopology(){
     return FoundCC1pTopology;
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::Find2tracksVertices(){
     
     bool FoundCC1pTopology = false;
-    for (auto v:vertices) {
-        if (v.tracks.size() == 2){
+    for (auto & v:vertices) {
+        if ( v.tracks.size() == 2 ){
+            
             // vertices with only two tracks at close proximity
             // nothing else!
             // later on apply event-selection cuts
-            CC1p_vertices.push_back(v);
-            CC1pVerticesID.push_back(v.vertex_id);
+            
+            // assign the muon and proton tracks by length
+            //        PandoraNuTrack t1 = v.ShortestTrack;
+            //        PandoraNuTrack t2 = v.LongestTrack;
+            // assign muon and proton tracks by PID-A
+            v.SetAssignTracks( v.SmallPIDATrack , v.LargePIDATrack );
+
+            
+            CC1p_vertices.push_back( v );
+            CC1pVerticesID.push_back( v.vertex_id );
             FoundCC1pTopology = true;
             
         }
     }
     return FoundCC1pTopology;
 }
-
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::TagGENIECC1p(){
@@ -279,21 +329,52 @@ bool calcEventTopologies::TagGENIECC1p(){
     // This method is independent of the tracks-sorting algorithm in the vertex
     for (auto & v:CC1p_vertices){
         v.GENIECC1p = false;
-        PandoraNuTrack reconstructed_proton_track = v.ShortestTrack;
-        PandoraNuTrack reconstructed_muon_track = v.LongestTrack;
         
-        if (
-            reconstructed_proton_track.IsGENIECC1p
-            && reconstructed_muon_track.IsGENIECC1p
-            && reconstructed_proton_track.mcevent_id == reconstructed_muon_track.mcevent_id
-            ){
+        PandoraNuTrack t1 = v.AssignedMuonTrack;
+        PandoraNuTrack t2 = v.AssignedProtonTrack;;
+        
+        if (     t1.mcevent_id == t2.mcevent_id && t1.IsGENIECC1p && t2.IsGENIECC1p
+            && ((t1.MCpdgCode==13 && t2.MCpdgCode==2212) || (t1.MCpdgCode==2212 && t2.MCpdgCode==13) ) ){
+            
+            Debug(3,"found CC1p");
             v.GENIECC1p = true;
+            v.TruthTopologyString = "true GENIE CC1p";
+            
+            // match the proper GENIE interaction
+            GENIEinteraction c_genie_interaction;
+            bool MatchedGENIEinteraction = false;
+            for (auto genie_interaction : genie_interactions){
+                if (genie_interaction.mcevent_id == t1.mcevent_id){
+                    c_genie_interaction = genie_interaction;
+                    MatchedGENIEinteraction = true;
+                    break;
+                }
+            }
+            if (MatchedGENIEinteraction){
+                v.SetGENIEinfo( c_genie_interaction );
+            }
+            
+
+            if ( t1.MCpdgCode==2212 && t2.MCpdgCode==13 ){
+                Debug(4,Form("found the p (track %d) and mu (track %d) in this CC1p",t1.track_id,t2.track_id));
+                v.protonTrueTrack = t1;
+                v.muonTrueTrack = t2;
+                v.muonTrackReconstructed = v.protonTrackReconstructed = v.IsVertexReconstructed = true;
+            }
+            else if ( t1.MCpdgCode==13 && t2.MCpdgCode==2212 ){
+                Debug(4,Form("found the p (track %d) and mu (track %d) in this CC1p",t2.track_id,t1.track_id));
+                v.muonTrueTrack = t1;
+                v.protonTrueTrack = t2;
+                v.muonTrackReconstructed = v.protonTrackReconstructed = v.IsVertexReconstructed = true;
+            }
+            else{
+                Debug(4,Form("could not find p and mu in this CC1p - pdg codes are %d/%d",t2.MCpdgCode,t1.MCpdgCode));
+            }
         }
+        
     }
     return true;
 }
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::Print(bool DoPrintTracks, bool DoVertices){
@@ -304,7 +385,7 @@ void calcEventTopologies::Print(bool DoPrintTracks, bool DoVertices){
     
     if (DoPrintTracks && !tracks.empty()){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
-        for (auto t: tracks) t.Print();
+        for (auto t: tracks) t.Print( true );
     }
 
     

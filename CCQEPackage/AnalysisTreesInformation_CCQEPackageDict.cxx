@@ -58,7 +58,7 @@ namespace ROOT {
       ::calcEventTopologies *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::calcEventTopologies));
       static ::ROOT::TGenericClassInfo 
-         instance("calcEventTopologies", "calcEventTopologies.h", 30,
+         instance("calcEventTopologies", "calcEventTopologies.h", 32,
                   typeid(::calcEventTopologies), DefineBehavior(ptr, ptr),
                   &calcEventTopologies_Dictionary, isa_proxy, 4,
                   sizeof(::calcEventTopologies) );
@@ -103,7 +103,7 @@ namespace ROOT {
       ::myVertex *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::myVertex));
       static ::ROOT::TGenericClassInfo 
-         instance("myVertex", "myVertex.h", 30,
+         instance("myVertex", "myVertex.h", 31,
                   typeid(::myVertex), DefineBehavior(ptr, ptr),
                   &myVertex_Dictionary, isa_proxy, 4,
                   sizeof(::myVertex) );
@@ -624,10 +624,11 @@ namespace {
 0
     };
     static const char* includePaths[] = {
-"/Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage",
 "/Users/erezcohen/larlite/UserDev/mySoftware",
 "/Users/erezcohen/larlite/UserDev/MyLarLite/MyPackage",
+"/Users/erezcohen/larlite/UserDev/LarLite/MyPackage",
 "/Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo",
+"/Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage",
 "/Users/erezcohen/larlite/core",
 "/Users/erezcohen/root6/root-6.04.10/include",
 "/Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/CCQEPackage/",

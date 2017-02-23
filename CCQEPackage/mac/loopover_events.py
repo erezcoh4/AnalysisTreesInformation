@@ -11,7 +11,7 @@
     relevant flags
     
         -o/--option             what to do              (TruthCC1p / CC1pTopology)
-        -data                   data-type               (SingleParticleMC / openCOSMIC_MC / MC_BNB BNB_5e19POT / extBNB)
+        -data                   data-type               (SingleParticleMC / openCOSMIC_MC / MC_BNB / BNB_5e19POT / extBNB)
         -evf                    events fraction         (default 0.01)
         -mccv/--MCCversion      MCC-version             (default 7)
         -p                      print every X events    (default 1)
@@ -22,21 +22,8 @@
 from ccqe_tools import *
 
 
+do_print_tracks , do_print_vertices = True if debug>2 else False, True if debug>4 else False
 
-
-# global constants for
-ccqe_pars = dict({
-                 # for MC, take soft selection cuts here to study the purity and effficiency as a function of the cuts
-                 'max_mu_p_distance':10.0   # [cm]      # nominal 2 cm
-                 ,'min_length_long':0.0     # [cm]      # nominal 10 cm
-                 ,'max_length_short':200    # [cm]      # nominal 10 cm
-                 ,'delta_phi_min':0.0       # [deg.]    # nominal 150 deg.
-                 ,'delta_phi_max':361.0     # [deg.]
-                 ,'PIDA_short_min':-1                   # nominal 16
-                 ,'PIDA_short_max':1e13                 # nominal 24
-                 ,'PIDA_long_min':-1                    # nominal 5
-                 ,'PIDA_long_max':1e13                  # nominal 13
-                 })
 
 
 
@@ -76,39 +63,49 @@ if "CC1p" in flags.option: #{
 
 
     Nevents , Nreduced = events.Nentries , int(flags.evnts_frac*events.Nentries)
-    counter , GENIECC1p_counter = 0 , 0
+    counter , GENIECC1p_counter , GENIECC1p_close_counter = 0 , 0 , 0
 
     if debug: print_important("running on %d events (out of %d)"%(Nreduced,Nevents))
 
     for i in range(Nreduced): #{
 
-        event_has_CC1p_topology=False
+        event_has_CC1p_topology = False
         
         # get event
         events.GetEntry(i)
-        
+        # do_continue = True if events.run == 7 and events.subrun == 1951 and events.event == 39002 else False
+        # if do_continue is False: continue
+
+
         # analyze the event
         events.extract_information()
         
         # find vertices with CC1p topologies
         # event_has_CC1p_topology = events.FindVerticesWithCC1pTopology()
-        event_has_CC1p_topology = events.Find2tracksVertices()
+        event_has_CC1p_topology = events.Find2tracksVertices()        
         events.TagGENIECC1p()
         
 
-        if debug and i%flags.print_mod==0:
+        if i%flags.print_mod==0:
             print "processed so far %d events, found %d CC-2-tracks vertices, %d true GENIE CC1p"%(i,counter,GENIECC1p_counter)
-            events.Print(True,True)
+#            print "processed %d events, found %d CC1p, %d reconstructed, %d closer than %.0f cm "%(i,
+#                                                                                                   counter,
+#                                                                                                   GENIECC1p_counter,
+#                                                                                                   GENIECC1p_close_counter,
+#                                                                                                   ccqe_pars['max_mu_p_distance'])
+            if debug: events.Print( do_print_tracks , do_print_vertices )
         
         if event_has_CC1p_topology is not True: continue
     
-        # get the vertices with CC1p topologies and stream them into pandas.DataFrame
-        CC1p_vertices = [v for v  in events.CC1p_vertices]
-
         for vertex in events.CC1p_vertices: #{
-            stream_vertex_to_file( vertex , outcsvname )
+
+            if vertex.GENIECC1p: vertex.SetCounterID( GENIECC1p_counter )
+            
+            stream_vertex_to_file( vertex , outcsvname , MCmode=MCmode )
+            
             counter += 1
             if vertex.GENIECC1p: GENIECC1p_counter += 1
+            if vertex.GENIECC1p and vertex.reco_mu_p_distance < ccqe_pars['max_mu_p_distance'] : GENIECC1p_close_counter += 1
             if debug and i%flags.print_mod==0: print_line()
         #}
     #}
@@ -117,7 +114,9 @@ if "CC1p" in flags.option: #{
     infile.Close()
 
     print 'processed %d events'%Nreduced
-    print_filename( outcsvname,"%d CC1p vertices/%d true GENIE CC1p (%.1f MB)"%(counter,GENIECC1p_counter,filesize_in_MB(outcsvname) ) )
+    print_filename( outcsvname,
+                   "%d 2-tracks vertices, %d true CC1p, %d closer than %.0f cm (%.1f MB)"
+                   %(counter,GENIECC1p_counter,GENIECC1p_close_counter,ccqe_pars['max_mu_p_distance'],filesize_in_MB(outcsvname)) )
 #}
 
 

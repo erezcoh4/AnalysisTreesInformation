@@ -1,7 +1,6 @@
-#
-# This is an example GNUmakefile for my packages
-#
+# CCQE package
 
+ 
 # specific names for this package
 DICT  = AnalysisTreesInformation_CCQEPackageDict
 SHLIB = libAnalysisTreesInformation_CCQEPackage.so
@@ -12,10 +11,11 @@ OBJECTS = $(SOURCES:.cxx=.o)
 
 # include options for this package
 INCFLAGS  = -I.                       #Include itself
-INCFLAGS += -I$(LARLITE_USERDEVDIR)/AnalysisTreesInformation/AnaTreesPackage
 INCFLAGS += -I$(LARLITE_USERDEVDIR)/mySoftware
 INCFLAGS += -I$(LARLITE_USERDEVDIR)/MyLarLite/MyPackage
+INCFLAGS += -I$(LARLITE_USERDEVDIR)/LarLite/MyPackage
 INCFLAGS += -I$(LARLITE_USERDEVDIR)/BasicTool/GeoAlgo
+INCFLAGS += -I$(LARLITE_USERDEVDIR)/AnalysisTreesInformation/AnaTreesPackage
 INCFLAGS += $(shell larlite-config --includes)
 
 # platform-specific options
