@@ -103,7 +103,7 @@ public:
 
     
     TLorentzVector              momentum, Plead ;
-    TLorentzVector              nu      ,  muon , q ;
+    TLorentzVector              nu      , muon  , q ;
     TLorentzVector              n_miss  , Pcm   , Prec;
     std::vector<TLorentzVector> protons , neutrons;
     std::vector<TVector3>       p3vect  , n3vect;

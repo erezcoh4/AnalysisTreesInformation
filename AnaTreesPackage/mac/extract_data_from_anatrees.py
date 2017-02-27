@@ -19,6 +19,7 @@
             openCOSMIC_MC
             InTimeCOSMIC_MC
             MC_BNB
+            MC_BNB_InTimeCOSMIC_MC
             BNB_5e19POT
             extBNB
             

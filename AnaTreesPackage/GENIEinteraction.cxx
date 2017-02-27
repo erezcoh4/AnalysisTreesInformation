@@ -226,9 +226,9 @@ void GENIEinteraction::Print(bool DoPrintTracks){
         SHOW2( muonTrackReconstructed, protonTrackReconstructed );
     }
 
-    SHOWstdVector( trackID );
     if(DoPrintTracks && !tracks.empty()){
-        cout << "\033[33m" << tracks.size() << " pandoraNu tracks in GENIE interaction " << mcevent_id << "\033[37m" << endl;
+        cout << "\033[33m" << "--------------\n" << tracks.size() << " pandoraNu tracks in GENIE interaction " << mcevent_id << "--------------" <<  "\033[37m" << endl;
+        SHOWstdVector( trackID );
         for (auto t: tracks) {
             t.Print();
         }
