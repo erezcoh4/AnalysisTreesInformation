@@ -104,6 +104,9 @@ public:
     void  SetCalorimetryPDG (Int_t _pdg[3]) {for (int i=0 ; i < 3 ; i++ ) CalorimetryPDG[i] = _pdg[i];};
     void  SetProcessPrimary (Int_t fpp)     {process_primary = fpp;};
     void            SetCCNC (Int_t fccnc)   {truth_ccnc = fccnc;};
+    void        SetCF2Start (Float_t fc)    {cfdistance_start = fc;}; // set the closest flash distance to the start point of the track
+    
+    
     void   SetTruthStartPos (TVector3 pos)  {
         truth_start_pos = pos;  truth_startx=truth_start_pos.x(); truth_starty=truth_start_pos.y(); truth_startz=truth_start_pos.z();
     };
@@ -211,9 +214,9 @@ public:
     Float_t     dqdx_diff   , dqdx_ratio;
     Float_t     pidpida     , pidchi    , cosmicscore   , coscontscore;
     Float_t     cftime      , cftimewidth   , cfzcenter , cfzwidth, cfycenter , cfywidth  , cftotalpe , cfdistance;
+    Float_t     cfdistance_start;
     // The trkpurtruth - purity variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
     Float_t     purtruth_U  , purtruth_V    , purtruth_Y;
-    
     
     
     TString     TopBottDir  , ForBackDir    , LefRghtDir;

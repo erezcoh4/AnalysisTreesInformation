@@ -399,12 +399,21 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         // get flash info
         // compare reconstructed track to list of flashes in beam to find closest
         float tzcenter = (c_track.start_pos.z() + c_track.end_pos.z())/2.;
+        float tzstart = c_track.start_pos.z() , cfdistance_start = -9999;
         if(debug>3) Printf("with tzcenter = %.2f, goodflashidx.size() = %lu",tzcenter,goodflashidx.size());
         
         if(goodflashidx.size() > 0) {
+            
+            // minimal distance between the closest flash and the track - center
             int   minzi    = goodflashidx.at(0);
             float minzdiff = TMath::Abs(flash_zcenter[minzi] - tzcenter);
             if(debug>3) {SHOW(minzi);SHOW(minzdiff);}
+            
+            // closest flash to the start-point of the track
+            // for later - we would maybe use it to find the closest flash to a vertex
+            int   cfdistance_start_idx = goodflashidx.at(0);
+            cfdistance_start = TMath::Abs(flash_zcenter[cfdistance_start_idx] - tzstart);
+
             for(size_t k=0; k < goodflashidx.size(); k++)
             {
                 int   fidx     = goodflashidx.at(k);
@@ -413,8 +422,18 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                 if(TMath::Abs(fzcenter - tzcenter) < minzdiff)
                 {
                     minzi    = fidx;
-                    minzdiff = TMath::Abs(fzcenter = tzcenter);
+                    minzdiff = TMath::Abs(fzcenter - tzcenter);
                 }
+                
+                // closest flash to the start-point of the track
+                int   cfdistance_start_idx = goodflashidx.at(k);
+                float distnace = TMath::Abs(flash_zcenter[cfdistance_start_idx] - tzstart);
+                if( distnace < cfdistance_start)
+                {
+                    minzi    = fidx;
+                    cfdistance_start = distnace;
+                }
+
             }
             cftime      = flash_time[minzi];
             cftimewidth = flash_timewidth[minzi];
@@ -429,6 +448,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
             cftime = cftimewidth = cfzcenter = cfzwidth = cfycenter = cfywidth = cftotalpe = cfdistance = -9999;
         }
         c_track.SetFlashInfo(cftime , cftimewidth , cfzcenter , cfzwidth , cfycenter , cfywidth , cftotalpe , cfdistance);
+        c_track.SetCF2Start(cfdistance_start);
         if(debug>3) Printf("Set Flash Info...");
         
         
@@ -1276,7 +1296,7 @@ void cumputeAnaTree::PrintData(int entry){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
         
         for (auto t: tracks) {
-            t.Print();
+            t.Print(false,true);
         }
     }
     if(!tracks_vertices.empty()){

@@ -239,6 +239,7 @@ void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool 
         PrintPhys(end_dqdx,"ADC/cm");
         PrintPhys(tot_dqdx,"ADC/cm");
         SHOW3( cosmicscore, coscontscore , pidpida )
+        SHOW2( cfdistance , cfdistance_start );
     }
     if (DoPrintPlanes){
         SHOW3( purtruth_U , purtruth_V   , purtruth_Y );
