@@ -381,7 +381,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
                                  first_file=first_file , last_file=last_file, MCmode=MCmode,
                                  anatrees_listname=anatrees_listname ,
                                  do_pandora_cosmic=do_pandora_cosmic)
-
+    if debug: print 'finished extract_anatrees_information'
 
 #    extract_anatrees_tracks_information_with_all_features(in_chain=in_chain ,
 #                                                        Option=Option,
