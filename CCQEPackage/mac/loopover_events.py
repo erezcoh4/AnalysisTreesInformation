@@ -82,7 +82,7 @@ if "CC1p" in flags.option: #{
         
         # find vertices with CC1p topologies
         # event_has_CC1p_topology = events.FindVerticesWithCC1pTopology()
-        event_has_CC1p_topology = events.Find2tracksVertices()        
+        event_has_CC1p_topology = events.Find2tracksVertices()
         events.TagGENIECC1p()
         
 

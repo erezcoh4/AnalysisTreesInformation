@@ -73,12 +73,16 @@ void calcEventTopologies::GetEntry (int entry){
     InTree -> SetBranchAddress("tracks" , &ftracks);
     
     std::vector <GENIEinteraction> * finteractions = 0;
-    InTree -> SetBranchAddress("genie_interactions" , &finteractions);
-
+    if (MCmode){
+        InTree -> SetBranchAddress("genie_interactions" , &finteractions);
+    }
     
     InTree -> GetEntry(entry);
     tracks = *ftracks;
-    genie_interactions = *finteractions;
+    
+    if (MCmode){
+        genie_interactions = *finteractions;
+    }
     
     c_entry = entry;
 }

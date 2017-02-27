@@ -40,7 +40,9 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'delta_theta':r2d*np.abs(vertex.reco_CC1p_Pp.Theta()-vertex.reco_CC1p_Pmu.Theta())
                         ,'distance':vertex.distances_ij
                         ,'2_tracks_angle':vertex.GetAngleBetween2tracks()
+                        ,'vertex_x':vertex.position.x()
                         ,'vertex_y':vertex.position.y()
+                        ,'vertex_z':vertex.position.z()
                         
                         # single tracks features
                         # sort by length
@@ -54,6 +56,8 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'PIDA_long':vertex.LongestTrack.pidpida
                         ,'starty_short':vertex.ShortestTrack.starty
                         ,'starty_long':vertex.LongestTrack.starty
+                        ,'endy_short':vertex.ShortestTrack.endy
+                        ,'endy_long':vertex.LongestTrack.endy
                         ,'cosmicscore_short':vertex.ShortestTrack.cosmicscore
                         ,'cosmicscore_long':vertex.LongestTrack.cosmicscore
                         ,'coscontscore_short':vertex.ShortestTrack.coscontscore
@@ -123,6 +127,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'cfdistance_muon':vertex.muonTrueTrack.cfdistance if MCmode else -1000
                         ,'PIDA_proton':vertex.protonTrueTrack.pidpida if MCmode else -1000
                         ,'PIDA_muon':vertex.muonTrueTrack.pidpida if MCmode else -1000
+                        #                        ,'1mu1p':() if MCmode else -1000
                         ,'GENIECC1p':vertex.GENIECC1p if MCmode else -1000
                         ,'IsVertexContained':vertex.IsVertexContained if MCmode else -1000
                         ,'IsMuonReconstructed':vertex.muonTrackReconstructed if MCmode else -1000
