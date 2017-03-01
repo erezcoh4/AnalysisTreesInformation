@@ -518,28 +518,42 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         // get dq/dx in two boxes:
         // (1) around the track start point, (2) around the track end point
         Float_t dqdx_around_start[3] = {0,0,0}, dqdx_around_end[3] = {0,0,0};
+        Float_t dqdx_around_start_total=0, dqdx_around_end_total=0;
         Float_t dqdx_around_start_track_associated[3] = {0,0,0}, dqdx_around_end_track_associated[3] = {0,0,0};
+        Float_t dqdx_around_start_track_associated_total=0, dqdx_around_end_track_associated_total=0;
+
         for(Int_t j=0 ; j<no_hits ; j++) {
             for (int plane=0; plane<3 ;plane++){
-            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[plane] ) ){
-                dqdx_around_start[plane] += hit_charge[j];
-                if (hit_trkKey[j] == c_track.track_id){
-                    dqdx_around_start_track_associated[plane] += hit_charge[j];
+                if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[plane] ) ){
+                    dqdx_around_start[plane] += hit_charge[j];
+                    dqdx_around_start_total += hit_charge[j];
+                    if (hit_trkKey[j] == c_track.track_id){
+                        dqdx_around_start_track_associated[plane] += hit_charge[j];
+                        dqdx_around_start_track_associated_total += hit_charge[j];
+                    }
                 }
-            }
-            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[plane] ) ){
-                dqdx_around_end[plane] += hit_charge[j];
-                if (hit_trkKey[j] == c_track.track_id){
-                    dqdx_around_end_track_associated[plane] += hit_charge[j];
+                if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[plane] ) ){
+                    dqdx_around_end[plane] += hit_charge[j];
+                    dqdx_around_end_total += hit_charge[j];
+//                    SHOW3(hit_trkid[j], hit_trkKey[j], c_track.track_id);
+                    if (hit_trkKey[j] == c_track.track_id){
+//                        Printf("hit_trkKey[j] == c_track.track_id = %d, hit_charge[j]=%f", c_track.track_id, hit_charge[j]);
+                        dqdx_around_end_track_associated[plane] += hit_charge[j];
+                        dqdx_around_end_track_associated_total += hit_charge[j];
+//                        SHOW(dqdx_around_end_track_associated[plane]);
+                    }
                 }
-            }
             }
         }
         for (int plane=0; plane<3 ;plane++){
             c_track.dqdx_around_start[plane] = dqdx_around_start[plane];
+            c_track.dqdx_around_start_total = dqdx_around_start_total;
             c_track.dqdx_around_start_track_associated[plane] = dqdx_around_start_track_associated[plane];
+            c_track.dqdx_around_start_track_associated_total = dqdx_around_start_track_associated_total;
             c_track.dqdx_around_end[plane] = dqdx_around_end[plane];
+            c_track.dqdx_around_end_total = dqdx_around_end_total;
             c_track.dqdx_around_end_track_associated[plane] = dqdx_around_end_track_associated[plane];
+            c_track.dqdx_around_end_track_associated_total = dqdx_around_end_track_associated_total;
         }
         if(debug>3) Printf("set dq/dx around start and end points...");
 

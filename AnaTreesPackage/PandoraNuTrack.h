@@ -219,7 +219,9 @@ public:
     
     // charge deposition around start and end points
     Float_t     dqdx_around_start[3]                       , dqdx_around_end[3];
+    Float_t     dqdx_around_start_total                    , dqdx_around_end_total;
     Float_t     dqdx_around_start_track_associated[3]      , dqdx_around_end_track_associated[3];
+    Float_t     dqdx_around_start_track_associated_total   , dqdx_around_end_track_associated_total;
 
     // The trkpurtruth - purity variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
     Float_t     purtruth_U  , purtruth_V    , purtruth_Y;
