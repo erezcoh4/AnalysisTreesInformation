@@ -157,7 +157,10 @@ void PandoraNuTrack::CreateROIs(){
         int end_time = (int) ( end_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
         
         roi[plane] = box( start_wire , start_time , end_wire , end_time );
+
         
+        start_box[plane] = box( start_wire - 10 , start_time - 20 , start_wire + 10 , start_time + 20 );
+        end_box[plane] = box( end_wire - 10 , end_time - 20 , end_wire + 10 , end_time + 20 );
     }
     
 }

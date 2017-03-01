@@ -108,12 +108,17 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("trkdedx_pandoraNu"                              , &trkdedx_pandoraNu);
     
     
-    // optical info
+    // Hits
     InTree -> SetBranchAddress("no_hits"                                        , &no_hits);
     InTree -> SetBranchAddress("hit_plane"                                      , &hit_plane);
     InTree -> SetBranchAddress("hit_wire"                                       , &hit_wire);
+    InTree -> SetBranchAddress("hit_peakT"                                      , &hit_peakT);
+    InTree -> SetBranchAddress("hit_charge"                                     , &hit_charge);
     InTree -> SetBranchAddress("hit_trkid"                                      , &hit_trkid);
     InTree -> SetBranchAddress("hit_trkKey"                                     , &hit_trkKey);
+    
+    
+    // optical info
     InTree -> SetBranchAddress("no_flashes"                                     , &no_flashes);
     InTree -> SetBranchAddress("flash_time"                                     , &flash_time);
     InTree -> SetBranchAddress("flash_timewidth"                                , &flash_timewidth);
@@ -122,7 +127,6 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("flash_ywidth"                                   , &flash_ywidth);
     InTree -> SetBranchAddress("flash_zcenter"                                  , &flash_zcenter);
     InTree -> SetBranchAddress("flash_zwidth"                                   , &flash_zwidth);
-    
     
     // vertex
     InTree -> SetBranchAddress("nvtx_pandoraNu"                                 , &nvtx_pandoraNu);
@@ -494,6 +498,8 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         }
         if(debug>3) Printf("after for(Int_t fr=0; fr<3;fr++) ...");
         c_track.Set_dqdx( startdqdx , enddqdx , totaldqdx , nhits );
+        
+        
         if(debug>3) Printf("Set dq/dx ...");
  
         GetEnergyDeposition( j );
@@ -509,6 +515,35 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         c_track.SetCalorimetryPDG( trkpidpdg_pandoraNu[j] );
         if(debug>3) Printf("set track pid pdg ...");
 
+        // get dq/dx in two boxes:
+        // (1) around the track start point, (2) around the track end point
+        Float_t dqdx_around_start[3] = {0,0,0}, dqdx_around_end[3] = {0,0,0};
+        Float_t dqdx_around_start_track_associated[3] = {0,0,0}, dqdx_around_end_track_associated[3] = {0,0,0};
+        for(Int_t j=0 ; j<no_hits ; j++) {
+            for (int plane=0; plane<3 ;plane++){
+            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[plane] ) ){
+                dqdx_around_start[plane] += hit_charge[j];
+                if (hit_trkKey[j] == c_track.track_id){
+                    dqdx_around_start_track_associated[plane] += hit_charge[j];
+                }
+            }
+            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[plane] ) ){
+                dqdx_around_end[plane] += hit_charge[j];
+                if (hit_trkKey[j] == c_track.track_id){
+                    dqdx_around_end_track_associated[plane] += hit_charge[j];
+                }
+            }
+            }
+        }
+        for (int plane=0; plane<3 ;plane++){
+            c_track.dqdx_around_start[plane] = dqdx_around_start[plane];
+            c_track.dqdx_around_start_track_associated[plane] = dqdx_around_start_track_associated[plane];
+            c_track.dqdx_around_end[plane] = dqdx_around_end[plane];
+            c_track.dqdx_around_end_track_associated[plane] = dqdx_around_end_track_associated[plane];
+        }
+        if(debug>3) Printf("set dq/dx around start and end points...");
+
+        
         // if its MC, plug also MC information
         if(MCmode){
             if(debug>3) Printf("plugging also MC information:");
@@ -564,6 +599,17 @@ void cumputeAnaTree::GetPandoraNuTracks(){
     }
     
 }
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::WireTimeInBox(int wire, int time, box box){
+    if ( box.start_wire < wire && wire < box.end_wire && box.start_time < time && time < box.end_time ){
+        return true;
+    }
+    return false;
+}
+
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

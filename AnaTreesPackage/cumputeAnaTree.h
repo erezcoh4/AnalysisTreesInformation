@@ -110,7 +110,7 @@ public:
     void    GetEnergyDeposition ( int j );
     void     GetSoftwareTrigger ();
     void          TagCC1pTracks ();
-    
+    bool          WireTimeInBox (int w, int t, box b); // returns true if the wire/time point is in the box
     
     
     // helpers
@@ -143,7 +143,14 @@ public:
     Double_t    pot; // protons on target
     
     
-    
+    // hits
+    Int_t       no_hits,                no_flashes;
+    Short_t     hit_plane[MAX_hits],    hit_wire[MAX_hits];
+    Float_t     hit_peakT[MAX_hits];
+    Float_t     hit_charge[MAX_hits];     //area (total charge (ADC) deposited for hit in the tdc range)
+    Short_t     hit_trkid[MAX_hits];      //is this hit associated with a reco track?
+    Short_t     hit_trkKey[MAX_hits];      //is this hit associated with a reco track,  if so associate a unique track key ID?
+
 
     
     // PandoraNu
@@ -157,7 +164,6 @@ public:
     Short_t     trkpidbestplane_pandoraNu[MAX_tracks];
     
     
-    Short_t     hit_trkid[MAX_hits]         , hit_trkKey[MAX_hits]                  , hit_plane[MAX_hits]       , hit_wire[MAX_hits];
     
     
     Int_t       nhits       , primary;
@@ -167,7 +173,6 @@ public:
     std::vector<Int_t>      Ncosmictracks_ymax;
     Int_t       trkg4id_pandoraNu[MAX_tracks]   , TrackId[MAX_tracks];
     Int_t       trkpidpdg_pandoraNu[MAX_tracks][3];
-    Int_t       no_hits     , no_flashes;
     Int_t       mcevts_truth;               //number of neutrino interactions in the spill
     Int_t       nuPDG_truth[kMaxTruth];     //neutrino PDG code (nue=12; anti-nue=-12; numu=14; anti-numu=-14; nutau=16; anti-nutau=-16)
     Int_t       ccnc_truth[kMaxTruth];      //neutrino interaction type: 0=Charged current (CC), 1=Neutral current (NC)

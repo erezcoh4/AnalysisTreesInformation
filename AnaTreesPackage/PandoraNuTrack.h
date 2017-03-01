@@ -54,6 +54,7 @@ struct box {
         diag_slope = (float)( end_time - start_time ) / ( end_wire - start_wire );
     }
     
+    
 };
 
 
@@ -215,6 +216,11 @@ public:
     Float_t     pidpida     , pidchi    , cosmicscore   , coscontscore;
     Float_t     cftime      , cftimewidth   , cfzcenter , cfzwidth, cfycenter , cfywidth  , cftotalpe , cfdistance;
     Float_t     cfdistance_start;
+    
+    // charge deposition around start and end points
+    Float_t     dqdx_around_start[3]                       , dqdx_around_end[3];
+    Float_t     dqdx_around_start_track_associated[3]      , dqdx_around_end_track_associated[3];
+
     // The trkpurtruth - purity variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
     Float_t     purtruth_U  , purtruth_V    , purtruth_Y;
     
@@ -223,6 +229,7 @@ public:
 
     
     box         roi[3];
+    box         start_box[3], end_box[3];   // boxed around the start and end points of the track
     
     // dE/dx
     Int_t       NEdepYsteps;
