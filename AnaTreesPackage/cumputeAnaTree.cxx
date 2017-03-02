@@ -337,7 +337,7 @@ void cumputeAnaTree::GetInTimeFlashes(){
         
         if(debug>3) { SHOW(goodflashidx.size()); Printf("looping in if(no_flashes > 0) on no_flashes"); }
         
-        for(int i=0; i < no_flashes && i < MAX_hits ; i++){
+        for(int i=0; i < no_flashes && i < kMaxHits ; i++){
             
             if(debug>4) SHOW3( i , flash_time[i] , flash_pe[i] );
             
@@ -576,7 +576,7 @@ bool cumputeAnaTree::AssociateHitsTracks(){
         Float_t dqdx_around_start_track_associated_total=0, dqdx_around_end_track_associated_total=0;
         
         
-        for(Int_t j=0 ; j<no_hits && j<MAX_hits ; j++) {
+        for(Int_t j=0 ; j<no_hits && j<kMaxHits ; j++) {
             
             
             if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[ hit_plane[j] ] ) ){

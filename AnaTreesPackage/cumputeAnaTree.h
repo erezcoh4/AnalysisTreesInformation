@@ -5,7 +5,7 @@
  *
  * \brief Class def header for a class cumputeAnaTree, tools for analysis of AnalysisTree information
  *
- * @author erez c. and katherine w.
+ * @author erez o. c.
  */
 
 /** \addtogroup GBDTprotonsPackage
@@ -28,7 +28,7 @@
 #define MAX_vertices 20
 #define MAX_tracks 1000
 #define MAX_cosmic_tracks 100
-#define MAX_hits 50000
+#define kMaxHits 60000
 #define kMaxTruth 10
 #define kMaxPrimaries 20000  //maximum number of primary particles
 /**
@@ -144,11 +144,11 @@ public:
     
     // hits
     Int_t       no_hits,                no_flashes;
-    Short_t     hit_plane[MAX_hits],    hit_wire[MAX_hits];
-    Float_t     hit_peakT[MAX_hits];
-    Float_t     hit_charge[MAX_hits];     //area (total charge (ADC) deposited for hit in the tdc range)
-    Short_t     hit_trkid[MAX_hits];      //is this hit associated with a reco track?
-    Short_t     hit_trkKey[MAX_hits];      //is this hit associated with a reco track,  if so associate a unique track key ID?
+    Short_t     hit_plane[kMaxHits],    hit_wire[kMaxHits];
+    Float_t     hit_peakT[kMaxHits];
+    Float_t     hit_charge[kMaxHits];     //area (total charge (ADC) deposited for hit in the tdc range)
+    Short_t     hit_trkid[kMaxHits];      //is this hit associated with a reco track?
+    Short_t     hit_trkKey[kMaxHits];      //is this hit associated with a reco track,  if so associate a unique track key ID?
 
 
     
@@ -196,10 +196,10 @@ public:
     // tagging
     Float_t     trkcosmicscore_tagger_pandoraNu[MAX_tracks][10];
     Float_t     trkcosmicscore_containmenttagger_pandoraNu[MAX_tracks][10];
-    Float_t     trkpidchi_pandoraNu[MAX_tracks][3]      , trkpidpida_pandoraNu[MAX_tracks][3]       , flash_time[MAX_hits]  ;
+    Float_t     trkpidchi_pandoraNu[MAX_tracks][3]      , trkpidpida_pandoraNu[MAX_tracks][3]       , flash_time[kMaxHits]  ;
     
-    Float_t     flash_timewidth[MAX_hits] , flash_pe[MAX_hits];
-    Float_t     flash_ycenter[MAX_hits]   , flash_ywidth[MAX_hits]    , flash_zcenter[MAX_hits] , flash_zwidth[MAX_hits];
+    Float_t     flash_timewidth[kMaxHits] , flash_pe[kMaxHits];
+    Float_t     flash_ycenter[kMaxHits]   , flash_ywidth[kMaxHits]    , flash_zcenter[kMaxHits] , flash_zwidth[kMaxHits];
     
     // vertex information
     Short_t     nvtx_pandoraNu;
