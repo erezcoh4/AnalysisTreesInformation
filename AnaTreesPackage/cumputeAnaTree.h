@@ -46,15 +46,25 @@ public:
     ~cumputeAnaTree(){}
     
     // construct w/ input and output TTree-s
-    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
+//    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
+//                    TString foption="extract all tracks information", int fdebug=0,
+//                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
+//    
+//    cumputeAnaTree (TChain * fInChain, TTree * fOutTree,
+//                    TString foption="extract all tracks information", int fdebug=0,
+//                    bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
+//    {cumputeAnaTree((TTree*) fInChain, fOutTree,
+//                    foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
+//    
+    cumputeAnaTree (TTree * fInTree,
                     TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
+                    bool fMCmode=false, bool fDoPandoraCosmic=false);
     
-    cumputeAnaTree (TChain * fInChain, TTree * fOutTree,
+    cumputeAnaTree (TChain * fInChain,
                     TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
-    {cumputeAnaTree((TTree*) fInChain, fOutTree,
-                    foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
+                    bool fMCmode=false,bool fDoPandoraCosmic=false)
+    {cumputeAnaTree((TTree*) fInChain, foption, fdebug, fMCmode, fDoPandoraCosmic);};
+    
     
     
     

@@ -882,7 +882,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
         
         in_chain = ROOT.TChain("analysistree/anatree")
         in_chain.Add(file)
-        extract_anatrees_information(in_chain = in_chain , Option = Option, eventsTree=eventsTree , GENIETree=GENIETree,
+        extract_anatrees_information(in_chain = in_chain , Option = Option,
                                      events_writer=events_writer, tracks_writer=tracks_writer,
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
@@ -943,7 +943,7 @@ def init_output_trees(): #{
 
 
 # ----------------------------------------------------------------------------------------------------
-def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENIETree=None,
+def extract_anatrees_information(in_chain=None, Option='',
                                  events_writer=None, tracks_writer=None, cosmic_writer=None, g4_writer=None,
                                  MCmode=False,do_pandora_cosmic=False,
                                  do_dEdx=False, do_SWtrigger=False ):
@@ -951,7 +951,8 @@ def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENI
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
     if flags.verbose: print_important( "proceesing %d events"%Nreduced )
-    calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
+#    calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
+    calc = cumputeAnaTree( in_chain, Option, flags.verbose, MCmode , do_pandora_cosmic )
 
     global g4_counter , counter , cosmic_counter , evts_counter
     global eventsTree , GENIETree
