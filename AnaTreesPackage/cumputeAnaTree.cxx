@@ -1153,6 +1153,7 @@ void cumputeAnaTree::TagCC1pTracks(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::FillOutTree (bool fDo){
     
+    Debug(3, "xxxxxx\nFilling eventsTree....\nxxxxxxxx");
     OutTree -> Fill();
     return true;
     
@@ -1161,6 +1162,7 @@ bool cumputeAnaTree::FillOutTree (bool fDo){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::FillGENIETree (bool fDo){
     
+    Debug(3, "xxxxxx\nFilling GENIETree....\nxxxxxxxx");
     GENIETree -> Fill();
     return true;
     
