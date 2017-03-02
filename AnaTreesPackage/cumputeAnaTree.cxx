@@ -54,9 +54,8 @@ cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree,
     SetDoPandoraCosmic(fDoPandoraCosmic);
     InitInputTree();
     InitOutputTree();
-    if (debug>1){
-        Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
-    }
+    if (debug>1) Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
+    
 
     for ( Float_t ymax_cosmictrack = 120.0; ymax_cosmictrack > 110.0 ; ymax_cosmictrack-=0.5 ){
         ymax_cosmictracks.push_back(ymax_cosmictrack);
@@ -1162,10 +1161,11 @@ bool cumputeAnaTree::FillOutTree (bool fDo){
 bool cumputeAnaTree::FillGENIETree (bool fDo){
     
     Debug(3, "xxxxxx\nFilling GENIETree....\nxxxxxxxx");
-    if (!genie_interactions.empty()){
-        GENIETree -> Fill();
-        return true;
-    }
+//    if (!genie_interactions.empty()){
+    GENIETree -> Fill();
+    Debug(3, "xxxxxx\nFilled GENIETree....\nxxxxxxxx");
+    return true;
+//    }
     Debug(3, "genie_interactions is empty, returning without filling GENIETree");
     return false;
 }
