@@ -910,9 +910,9 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
 # ----------------------------------------------------------------------------------------------------
 
 
-import re, array, os
 # ----------------------------------------------------------------------------------------------------
 def init_output_trees( MCmode=False ): #{
+    import re, array, os
     
     global run , subrun , event , Ntracks , Ng4particles, nu_interactions, tracks, g4particles, genie_interactions
     global eventsTree , GENIETree
