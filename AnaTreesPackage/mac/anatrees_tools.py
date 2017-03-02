@@ -33,6 +33,10 @@ mu_p_intersection_path  = lists_path + "/muon_proton_intersection"
 schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 
+
+g4_counter , counter , cosmic_counter , evts_counter = 0 , 0 , 0 , 0
+
+
 event_features_names = [ 'run'  ,'subrun'   ,'event'
                         ,'MCmode'
                         ,'Ntracks_kalmanhit'
@@ -213,7 +217,7 @@ def ccqe_candidates_filename( data_name=None ):
 
 # methods
 # ----------------------------------------------------------------------------------------------------
-def read_files_from_a_list( ListName , first_file = 0 , last_file = 0 , MCCversion="MCC7" ):
+def read_files_from_a_list( ListName , first_file = 0 , last_file = 0 , MCCversion="MCC7" ): #{
     # returns the files
     list_full_name = lists_path + "/analysis_trees/" + MCCversion + "/" + ListName + ".list"
     
@@ -224,8 +228,11 @@ def read_files_from_a_list( ListName , first_file = 0 , last_file = 0 , MCCversi
         files = f.read().splitlines()
     if last_file > first_file:
         files = files[ first_file : last_file ]
-    if flags.verbose>4: print files
+
+    if flags.verbose>1: print files
+
     return files
+#}
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
@@ -361,39 +368,31 @@ def scheme_list_of_files_rse( GBDTmodelName, TracksListName , p_score ):
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 # extract data from anatrees
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-# ----------------------------------------------------------------------------------------------------
-def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
-                                                        Option="extract all tracks information",
-                                                        first_file=0 , last_file=0 ,
-                                                        MCmode=False,
-                                                        AddEventsList=False ,
-                                                        EventsListName="" ,
-                                                        MCCversion="MCC7" ,
-                                                        do_pandora_cosmic=False ):
-    
-    data_name = MCCversion + "_" + data_type
-    anatrees_listname = data_name + "_AnalysisTrees"
-    print_filename(anatrees_listname , "reading anatrees listname")
-    files       = read_files_from_a_list( ListName=anatrees_listname, first_file=first_file, last_file=last_file, MCCversion=MCCversion )
-    in_chain    = get_analysistrees_chain( files )
-    
-    extract_anatrees_information(in_chain=in_chain , Option=Option,
-                                 first_file=first_file , last_file=last_file, MCmode=MCmode,
-                                 anatrees_listname=anatrees_listname ,
-                                 do_pandora_cosmic=do_pandora_cosmic)
-    if debug: print 'finished extract_anatrees_information'
-
-#    extract_anatrees_tracks_information_with_all_features(in_chain=in_chain ,
-#                                                        Option=Option,
-#                                                      first_file=first_file , last_file=last_file,
-#                                                      MCmode=MCmode,
-#                                                      AddEventsList=AddEventsList ,
-#                                                      EventsListName=EventsListName ,
-#                                                      anatrees_listname=anatrees_listname ,
-#                                                      do_pandora_cosmic=do_pandora_cosmic )
+## ----------------------------------------------------------------------------------------------------
+# previous version
+#def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
+#                                                        Option="extract all tracks information",
+#                                                        first_file=0 , last_file=0 ,
+#                                                        MCmode=False,
+#                                                        AddEventsList=False ,
+#                                                        EventsListName="" ,
+#                                                        MCCversion="MCC7" ,
+#                                                        do_pandora_cosmic=False ):
+#    
+#    data_name = MCCversion + "_" + data_type
+#    anatrees_listname = data_name + "_AnalysisTrees"
+#    print_filename(anatrees_listname , "reading anatrees listname")
+#    files       = read_files_from_a_list( ListName=anatrees_listname, first_file=first_file, last_file=last_file, MCCversion=MCCversion )
+#    in_chain    = get_analysistrees_chain( files )
+#    
+#    extract_anatrees_information(in_chain=in_chain , Option=Option,
+#                                 first_file=first_file , last_file=last_file, MCmode=MCmode,
+#                                 anatrees_listname=anatrees_listname ,
+#                                 do_pandora_cosmic=do_pandora_cosmic)
+#    if debug: print 'finished extract_anatrees_information'
+## ----------------------------------------------------------------------------------------------------
 
 
-# ----------------------------------------------------------------------------------------------------
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -494,7 +493,7 @@ def stream_event_features_to_file( calc , writer , do_pandora_cosmic=False  ):
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
-def stream_g4_features_to_file ( g4particle , writer_g4 ):
+def stream_g4_features_to_file ( g4particle , g4_writer ):
 
     g4_features = [ g4particle.run      , g4particle.subrun     , g4particle.event  ,
                     g4particle.ig4      , g4particle.TrackId    , g4particle.pdg    ,
@@ -517,7 +516,7 @@ def stream_g4_features_to_file ( g4particle , writer_g4 ):
                     g4particle.rec_coscontscore , g4particle.rec_cftime
                    ]
             
-    writer_g4.writerow( ['{:.3f}'.format(x) for x in g4_features]  )
+    g4_writer.writerow( ['{:.3f}'.format(x) for x in g4_features]  )
 # ----------------------------------------------------------------------------------------------------
 
 # ----------------------------------------------------------------------------------------------------
@@ -630,18 +629,18 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
 
     TracksAnaFileName   = tracks_anafile_name( anatrees_listname , first_file , last_file )
     events_file_name    = events_features_file_name( anatrees_listname , first_file , last_file )
-    resutls_file_name   = tracks_full_features_file_name( anatrees_listname , first_file , last_file )
+    results_file_name   = tracks_full_features_file_name( anatrees_listname , first_file , last_file )
     cosmics_file_name   = cosmic_features_file_name( anatrees_listname , first_file , last_file )
     g4info_file_name    = g4_features_file_name( anatrees_listname , first_file , last_file )
 
-    writer = csv.writer(open(resutls_file_name, 'wb'))
+    writer = csv.writer(open(results_file_name, 'wb'))
     if first_file==0:
         writer.writerow( track_features_names )
 
     if MCmode:
-        writer_g4 = csv.writer(open(g4info_file_name, 'wb'))
+        g4_writer = csv.writer(open(g4info_file_name, 'wb'))
         if first_file==0:
-            writer_g4.writerow( g4_features_names )
+            g4_writer.writerow( g4_features_names )
 
     if do_pandora_cosmic:
         cosmic_writer = csv.writer(open(cosmics_file_name, 'wb'))
@@ -662,9 +661,9 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
     OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
-    TracksTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
+    eventsTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
 
-    calc = cumputeAnaTree( in_chain, TracksTree,
+    calc = cumputeAnaTree( in_chain, eventsTree,
                           Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
     
     if AddEventsList:
@@ -702,7 +701,7 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
             if MCmode:
                 for i in range(calc.Ng4particles):
                     g4particle = calc.GetG4Particle(i)
-                    stream_g4_features_to_file ( g4particle , writer_g4 )
+                    stream_g4_features_to_file ( g4particle , g4_writer )
                     g4_counter = g4_counter + 1
             # end geant4 particles
 
@@ -786,7 +785,7 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
     #    print_filename( FeaturesFileName , "wrote csv file with %d tracks (%.2f MB)"%(counter,float(os.path.getsize(FeaturesFileName)/1048576.0)) )
     
     print_filename( events_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_file_name)) )
-    print_filename( resutls_file_name , "%d tracks features (%.2f MB)"%(counter,filesize_in_MB(resutls_file_name) ) )
+    print_filename( results_file_name , "%d tracks features (%.2f MB)"%(counter,filesize_in_MB(results_file_name) ) )
     print_filename( TracksAnaFileName , "root file (%.2f MB)"%filesize_in_MB(TracksAnaFileName) )
 
     if do_pandora_cosmic:
@@ -798,10 +797,10 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
         output_rse_file.close()
 
     if MCmode:
-        print_filename( resutls_file_name , "%d g4 generated particles (%.2f MB)"%(g4_counter,filesize_in_MB(g4info_file_name)) )
+        print_filename( results_file_name , "%d g4 generated particles (%.2f MB)"%(g4_counter,filesize_in_MB(g4info_file_name)) )
         GENIETree.Write()
     
-    TracksTree.Write()
+    eventsTree.Write()
     OutFile.Close()
 # ----------------------------------------------------------------------------------------------------
 
@@ -809,49 +808,116 @@ def extract_anatrees_tracks_information_with_all_features(in_chain,
 
 
 
+# ----------------------------------------------------------------------------------------------------
+def create_csv_writers( events_file_name, results_file_name, cosmics_file_name, g4info_file_name,
+                        MCmode=False,do_pandora_cosmic=False ):#{
+
+    events_writer, tracks_writer, cosmic_writer, g4_writer = None, None, None, None
+
+    # event features file
+    events_writer = csv.writer(open(events_file_name, 'wb'))
+    if first_file==0: events_writer.writerow( event_features_names )
+    
+    # pandoraNu tracks features file
+    tracks_writer = csv.writer(open(results_file_name, 'wb'))
+    if first_file==0: tracks_writer.writerow( track_features_names )
+    
+    # pandoraCosmic tracks features file
+    if do_pandora_cosmic:
+        cosmic_writer = csv.writer(open(cosmics_file_name, 'wb'))
+        if first_file==0: cosmic_writer.writerow( track_features_names )
+    
+    # MC mode - g4 features
+    if MCmode:
+        g4_writer = csv.writer(open(g4info_file_name, 'wb'))
+        if first_file==0: g4_writer.writerow( g4_features_names )
+
+    return events_writer, tracks_writer, cosmic_writer, g4_writer
+#}
+# ----------------------------------------------------------------------------------------------------
+
 
 
 
 
 # ----------------------------------------------------------------------------------------------------
-def extract_anatrees_information(in_chain, Option,
-                                 anatrees_listname="", first_file=0, last_file=0,
-                                 MCmode=False,do_pandora_cosmic=False, do_dEdx=False, do_SWtrigger=False ):
+# new version, March-01, loop over the input files without chaining them first..
+def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
+                                                        Option="extract all tracks information",
+                                                        first_file=0 , last_file=0 ,
+                                                        MCmode=False,
+                                                        AddEventsList=False ,
+                                                        EventsListName="" ,
+                                                        MCCversion="MCC7" ,
+                                                        do_pandora_cosmic=False ): #{
     
-    g4_counter , counter , cosmic_counter , evts_counter = 0 , 0 , 0 , 0
+    data_name = MCCversion + "_" + data_type
+    anatrees_listname = data_name + "_AnalysisTrees"
+    print_filename(anatrees_listname , "reading anatrees listname")
+    files  = read_files_from_a_list( ListName=anatrees_listname, first_file=first_file, last_file=last_file, MCCversion=MCCversion )
     
-    # root file
-    TracksAnaFileName   = tracks_anafile_name( anatrees_listname , first_file , last_file )
-    # event features file
-    events_file_name    = events_features_file_name( anatrees_listname , first_file , last_file )
-    events_writer = csv.writer(open(events_file_name, 'wb'))
-    if first_file==0: events_writer.writerow( event_features_names )
-    # pandoraNu tracks features file
-    resutls_file_name   = tracks_full_features_file_name( anatrees_listname , first_file , last_file )
-    tracks_writer = csv.writer(open(resutls_file_name, 'wb'))
-    if first_file==0: tracks_writer.writerow( track_features_names )
-    # pandoraCosmic tracks features file
-    if do_pandora_cosmic:
-        cosmics_file_name   = cosmic_features_file_name( anatrees_listname , first_file , last_file )
-        cosmic_writer = csv.writer(open(cosmics_file_name, 'wb'))
-        if first_file==0: cosmic_writer.writerow( track_features_names )
-    # MC mode - g4 features
+    # csv writers
+    events_file_name  = events_features_file_name( anatrees_listname , first_file , last_file )
+    results_file_name = tracks_full_features_file_name( anatrees_listname , first_file , last_file )
+    cosmics_file_name = cosmic_features_file_name( anatrees_listname , first_file , last_file )
+    g4info_file_name  = g4_features_file_name( anatrees_listname , first_file , last_file )
+    events_writer, tracks_writer, cosmic_writer, g4_writer = create_csv_writers( events_file_name, results_file_name,
+                                                                                cosmics_file_name, g4info_file_name,
+                                                                                MCmode=MCmode,do_pandora_cosmic=do_pandora_cosmic )
+    
+    
+    # output root file
+    TracksAnaFileName  = tracks_anafile_name( anatrees_listname , first_file , last_file )
+    OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
+    eventsTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
+    global g4_counter , counter , cosmic_counter , evts_counter
+
+    
+    for file in files: #{
+        
+        if debug: print_filename( file , "reading analysistree data from file (%.2f MB)"%filesize_in_MB(file) )
+        if filesize_in_MB(file) < 0.1 : continue
+        
+        in_chain = ROOT.TChain("analysistree/anatree")
+        in_chain.Add(file)
+        extract_anatrees_information(in_chain = in_chain , Option = Option, eventsTree=eventsTree , GENIETree=GENIETree,
+                                     events_writer=events_writer, tracks_writer=tracks_writer,
+                                     cosmic_writer=cosmic_writer, g4_writer=g4_writer,
+                                     MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
+        if debug: print 'finished extract_anatrees_information'
+    #}
+    
+    print_filename( events_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_file_name)) )
+    print_filename( results_file_name,"%d tracks features (%.2f MB)"%(counter,filesize_in_MB(results_file_name) ) )
+    print_filename( TracksAnaFileName,"%d events/%d genie root file (%.2f MB)"%(eventsTree.GetEntries(),GENIETree.GetEntries(),filesize_in_MB(TracksAnaFileName)) )
+    if do_pandora_cosmic: print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
     if MCmode:
-        g4info_file_name    = g4_features_file_name( anatrees_listname , first_file , last_file )
-        writer_g4 = csv.writer(open(g4info_file_name, 'wb'))
-        if first_file==0: writer_g4.writerow( g4_features_names )
+        print_filename( results_file_name , "%d g4 particles (%.2f MB)"%(g4_counter,filesize_in_MB(g4info_file_name)) )
+        GENIETree.Write()
+        print "wrote GENIE Tree"
+    
+    eventsTree.Write()
+    print "wrote Tracks Tree (events)"
+    
+    OutFile.Close()
+    print "closed output file"
+#}
+# ----------------------------------------------------------------------------------------------------
 
 
+
+# ----------------------------------------------------------------------------------------------------
+def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENIETree=None,
+                                 events_writer=None, tracks_writer=None, cosmic_writer=None, g4_writer=None,
+                                 MCmode=False,do_pandora_cosmic=False,
+                                 do_dEdx=False, do_SWtrigger=False ):
+    
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
     if flags.verbose: print_important( "proceesing %d events"%Nreduced )
+    calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
 
-    OutFile     = ROOT.TFile(TracksAnaFileName,"recreate")
-    TracksTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
-    
-    calc = cumputeAnaTree( in_chain, TracksTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
-    
-    
+    global g4_counter , counter , cosmic_counter , evts_counter
     # - # main events loop
     for entry in range(Nreduced): #{
         
@@ -866,12 +932,13 @@ def extract_anatrees_information(in_chain, Option,
         if flags.verbose>2: print 'stream event features to file'
         stream_event_features_to_file ( calc , events_writer )
         evts_counter += 1
+        
 
         if MCmode: #{ geant4 particles
             if flags.verbose>2: print 'stream genie interactions'
             for i in range(calc.Ng4particles): #{
                 g4particle = calc.GetG4Particle(i)
-                stream_g4_features_to_file ( g4particle , writer_g4 )
+                stream_g4_features_to_file ( g4particle , g4_writer )
                 g4_counter = g4_counter + 1
             #}
             
@@ -903,27 +970,7 @@ def extract_anatrees_information(in_chain, Option,
         #}  if calc.Ntracks>0
 
         calc.FillOutTree()
-
     #} end main events loop
-
-
-    print_filename( events_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_file_name)) )
-    print_filename( resutls_file_name,"%d tracks features (%.2f MB)"%(counter,filesize_in_MB(resutls_file_name) ) )
-    print_filename( TracksAnaFileName,"%d events/%d genie root file (%.2f MB)"%(TracksTree.GetEntries(),GENIETree.GetEntries(),filesize_in_MB(TracksAnaFileName)) )
-    
-    if do_pandora_cosmic:
-            print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
-    
-    if MCmode:
-        print_filename( resutls_file_name , "%d g4 particles (%.2f MB)"%(g4_counter,filesize_in_MB(g4info_file_name)) )
-        GENIETree.Write()
-        print "wrote GENIE Tree"
-    
-    TracksTree.Write()
-    print "wrote Tracks Tree (events)"
-
-    OutFile.Close()
-    print "closed output file"
 # ----------------------------------------------------------------------------------------------------
 
 

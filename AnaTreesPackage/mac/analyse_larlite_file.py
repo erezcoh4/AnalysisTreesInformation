@@ -55,10 +55,10 @@ my_fwk.set_io_mode( fmwk.storage_manager.kREAD )
 my_fwk.set_ana_output_file( ana_files_path + "/BNB_ANA/Ana_" + latlitefilename  + ".root" )
 print_filename( ana_files_path + "/BNB_ANA/Ana_" + latlitefilename  + ".root", 'added ouput (1): root file ')
 # output (2): csv file
-resutls_file_name = ana_files_path + "/BNB_ANA/Features_" + latlitefilename  + ".csv"
-#writer = csv.writer(open(resutls_file_name, 'wb'))
+results_file_name = ana_files_path + "/BNB_ANA/Features_" + latlitefilename  + ".csv"
+#writer = csv.writer(open(results_file_name, 'wb'))
 #writer.writerow( features_names )
-print_filename( resutls_file_name , 'added ouput (2): features csv file ')
+print_filename( results_file_name , 'added ouput (2): features csv file ')
 # ---------------------------------------------------------------- #
 n_max_entries   = -1 if flags.evnts_frac <= 1 else int(flags.evnts_frac)
 # ---------------------------------------------------------------- #
@@ -66,7 +66,7 @@ n_max_entries   = -1 if flags.evnts_frac <= 1 else int(flags.evnts_frac)
 # call the analysis unit
 ana_process = fmwk.AnalyseEvents()
 # set its important arguments (verbosity, worker, etc.)
-ana_process.SetArgs( flags.worker , flags.verbose , n_max_entries , True , resutls_file_name)
+ana_process.SetArgs( flags.worker , flags.verbose , n_max_entries , True , results_file_name)
 # load ROIs map
 ana_process.LoadROIsMap( roi_map_name  )
 # add my analysis process
