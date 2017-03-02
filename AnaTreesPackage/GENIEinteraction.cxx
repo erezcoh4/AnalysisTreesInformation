@@ -145,7 +145,7 @@ bool GENIEinteraction::SortNucleons(){
     }
     
     for (auto i: sort_by_momentum_magnitude( n3vect )){
-        protons.push_back( TLorentzVector( n3vect.at(i) , sqrt( n3vect.at(i).Mag2() + 0.939*0.939 ) ) );
+        neutrons.push_back( TLorentzVector( n3vect.at(i) , sqrt( n3vect.at(i).Mag2() + 0.939*0.939 ) ) );
     }
 
 }
