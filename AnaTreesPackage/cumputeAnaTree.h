@@ -46,6 +46,16 @@ public:
     ~cumputeAnaTree(){}
     
     // construct w/ input and output TTree-s
+    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
+                    TString foption="extract all tracks information", int fdebug=0,
+                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
+    
+    cumputeAnaTree (TChain * fInChain, TTree * fOutTree,
+                    TString foption="extract all tracks information", int fdebug=0,
+                    bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
+    {cumputeAnaTree((TTree*) fInChain, fOutTree,
+                    foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
+    
 //    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
 //                    TString foption="extract all tracks information", int fdebug=0,
 //                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
@@ -55,15 +65,6 @@ public:
 //                    bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
 //    {cumputeAnaTree((TTree*) fInChain, fOutTree,
 //                    foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
-//    
-    cumputeAnaTree (TTree * fInTree,
-                    TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false, bool fDoPandoraCosmic=false);
-    
-    cumputeAnaTree (TChain * fInChain,
-                    TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false,bool fDoPandoraCosmic=false)
-    {cumputeAnaTree((TTree*) fInChain, foption, fdebug, fMCmode, fDoPandoraCosmic);};
     
     
     
@@ -72,7 +73,7 @@ public:
     
     // setters
     void             SetInTree (TTree * tree)    {InTree = tree;};
-//    void            SetOutTree (TTree * tree)    {OutTree = tree;};
+    void            SetOutTree (TTree * tree)    {OutTree = tree;};
     void          SetGENIETree (TTree * tree)    {GENIETree = tree;};
     void        SetCSVFileName (TString name)    {CSVFileName = name;};
     void             SetMCMode (bool _mc_mode)   {MCmode = _mc_mode;};
@@ -97,7 +98,7 @@ public:
     
     // initializations
     void    InitInputTree ();
-//    void   InitOutputTree ();
+    void   InitOutputTree ();
     void        InitEntry ();
     void        InitTrack ();
     

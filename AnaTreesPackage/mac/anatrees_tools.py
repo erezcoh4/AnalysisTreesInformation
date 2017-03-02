@@ -850,6 +850,8 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
                                                         EventsListName="" ,
                                                         MCCversion="MCC7" ,
                                                         do_pandora_cosmic=False ): #{
+
+    global eventsTree , GENIETree
     
     data_name = MCCversion + "_" + data_type
     anatrees_listname = data_name + "_AnalysisTrees"
@@ -867,11 +869,10 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     
     
     # output root file
-    global eventsTree , GENIETree
     TracksAnaFileName  = tracks_anafile_name( anatrees_listname , first_file , last_file )
     OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
     eventsTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
-    init_output_trees( MCmode = MCmode )
+#    init_output_trees()
     global g4_counter , counter , cosmic_counter , evts_counter
 
     
@@ -882,7 +883,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
         
         in_chain = ROOT.TChain("analysistree/anatree")
         in_chain.Add(file)
-        extract_anatrees_information(in_chain = in_chain , Option = Option,
+        extract_anatrees_information(in_chain = in_chain , Option = Option,# eventsTree=eventsTree , GENIETree=GENIETree,
                                      events_writer=events_writer, tracks_writer=tracks_writer,
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
@@ -910,9 +911,9 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
 # ----------------------------------------------------------------------------------------------------
 
 
+
 # ----------------------------------------------------------------------------------------------------
-def init_output_trees( MCmode=False ): #{
-    import re, array, os
+def init_output_trees(): #{
     
     global run , subrun , event , Ntracks , Ng4particles, nu_interactions, tracks, g4particles, genie_interactions
     global eventsTree , GENIETree
@@ -923,7 +924,7 @@ def init_output_trees( MCmode=False ): #{
     eventsTree.Branch("Ntracks"         ,Ntracks           ,"Ntracks/I")
     eventsTree.Branch("Ng4particles"    ,Ng4particles      ,"Ng4particles/I")
     eventsTree.Branch("nu_interactions" ,nu_interactions)
-    eventsTree.Branch("tracks"          ,AddressOf( tracks, 'tracks' ))
+    eventsTree.Branch("tracks"          ,tracks)
     eventsTree.Branch("g4particles"     ,g4particles)
     
     if MCmode: #{
@@ -943,7 +944,7 @@ def init_output_trees( MCmode=False ): #{
 
 
 # ----------------------------------------------------------------------------------------------------
-def extract_anatrees_information(in_chain=None, Option='',
+def extract_anatrees_information(in_chain=None, Option='',# eventsTree=None, GENIETree=None,
                                  events_writer=None, tracks_writer=None, cosmic_writer=None, g4_writer=None,
                                  MCmode=False,do_pandora_cosmic=False,
                                  do_dEdx=False, do_SWtrigger=False ):
@@ -951,8 +952,7 @@ def extract_anatrees_information(in_chain=None, Option='',
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
     if flags.verbose: print_important( "proceesing %d events"%Nreduced )
-#    calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
-    calc = cumputeAnaTree( in_chain, Option, flags.verbose, MCmode , do_pandora_cosmic )
+    calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
 
     global g4_counter , counter , cosmic_counter , evts_counter
     global eventsTree , GENIETree
@@ -966,10 +966,10 @@ def extract_anatrees_information(in_chain=None, Option='',
         
         calc.extract_information( True )
         
-        run , subrun , event , Ntracks , Ng4particles = calc.run , calc.subrun , calc.event , calc.Ntracks , calc.Ng4particles
-        nu_interactions, tracks, g4particles = calc.nu_interactions, calc.tracks, calc.g4particles
-        genie_interactions = calc.genie_interactions
-        
+#        run , subrun , event , Ntracks , Ng4particles = calc.run , calc.subrun , calc.event , calc.Ntracks , calc.Ng4particles
+#        nu_interactions, tracks, g4particles = calc.nu_interactions, calc.tracks, calc.g4particles
+#        genie_interactions = calc.genie_interactions
+
         
         if flags.verbose and entry%flags.print_mod==0:
             print'%.0f'%(100.*float(entry)/Nreduced) + '%'
@@ -989,8 +989,8 @@ def extract_anatrees_information(in_chain=None, Option='',
             #}
             
             if calc.mcevts_truth > 0: #{
-                GENIETree.Fill()
-#                calc.FillGENIETree()
+#                GENIETree.Fill()
+                calc.FillGENIETree()
             #}
         #} end geant4 particles
         
@@ -1014,8 +1014,8 @@ def extract_anatrees_information(in_chain=None, Option='',
                 if flags.verbose>4: print 'saving track to file %d',track.track_id ; print_line()
             #} end for Ntracks
         #}  if calc.Ntracks>0
-        eventsTree.Fill()
-#        calc.FillOutTree()
+#        eventsTree.Fill()
+        calc.FillOutTree()
     #} end main events loop
 # ----------------------------------------------------------------------------------------------------
 
