@@ -566,6 +566,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::AssociateHitsTracks(){
     // get dq/dx in two boxes around the track start & end points
+    Debug( 2, Form("associating %d hits to %d tracks start/end boxes",no_hits,Ntracks) );
     
     for (auto & c_track : tracks){
 
@@ -575,7 +576,7 @@ bool cumputeAnaTree::AssociateHitsTracks(){
         Float_t dqdx_around_start_track_associated_total=0, dqdx_around_end_track_associated_total=0;
         
         
-        for(Int_t j=0 ; j<no_hits ; j++) {
+        for(Int_t j=0 ; j<no_hits && j<MAX_hits ; j++) {
             
             
             if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[ hit_plane[j] ] ) ){
@@ -583,7 +584,7 @@ bool cumputeAnaTree::AssociateHitsTracks(){
                                j,hit_plane[j],hit_wire[j],hit_peakT[j],c_track.track_id,hit_trkid[j], hit_trkKey[j] ));
                 
                 dqdx_around_start[ hit_plane[j] ] += hit_charge[j];
-                dqdx_around_start_total += hit_charge[j];                
+                dqdx_around_start_total += hit_charge[j];
                 
                 // associate this hit with the track
                 if (c_track.IsWireTimeAlongTrack( hit_plane[j] , hit_wire[j] , hit_peakT[j] ) ){
