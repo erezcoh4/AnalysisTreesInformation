@@ -904,7 +904,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     
     print_filename( events_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_file_name)) )
     print_filename( results_file_name,"%d tracks features (%.2f MB)"%(counter,filesize_in_MB(results_file_name) ) )
-    print_filename( TracksAnaFileName,"%d events/%d genie root file (%.2f MB)"%(eventsTree.GetEntries(),GENIETree.GetEntries(),filesize_in_MB(TracksAnaFileName)) )
+    print_filename( TracksAnaFileName,"%d events root file (%.2f MB)"%(evts_counter,filesize_in_MB(TracksAnaFileName)) )
     if do_pandora_cosmic: print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
 #}
 # ----------------------------------------------------------------------------------------------------
