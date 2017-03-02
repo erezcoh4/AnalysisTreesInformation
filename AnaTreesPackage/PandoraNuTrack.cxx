@@ -181,7 +181,6 @@ void PandoraNuTrack::CreateROIs(){
         // slope = (end_time - start_time) / (end_wire - start_wire)
         // intersect = end_time - slope * end_wire
         trajectory_slope[plane] = (float)(end_time - start_time) / (end_wire - start_wire);
-        SHOW4( plane,  end_time , start_time , end_time - start_time );
         trajectory_intersect[plane] = end_time - trajectory_slope[plane] * end_wire;
         
         start_box[plane] = box( start_wire - 20 , start_time - 40 , start_wire + 20 , start_time + 40 );

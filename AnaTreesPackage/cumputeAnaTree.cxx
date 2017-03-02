@@ -628,9 +628,7 @@ bool cumputeAnaTree::AssociateHitsTracks(){
             
         }
         
-        PrintLine();
     }
-    EndEventBlock();
     Debug(4,"set dq/dx around start and end points...");
 
 }
