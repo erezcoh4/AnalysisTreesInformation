@@ -40,9 +40,9 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree,
+cumputeAnaTree::cumputeAnaTree( TTree * fInTree, // TTree * fOutTree,
                                TString foption, int fdebug,
-                               bool fMCmode, TTree * fGENIETree,
+                               bool fMCmode, // TTree * fGENIETree,
                                bool fDoPandoraCosmic){
     
     SetInTree(fInTree);
