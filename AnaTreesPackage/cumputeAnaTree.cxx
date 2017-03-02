@@ -261,7 +261,7 @@ void cumputeAnaTree::InitOutputTree(){
     OutTree -> Branch("run"             ,&run               ,"run/I");
     OutTree -> Branch("subrun"          ,&subrun            ,"subrun/I");
     OutTree -> Branch("event"           ,&event             ,"event/I");
-    OutTree -> Branch("pot"             ,&pot               ,"pot/D");
+    // OutTree -> Branch("pot"             ,&pot               ,"pot/D");
     
     OutTree -> Branch("Ntracks"         ,&Ntracks           ,"Ntracks/I"); // number of contained tracks, not ntracks_pandoraNu...
     OutTree -> Branch("Ng4particles"    ,&Ng4particles      ,"Ng4particles/I"); // number of g4 particles
@@ -277,7 +277,7 @@ void cumputeAnaTree::InitOutputTree(){
         GENIETree -> Branch("run"             ,&run               ,"run/I");
         GENIETree -> Branch("subrun"          ,&subrun            ,"subrun/I");
         GENIETree -> Branch("event"           ,&event             ,"event/I");
-        GENIETree -> Branch("pot"             ,&pot               ,"pot/D");
+        // GENIETree -> Branch("pot"             ,&pot               ,"pot/D");
         GENIETree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
     }
     
