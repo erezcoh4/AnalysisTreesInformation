@@ -923,7 +923,7 @@ def init_output_trees( MCmode=False ): #{
     eventsTree.Branch("Ntracks"         ,Ntracks           ,"Ntracks/I")
     eventsTree.Branch("Ng4particles"    ,Ng4particles      ,"Ng4particles/I")
     eventsTree.Branch("nu_interactions" ,nu_interactions)
-    eventsTree.Branch("tracks"          ,tracks)
+    eventsTree.Branch("tracks"          ,AddressOf( tracks, 'tracks' ))
     eventsTree.Branch("g4particles"     ,g4particles)
     
     if MCmode: #{
