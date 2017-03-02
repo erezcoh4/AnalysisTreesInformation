@@ -887,9 +887,8 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
                                      events_writer=events_writer, tracks_writer=tracks_writer,
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
-        eventsTree.ResetBranchAddresses()
-        GENIETree.ResetBranchAddresses()
-        if debug: print 'finished extract_anatrees_information from '
+#        eventsTree.ResetBranchAddresses()
+#        GENIETree.ResetBranchAddresses()
         if debug: print_filename( file , "finished extracting anatrees information from file" )
     #}
     

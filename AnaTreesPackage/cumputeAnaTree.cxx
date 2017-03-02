@@ -257,6 +257,7 @@ void cumputeAnaTree::InitInputTree(){
 void cumputeAnaTree::InitOutputTree(){
     
     // Integer branches
+    OutTree -> ResetBranchAddresses	();
     OutTree -> Branch("run"             ,&run               ,"run/I");
     OutTree -> Branch("subrun"          ,&subrun            ,"subrun/I");
     OutTree -> Branch("event"           ,&event             ,"event/I");
@@ -272,6 +273,7 @@ void cumputeAnaTree::InitOutputTree(){
     if (MCmode){
         OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
         
+        GENIETree -> ResetBranchAddresses	();
         GENIETree -> Branch("run"             ,&run               ,"run/I");
         GENIETree -> Branch("subrun"          ,&subrun            ,"subrun/I");
         GENIETree -> Branch("event"           ,&event             ,"event/I");
