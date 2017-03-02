@@ -943,7 +943,7 @@ def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENI
             if calc.mcevts_truth > 0: #{
                 calc.FillGENIETree()
             #}
-
+            print '\nfilled GENIE tree....\n'
         #} end geant4 particles
         
         
