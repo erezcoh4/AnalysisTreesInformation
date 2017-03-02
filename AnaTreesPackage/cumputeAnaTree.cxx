@@ -6,25 +6,25 @@
 
 // main event loop
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-    
 bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
     //    GetSoftwareTrigger();
     //    if (debug>3) Printf("Got Software Trigger");
     
     GetInTimeFlashes();
-    if (debug>3) Printf("Got In Time Flashes");
+    Debug(3,"Got In Time Flashes");
     
     GetPandoraNuTracks();
-    if (debug>3) Printf("Got PandoraNu Tracks");
+    Debug(3,"Got PandoraNu Tracks");
+    AssociateHitsTracks();
 
     if (DoPandoraCosmic){
         GetPandoraCosmicTracks();
-        if (debug>3) Printf("Got PandoraCosmic Tracks");
+        Debug(3,"Got PandoraCosmic Tracks");
     }
     
     if (MCmode){
         GetTruthInformation();
-        if (debug>3) Printf("Got Truth Information");
+        Debug(3,"Got Truth Information");
         TagCC1pTracks();
     }
 
@@ -292,8 +292,6 @@ void cumputeAnaTree::GetEntry (int entry){
 }
 
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetSoftwareTrigger(){
     for (size_t trigger = 0; trigger < (size_t)(sizeof(swtrigger_name)/sizeof(*swtrigger_name)); trigger++) {
@@ -303,7 +301,6 @@ void cumputeAnaTree::GetSoftwareTrigger(){
         }
     }
 }
-
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -369,10 +366,7 @@ void cumputeAnaTree::GetInTimeFlashes(){
 void cumputeAnaTree::GetPandoraNuTracks(){
     
     if (ntracks_pandoraNu==0 || ntracks_pandoraNu>100) return;
-    if(debug>2) Printf("LoopPanNuTracks on %d tracks",ntracks_pandoraNu);
-    
-    
-    
+    Debug(3,Form("LoopPanNuTracks on %d tracks",ntracks_pandoraNu));
     // loop over all reconstructed tracks
     for(Int_t j=0; j < ntracks_pandoraNu && j < MAX_tracks; j++){
         
@@ -392,19 +386,17 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                               );
         
         if (!TrackContained( c_track.start_pos   , c_track.end_pos )){
-            if(debug>2) {
-                Printf("track %d is not contained {(%.1f,%.1f,%.1f)->(%.1f,%.1f,%.1f)}...",j,c_track.start_pos.x(),c_track.start_pos.y(),c_track.start_pos.z(),c_track.end_pos.x(),c_track.end_pos.y(),c_track.end_pos.z());
-            }
+            Debug(3,Form("track %d is not contained {(%.1f,%.1f,%.1f)->(%.1f,%.1f,%.1f)}...",j,c_track.start_pos.x(),c_track.start_pos.y(),c_track.start_pos.z(),c_track.end_pos.x(),c_track.end_pos.y(),c_track.end_pos.z()));
             continue;
         }
         Ntracks ++ ;
-        if(debug>3) Printf("created (contained) track %d...",j);
+        Debug(4,Form("created (contained) track %d...",j));
         
         // get flash info
         // compare reconstructed track to list of flashes in beam to find closest
         float tzcenter = (c_track.start_pos.z() + c_track.end_pos.z())/2.;
         float tzstart = c_track.start_pos.z() , cfdistance_start = -9999;
-        if(debug>3) Printf("with tzcenter = %.2f, goodflashidx.size() = %lu",tzcenter,goodflashidx.size());
+        Debug(4,Form("with tzcenter = %.2f, goodflashidx.size() = %lu",tzcenter,goodflashidx.size()));
         
         if(goodflashidx.size() > 0) {
             
@@ -453,7 +445,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         }
         c_track.SetFlashInfo(cftime , cftimewidth , cfzcenter , cfzwidth , cfycenter , cfywidth , cftotalpe , cfdistance);
         c_track.SetCF2Start(cfdistance_start);
-        if(debug>3) Printf("Set Flash Info...");
+        Debug(4,"Set Flash Info...");
         
         
         // get cosmic scores
@@ -464,7 +456,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         
         // get dqdx info: loop over range from end of track to find start and end
         int   rmin[3] , rmax[3];
-        if(debug>3) Printf("before for(Int_t fr=0; fr<3;fr++) ...");
+        Debug(4,"before for(Int_t fr=0; fr<3;fr++) ...");
         for(Int_t fr=0; fr<3;fr++) {
             
             if(ntrkhits_pandoraNu[j][fr] >= 0) {
@@ -496,67 +488,24 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                 }
             }
         }
-        if(debug>3) Printf("after for(Int_t fr=0; fr<3;fr++) ...");
+        Debug(4,"after for(Int_t fr=0; fr<3;fr++) ...");
         c_track.Set_dqdx( startdqdx , enddqdx , totaldqdx , nhits );
-        
-        
-        if(debug>3) Printf("Set dq/dx ...");
+        Debug(4,"Set dq/dx ...");
  
         GetEnergyDeposition( j );
         
         c_track.CreateROIs();
-        if(debug>3) Printf("Created ROIs...");
+        Debug(4,"Created ROIs...");
         c_track.Calorimetry();
-        if(debug>3) Printf("made some Calorimetry ...");
+        Debug(4,"made some Calorimetry ...");
         c_track.Straightness();
-        if(debug>3) Printf("calculated the Straightness of the track ...");
+        Debug(4,"calculated the Straightness of the track ...");
         c_track.Momentum();
-        if(debug>3) Printf("calculated the Momentum of the track ...");
+        Debug(4,"calculated the Momentum of the track ...");
         c_track.SetCalorimetryPDG( trkpidpdg_pandoraNu[j] );
-        if(debug>3) Printf("set track pid pdg ...");
+        Debug(4,"set track pid pdg ...");
 
-        // get dq/dx in two boxes:
-        // (1) around the track start point, (2) around the track end point
-        Float_t dqdx_around_start[3] = {0,0,0}, dqdx_around_end[3] = {0,0,0};
-        Float_t dqdx_around_start_total=0, dqdx_around_end_total=0;
-        Float_t dqdx_around_start_track_associated[3] = {0,0,0}, dqdx_around_end_track_associated[3] = {0,0,0};
-        Float_t dqdx_around_start_track_associated_total=0, dqdx_around_end_track_associated_total=0;
-
-        for(Int_t j=0 ; j<no_hits ; j++) {
-            for (int plane=0; plane<3 ;plane++){
-                if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[plane] ) ){
-                    dqdx_around_start[plane] += hit_charge[j];
-                    dqdx_around_start_total += hit_charge[j];
-                    if (hit_trkKey[j] == c_track.track_id){
-                        dqdx_around_start_track_associated[plane] += hit_charge[j];
-                        dqdx_around_start_track_associated_total += hit_charge[j];
-                    }
-                }
-                if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[plane] ) ){
-                    dqdx_around_end[plane] += hit_charge[j];
-                    dqdx_around_end_total += hit_charge[j];
-//                    SHOW3(hit_trkid[j], hit_trkKey[j], c_track.track_id);
-                    if (hit_trkKey[j] == c_track.track_id){
-//                        Printf("hit_trkKey[j] == c_track.track_id = %d, hit_charge[j]=%f", c_track.track_id, hit_charge[j]);
-                        dqdx_around_end_track_associated[plane] += hit_charge[j];
-                        dqdx_around_end_track_associated_total += hit_charge[j];
-//                        SHOW(dqdx_around_end_track_associated[plane]);
-                    }
-                }
-            }
-        }
-        for (int plane=0; plane<3 ;plane++){
-            c_track.dqdx_around_start[plane] = dqdx_around_start[plane];
-            c_track.dqdx_around_start_total = dqdx_around_start_total;
-            c_track.dqdx_around_start_track_associated[plane] = dqdx_around_start_track_associated[plane];
-            c_track.dqdx_around_start_track_associated_total = dqdx_around_start_track_associated_total;
-            c_track.dqdx_around_end[plane] = dqdx_around_end[plane];
-            c_track.dqdx_around_end_total = dqdx_around_end_total;
-            c_track.dqdx_around_end_track_associated[plane] = dqdx_around_end_track_associated[plane];
-            c_track.dqdx_around_end_track_associated_total = dqdx_around_end_track_associated_total;
-        }
-        if(debug>3) Printf("set dq/dx around start and end points...");
-
+ 
         
         // if its MC, plug also MC information
         if(MCmode){
@@ -604,17 +553,87 @@ void cumputeAnaTree::GetPandoraNuTracks(){
             c_track.SetMCpdgCode(-9999);
             c_track.SetTrackPurity(-9999,-9999,-9999);
         }
-
         //        // software trigger
         //        c_track.SetSWtrigger(swtrigger_name,swtrigger_triggered);
         
         tracks.push_back(c_track);
-        if(debug>3) Printf("pushed the track into tracks which now has a size %lu...",tracks.size());
+        Debug(5,Form("pushed the track into tracks which now has a size %lu...",tracks.size()));
     }
     
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool cumputeAnaTree::AssociateHitsTracks(){
+    // get dq/dx in two boxes around the track start & end points
+    
+    for (auto & c_track : tracks){
+
+        Float_t dqdx_around_start[3] = {0,0,0}, dqdx_around_end[3] = {0,0,0};
+        Float_t dqdx_around_start_total=0, dqdx_around_end_total=0;
+        Float_t dqdx_around_start_track_associated[3] = {0,0,0}, dqdx_around_end_track_associated[3] = {0,0,0};
+        Float_t dqdx_around_start_track_associated_total=0, dqdx_around_end_track_associated_total=0;
+        
+        
+        for(Int_t j=0 ; j<no_hits ; j++) {
+            
+            
+            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[ hit_plane[j] ] ) ){
+                Debug(6, Form("hit %d (p %d,w %d,t %.2f) inside start-box of track %d, hit_trkid:%d, hit_trkKey:%d",
+                               j,hit_plane[j],hit_wire[j],hit_peakT[j],c_track.track_id,hit_trkid[j], hit_trkKey[j] ));
+                
+                dqdx_around_start[ hit_plane[j] ] += hit_charge[j];
+                dqdx_around_start_total += hit_charge[j];
+                
+                
+                // associate this hit with the track
+                if (c_track.IsWireTimeAlongTrack( hit_plane[j] , hit_wire[j] , hit_peakT[j] ) ){
+                    
+                    Debug( 6 , Form("asociated hit with track %d", c_track.track_id));
+                    dqdx_around_start_track_associated[ hit_plane[j] ] += hit_charge[j];
+                    dqdx_around_start_track_associated_total += hit_charge[j];
+                    
+                }
+                
+            }
+            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[ hit_plane[j] ] ) ){
+                Debug(6, Form("hit %d (p %d,w %d,t %.2f) inside end-box of track %d, hit_trkid:%d, hit_trkKey:%d",
+                              j,hit_plane[j],hit_wire[j],hit_peakT[j],c_track.track_id,hit_trkid[j], hit_trkKey[j] ));
+
+                dqdx_around_end[ hit_plane[j] ] += hit_charge[j];
+                dqdx_around_end_total += hit_charge[j];
+                
+                // associate this hit with the track
+                if (c_track.IsWireTimeAlongTrack( hit_plane[j] , hit_wire[j] , hit_peakT[j] ) ){
+                    
+                    Debug( 6 , Form("asociated hit with track %d", c_track.track_id));
+                    dqdx_around_end_track_associated[ hit_plane[j] ] += hit_charge[j];
+                    dqdx_around_end_track_associated_total += hit_charge[j];
+                }
+            }
+            
+        }
+        
+        for (int plane=0; plane<3 ;plane++){
+            
+            c_track.dqdx_around_start[plane] = dqdx_around_start[plane];
+            c_track.dqdx_around_start_total = dqdx_around_start_total;
+            c_track.dqdx_around_start_track_associated[plane] = dqdx_around_start_track_associated[plane];
+            c_track.dqdx_around_start_track_associated_total = dqdx_around_start_track_associated_total;
+            
+            c_track.dqdx_around_end[plane] = dqdx_around_end[plane];
+            c_track.dqdx_around_end_total = dqdx_around_end_total;
+            c_track.dqdx_around_end_track_associated[plane] = dqdx_around_end_track_associated[plane];
+            c_track.dqdx_around_end_track_associated_total = dqdx_around_end_track_associated_total;
+            
+        }
+        
+        PrintLine();
+    }
+    EndEventBlock();
+    Debug(4,"set dq/dx around start and end points...");
+
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::WireTimeInBox(int wire, int time, box box){

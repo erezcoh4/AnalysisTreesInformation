@@ -129,11 +129,11 @@ public:
     
     
     void   AddNeighborTrack ( Int_t , Float_t , Float_t );
-    void           Set_dEdx (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
-                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> ,
-                             std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>  );
+    void           Set_dEdx (vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> ,
+                             vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> ,
+                             vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t>  );
 
-    void    SetCalorimetry_Y (std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t> , std::vector<Float_t>   );
+    void    SetCalorimetry_Y (vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t>   );
     
     void   SetSWtrigger (std::string * fswtrigger_name, bool * fswtrigger_triggered){
         for (size_t i=0 ; i < (int)(sizeof(fswtrigger_triggered)/sizeof(fswtrigger_triggered[0])) ; i++ ) {
@@ -144,8 +144,9 @@ public:
     
     
     // finders
-    Float_t ClosestDistanceToOtherTrack( PandoraNuTrack other_track , std::string * StartOrEnd=nullptr );
-    Float_t DistanceFromPoint( TVector3 position , std::string * StartOrEnd=nullptr );
+    Float_t ClosestDistanceToOtherTrack ( PandoraNuTrack other_track , std::string * StartOrEnd=nullptr );
+    Float_t           DistanceFromPoint ( TVector3 position , std::string * StartOrEnd=nullptr );
+    bool           IsWireTimeAlongTrack ( Int_t fplane, Int_t fwire , Float_t fPeakTime );
 
 
     
@@ -158,14 +159,11 @@ public:
     box              GetROI (int plane) {return roi[plane];};
     Int_t        GetCaloPDG (int plane) {return CalorimetryPDG[plane];};
     Int_t           GetCCNC (){return truth_ccnc;}
-    std::vector<Float_t> GetEdepYInfo (int step)
-    {
+    std::vector<Float_t> GetEdepYInfo (int step) {
         std::vector<Float_t> result = {residual_range_Y.at(step), dqdx_Y.at(step), dEdx_Y.at(step), Edep_Y.at(step)};
         return result;
     };
-    
-    std::vector<Float_t> GetTrackLengthVector (int plane)
-    {
+    std::vector<Float_t> GetTrackLengthVector (int plane) {
         switch (plane) {
             case 0:
                 return residual_range_U;
@@ -197,7 +195,6 @@ public:
         }};
     Int_t GetNSWtrigger () {return (int)swtrigger_name.size();};
     
-        
 
     
     Int_t       CalorimetryPDG[3];
@@ -222,7 +219,7 @@ public:
     Float_t     dqdx_around_start_total                    , dqdx_around_end_total;
     Float_t     dqdx_around_start_track_associated[3]      , dqdx_around_end_track_associated[3];
     Float_t     dqdx_around_start_track_associated_total   , dqdx_around_end_track_associated_total;
-
+    Float_t     trajectory_slope[3], trajectory_intersect[3];
     // The trkpurtruth - purity variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
     Float_t     purtruth_U  , purtruth_V    , purtruth_Y;
     

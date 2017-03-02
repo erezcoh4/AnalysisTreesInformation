@@ -37,7 +37,7 @@
  doxygen documentation!
  */
 
-class cumputeAnaTree{
+class cumputeAnaTree: public myIncludes {
     
 public:
     
@@ -65,7 +65,6 @@ public:
     void            SetOutTree (TTree * tree)    {OutTree = tree;};
     void          SetGENIETree (TTree * tree)    {GENIETree = tree;};
     void        SetCSVFileName (TString name)    {CSVFileName = name;};
-    void              SetDebug (int _debug)      {debug = _debug;};
     void             SetMCMode (bool _mc_mode)   {MCmode = _mc_mode;};
     void             SetOption (TString foption) {option = foption;};
     void    SetDoPandoraCosmic (bool fDo)        {DoPandoraCosmic = fDo;};
@@ -111,7 +110,7 @@ public:
     void     GetSoftwareTrigger ();
     void          TagCC1pTracks ();
     bool          WireTimeInBox (int w, int t, box b); // returns true if the wire/time point is in the box
-    
+    bool    AssociateHitsTracks ();
     
     // helpers
     bool        VertexContained ( TVector3 );
