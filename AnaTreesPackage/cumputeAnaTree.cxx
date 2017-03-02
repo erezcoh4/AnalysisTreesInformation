@@ -583,8 +583,7 @@ bool cumputeAnaTree::AssociateHitsTracks(){
                                j,hit_plane[j],hit_wire[j],hit_peakT[j],c_track.track_id,hit_trkid[j], hit_trkKey[j] ));
                 
                 dqdx_around_start[ hit_plane[j] ] += hit_charge[j];
-                dqdx_around_start_total += hit_charge[j];
-                
+                dqdx_around_start_total += hit_charge[j];                
                 
                 // associate this hit with the track
                 if (c_track.IsWireTimeAlongTrack( hit_plane[j] , hit_wire[j] , hit_peakT[j] ) ){
