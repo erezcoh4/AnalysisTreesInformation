@@ -1163,9 +1163,12 @@ bool cumputeAnaTree::FillOutTree (bool fDo){
 bool cumputeAnaTree::FillGENIETree (bool fDo){
     
     Debug(3, "xxxxxx\nFilling GENIETree....\nxxxxxxxx");
-    GENIETree -> Fill();
-    return true;
-    
+    if (!genie_interactions.empty()){
+        GENIETree -> Fill();
+        return true;
+    }
+    Debug(3, "genie_interactions is empty, returning without filling GENIETree");
+    return false;
 }
 
 
