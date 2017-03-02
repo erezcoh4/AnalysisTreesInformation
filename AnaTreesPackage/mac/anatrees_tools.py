@@ -35,6 +35,8 @@ schemed_anatrees_path   = anatrees_data_path  + "/SchemedFiles"
 
 
 g4_counter , counter , cosmic_counter , evts_counter = 0 , 0 , 0 , 0
+run , subrun , event , Ntracks , Ng4particles, nu_interactions, tracks, g4particles, genie_interactions = 0,0,0,0,0,0,0,0,0
+eventsTree , GENIETree = None, None
 
 
 event_features_names = [ 'run'  ,'subrun'   ,'event'
@@ -865,9 +867,11 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     
     
     # output root file
+    global eventsTree , GENIETree
     TracksAnaFileName  = tracks_anafile_name( anatrees_listname , first_file , last_file )
     OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
     eventsTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
+    init_output_trees()
     global g4_counter , counter , cosmic_counter , evts_counter
 
     
@@ -908,6 +912,37 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
 
 
 # ----------------------------------------------------------------------------------------------------
+def init_output_trees(): #{
+    
+    global run , subrun , event , Ntracks , Ng4particles, nu_interactions, tracks, g4particles, genie_interactions
+    global eventsTree , GENIETree
+    
+    eventsTree.Branch("run"             ,run               ,"run/I")
+    eventsTree.Branch("subrun"          ,subrun            ,"subrun/I")
+    eventsTree.Branch("event"           ,event             ,"event/I")
+    eventsTree.Branch("Ntracks"         ,Ntracks           ,"Ntracks/I")
+    eventsTree.Branch("Ng4particles"    ,Ng4particles      ,"Ng4particles/I")
+    eventsTree.Branch("nu_interactions" ,nu_interactions)
+    eventsTree.Branch("tracks"          ,tracks)
+    eventsTree.Branch("g4particles"     ,g4particles)
+    
+    if MCmode: #{
+        eventsTree.Branch("genie_interactions"  ,genie_interactions)
+        
+        GENIETree.Branch("run"     ,run               ,"run/I")
+        GENIETree.Branch("subrun"  ,subrun            ,"subrun/I")
+        GENIETree.Branch("event"   ,event             ,"event/I")
+        GENIETree.Branch("genie_interactions"  ,genie_interactions)
+    # }
+    
+    
+    if debug>1: print "cumputeAnaTree output-tree ready (", eventsTree.GetTitle(),")"
+#}
+
+
+
+
+# ----------------------------------------------------------------------------------------------------
 def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENIETree=None,
                                  events_writer=None, tracks_writer=None, cosmic_writer=None, g4_writer=None,
                                  MCmode=False,do_pandora_cosmic=False,
@@ -919,6 +954,9 @@ def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENI
     calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
 
     global g4_counter , counter , cosmic_counter , evts_counter
+    global eventsTree , GENIETree
+    global run , subrun , event , Ntracks , Ng4particles, nu_interactions, tracks, g4particles, genie_interactions
+    
     # - # main events loop
     for entry in range(Nreduced): #{
         
@@ -926,6 +964,12 @@ def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENI
         rse = [calc.run,calc.subrun,calc.event]
         
         calc.extract_information( True )
+        
+        run , subrun , event , Ntracks , Ng4particles = calc.run , calc.subrun , calc.event , calc.Ntracks , calc.Ng4particles
+        nu_interactions, tracks, g4particles = calc.nu_interactions, calc.tracks, calc.g4particles
+        genie_interactions = calc.genie_interactions
+        
+        
         if flags.verbose and entry%flags.print_mod==0:
             print'%.0f'%(100.*float(entry)/Nreduced) + '%'
             if flags.verbose>1 and entry%flags.print_mod==0: calc.PrintData( entry )
@@ -944,7 +988,8 @@ def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENI
             #}
             
             if calc.mcevts_truth > 0: #{
-                calc.FillGENIETree()
+                GENIETree.Fill()
+#                calc.FillGENIETree()
             #}
         #} end geant4 particles
         
@@ -968,8 +1013,8 @@ def extract_anatrees_information(in_chain=None, Option='', eventsTree=None, GENI
                 if flags.verbose>4: print 'saving track to file %d',track.track_id ; print_line()
             #} end for Ntracks
         #}  if calc.Ntracks>0
-
-        calc.FillOutTree()
+        eventsTree.Fill()
+#        calc.FillOutTree()
     #} end main events loop
 # ----------------------------------------------------------------------------------------------------
 

@@ -46,14 +46,14 @@ cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree,
                                bool fDoPandoraCosmic){
     
     SetInTree(fInTree);
-    SetOutTree(fOutTree);
+//    SetOutTree(fOutTree);
     SetOption(foption);
     SetDebug(fdebug);
     SetMCMode(fMCmode);
-    if (MCmode) SetGENIETree(fGENIETree);
+//    if (MCmode) SetGENIETree(fGENIETree);
     SetDoPandoraCosmic(fDoPandoraCosmic);
     InitInputTree();
-    InitOutputTree();
+//    InitOutputTree();
     if (debug>1) Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
     
 
@@ -253,35 +253,35 @@ void cumputeAnaTree::InitInputTree(){
     if(debug>1) cout << "cumputeAnaTree input-tree ready (" << InTree -> GetName() <<"), " <<  Nentries << " entries" << endl;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void cumputeAnaTree::InitOutputTree(){
-    
-    // Integer branches
-    OutTree -> Branch("run"             ,&run               ,"run/I");
-    OutTree -> Branch("subrun"          ,&subrun            ,"subrun/I");
-    OutTree -> Branch("event"           ,&event             ,"event/I");
-    OutTree -> Branch("pot"             ,&pot               ,"pot/D");
-    
-    OutTree -> Branch("Ntracks"         ,&Ntracks           ,"Ntracks/I"); // number of contained tracks, not ntracks_pandoraNu...
-    OutTree -> Branch("Ng4particles"    ,&Ng4particles      ,"Ng4particles/I"); // number of g4 particles
-    
-    OutTree -> Branch("nu_interactions"     ,&nu_interactions); // neutrino interactions...
-    OutTree -> Branch("tracks"              ,&tracks); // tracks information...
-    OutTree -> Branch("g4particles"         ,&g4particles); // g4 information...
-    
-    if (MCmode){
-        OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
-        
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//void cumputeAnaTree::InitOutputTree(){
+//    
+//    // Integer branches
+//    OutTree -> Branch("run"             ,&run               ,"run/I");
+//    OutTree -> Branch("subrun"          ,&subrun            ,"subrun/I");
+//    OutTree -> Branch("event"           ,&event             ,"event/I");
+//    OutTree -> Branch("pot"             ,&pot               ,"pot/D");
+//    
+//    OutTree -> Branch("Ntracks"         ,&Ntracks           ,"Ntracks/I"); // number of contained tracks, not ntracks_pandoraNu...
+//    OutTree -> Branch("Ng4particles"    ,&Ng4particles      ,"Ng4particles/I"); // number of g4 particles
+//    
+//    OutTree -> Branch("nu_interactions"     ,&nu_interactions); // neutrino interactions...
+//    OutTree -> Branch("tracks"              ,&tracks); // tracks information...
+//    OutTree -> Branch("g4particles"         ,&g4particles); // g4 information...
+//    
+//    if (MCmode){
+//        OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
+//        
 //        GENIETree -> Branch("run"             ,&run               ,"run/I");
 //        GENIETree -> Branch("subrun"          ,&subrun            ,"subrun/I");
 //        GENIETree -> Branch("event"           ,&event             ,"event/I");
-        //        GENIETree -> Branch("pot"             ,&pot               ,"pot/D");
+//        GENIETree -> Branch("pot"             ,&pot               ,"pot/D");
 //        GENIETree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
-    }
-
-
-    if(debug>1) cout << "cumputeAnaTree output-tree ready (" << OutTree -> GetTitle() << ")" << endl;
-}
+//    }
+//    
+//    
+//    if(debug>1) cout << "cumputeAnaTree output-tree ready (" << OutTree -> GetTitle() << ")" << endl;
+//}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetEntry (int entry){
@@ -1148,27 +1148,27 @@ void cumputeAnaTree::TagCC1pTracks(){
 }
 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::FillOutTree (bool fDo){
-    
-    Debug(3, "xxxxxx\nFilling eventsTree....\nxxxxxxxx");
-    OutTree -> Fill();
-    return true;
-    
-}
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::FillGENIETree (bool fDo){
-    
-    Debug(3, "xxxxxx\nFilling GENIETree....\nxxxxxxxx");
-//    if (!genie_interactions.empty()){
-    GENIETree -> Fill();
-    Debug(3, "xxxxxx\nFilled GENIETree....\nxxxxxxxx");
-    return true;
-//    }
-    Debug(3, "genie_interactions is empty, returning without filling GENIETree");
-    return false;
-}
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//bool cumputeAnaTree::FillOutTree (bool fDo){
+//    
+//    Debug(3, "xxxxxx\nFilling eventsTree....\nxxxxxxxx");
+//    OutTree -> Fill();
+//    return true;
+//    
+//}
+//
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//bool cumputeAnaTree::FillGENIETree (bool fDo){
+//    
+//    Debug(3, "xxxxxx\nFilling GENIETree....\nxxxxxxxx");
+////    if (!genie_interactions.empty()){
+//    GENIETree -> Fill();
+//    Debug(3, "xxxxxx\nFilled GENIETree....\nxxxxxxxx");
+//    return true;
+////    }
+//    Debug(3, "genie_interactions is empty, returning without filling GENIETree");
+//    return false;
+//}
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

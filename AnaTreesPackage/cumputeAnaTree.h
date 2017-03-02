@@ -62,7 +62,7 @@ public:
     
     // setters
     void             SetInTree (TTree * tree)    {InTree = tree;};
-    void            SetOutTree (TTree * tree)    {OutTree = tree;};
+//    void            SetOutTree (TTree * tree)    {OutTree = tree;};
     void          SetGENIETree (TTree * tree)    {GENIETree = tree;};
     void        SetCSVFileName (TString name)    {CSVFileName = name;};
     void             SetMCMode (bool _mc_mode)   {MCmode = _mc_mode;};
@@ -87,7 +87,7 @@ public:
     
     // initializations
     void    InitInputTree ();
-    void   InitOutputTree ();
+//    void   InitOutputTree ();
     void        InitEntry ();
     void        InitTrack ();
     
