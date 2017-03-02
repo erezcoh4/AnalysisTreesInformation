@@ -229,8 +229,6 @@ def read_files_from_a_list( ListName , first_file = 0 , last_file = 0 , MCCversi
     if last_file > first_file:
         files = files[ first_file : last_file ]
 
-    if flags.verbose>1: print files
-
     return files
 #}
 # ----------------------------------------------------------------------------------------------------
