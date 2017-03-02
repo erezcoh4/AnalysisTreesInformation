@@ -886,7 +886,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
         
         in_chain = ROOT.TChain("analysistree/anatree")
         in_chain.Add(file)
-        OutFile = ROOT.TFile(TracksAnaFileName)
+        OutFile = ROOT.TFile(TracksAnaFileName, "update")
         eventsTree , GENIETree  = OutFile.Get("eventsTree") , OutFile.Get("GENIETree")
 
         extract_anatrees_information(in_chain = in_chain , Option = Option,# eventsTree=eventsTree , GENIETree=GENIETree,
