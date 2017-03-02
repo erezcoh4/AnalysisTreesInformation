@@ -272,13 +272,12 @@ void cumputeAnaTree::InitOutputTree(){
     
     if (MCmode){
         OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
-
         
-        GENIETree -> Branch("run"             ,&run               ,"run/I");
-        GENIETree -> Branch("subrun"          ,&subrun            ,"subrun/I");
-        GENIETree -> Branch("event"           ,&event             ,"event/I");
-        GENIETree -> Branch("pot"             ,&pot               ,"pot/D");
-        GENIETree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
+//        GENIETree -> Branch("run"             ,&run               ,"run/I");
+//        GENIETree -> Branch("subrun"          ,&subrun            ,"subrun/I");
+//        GENIETree -> Branch("event"           ,&event             ,"event/I");
+        //        GENIETree -> Branch("pot"             ,&pot               ,"pot/D");
+//        GENIETree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
     }
 
 
