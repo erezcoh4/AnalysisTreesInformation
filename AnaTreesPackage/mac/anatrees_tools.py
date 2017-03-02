@@ -872,6 +872,9 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     TracksAnaFileName  = tracks_anafile_name( anatrees_listname , first_file , last_file )
     OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
     eventsTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
+    eventsTree.Write() , GENIETree.Write()
+    OutFile.Close()
+    
 #    init_output_trees()
     global g4_counter , counter , cosmic_counter , evts_counter
 
@@ -883,12 +886,19 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
         
         in_chain = ROOT.TChain("analysistree/anatree")
         in_chain.Add(file)
+        OutFile = ROOT.TFile(TracksAnaFileName)
+        eventsTree , GENIETree  = OutFile.Get("eventsTree") , OutFile.Get("GENIETree")
+
         extract_anatrees_information(in_chain = in_chain , Option = Option,# eventsTree=eventsTree , GENIETree=GENIETree,
                                      events_writer=events_writer, tracks_writer=tracks_writer,
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
-#        eventsTree.ResetBranchAddresses()
-#        GENIETree.ResetBranchAddresses()
+                                     
+        eventsTree.Write()
+        if MCmode: GENIETree.Write()
+        OutFile.Close()
+        print "closed output file"
+
         if debug: print_filename( file , "finished extracting anatrees information from file" )
     #}
     
@@ -896,16 +906,6 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     print_filename( results_file_name,"%d tracks features (%.2f MB)"%(counter,filesize_in_MB(results_file_name) ) )
     print_filename( TracksAnaFileName,"%d events/%d genie root file (%.2f MB)"%(eventsTree.GetEntries(),GENIETree.GetEntries(),filesize_in_MB(TracksAnaFileName)) )
     if do_pandora_cosmic: print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
-    if MCmode:
-        print_filename( results_file_name , "%d g4 particles (%.2f MB)"%(g4_counter,filesize_in_MB(g4info_file_name)) )
-        GENIETree.Write()
-        print "wrote GENIE Tree"
-    
-    eventsTree.Write()
-    print "wrote Tracks Tree (events)"
-    
-    OutFile.Close()
-    print "closed output file"
 #}
 # ----------------------------------------------------------------------------------------------------
 
