@@ -881,7 +881,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     i_file = 0
     for file in files: #{
         
-        if debug: print_filename( file , "reading analysistree data from file (%.2f MB)"%filesize_in_MB(file) )
+        print_filename( file , "reading analysistree data from file (%.2f MB)"%filesize_in_MB(file) )
         if debug and i_file%(len(files)/10)==0: print'%.0f'%(100.*float(i_file)/len(files)) + '%'
         if filesize_in_MB(file) < 0.1 : continue
         
@@ -895,8 +895,8 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
                                      
-        if debug: print_filename( file , "finished extracting anatrees information from file %d out of %d"%(i_file,len(files)-1) )
-        if debug: print_line()
+        print_filename( file , "finished extracting anatrees information from file %d out of %d"%(i_file,len(files)-1) )
+        print_line()
         i_file += 1
     #}
     
