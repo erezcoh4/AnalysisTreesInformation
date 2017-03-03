@@ -882,19 +882,22 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     for file in files: #{
         
         print_filename( file , "reading analysistree data from file (%.2f MB)"%filesize_in_MB(file) )
-        if debug and i_file%(len(files)/10)==0: print'%.0f'%(100.*float(i_file)/len(files)) + '%'
+        if debug and i_file%(len(files)/10.)==0: print'%.0f'%(100.*float(i_file)/len(files)) + '%'
         if filesize_in_MB(file) < 0.1 : continue
         
-        
-        in_chain = ROOT.TChain("analysistree/anatree")
-        in_chain.Add( file )
+        in_file = ROOT.TFile(file)
+        in_chain = in_file.Get("analysistree/anatree")
+        OutFile.cd()
+#        in_chain = ROOT.TChain("analysistree/anatree")
+#        in_chain.Add( file )
         calc.SetInTree( in_chain )
 
         extract_anatrees_information(calc,#in_chain = in_chain , Option = Option,i_file=i_file,# eventsTree=eventsTree , GENIETree=GENIETree,
                                      events_writer=events_writer, tracks_writer=tracks_writer,
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
-                                     
+                   
+        del in_chain
         print_filename( file , "finished extracting anatrees information from file %d out of %d"%(i_file,len(files)-1) )
         print_line()
         i_file += 1
