@@ -46,16 +46,6 @@ public:
     ~cumputeAnaTree(){}
     
     // construct w/ input and output TTree-s
-    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
-                    TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
-    
-    cumputeAnaTree (TChain * fInChain, TTree * fOutTree,
-                    TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
-    {cumputeAnaTree((TTree*) fInChain, fOutTree,
-                    foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
-    
 //    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
 //                    TString foption="extract all tracks information", int fdebug=0,
 //                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
@@ -66,13 +56,16 @@ public:
 //    {cumputeAnaTree((TTree*) fInChain, fOutTree,
 //                    foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
     
-    
+    cumputeAnaTree (TTree * fOutTree,
+                    TString foption="extract all tracks information", int fdebug=0,
+                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
     
     
  
     
     // setters
-    void             SetInTree (TTree * tree)    {InTree = tree;};
+    void             SetInTree (TTree * tree)    {InTree = tree; InitInputTree();};
+    void             SetInTree (TChain * ch)     {SetInTree ((TTree*)ch);};
     void            SetOutTree (TTree * tree)    {OutTree = tree;};
     void          SetGENIETree (TTree * tree)    {GENIETree = tree;};
     void        SetCSVFileName (TString name)    {CSVFileName = name;};
@@ -97,10 +90,11 @@ public:
 
     
     // initializations
-    void    InitInputTree ();
-    void   InitOutputTree ();
-    void        InitEntry ();
-    void        InitTrack ();
+    void          InitInputTree ();
+    void         InitOutputTree ();
+    void    SetOutTreeAddresses ();
+    void              InitEntry ();
+    void              InitTrack ();
     
     
     // running

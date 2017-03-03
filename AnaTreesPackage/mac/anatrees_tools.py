@@ -851,6 +851,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
                                                         MCCversion="MCC7" ,
                                                         do_pandora_cosmic=False ): #{
 
+    global g4_counter , counter , cosmic_counter , evts_counter
     global eventsTree , GENIETree
     
     data_name = MCCversion + "_" + data_type
@@ -871,41 +872,62 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     # output root file
     TracksAnaFileName  = tracks_anafile_name( anatrees_listname , first_file , last_file )
     OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
-    eventsTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
-    init_output_trees(MCmode=MCmode)
-    eventsTree.Fill(); eventsTree.Write(); GENIETree.Fill(); GENIETree.Write()
-    OutFile.Close()
-    
-    global g4_counter , counter , cosmic_counter , evts_counter
+    eventsTree , GENIETree  = ROOT.TTree("eventsTree","events") , ROOT.TTree("GENIETree","genie interactions")
+#    init_output_trees(MCmode=MCmode)
+#    eventsTree.Fill(); eventsTree.Write(); GENIETree.Fill(); GENIETree.Write()
+#    OutFile.Close()
 
-    
+
+
+    calc = cumputeAnaTree( eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
+
+
+
+    i_file = 0
     for file in files: #{
         
         if debug: print_filename( file , "reading analysistree data from file (%.2f MB)"%filesize_in_MB(file) )
         if filesize_in_MB(file) < 0.1 : continue
         
         in_chain = ROOT.TChain("analysistree/anatree")
-        in_chain.Add(file)
-        OutFile = ROOT.TFile(TracksAnaFileName, "update")
-        eventsTree , GENIETree  = OutFile.Get("eventsTree") , OutFile.Get("GENIETree")
+        in_chain.Add( file )
+        calc.SetInTree( in_chain )
+#        calc.InitInputTree()
 
-        extract_anatrees_information(in_chain = in_chain , Option = Option,# eventsTree=eventsTree , GENIETree=GENIETree,
+
+#        if i_file==0:#{
+#            OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
+#            eventsTree , GENIETree = ROOT.TTree("eventsTree","events") , ROOT.TTree("GENIETree","genie interactions")
+#        #}
+#        else: #{
+#            OutFile = ROOT.TFile(TracksAnaFileName, "update" )
+#            eventsTree , GENIETree  = OutFile.Get("eventsTree") , OutFile.Get("GENIETree")
+#        #}
+        extract_anatrees_information(calc,#in_chain = in_chain , Option = Option,i_file=i_file,# eventsTree=eventsTree , GENIETree=GENIETree,
                                      events_writer=events_writer, tracks_writer=tracks_writer,
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
                                      
-        eventsTree.Write()
-        if MCmode: GENIETree.Write()
-        OutFile.Close()
-        print "closed output file"
+#        eventsTree.Write()
+#        if MCmode: GENIETree.Write()
+#        OutFile.Close()
+#        print "closed output file"
 
-        if debug: print_filename( file , "finished extracting anatrees information from file" )
+        if debug: print_filename( file , "finished extracting anatrees information from file %d out of %d"%(i_file,len(files)-1) )
+        i_file += 1
     #}
     
     print_filename( events_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_file_name)) )
     print_filename( results_file_name,"%d tracks features (%.2f MB)"%(counter,filesize_in_MB(results_file_name) ) )
     print_filename( TracksAnaFileName,"%d events root file (%.2f MB)"%(evts_counter,filesize_in_MB(TracksAnaFileName)) )
     if do_pandora_cosmic: print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
+
+
+    eventsTree.Write()
+    if MCmode: GENIETree.Write()
+    OutFile.Close()
+    print "closed output file"
+
 #}
 # ----------------------------------------------------------------------------------------------------
 
@@ -943,21 +965,25 @@ def init_output_trees(MCmode=False): #{
 
 
 # ----------------------------------------------------------------------------------------------------
-def extract_anatrees_information(in_chain=None, Option='',# eventsTree=None, GENIETree=None,
+def extract_anatrees_information(calc=None,#in_chain=None, Option='',i_file=0,# eventsTree=None, GENIETree=None,
                                  events_writer=None, tracks_writer=None, cosmic_writer=None, g4_writer=None,
                                  MCmode=False,do_pandora_cosmic=False,
                                  do_dEdx=False, do_SWtrigger=False ):
     
-    global eventsTree , GENIETree
-    Nentries    = in_chain.GetEntries()
-    Nreduced    = int(flags.evnts_frac*(Nentries))
-    if flags.verbose: print_important( "proceesing %d events"%Nreduced )
-    calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
-
     global g4_counter , counter , cosmic_counter , evts_counter
     global run , subrun , event , Ntracks , Ng4particles, nu_interactions, tracks, g4particles, genie_interactions
-    
-    # - # main events loop
+    global eventsTree , GENIETree
+
+    Nentries, Nreduced = calc.Nentries, int(flags.evnts_frac*(calc.Nentries))
+    if flags.verbose: print_important( "proceesing %d events"%Nreduced )
+#    calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
+#    if i_file>=0:
+#        calc.InitOutputTree()
+#    else:
+#        calc.SetOutTreeAddresses()
+
+
+    # main events loop
     for entry in range(Nreduced): #{
         
         calc.GetEntry( entry )

@@ -40,19 +40,19 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-cumputeAnaTree::cumputeAnaTree( TTree * fInTree, TTree * fOutTree,
+cumputeAnaTree::cumputeAnaTree( TTree * fOutTree, // TTree * fInTree,
                                TString foption, int fdebug,
                                bool fMCmode, TTree * fGENIETree,
                                bool fDoPandoraCosmic){
     
-    SetInTree(fInTree);
+    //    SetInTree(fInTree);
     SetOutTree(fOutTree);
     SetOption(foption);
     SetDebug(fdebug);
     SetMCMode(fMCmode);
     if (MCmode) SetGENIETree(fGENIETree);
     SetDoPandoraCosmic(fDoPandoraCosmic);
-    InitInputTree();
+    //    InitInputTree();
     InitOutputTree();
     if (debug>1) Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
     
@@ -253,6 +253,7 @@ void cumputeAnaTree::InitInputTree(){
     if(debug>1) cout << "cumputeAnaTree input-tree ready (" << InTree -> GetName() <<"), " <<  Nentries << " entries" << endl;
 }
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::InitOutputTree(){
     
@@ -280,33 +281,36 @@ void cumputeAnaTree::InitOutputTree(){
         // GENIETree -> Branch("pot"             ,&pot               ,"pot/D");
         GENIETree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
     }
-    
-//    // Integer branches
-//    // OutTree -> ResetBranchAddresses	();
+}
+
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//void cumputeAnaTree::SetOutTreeAddresses(){
+//
+//     OutTree -> ResetBranchAddresses	();
 //    OutTree -> SetBranchAddress("run"             ,&run );
 //    OutTree -> SetBranchAddress("subrun"          ,&subrun);
 //    OutTree -> SetBranchAddress("event"           ,&event);
 //    OutTree -> SetBranchAddress("Ntracks"         ,&Ntracks); // number of contained tracks, not ntracks_pandoraNu...
 //    OutTree -> SetBranchAddress("Ng4particles"    ,&Ng4particles); // number of g4 particles
-//    
-//    OutTree -> SetBranchAddress("nu_interactions"     ,&nu_interactions); // neutrino interactions...
-//    OutTree -> SetBranchAddress("tracks"              ,&tracks); // tracks information...
-//    OutTree -> SetBranchAddress("g4particles"         ,&g4particles); // g4 information...
+////    OutTree -> SetBranchAddress("nu_interactions"     ,&nu_interactions); // neutrino interactions...
+////    std::vector<PandoraNuTrack>  * tracks = 0;
+////    tracks = 0;
+//    OutTree -> SetBranchAddress("tracks"          ,&tracks); // tracks information...
+////    OutTree -> SetBranchAddress("g4particles"         ,&g4particles); // g4 information...
 //    
 //    if (MCmode){
-//        OutTree -> SetBranchAddress("genie_interactions"  ,&genie_interactions); // genie interactions...
-//        
-//        // GENIETree -> ResetBranchAddresses	();
+////        OutTree -> SetBranchAddress("genie_interactions"  ,&genie_interactions); // genie interactions...
+////         GENIETree -> ResetBranchAddresses	();
 //        GENIETree -> SetBranchAddress("run"             ,&run);
 //        GENIETree -> SetBranchAddress("subrun"          ,&subrun);
 //        GENIETree -> SetBranchAddress("event"           ,&event);
-//        GENIETree -> SetBranchAddress("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
+////        GENIETree -> SetBranchAddress("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
 //    }
 //    
-
-    
-    if(debug>1) cout << "cumputeAnaTree output-tree ready (" << OutTree -> GetTitle() << ")" << endl;
-}
+//
+//    
+//    Debug(1, "cumputeAnaTree reset addresses in output-tree" );
+//}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetEntry (int entry){
