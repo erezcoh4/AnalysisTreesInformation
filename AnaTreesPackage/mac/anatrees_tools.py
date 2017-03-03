@@ -873,11 +873,6 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     TracksAnaFileName  = tracks_anafile_name( anatrees_listname , first_file , last_file )
     OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
     eventsTree , GENIETree  = ROOT.TTree("eventsTree","events") , ROOT.TTree("GENIETree","genie interactions")
-#    init_output_trees(MCmode=MCmode)
-#    eventsTree.Fill(); eventsTree.Write(); GENIETree.Fill(); GENIETree.Write()
-#    OutFile.Close()
-
-
 
     calc = cumputeAnaTree( eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
 
@@ -892,27 +887,12 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
         in_chain = ROOT.TChain("analysistree/anatree")
         in_chain.Add( file )
         calc.SetInTree( in_chain )
-#        calc.InitInputTree()
 
-
-#        if i_file==0:#{
-#            OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
-#            eventsTree , GENIETree = ROOT.TTree("eventsTree","events") , ROOT.TTree("GENIETree","genie interactions")
-#        #}
-#        else: #{
-#            OutFile = ROOT.TFile(TracksAnaFileName, "update" )
-#            eventsTree , GENIETree  = OutFile.Get("eventsTree") , OutFile.Get("GENIETree")
-#        #}
         extract_anatrees_information(calc,#in_chain = in_chain , Option = Option,i_file=i_file,# eventsTree=eventsTree , GENIETree=GENIETree,
                                      events_writer=events_writer, tracks_writer=tracks_writer,
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
                                      
-#        eventsTree.Write()
-#        if MCmode: GENIETree.Write()
-#        OutFile.Close()
-#        print "closed output file"
-
         if debug: print_filename( file , "finished extracting anatrees information from file %d out of %d"%(i_file,len(files)-1) )
         i_file += 1
     #}
@@ -976,11 +956,6 @@ def extract_anatrees_information(calc=None,#in_chain=None, Option='',i_file=0,# 
 
     Nentries, Nreduced = calc.Nentries, int(flags.evnts_frac*(calc.Nentries))
     if flags.verbose: print_important( "proceesing %d events"%Nreduced )
-#    calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
-#    if i_file>=0:
-#        calc.InitOutputTree()
-#    else:
-#        calc.SetOutTreeAddresses()
 
 
     # main events loop
@@ -990,11 +965,6 @@ def extract_anatrees_information(calc=None,#in_chain=None, Option='',i_file=0,# 
         rse = [calc.run,calc.subrun,calc.event]
         
         calc.extract_information( True )
-        
-#        run , subrun , event , Ntracks , Ng4particles = calc.run , calc.subrun , calc.event , calc.Ntracks , calc.Ng4particles
-#        nu_interactions, tracks, g4particles = calc.nu_interactions, calc.tracks, calc.g4particles
-#        genie_interactions = calc.genie_interactions
-
         
         if flags.verbose and entry%flags.print_mod==0:
             print'%.0f'%(100.*float(entry)/Nreduced) + '%'
@@ -1014,7 +984,6 @@ def extract_anatrees_information(calc=None,#in_chain=None, Option='',i_file=0,# 
             #}
             
             if calc.mcevts_truth > 0: #{
-#                GENIETree.Fill()
                 calc.FillGENIETree()
             #}
         #} end geant4 particles
@@ -1039,7 +1008,6 @@ def extract_anatrees_information(calc=None,#in_chain=None, Option='',i_file=0,# 
                 if flags.verbose>4: print 'saving track to file %d',track.track_id ; print_line()
             #} end for Ntracks
         #}  if calc.Ntracks>0
-#        eventsTree.Fill()
         calc.FillOutTree()
     #} end main events loop
 # ----------------------------------------------------------------------------------------------------
