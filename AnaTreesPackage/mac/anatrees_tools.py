@@ -948,13 +948,13 @@ def extract_anatrees_information(in_chain=None, Option='',# eventsTree=None, GEN
                                  MCmode=False,do_pandora_cosmic=False,
                                  do_dEdx=False, do_SWtrigger=False ):
     
+    global eventsTree , GENIETree
     Nentries    = in_chain.GetEntries()
     Nreduced    = int(flags.evnts_frac*(Nentries))
     if flags.verbose: print_important( "proceesing %d events"%Nreduced )
     calc = cumputeAnaTree( in_chain, eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic )
 
     global g4_counter , counter , cosmic_counter , evts_counter
-    global eventsTree , GENIETree
     global run , subrun , event , Ntracks , Ng4particles, nu_interactions, tracks, g4particles, genie_interactions
     
     # - # main events loop
