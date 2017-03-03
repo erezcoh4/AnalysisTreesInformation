@@ -873,7 +873,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
     eventsTree , GENIETree  = ROOT.TTree("eventsTree","events with all pandoraNu tracks") , ROOT.TTree("GENIETree","genie interactions")
     init_output_trees(MCmode=MCmode)
-    eventsTree.Write() , GENIETree.Write()
+    eventsTree.Fill(); eventsTree.Write(); GENIETree.Fill(); GENIETree.Write()
     OutFile.Close()
     
     global g4_counter , counter , cosmic_counter , evts_counter
