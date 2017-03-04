@@ -888,8 +888,8 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
         in_file = ROOT.TFile(file)
         in_chain = in_file.Get("analysistree/anatree")
         OutFile.cd()
-#        in_chain = ROOT.TChain("analysistree/anatree")
-#        in_chain.Add( file )
+        #        in_chain = ROOT.TChain("analysistree/anatree")
+        #        in_chain.Add( file )
         calc.SetInTree( in_chain )
 
         extract_anatrees_information(calc,#in_chain = in_chain , Option = Option,i_file=i_file,# eventsTree=eventsTree , GENIETree=GENIETree,
@@ -898,11 +898,13 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
                    
         del in_chain
+        in_file.Close()
         print_filename( file , "finished extracting anatrees information from file %d out of %d"%(i_file,len(files)-1) )
         print_line()
         i_file += 1
     #}
     
+    print 'finished collecting data.'
     print_filename( events_file_name, "%d events (%.2f MB)"%(evts_counter,filesize_in_MB(events_file_name)) )
     print_filename( results_file_name,"%d tracks features (%.2f MB)"%(counter,filesize_in_MB(results_file_name) ) )
     print_filename( TracksAnaFileName,"%d events root file (%.2f MB)"%(evts_counter,filesize_in_MB(TracksAnaFileName)) )
@@ -913,7 +915,8 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     if MCmode: GENIETree.Write()
     OutFile.Close()
     print "closed output file"
-
+    del calc
+    print_line(); print
 #}
 # ----------------------------------------------------------------------------------------------------
 
