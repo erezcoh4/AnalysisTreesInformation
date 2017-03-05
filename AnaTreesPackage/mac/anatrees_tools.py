@@ -910,11 +910,12 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     print_filename( TracksAnaFileName,"%d events root file (%.2f MB)"%(evts_counter,filesize_in_MB(TracksAnaFileName)) )
     if do_pandora_cosmic: print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
 
-
+    OutFile.cd()
     eventsTree.Write()
     if MCmode: GENIETree.Write()
     OutFile.Close()
     print "closed output file"
+    #    calc.CloseFile()
     del calc
     print_line(); print
 #}

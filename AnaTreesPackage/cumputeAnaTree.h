@@ -116,6 +116,9 @@ public:
     void          TagCC1pTracks ();
     bool          WireTimeInBox (int w, int t, box b); // returns true if the wire/time point is in the box
     bool    AssociateHitsTracks ();
+    //void              CloseFile (){   InTree->ReleaseBranchAddresses(); };
+    
+    
     
     // helpers
     bool        VertexContained ( TVector3 );

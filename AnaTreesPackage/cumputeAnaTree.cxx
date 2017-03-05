@@ -411,9 +411,12 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                               ,trktheta_pandoraNu[j]                                                             // theta
                               ,trkphi_pandoraNu[j]                                                               // phi
                               );
+        c_track.IsStartContained = VertexContained( c_track.start_pos );
+        c_track.IsEndContained = VertexContained( c_track.end_pos );
+        c_track.IsFullyContained = TrackContained( c_track.start_pos , c_track.end_pos );
         
-        if (!TrackContained( c_track.start_pos   , c_track.end_pos )){
-            Debug(3,Form("track %d is not contained {(%.1f,%.1f,%.1f)->(%.1f,%.1f,%.1f)}...",j,c_track.start_pos.x(),c_track.start_pos.y(),c_track.start_pos.z(),c_track.end_pos.x(),c_track.end_pos.y(),c_track.end_pos.z()));
+        if (!c_track.IsStartContained && !c_track.IsEndContained){
+            Debug(3,Form("track %d is not contained at all {(%.1f,%.1f,%.1f)->(%.1f,%.1f,%.1f)}...",j,c_track.start_pos.x(),c_track.start_pos.y(),c_track.start_pos.z(),c_track.end_pos.x(),c_track.end_pos.y(),c_track.end_pos.z()));
             continue;
         }
         Ntracks ++ ;
@@ -601,6 +604,7 @@ bool cumputeAnaTree::AssociateHitsTracks(){
         Float_t dqdx_around_start_total=0, dqdx_around_end_total=0;
         Float_t dqdx_around_start_track_associated[3] = {0,0,0}, dqdx_around_end_track_associated[3] = {0,0,0};
         Float_t dqdx_around_start_track_associated_total=0, dqdx_around_end_track_associated_total=0;
+        Float_t dqdx_around_start_no_tracks_associated_total=0, dqdx_around_end_no_tracks_associated_total=0;
         
         
         for(Int_t j=0 ; j<no_hits && j<kMaxHits ; j++) {
@@ -621,6 +625,7 @@ bool cumputeAnaTree::AssociateHitsTracks(){
                     dqdx_around_start_track_associated_total += hit_charge[j];
                     
                 }
+                
                 
             }
             if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[ hit_plane[j] ] ) ){
@@ -667,7 +672,6 @@ bool cumputeAnaTree::WireTimeInBox(int wire, int time, box box){
     }
     return false;
 }
-
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -901,7 +905,7 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     c_genie_interaction.SetNuMomentum( enu_truth[n] , nu_dcosx_truth[n] , nu_dcosy_truth[n] , nu_dcosz_truth[n] );
     
     c_genie_interaction.SetRSE( run , subrun , event );
-    c_genie_interaction.SetCCNC( ccnc_truth[n] ); // only very rarely mcevents > 1 ....
+    c_genie_interaction.SetCCNC( ccnc_truth[n] );
     
     c_genie_interaction.SetVertexPosition( TVector3(nuvtxx_truth[n] , nuvtxy_truth[n] , nuvtxz_truth[n]) );
     c_genie_interaction.SetVertexContained( VertexContained( c_genie_interaction.vertex_position ) );

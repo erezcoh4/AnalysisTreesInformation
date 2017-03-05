@@ -83,7 +83,7 @@ public:
     Float_t                 reco_mu_p_distance;
     Int_t                   run , subrun , event , ccnc, mcevent_id;
     Int_t                   Nprimaries , Nnu , Np , Nn , Npi , Nmu , Nel , Ntot , Ngamma;
-    
+    Int_t                   Nnu_e, Nnu_mu, Nmu_minus, Nmu_plus, Npi_minus, Npi_plus, Npi_0, Ne_plus, Ne_minus;
     
     TVector3                vertex_position;
     

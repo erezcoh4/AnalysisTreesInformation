@@ -197,6 +197,9 @@ public:
     
 
     
+    // features
+    bool        IsStartContained, IsEndContained, IsFullyContained;
+    
     Int_t       CalorimetryPDG[3];
     Int_t       run         , subrun    , event;
     Int_t       nhits       , is_flipped;

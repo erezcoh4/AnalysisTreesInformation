@@ -20,6 +20,7 @@ GENIEinteraction::GENIEinteraction( Int_t fmcevent_id, Int_t fNprimaries ){
     
     muonTrackReconstructed = protonTrackReconstructed = false;
     Np = Nn = Npi = Nmu = Nel = Ntot = Nnu = Ngamma = 0;
+    Nnu_e = Nnu_mu = Nmu_minus = Nmu_plus = Npi_minus = Npi_plus = Npi_0 = Ne_plus = Ne_minus = 0;
     ccnc = -100;
     IsCC1p = false;
 }
@@ -59,6 +60,26 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
     
     momentum.SetVectM( TVector3 ( fPx , fPy , fPz ) , fmass );
     
+    
+    switch (pdg.back()) { // interaction neutrino
+            
+        case 12: // ν(e)
+            nu = momentum;
+            Nnu ++;
+            Nnu_e ++;
+            break;
+            
+        case 14: // ν(µ)
+            nu = momentum;
+            Nnu ++;
+            Nnu_mu ++;
+            break;
+            
+        default:
+            break;
+    }
+    
+    
     if (status_code.back()==1) { // status code 0 particles are unstable or do not exit the nucleus and are thus irrelevant
         
         Ntot++;
@@ -69,18 +90,18 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
         
         switch (pdg.back()) {
                 
-            case 14: // ν
-                nu = momentum;
-                Nnu ++;
-                break;
-                
-            case 13: // µ
+            case 13: // µ-
                 muon = momentum;
                 muonTrack = fprimarPandoraNuTrack;
                 muonTrackReconstructed = track_reconstructed;
                 Nmu++;
+                Nmu_minus++;
                 break;
                 
+            case -13: // µ+
+                Nmu++;
+                Nmu_plus++;
+                break;
                 
             case 2212: // p
                 p3vect.push_back( momentum.Vect() ) ;
@@ -97,20 +118,33 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                 break;
                 
             case 211: // π+
+                Npi++;
+                Npi_plus++;
+                break;
+                
             case -211: // π-
+                Npi++;
+                Npi_minus++;
+                break;
+
             case 111: // π0
                 Npi++;
+                Npi_0++;
                 break;
                 
             case 11: // e-
+                Ne_minus++;
+                Nel++;
+                break;
+                
             case -11: // e+
+                Ne_plus++;
                 Nel++;
                 break;
 
             case 22: // photon
                 Ngamma++;
                 break;
-
                 
             default:
                 break;

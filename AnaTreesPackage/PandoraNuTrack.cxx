@@ -58,7 +58,7 @@ PandoraNuTrack::PandoraNuTrack (
     SetTheta(ftheta);
     SetPhi(fphi);
     NNeighborTracks = 0;
-    IsGENIECC1p = false;
+    IsGENIECC1p = IsStartContained = IsEndContained = IsFullyContained = false;
     
 }
 
