@@ -18,4 +18,4 @@
 *Dict.cxx
 *AnalysisTreesInformation_AnaTreesPackageDict.cxx
 *.pyc
-mac/*pyc
+AnaTreesPackage/mac/*pyc
