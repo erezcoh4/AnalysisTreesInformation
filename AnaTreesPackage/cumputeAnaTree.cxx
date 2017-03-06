@@ -15,7 +15,9 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
     
     GetPandoraNuTracks();
     Debug(3,"Got PandoraNu Tracks");
+    CollectHits();
     AssociateHitsTracks();
+    Debug(3,"collected hits");
 
     if (DoPandoraCosmic){
         GetPandoraCosmicTracks();
@@ -271,6 +273,8 @@ void cumputeAnaTree::InitOutputTree(){
     OutTree -> Branch("tracks"              ,&tracks); // tracks information...
     OutTree -> Branch("g4particles"         ,&g4particles); // g4 information...
     
+    OutTree -> Branch("hits"  ,&hits); // reconstructed hits, to build an event-display and understand things...
+
     if (MCmode){
         OutTree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions...
         
@@ -282,35 +286,6 @@ void cumputeAnaTree::InitOutputTree(){
         GENIETree -> Branch("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
     }
 }
-
-////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//void cumputeAnaTree::SetOutTreeAddresses(){
-//
-//     OutTree -> ResetBranchAddresses	();
-//    OutTree -> SetBranchAddress("run"             ,&run );
-//    OutTree -> SetBranchAddress("subrun"          ,&subrun);
-//    OutTree -> SetBranchAddress("event"           ,&event);
-//    OutTree -> SetBranchAddress("Ntracks"         ,&Ntracks); // number of contained tracks, not ntracks_pandoraNu...
-//    OutTree -> SetBranchAddress("Ng4particles"    ,&Ng4particles); // number of g4 particles
-////    OutTree -> SetBranchAddress("nu_interactions"     ,&nu_interactions); // neutrino interactions...
-////    std::vector<PandoraNuTrack>  * tracks = 0;
-////    tracks = 0;
-//    OutTree -> SetBranchAddress("tracks"          ,&tracks); // tracks information...
-////    OutTree -> SetBranchAddress("g4particles"         ,&g4particles); // g4 information...
-//    
-//    if (MCmode){
-////        OutTree -> SetBranchAddress("genie_interactions"  ,&genie_interactions); // genie interactions...
-////         GENIETree -> ResetBranchAddresses	();
-//        GENIETree -> SetBranchAddress("run"             ,&run);
-//        GENIETree -> SetBranchAddress("subrun"          ,&subrun);
-//        GENIETree -> SetBranchAddress("event"           ,&event);
-////        GENIETree -> SetBranchAddress("genie_interactions"  ,&genie_interactions); // genie interactions in a seperate tree...
-//    }
-//    
-//
-//    
-//    Debug(1, "cumputeAnaTree reset addresses in output-tree" );
-//}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetEntry (int entry){
@@ -341,6 +316,7 @@ void cumputeAnaTree::InitEntry(){
     if (!tracks_vertices.empty())       tracks_vertices.clear();
     if (!mutual_vertices.empty())       mutual_vertices.clear();
     if (!g4particles.empty())           g4particles.clear();
+    if (!hits.empty())                  hits.clear();
     Ntracks = 0;
     Ncosmictracks = mcevts_truth = 0;
     NnuInteractions = ntracks_pandoraNu = ntracks_pandoraCosmic = Ng4particles = 0;
@@ -592,6 +568,13 @@ void cumputeAnaTree::GetPandoraNuTracks(){
     
 }
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::CollectHits(){
+    for(Int_t j=0 ; j<no_hits && j<kMaxHits ; j++) {
+        c_hit = hit ( hit_plane[j] , hit_wire[j] , hit_peakT[j] , hit_charge[j] );
+        hits.push_back(c_hit);
+    }
+}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::AssociateHitsTracks(){
@@ -625,7 +608,6 @@ bool cumputeAnaTree::AssociateHitsTracks(){
                     dqdx_around_start_track_associated_total += hit_charge[j];
                     
                 }
-                
                 
             }
             if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[ hit_plane[j] ] ) ){
@@ -1410,7 +1392,7 @@ void cumputeAnaTree::PrintData(int entry){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
         
         for (auto t: tracks) {
-            t.Print(false,true);
+            t.Print(false,true,true);
         }
     }
     if(!tracks_vertices.empty()){

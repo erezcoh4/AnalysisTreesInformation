@@ -150,6 +150,12 @@ void PandoraNuTrack::FlipTrack(int debug){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PandoraNuTrack::CreateROIs(){
 
+//    if (!rois.empty()) rois.clear();
+    start_wire_u = start_wire_v = start_wire_y = 0;
+    start_time_u = start_time_v = start_time_y = 0;
+    end_wire_u = end_wire_v = end_wire_y= 0;
+    end_time_u = end_time_v = end_time_y= 0;
+
     // load GeometryHelper utility
     auto geomHelper = ::larutil::GeometryHelper::GetME();
 
@@ -175,6 +181,30 @@ void PandoraNuTrack::CreateROIs(){
         int end_time = (int) ( end_projection2D.t / geomHelper->TimeToCm() ) + time_shift;
         
         roi[plane] = box( start_wire , start_time , end_wire , end_time );
+        switch (plane) {
+            case 0:
+                start_wire_u = start_wire;
+                start_time_u = start_time;
+                end_wire_u = end_wire;
+                end_time_u = end_time;
+                break;
+            case 1:
+                start_wire_v = start_wire;
+                start_time_v = start_time;
+                end_wire_v = end_wire;
+                end_time_v = end_time;
+                break;
+            case 2:
+                start_wire_y = start_wire;
+                start_time_y = start_time;
+                end_wire_y = end_wire;
+                end_time_y = end_time;
+                break;
+                
+            default:
+                break;
+        }
+//        rois.push_back(roi[plane]);
         
         // track-trajectory in each plane is time = slope * wire - intersect
         // where ( y-y1 = slope*(x-x1) )

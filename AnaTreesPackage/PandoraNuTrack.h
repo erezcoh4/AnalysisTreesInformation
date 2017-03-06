@@ -229,7 +229,10 @@ public:
     
     TString     TopBottDir  , ForBackDir    , LefRghtDir;
 
-    
+    Int_t       start_wire_u, start_wire_v, start_wire_y;
+    Int_t       start_time_u, start_time_v, start_time_y;
+    Int_t       end_wire_u, end_wire_v, end_wire_y;
+    Int_t       end_time_u, end_time_v, end_time_y;
     box         roi[3];
     box         start_box[3], end_box[3];   // boxed around the start and end points of the track
     
@@ -262,7 +265,15 @@ public:
     // software trigger
     std::vector<std::string> swtrigger_name;       // the name of the trigger algorithm
     std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
-
+    
+    
+    
+//    #ifndef __CINT__
+//    protected:
+//    std::vector<box> rois;
+//    #endif
+//
+//
 };
 #endif
 /** @} */ // end of doxygen group

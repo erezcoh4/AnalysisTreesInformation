@@ -37,6 +37,23 @@
  doxygen documentation!
  */
 
+#define PrintHit(hit) cout << "\033[34m" << #hit << ": plane " << hit.hit_plane << ", wire " << hit.hit_wire << ", peak-time" << hit.hit_peakT << ", charge" << hit.hit_charge << "\033[0m" << endl;
+
+struct hit {
+    
+    Short_t hit_plane, hit_wire;
+    Float_t hit_peakT, hit_charge;
+
+    hit() { hit_plane = hit_wire = hit_peakT = hit_charge = 0; }
+    
+    hit(Short_t fplane, Short_t fwire, Float_t fpeakT, Float_t fcharge)
+    : hit_plane(fplane), hit_wire(fwire), hit_peakT(fpeakT), hit_charge(fcharge)
+    {}
+    
+    
+};
+
+
 class cumputeAnaTree: public myIncludes {
     
 public:
@@ -116,6 +133,7 @@ public:
     void          TagCC1pTracks ();
     bool          WireTimeInBox (int w, int t, box b); // returns true if the wire/time point is in the box
     bool    AssociateHitsTracks ();
+    void            CollectHits ();
     //void              CloseFile (){   InTree->ReleaseBranchAddresses(); };
     
     
@@ -350,6 +368,8 @@ public:
     LArG4Particle c_g4particle;
     std::vector<LArG4Particle> g4particles;
 
+    hit c_hit;
+    std::vector<hit> hits;
 
 
 };
