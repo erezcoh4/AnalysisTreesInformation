@@ -58,7 +58,7 @@ namespace ROOT {
       ::calcEventTopologies *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::calcEventTopologies));
       static ::ROOT::TGenericClassInfo 
-         instance("calcEventTopologies", "calcEventTopologies.h", 32,
+         instance("calcEventTopologies", "calcEventTopologies.h", 33,
                   typeid(::calcEventTopologies), DefineBehavior(ptr, ptr),
                   &calcEventTopologies_Dictionary, isa_proxy, 4,
                   sizeof(::calcEventTopologies) );
@@ -363,6 +363,69 @@ namespace ROOT {
       ((current_t*)p)->~current_t();
    }
 } // end of namespace ROOT for class vector<int>
+
+namespace ROOT {
+   static TClass *vectorlEhitgR_Dictionary();
+   static void vectorlEhitgR_TClassManip(TClass*);
+   static void *new_vectorlEhitgR(void *p = 0);
+   static void *newArray_vectorlEhitgR(Long_t size, void *p);
+   static void delete_vectorlEhitgR(void *p);
+   static void deleteArray_vectorlEhitgR(void *p);
+   static void destruct_vectorlEhitgR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<hit>*)
+   {
+      vector<hit> *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<hit>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<hit>", -2, "vector", 457,
+                  typeid(vector<hit>), DefineBehavior(ptr, ptr),
+                  &vectorlEhitgR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<hit>) );
+      instance.SetNew(&new_vectorlEhitgR);
+      instance.SetNewArray(&newArray_vectorlEhitgR);
+      instance.SetDelete(&delete_vectorlEhitgR);
+      instance.SetDeleteArray(&deleteArray_vectorlEhitgR);
+      instance.SetDestructor(&destruct_vectorlEhitgR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<hit> >()));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const vector<hit>*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlEhitgR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const vector<hit>*)0x0)->GetClass();
+      vectorlEhitgR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlEhitgR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlEhitgR(void *p) {
+      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<hit> : new vector<hit>;
+   }
+   static void *newArray_vectorlEhitgR(Long_t nElements, void *p) {
+      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<hit>[nElements] : new vector<hit>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlEhitgR(void *p) {
+      delete ((vector<hit>*)p);
+   }
+   static void deleteArray_vectorlEhitgR(void *p) {
+      delete [] ((vector<hit>*)p);
+   }
+   static void destruct_vectorlEhitgR(void *p) {
+      typedef vector<hit> current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class vector<hit>
 
 namespace ROOT {
    static TClass *vectorlEfloatgR_Dictionary();

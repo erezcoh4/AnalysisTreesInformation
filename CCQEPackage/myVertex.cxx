@@ -176,6 +176,7 @@ void myVertex::SetAssignTracks(PandoraNuTrack fAssignedMuonTrack, PandoraNuTrack
     AssignedMuonTrack = fAssignedMuonTrack;
     AssignedProtonTrack = fAssignedProtonTrack;
     FixTracksDirections ();
+    SetEDepAroundVertex ();
     SetReconstructedFeatures ();
 
 }
@@ -195,6 +196,27 @@ void myVertex::FixTracksDirections(){
         // if (GENIECC1p) Printf("Flipped proton track");
     }
 }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetEDepAroundVertex(){
+    
+    dqdx_around_vertex_non_tracks_associated = dqdx_around_vertex_tracks_associated = dqdx_around_vertex = -10000;
+    
+    dqdx_around_vertex = AssignedMuonTrack.dqdx_around_start_total + AssignedProtonTrack.dqdx_around_start_total;
+    
+    dqdx_around_vertex_tracks_associated = AssignedMuonTrack.dqdx_around_start_track_associated_total + AssignedProtonTrack.dqdx_around_start_track_associated_total;
+    
+    if(dqdx_around_vertex_tracks_associated!=0 && dqdx_around_vertex!=0
+       && dqdx_around_vertex_tracks_associated!=-10000 && dqdx_around_vertex!=-10000){
+        dqdx_around_vertex_non_tracks_associated = dqdx_around_vertex - dqdx_around_vertex_tracks_associated;
+    }
+    else {
+        dqdx_around_vertex_non_tracks_associated = -10000;
+    }
+}
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void myVertex::SetReconstructedMomenta(){
@@ -234,9 +256,21 @@ void myVertex::SetReconstructedBeamPz(){
 void myVertex::SetReconstructed_q(){
     // reconstruct the momentum transfer from minimal features of CC1p
     // and stopping range
-    reco_CC1p_q = reco_CC1p_Pmu - reco_CC1p_Pnu;
+    reco_CC1p_q = reco_CC1p_Pnu - reco_CC1p_Pmu;
     // reconstructed 𝜃(p,q) based on these minimal features
     reco_CC1p_theta_pq = r2d * reco_CC1p_Pp.Vect().Angle( reco_CC1p_q.Vect() );
+    reco_CC1p_p_over_q = reco_CC1p_Pp.P()/reco_CC1p_q.P();
+    reco_CC1p_Xb = - reco_CC1p_q.Mag2() / (2*0.939*reco_CC1p_q.E());
+    reco_CC1p_n_miss = reco_CC1p_Pp - reco_CC1p_q;
+    
+    // [from clas-note 2002-08]
+    float theta_l = reco_CC1p_Pmu.Theta();
+    float theta_p = reco_CC1p_Pp.Theta();
+    float factor = 0.939 / ( 1. - cos( theta_l ) );
+    reco_CC1p_Ev_from_angles = factor * ( cos( theta_l ) + cos( theta_p ) * ( sin( theta_l ) / sin( theta_p ) ) - 1. );
+    reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff = reco_CC1p_Ev_from_angles - reco_CC1p_Pnu.E();
+
+    reco_CC1p_W2 = 0.939*(0.939 + 2*(reco_CC1p_Pnu.E() - reco_CC1p_Pmu.E())) - 4*reco_CC1p_Pnu.E()*reco_CC1p_Pmu.E()*(1.-cos(theta_l));
 
 }
 

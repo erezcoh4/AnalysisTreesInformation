@@ -392,14 +392,31 @@ calcEventTopologies.o: calcEventTopologies.cxx calcEventTopologies.h \
   /Users/erezcohen/larlite/core/LArUtil/LArUtilException.h \
   /Users/erezcohen/larlite/core/LArUtil/LArUtilConstants.h \
   /Users/erezcohen/larlite/core/Base/GeoConstants.h \
-  /Users/erezcohen/larlite/core/LArUtil/LArUtilConfig.h myVertex.h \
+  /Users/erezcohen/larlite/core/LArUtil/LArUtilConfig.h \
+  /Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage/cumputeAnaTree.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoAlgo.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoLine.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoHalfLine.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoVector.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoAlgoConstants.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoAlgoException.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoLineSegment.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoTrajectory.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoCone.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoAABox.h \
+  /Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo/GeoSphere.h \
+  /Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage/nuInteraction.h \
   /Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage/GENIEinteraction.h \
-  /Users/erezcohen/larlite/UserDev/MyLarLite/MyPackage/MyLArTools.h \
-  /Users/erezcohen/larlite/UserDev/MyLarLite/MyPackage/MyLArTools.cxx \
+  /Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage/track_vertex.h \
+  /Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage/mutual_vertex.h \
   /Users/erezcohen/larlite/core/LArUtil/GeometryHelper.h \
   /Users/erezcohen/larlite/core/LArUtil/PxUtils.h \
   /Users/erezcohen/larlite/core/LArUtil/DetectorProperties.h \
-  /Users/erezcohen/larlite/core/LArUtil/LArProperties.h
+  /Users/erezcohen/larlite/core/LArUtil/LArProperties.h \
+  /Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage/LArG4Particle.h \
+  myVertex.h \
+  /Users/erezcohen/larlite/UserDev/MyLarLite/MyPackage/MyLArTools.h \
+  /Users/erezcohen/larlite/UserDev/MyLarLite/MyPackage/MyLArTools.cxx
 myVertex.o: myVertex.cxx myVertex.h \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/iostream \
   /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/../include/c++/v1/__config \

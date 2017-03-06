@@ -76,13 +76,15 @@ public:
     void   SetReconstructedFeatures ();
     void        FixTracksDirections ();
     
+    
     // SETters
     void     SetTracksRelations ();
     bool     SetIsReconstructed ();
-    void           SetGENIEinfo (GENIEinteraction fgenie_interaction){ genie_interaction = fgenie_interaction; }
+    void           SetGENIEinfo (GENIEinteraction fgenie_interaction){ genie_interaction = fgenie_interaction; };
+    void        SetClosestGENIE (GENIEinteraction fgenie_interaction){ closest_genie_interaction = fgenie_interaction; };
     void   SetReconstructedInfo ();
     void        SetAssignTracks (PandoraNuTrack fAssignedMuonTrack, PandoraNuTrack fAssignedProtonTrack);
-    
+    void    SetEDepAroundVertex ();
     
     
     // GETters
@@ -94,7 +96,7 @@ public:
     // variables
     TString             TopologyString , TruthTopologyString ;
 
-    bool                GENIECC1p,  CC1pTopology; // , TruthCC1p deprecated
+    bool                Is1mu1pDetected , GENIECC1p,  CC1pTopology; // , TruthCC1p deprecated
     bool                IsVertexContained, muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed;
 
     Int_t               counter_id, vertex_id,  Ntracks , run , subrun , event;
@@ -108,7 +110,11 @@ public:
     // CC1p reconstructed features
     float               reco_mu_p_distance;
     float               reco_CC1p_BeamPz,   reco_CC1p_theta_pq, reco_CC1p_Pp_3momentum, reco_CC1p_Pmu_3momentum;
-
+    float               reco_CC1p_p_over_q, reco_CC1p_Xb, reco_CC1p_W2;
+    float               reco_CC1p_Ev_from_angles, reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff;
+    float               dqdx_around_vertex,   dqdx_around_vertex_tracks_associated, dqdx_around_vertex_non_tracks_associated;
+    
+    
     
     TVector3            position    ;
     TVector3            reco_CC1p_Pp_3vect, reco_CC1p_Pmu_3vect;
@@ -117,6 +123,7 @@ public:
     
     TLorentzVector      reconstructed_nu, reconstructed_muon, reconstructed_q ;
     TLorentzVector      reco_CC1p_Pnu,  reco_CC1p_Pp,   reco_CC1p_Pmu,  reco_CC1p_q;
+    TLorentzVector      reco_CC1p_n_miss;
     
     
 
@@ -125,7 +132,7 @@ public:
     PandoraNuTrack      LargePIDATrack, SmallPIDATrack;
     PandoraNuTrack      AssignedMuonTrack, AssignedProtonTrack;
     
-    GENIEinteraction    genie_interaction;
+    GENIEinteraction    genie_interaction, closest_genie_interaction;
     
     std::vector<Int_t>  track_id, GENIEtrack_id, NonGENIEtrack_id;
     

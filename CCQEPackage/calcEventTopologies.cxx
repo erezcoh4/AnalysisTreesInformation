@@ -6,18 +6,33 @@
 #include "LArUtil/GeometryHelper.h"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-calcEventTopologies::calcEventTopologies(TTree * fInTree, std::string foption,
+calcEventTopologies::calcEventTopologies(TTree * fInTree){
+    
+    SetInTree(fInTree);
+    lar_tools = new MyLArTools();
+    InitInputTree();
+    
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+calcEventTopologies::calcEventTopologies(TTree * fInTree, TTree * fOutTree,
+                                         std::string foption,
                                          int fdebug,
                                          bool fMCmode,
                                          float fmax_mu_p_distance){
     
     SetInTree(fInTree);
+    SetOutTree(fOutTree);
+    
     SetDebug(fdebug);
     SetMCMode(fMCmode);
     SetMaxmupDistance(fmax_mu_p_distance);
     SetOption(foption);
     lar_tools = new MyLArTools();
+    
     InitInputTree();
+    InitOutputTree();
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -35,11 +50,36 @@ void calcEventTopologies::InitInputTree(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void calcEventTopologies::InitOutputTree(){
+    
+    // Integer branches
+    OutTree -> Branch("run"             ,&run               ,"run/I");
+    OutTree -> Branch("subrun"          ,&subrun            ,"subrun/I");
+    OutTree -> Branch("event"           ,&event             ,"event/I");
+    
+    OutTree -> Branch("tracks"              ,&tracks); // tracks information...
+    OutTree -> Branch("vertices"            ,&vertices); // all vertices...
+    OutTree -> Branch("CC1p_vertices"       ,&CC1p_vertices); // CC1p-vertices...
+    
+    if(debug>1) cout << "calcEventTopologies output-tree ready (" << OutTree -> GetTitle() << ")" << endl;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool calcEventTopologies::FillOutTree (){
+    OutTree -> Fill();
+    return true;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::InitEvent(){
     
     Debug ( 2 , "calcEventTopologies::InitEvent");
     
     if (!tracks.empty())            tracks.clear();
+    if (!hits.empty())              hits.clear();
     if (!protonTracks.empty())      protonTracks.clear();
     if (!protons.empty())           protons.clear();
     if (!genie_interactions.empty())genie_interactions.clear();
@@ -72,12 +112,17 @@ void calcEventTopologies::GetEntry (int entry){
     std::vector <PandoraNuTrack> * ftracks = 0;
     InTree -> SetBranchAddress("tracks" , &ftracks);
     
+    std::vector <hit> * fhits = 0;
+    InTree -> SetBranchAddress("hits" , &fhits);
+    
     std::vector <GENIEinteraction> * finteractions = 0;
     if (MCmode){
         InTree -> SetBranchAddress("genie_interactions" , &finteractions);
     }
     
     InTree -> GetEntry(entry);
+    
+    hits = *fhits;
     tracks = *ftracks;
     
     if (MCmode){
@@ -122,6 +167,8 @@ bool calcEventTopologies::ClusterTracksToVertices(){
     
     for (int i=0; i < Ntracks; i++){
         
+        //        if (!tracks[i].IsFullyContained) continue;
+        
         // skip if track was clustered to a vertex by in one of the previous loop steps
         if (TrackAlreadyIncludedInVerticesList(tracks[i].track_id)) continue;
         // is this wrong?! we need to go over all of the tracks, even if they are included in previous cluseters.
@@ -136,6 +183,7 @@ bool calcEventTopologies::ClusterTracksToVertices(){
         FoundCloseTracks = AlreadySetPosition = false;
         
         for ( int j=0 ; j < Ntracks ; j++ ){ // i+1
+            //            if (!tracks[j].IsFullyContained) continue;
             if (j!=i){
                 
                 // if this is the first time we go over these two tracks
@@ -184,6 +232,27 @@ bool calcEventTopologies::ClusterTracksToVertices(){
         }
         
         if (FoundCloseTracks){
+            
+            // match the closest GENIE interaction
+            GENIEinteraction c_genie_interaction;
+            bool MatchedGENIEinteraction = false;
+            float closest_genie_interaction_distance = 10000; // [cm]
+            
+            for (auto genie_interaction : genie_interactions){
+                float c_genie_interaction_distance = (genie_interaction.vertex_position - c_vertex.position).Mag();
+                if ( c_genie_interaction_distance < closest_genie_interaction_distance ){
+                    closest_genie_interaction_distance = c_genie_interaction_distance;
+                    c_genie_interaction = genie_interaction;
+                    MatchedGENIEinteraction = true;
+                    break;
+                }
+            }
+            if (MatchedGENIEinteraction){
+                c_vertex.SetClosestGENIE( c_genie_interaction );
+            }
+            
+
+            // plug into vertices list
             vertices.push_back( c_vertex );
         }
     }
@@ -262,27 +331,6 @@ bool calcEventTopologies::AnalyzeVertices(){
     return true;
 }
 
-// deprecated - delete!
-////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//bool calcEventTopologies::FindGENIECC1pVertices(){
-//    Debug(4,"calcEventTopologies::FindGENIECC1pVertices");
-//    // method for finding GENIE CC1p when looping over
-//    // GENIE interactions
-//    // not for looping over events / 2-tracks clusters
-//    
-//    bool FoundTruthCC1p = false;
-//    for (auto & v:vertices) {
-//        if (v.GENIECC1p){
-//            v.TruthTopologyString = "true GENIE CC1p";
-//            CC1p_vertices.push_back(v);
-//            CC1pVerticesID.push_back(v.vertex_id);
-//            FoundTruthCC1p = true;
-//        }
-//    }
-//    // if (debug>4) SHOW(FoundTruthCC1p);
-//    return FoundTruthCC1p;
-//}
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::FindVerticesWithCC1pTopology(){
 
@@ -332,17 +380,17 @@ bool calcEventTopologies::TagGENIECC1p(){
     // after selection cuts applied
     // This method is independent of the tracks-sorting algorithm in the vertex
     for (auto & v:CC1p_vertices){
-        v.GENIECC1p = false;
+        v.GENIECC1p = v.Is1mu1pDetected = false;
         
         PandoraNuTrack t1 = v.AssignedMuonTrack;
-        PandoraNuTrack t2 = v.AssignedProtonTrack;;
-        
-        if (     t1.mcevent_id == t2.mcevent_id && t1.IsGENIECC1p && t2.IsGENIECC1p
-            && ((t1.MCpdgCode==13 && t2.MCpdgCode==2212) || (t1.MCpdgCode==2212 && t2.MCpdgCode==13) ) ){
+        PandoraNuTrack t2 = v.AssignedProtonTrack;
+
+        if (    (t1.MCpdgCode==13 && t2.MCpdgCode==2212)
+            ||  (t1.MCpdgCode==2212 && t2.MCpdgCode==13)  ){
             
-            Debug(3,"found CC1p");
-            v.GENIECC1p = true;
-            v.TruthTopologyString = "true GENIE CC1p";
+        
+            Debug(3,"found 1mu-1p detected");
+            v.Is1mu1pDetected = true;
             
             // match the proper GENIE interaction
             GENIEinteraction c_genie_interaction;
@@ -358,23 +406,37 @@ bool calcEventTopologies::TagGENIECC1p(){
                 v.SetGENIEinfo( c_genie_interaction );
             }
             
-
+            
             if ( t1.MCpdgCode==2212 && t2.MCpdgCode==13 ){
-                Debug(4,Form("found the p (track %d) and mu (track %d) in this CC1p",t1.track_id,t2.track_id));
+                Debug(4,Form("found the p (track %d) and mu (track %d) in this 1mu-1p",t1.track_id,t2.track_id));
                 v.protonTrueTrack = t1;
                 v.muonTrueTrack = t2;
                 v.muonTrackReconstructed = v.protonTrackReconstructed = v.IsVertexReconstructed = true;
             }
             else if ( t1.MCpdgCode==13 && t2.MCpdgCode==2212 ){
-                Debug(4,Form("found the p (track %d) and mu (track %d) in this CC1p",t2.track_id,t1.track_id));
+                Debug(4,Form("found the p (track %d) and mu (track %d) in this 1mu-1p",t2.track_id,t1.track_id));
                 v.muonTrueTrack = t1;
                 v.protonTrueTrack = t2;
                 v.muonTrackReconstructed = v.protonTrackReconstructed = v.IsVertexReconstructed = true;
             }
             else{
-                Debug(4,Form("could not find p and mu in this CC1p - pdg codes are %d/%d",t2.MCpdgCode,t1.MCpdgCode));
+                Debug(4,Form("could not find p and mu in this 1mu-1p - pdg codes are %d/%d",t2.MCpdgCode,t1.MCpdgCode));
             }
+            
+            
+            
+            if ( fabs((t1.truth_start_pos - t2.truth_start_pos).Mag() )<1.  //&& t1.mcevent_id!= -100
+                && t1.IsGENIECC1p && t2.IsGENIECC1p ){
+                
+                Debug(3,"found true CC1p");
+                v.GENIECC1p = true;
+                v.TruthTopologyString = "true GENIE CC1p";
+                
+            }
+
         }
+        
+        
         
     }
     return true;

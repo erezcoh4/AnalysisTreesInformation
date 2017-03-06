@@ -17,6 +17,7 @@
 #include <iostream>
 #include "../../mySoftware/MySoftwarePackage/myIncludes.h"
 #include "PandoraNuTrack.h"
+#include "cumputeAnaTree.h"
 #include "myVertex.h"
 #include "GENIEinteraction.h"
 #include "MyLArTools.h"
@@ -38,7 +39,9 @@ public:
     /// Default constructor
     calcEventTopologies(){};
     ~calcEventTopologies(){}
-    calcEventTopologies( TTree * fInTree,std::string o="CC1pTopology",
+    calcEventTopologies( TTree * fInTree );
+    calcEventTopologies( TTree * fInTree,TTree * fOutTree,
+                        std::string o="CC1pTopology",
                         int fdebug=0,
                         bool fMCmode=false,
                         float fmax_mu_p_distance=10);
@@ -46,10 +49,9 @@ public:
     
     
     
-    
     // setters
     void                  SetInTree (TTree * tree)       {InTree = tree;};
-//    void                   SetDebug (int _debug)         {debug = _debug;};
+    void                 SetOutTree (TTree * tree)       {OutTree = tree;};
     void                  SetMCMode (bool _mc_mode)      {MCmode = _mc_mode;};
     void          SetMaxmupDistance (float fmax)         {max_mu_p_distance = fmax;};
     void           SetMinLengthLong (float fmin)         {min_length_long = fmin;};
@@ -66,6 +68,7 @@ public:
     
     // initializations
     void              InitInputTree ();
+    void             InitOutputTree ();
     void                  InitEvent ();
     
     // running
@@ -81,6 +84,7 @@ public:
     bool FindVerticesWithCC1pTopology();
     bool        Find2tracksVertices ();
     bool               TagGENIECC1p ();
+    bool                FillOutTree ();
     
     bool TrackAlreadyIncludedInVerticesList (int ftrack_id);
     void                      Print (bool DoPrintTracks=false, bool DoVertices=false);
@@ -88,8 +92,8 @@ public:
     // getters
     PandoraNuTrack         GetTrack ( int i )        {return tracks.at(i);};
     
-    TTree * InTree;
-    
+    TTree * InTree , * OutTree;
+   
     int     debug ;
     bool    MCmode,     IsGENIECC1p,    FoundTruthCC1p;
     Int_t   Nentries,   run, 	subrun, event;
@@ -100,6 +104,8 @@ public:
     float   max_mu_p_distance,  min_length_long, max_length_short, PIDA_short_min,  PIDA_short_max, PIDA_long_min,  PIDA_long_max;
     float   delta_phi_min,      delta_phi_max;
     std::string option;
+    
+    std::vector<hit> hits;
     
     
     PandoraNuTrack              c_track;
