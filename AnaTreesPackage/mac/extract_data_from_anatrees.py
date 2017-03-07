@@ -36,7 +36,7 @@
 
 '''
 from anatrees_tools import *
-do_pandora_cosmic = False
+do_pandora_cosmic, do_dEdx = False, False
 print 'running option ',flags.option,' on MCC version: ',MCCversion
 
 
@@ -65,7 +65,8 @@ if 'extract' in flags.option:
                                                             first_file=first_file , last_file=last_file ,
                                                             MCmode=MCmode ,
                                                             MCCversion=MCCversion ,
-                                                            do_pandora_cosmic=do_pandora_cosmic )
+                                                            do_pandora_cosmic=do_pandora_cosmic ,
+                                                            do_dEdx=do_dEdx)
 
 # ---------------------------------------------------------------------------------------
 

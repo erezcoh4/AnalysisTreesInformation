@@ -849,7 +849,8 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
                                                         AddEventsList=False ,
                                                         EventsListName="" ,
                                                         MCCversion="MCC7" ,
-                                                        do_pandora_cosmic=False ): #{
+                                                        do_pandora_cosmic=False,
+                                                        do_dEdx=False ): #{
 
     global g4_counter , counter , cosmic_counter , evts_counter
     global eventsTree , GENIETree
@@ -866,7 +867,8 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     g4info_file_name  = g4_features_file_name( anatrees_listname , first_file , last_file )
     events_writer, tracks_writer, cosmic_writer, g4_writer = create_csv_writers( events_file_name, results_file_name,
                                                                                 cosmics_file_name, g4info_file_name,
-                                                                                MCmode=MCmode,do_pandora_cosmic=do_pandora_cosmic )
+                                                                                MCmode=MCmode,
+                                                                                do_pandora_cosmic=do_pandora_cosmic )
     
     
     # output root file
