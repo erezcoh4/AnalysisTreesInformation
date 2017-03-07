@@ -30,7 +30,7 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
         TagCC1pTracks();
     }
 
-    // if we want to collect vertices, these should be uncommented out
+    // if we want to collect vertices, these should be uncommented in
     if (option.Contains("find common muon-proton vertices")){
         CollectTrackVertices();
         FindMutualVertices();
@@ -45,7 +45,7 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
 cumputeAnaTree::cumputeAnaTree( TTree * fOutTree, // TTree * fInTree,
                                TString foption, int fdebug,
                                bool fMCmode, TTree * fGENIETree,
-                               bool fDoPandoraCosmic){
+                               bool fDoPandoraCosmic, bool fDo_dEdx){
     
     //    SetInTree(fInTree);
     SetOutTree(fOutTree);
@@ -54,6 +54,7 @@ cumputeAnaTree::cumputeAnaTree( TTree * fOutTree, // TTree * fInTree,
     SetMCMode(fMCmode);
     if (MCmode) SetGENIETree(fGENIETree);
     SetDoPandoraCosmic(fDoPandoraCosmic);
+    SetDo_dEdx(fDo_dEdx);
     //    InitInputTree();
     InitOutputTree();
     if (debug>1) Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
@@ -498,7 +499,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         c_track.Set_dqdx( startdqdx , enddqdx , totaldqdx , nhits );
         Debug(4,"Set dq/dx ...");
  
-        GetEnergyDeposition( j );
+        if (Do_dEdx) GetEnergyDeposition( j );
         
         c_track.CreateROIs();
         Debug(4,"Created ROIs...");
@@ -506,8 +507,8 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         Debug(4,"made some Calorimetry ...");
         c_track.Straightness();
         Debug(4,"calculated the Straightness of the track ...");
-        c_track.Momentum();
-        Debug(4,"calculated the Momentum of the track ...");
+        // c_track.Momentum();
+        // Debug(4,"calculated the Momentum of the track ...");
         c_track.SetCalorimetryPDG( trkpidpdg_pandoraNu[j] );
         Debug(4,"set track pid pdg ...");
 
@@ -1311,8 +1312,8 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
         if(debug>3) Printf("made some Calorimetry ...");
         c_cosmic_track.Straightness();
         if(debug>3) Printf("calculated the Straightness of the track ...");
-        c_cosmic_track.Momentum();
-        if(debug>3) Printf("calculated the Momentum of the track ...");
+        // c_cosmic_track.Momentum();
+        // if(debug>3) Printf("calculated the Momentum of the track ...");
         c_cosmic_track.SetCalorimetryPDG( trkpidpdg_pandoraCosmic[j] );
         if(debug>3) Printf("set track pid pdg ...");
 

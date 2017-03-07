@@ -75,7 +75,8 @@ public:
     
     cumputeAnaTree (TTree * fOutTree,
                     TString foption="extract all tracks information", int fdebug=0,
-                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
+                    bool fMCmode=false, TTree * fGENIETree = nullptr,
+                    bool fDoPandoraCosmic=false, bool fDo_dEdx=false);
     
     
  
@@ -89,6 +90,7 @@ public:
     void             SetMCMode (bool _mc_mode)   {MCmode = _mc_mode;};
     void             SetOption (TString foption) {option = foption;};
     void    SetDoPandoraCosmic (bool fDo)        {DoPandoraCosmic = fDo;};
+    void            SetDo_dEdx (bool fDo)        {Do_dEdx = fDo;};
     
     
     // getters
@@ -159,7 +161,7 @@ public:
     bool        MCmode;
     bool        foundMuonScattering;
     bool        track_already_included;
-    bool        DoPandoraCosmic;
+    bool        DoPandoraCosmic, Do_dEdx;
     
     // event information
     

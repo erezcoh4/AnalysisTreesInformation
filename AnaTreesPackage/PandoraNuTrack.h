@@ -203,7 +203,7 @@ public:
     Int_t       CalorimetryPDG[3];
     Int_t       run         , subrun    , event;
     Int_t       nhits       , is_flipped;
-    Int_t       NNeighborTracks;
+    // Int_t       NNeighborTracks;
     Int_t       truth_ccnc; // 0=CC interaction , 1=NC interaction
     Short_t     track_id    , process_primary;
     

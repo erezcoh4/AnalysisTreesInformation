@@ -57,7 +57,7 @@ PandoraNuTrack::PandoraNuTrack (
     SetLength(flength);
     SetTheta(ftheta);
     SetPhi(fphi);
-    NNeighborTracks = 0;
+    // NNeighborTracks = 0;
     IsGENIECC1p = IsStartContained = IsEndContained = IsFullyContained = false;
     
 }
@@ -246,28 +246,28 @@ void PandoraNuTrack::Straightness(){
     
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PandoraNuTrack::Momentum(){
-    
-    // this is true only if this track was a proton
-    
-    
-}
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//void PandoraNuTrack::Momentum(){
+//    
+//    // this is true only if this track was a proton
+//    
+//    
+//}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PandoraNuTrack::AddNeighborTrack( Int_t ftrack_id , Float_t fClosestDistance , Float_t fangle ){
-    
-    NNeighborTracks++ ;
-    
-    NeighborTracks.push_back( ftrack_id );
-    
-    NeighborTracksDistance.push_back( fClosestDistance );
-
-    NeighborTracksAngles.push_back( fangle );
-    
-    
-
-}
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//void PandoraNuTrack::AddNeighborTrack( Int_t ftrack_id , Float_t fClosestDistance , Float_t fangle ){
+//    
+//    NNeighborTracks++ ;
+//    
+//    NeighborTracks.push_back( ftrack_id );
+//    
+//    NeighborTracksDistance.push_back( fClosestDistance );
+//
+//    NeighborTracksAngles.push_back( fangle );
+//    
+//    
+//
+//}
 
 
 
