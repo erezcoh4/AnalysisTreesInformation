@@ -474,7 +474,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                 rmin[fr]   = rmax[fr]   = trkresrg_pandoraNu[j][fr][0];
                 totaldqdx += trkdqdx_pandoraNu[j][fr][0];
                 current_hit_position = TVector3(trkxyz_pandoraNu[j][fr][0][0],trkxyz_pandoraNu[j][fr][0][1],trkxyz_pandoraNu[j][0][fr][2]);
-                
+                last_hit_position = current_hit_position;
                 int minidx = 0 , maxidx = 0;
                 
                 for(Int_t ridx=0; ridx < ntrkhits_pandoraNu[j][fr]; ridx++) {
@@ -490,8 +490,10 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     }
                     totaldqdx += trkdqdx_pandoraNu[j][fr][ridx]; // in [ADC/cm]
                     dx = (current_hit_position-last_hit_position).Mag(); // in [cm]
+//                    SHOW(trkdqdx_pandoraNu[j][fr][ridx]);
+//                    SHOW(dx);
                     dQtotal += trkdqdx_pandoraNu[j][fr][ridx] * dx; // in [ADC]
-                    
+//                    SHOW(dQtotal);
                     last_hit_position = current_hit_position;
                 }
                 if(maxidx >= 3) {
