@@ -203,7 +203,7 @@ def rois_features_file_name( ListName , first_file = 0 , last_file = 0 ):
 
 # ----------------------------------------------------------------------------------------------------
 def tracks_anafile_name( ListName , first_file = 0 , last_file = 0 ):
-    if first_file==last_file:
+    if first_file>=last_file:
         return eventsfiles_path + "/" + "Events_" + ListName + ".root"
     else:
         return eventsfiles_path + "/" + "Events_" + ListName + "_anatreefiles_%d_to_%d.root"%(first_file,last_file)
@@ -890,11 +890,9 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
         in_file = ROOT.TFile(file)
         in_chain = in_file.Get("analysistree/anatree")
         OutFile.cd()
-        #        in_chain = ROOT.TChain("analysistree/anatree")
-        #        in_chain.Add( file )
         calc.SetInTree( in_chain )
 
-        extract_anatrees_information(calc,#in_chain = in_chain , Option = Option,i_file=i_file,# eventsTree=eventsTree , GENIETree=GENIETree,
+        extract_anatrees_information(calc,
                                      events_writer=events_writer, tracks_writer=tracks_writer,
                                      cosmic_writer=cosmic_writer, g4_writer=g4_writer,
                                      MCmode=MCmode, do_pandora_cosmic=do_pandora_cosmic )
@@ -912,48 +910,16 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     print_filename( TracksAnaFileName,"%d events root file (%.2f MB)"%(evts_counter,filesize_in_MB(TracksAnaFileName)) )
     if do_pandora_cosmic: print_filename( cosmics_file_name, "%d cosmic tracks (%.2f MB)"%(cosmic_counter,filesize_in_MB(cosmics_file_name)))
 
+#    del calc
+
     OutFile.cd()
     eventsTree.Write()
     if MCmode: GENIETree.Write()
     OutFile.Close()
     print "closed output file"
-    #    calc.CloseFile()
-    del calc
     print_line(); print
 #}
 # ----------------------------------------------------------------------------------------------------
-
-
-
-# ----------------------------------------------------------------------------------------------------
-def init_output_trees(MCmode=False): #{
-    
-    global run , subrun , event , Ntracks , Ng4particles, nu_interactions, tracks, g4particles, genie_interactions
-    global eventsTree , GENIETree
-    
-    eventsTree.Branch("run"             ,run               ,"run/I")
-    eventsTree.Branch("subrun"          ,subrun            ,"subrun/I")
-    eventsTree.Branch("event"           ,event             ,"event/I")
-    eventsTree.Branch("Ntracks"         ,Ntracks           ,"Ntracks/I")
-    eventsTree.Branch("Ng4particles"    ,Ng4particles      ,"Ng4particles/I")
-    eventsTree.Branch("nu_interactions" ,nu_interactions)
-    eventsTree.Branch("tracks"          ,tracks)
-    eventsTree.Branch("g4particles"     ,g4particles)
-    
-    if MCmode: #{
-        eventsTree.Branch("genie_interactions"  ,genie_interactions)
-        
-        GENIETree.Branch("run"     ,run               ,"run/I")
-        GENIETree.Branch("subrun"  ,subrun            ,"subrun/I")
-        GENIETree.Branch("event"   ,event             ,"event/I")
-        GENIETree.Branch("genie_interactions"  ,genie_interactions)
-    # }
-    
-    
-    if debug>1: print "cumputeAnaTree output-tree ready (", eventsTree.GetTitle(),")"
-#}
-
-
 
 
 # ----------------------------------------------------------------------------------------------------
@@ -974,8 +940,6 @@ def extract_anatrees_information(calc=None,#in_chain=None, Option='',i_file=0,# 
     for entry in range(Nreduced): #{
         
         calc.GetEntry( entry )
-        rse = [calc.run,calc.subrun,calc.event]
-        
         calc.extract_information( True )
         
         if flags.verbose and entry%flags.print_mod==0: calc.PrintData( entry )

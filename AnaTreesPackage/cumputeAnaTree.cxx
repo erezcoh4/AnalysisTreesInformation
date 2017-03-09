@@ -16,7 +16,7 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
     GetPandoraNuTracks();
     Debug(3,"Got PandoraNu Tracks");
     CollectHits();
-    AssociateHitsTracks();
+    //    AssociateHitsTracks();
     Debug(3,"collected hits");
 
     if (DoPandoraCosmic){
@@ -463,7 +463,9 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         
         // get dqdx info: loop over range from end of track to find start and end
         int   rmin[3] , rmax[3];
+        float dx, dQtotal=0;
         Debug(4,"before for(Int_t fr=0; fr<3;fr++) ...");
+        TVector3 current_hit_position , last_hit_position;
         for(Int_t fr=0; fr<3;fr++) {
             
             if(ntrkhits_pandoraNu[j][fr] >= 0) {
@@ -471,9 +473,13 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                 nhits     += ntrkhits_pandoraNu[j][fr];
                 rmin[fr]   = rmax[fr]   = trkresrg_pandoraNu[j][fr][0];
                 totaldqdx += trkdqdx_pandoraNu[j][fr][0];
+                current_hit_position = TVector3(trkxyz_pandoraNu[j][fr][0][0],trkxyz_pandoraNu[j][fr][0][1],trkxyz_pandoraNu[j][0][fr][2]);
+                
                 int minidx = 0 , maxidx = 0;
                 
                 for(Int_t ridx=0; ridx < ntrkhits_pandoraNu[j][fr]; ridx++) {
+                    current_hit_position = TVector3(trkxyz_pandoraNu[j][fr][ridx][0],trkxyz_pandoraNu[j][fr][ridx][1],trkxyz_pandoraNu[j][fr][ridx][2]);
+                    
                     if(trkresrg_pandoraNu[j][fr][ridx] < rmin[fr] && trkdqdx_pandoraNu[j][fr][ridx] != 0) {
                         rmin[fr] = trkresrg_pandoraNu[j][fr][ridx];
                         minidx   = ridx;
@@ -482,7 +488,11 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                         rmax[fr] = trkresrg_pandoraNu[j][fr][ridx];
                         maxidx   = ridx;
                     }
-                    totaldqdx += trkdqdx_pandoraNu[j][fr][ridx];
+                    totaldqdx += trkdqdx_pandoraNu[j][fr][ridx]; // in [ADC/cm]
+                    dx = (current_hit_position-last_hit_position).Mag(); // in [cm]
+                    dQtotal += trkdqdx_pandoraNu[j][fr][ridx] * dx; // in [ADC]
+                    
+                    last_hit_position = current_hit_position;
                 }
                 if(maxidx >= 3) {
                     startdqdx   += (trkdqdx_pandoraNu[j][fr][maxidx] + trkdqdx_pandoraNu[j][fr][maxidx-1]
@@ -497,6 +507,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         }
         Debug(4,"after for(Int_t fr=0; fr<3;fr++) ...");
         c_track.Set_dqdx( startdqdx , enddqdx , totaldqdx , nhits );
+        c_track.dQtotal = dQtotal;
         Debug(4,"Set dq/dx ...");
  
         if (Do_dEdx) GetEnergyDeposition( j );
@@ -577,76 +588,76 @@ void cumputeAnaTree::CollectHits(){
     }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool cumputeAnaTree::AssociateHitsTracks(){
-    // get dq/dx in two boxes around the track start & end points
-    Debug( 2, Form("associating %d hits to %d tracks start/end boxes",no_hits,Ntracks) );
-    
-    for (auto & c_track : tracks){
-
-        Float_t dqdx_around_start[3] = {0,0,0}, dqdx_around_end[3] = {0,0,0};
-        Float_t dqdx_around_start_total=0, dqdx_around_end_total=0;
-        Float_t dqdx_around_start_track_associated[3] = {0,0,0}, dqdx_around_end_track_associated[3] = {0,0,0};
-        Float_t dqdx_around_start_track_associated_total=0, dqdx_around_end_track_associated_total=0;
-        Float_t dqdx_around_start_no_tracks_associated_total=0, dqdx_around_end_no_tracks_associated_total=0;
-        
-        
-        for(Int_t j=0 ; j<no_hits && j<kMaxHits ; j++) {
-            
-            
-            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[ hit_plane[j] ] ) ){
-                Debug(6, Form("hit %d (p %d,w %d,t %.2f) inside start-box of track %d, hit_trkid:%d, hit_trkKey:%d",
-                               j,hit_plane[j],hit_wire[j],hit_peakT[j],c_track.track_id,hit_trkid[j], hit_trkKey[j] ));
-                
-                dqdx_around_start[ hit_plane[j] ] += hit_charge[j];
-                dqdx_around_start_total += hit_charge[j];
-                
-                // associate this hit with the track
-                if (c_track.IsWireTimeAlongTrack( hit_plane[j] , hit_wire[j] , hit_peakT[j] ) ){
-                    
-                    Debug( 6 , Form("asociated hit with track %d", c_track.track_id));
-                    dqdx_around_start_track_associated[ hit_plane[j] ] += hit_charge[j];
-                    dqdx_around_start_track_associated_total += hit_charge[j];
-                    
-                }
-                
-            }
-            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[ hit_plane[j] ] ) ){
-                Debug(6, Form("hit %d (p %d,w %d,t %.2f) inside end-box of track %d, hit_trkid:%d, hit_trkKey:%d",
-                              j,hit_plane[j],hit_wire[j],hit_peakT[j],c_track.track_id,hit_trkid[j], hit_trkKey[j] ));
-
-                dqdx_around_end[ hit_plane[j] ] += hit_charge[j];
-                dqdx_around_end_total += hit_charge[j];
-                
-                // associate this hit with the track
-                if (c_track.IsWireTimeAlongTrack( hit_plane[j] , hit_wire[j] , hit_peakT[j] ) ){
-                    
-                    Debug( 6 , Form("asociated hit with track %d", c_track.track_id));
-                    dqdx_around_end_track_associated[ hit_plane[j] ] += hit_charge[j];
-                    dqdx_around_end_track_associated_total += hit_charge[j];
-                }
-            }
-            
-        }
-        
-        for (int plane=0; plane<3 ;plane++){
-            
-            c_track.dqdx_around_start[plane] = dqdx_around_start[plane];
-            c_track.dqdx_around_start_total = dqdx_around_start_total;
-            c_track.dqdx_around_start_track_associated[plane] = dqdx_around_start_track_associated[plane];
-            c_track.dqdx_around_start_track_associated_total = dqdx_around_start_track_associated_total;
-            
-            c_track.dqdx_around_end[plane] = dqdx_around_end[plane];
-            c_track.dqdx_around_end_total = dqdx_around_end_total;
-            c_track.dqdx_around_end_track_associated[plane] = dqdx_around_end_track_associated[plane];
-            c_track.dqdx_around_end_track_associated_total = dqdx_around_end_track_associated_total;
-            
-        }
-        
-    }
-    Debug(4,"set dq/dx around start and end points...");
-
-}
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//bool cumputeAnaTree::AssociateHitsTracks(){
+//    // get dq/dx in two boxes around the track start & end points
+//    Debug( 2, Form("associating %d hits to %d tracks start/end boxes",no_hits,Ntracks) );
+//    
+//    for (auto & c_track : tracks){
+//
+//        Float_t dqdx_around_start[3] = {0,0,0}, dqdx_around_end[3] = {0,0,0};
+//        Float_t dqdx_around_start_total=0, dqdx_around_end_total=0;
+//        Float_t dqdx_around_start_track_associated[3] = {0,0,0}, dqdx_around_end_track_associated[3] = {0,0,0};
+//        Float_t dqdx_around_start_track_associated_total=0, dqdx_around_end_track_associated_total=0;
+//        Float_t dqdx_around_start_no_tracks_associated_total=0, dqdx_around_end_no_tracks_associated_total=0;
+//        
+//        
+//        for(Int_t j=0 ; j<no_hits && j<kMaxHits ; j++) {
+//            
+//            
+//            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.start_box[ hit_plane[j] ] ) ){
+//                Debug(6, Form("hit %d (p %d,w %d,t %.2f) inside start-box of track %d, hit_trkid:%d, hit_trkKey:%d",
+//                               j,hit_plane[j],hit_wire[j],hit_peakT[j],c_track.track_id,hit_trkid[j], hit_trkKey[j] ));
+//                
+//                dqdx_around_start[ hit_plane[j] ] += hit_charge[j];
+//                dqdx_around_start_total += hit_charge[j];
+//                
+//                // associate this hit with the track
+//                if (c_track.IsWireTimeAlongTrack( hit_plane[j] , hit_wire[j] , hit_peakT[j] ) ){
+//                    
+//                    Debug( 6 , Form("asociated hit with track %d", c_track.track_id));
+//                    dqdx_around_start_track_associated[ hit_plane[j] ] += hit_charge[j];
+//                    dqdx_around_start_track_associated_total += hit_charge[j];
+//                    
+//                }
+//                
+//            }
+//            if ( WireTimeInBox( hit_wire[j] , hit_peakT[j] , c_track.end_box[ hit_plane[j] ] ) ){
+//                Debug(6, Form("hit %d (p %d,w %d,t %.2f) inside end-box of track %d, hit_trkid:%d, hit_trkKey:%d",
+//                              j,hit_plane[j],hit_wire[j],hit_peakT[j],c_track.track_id,hit_trkid[j], hit_trkKey[j] ));
+//
+//                dqdx_around_end[ hit_plane[j] ] += hit_charge[j];
+//                dqdx_around_end_total += hit_charge[j];
+//                
+//                // associate this hit with the track
+//                if (c_track.IsWireTimeAlongTrack( hit_plane[j] , hit_wire[j] , hit_peakT[j] ) ){
+//                    
+//                    Debug( 6 , Form("asociated hit with track %d", c_track.track_id));
+//                    dqdx_around_end_track_associated[ hit_plane[j] ] += hit_charge[j];
+//                    dqdx_around_end_track_associated_total += hit_charge[j];
+//                }
+//            }
+//            
+//        }
+//        
+//        for (int plane=0; plane<3 ;plane++){
+//            
+//            c_track.dqdx_around_start[plane] = dqdx_around_start[plane];
+//            c_track.dqdx_around_start_total = dqdx_around_start_total;
+//            c_track.dqdx_around_start_track_associated[plane] = dqdx_around_start_track_associated[plane];
+//            c_track.dqdx_around_start_track_associated_total = dqdx_around_start_track_associated_total;
+//            
+//            c_track.dqdx_around_end[plane] = dqdx_around_end[plane];
+//            c_track.dqdx_around_end_total = dqdx_around_end_total;
+//            c_track.dqdx_around_end_track_associated[plane] = dqdx_around_end_track_associated[plane];
+//            c_track.dqdx_around_end_track_associated_total = dqdx_around_end_track_associated_total;
+//            
+//        }
+//        
+//    }
+//    Debug(4,"set dq/dx around start and end points...");
+//
+//}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::WireTimeInBox(int wire, int time, box box){

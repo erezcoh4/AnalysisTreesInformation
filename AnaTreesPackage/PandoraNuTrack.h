@@ -166,10 +166,10 @@ public:
     std::vector<Float_t> GetTrackLengthVector (int plane) {
         switch (plane) {
             case 0:
-                return residual_range_U;
+//                return residual_range_U;
                 break;
             case 1:
-                return residual_range_V;
+//                return residual_range_V;
                 break;
             case 2:
                 return residual_range_Y;
@@ -181,10 +181,10 @@ public:
     std::vector<Float_t> GetTrack_dEdxVector  (int plane) {
         switch (plane) {
             case 0:
-                return dEdx_U;
+//                return dEdx_U;
                 break;
             case 1:
-                return dEdx_V;
+//                return dEdx_V;
                 break;
             case 2:
                 return dEdx_Y;
@@ -213,6 +213,7 @@ public:
     Float_t     length      , theta     , phi , distlenratio , momentum;
     Float_t     start_dqdx  , end_dqdx  , tot_dqdx , avg_dqdx;
     Float_t     dqdx_diff   , dqdx_ratio;
+    Float_t     dQtotal;
     Float_t     pidpida     , pidchi    , cosmicscore   , coscontscore;
     Float_t     cftime      , cftimewidth   , cfzcenter , cfzwidth, cfycenter , cfywidth  , cftotalpe , cfdistance;
     Float_t     cfdistance_start;
@@ -234,19 +235,19 @@ public:
     Int_t       end_wire_u, end_wire_v, end_wire_y;
     Int_t       end_time_u, end_time_v, end_time_y;
     box         roi[3];
-    box         start_box[3], end_box[3];   // boxed around the start and end points of the track
+    // box         start_box[3], end_box[3];   // boxed around the start and end points of the track
     
     // dE/dx
     Int_t       NEdepYsteps;
-    std::vector <Float_t> track_dx_U, residual_range_U, dEdx_U , Edep_U, dqdx_U;
-    std::vector <Float_t> track_dx_V, residual_range_V, dEdx_V , Edep_V, dqdx_V;
+    // std::vector <Float_t> track_dx_U, residual_range_U, dEdx_U , Edep_U, dqdx_U;
+    // std::vector <Float_t> track_dx_V, residual_range_V, dEdx_V , Edep_V, dqdx_V;
     std::vector <Float_t> track_dx_Y, residual_range_Y, dEdx_Y , Edep_Y, dqdx_Y;
 
     
     // tracks which are closer than TracsMinDistance, at the same event, are labled as 'neighbor-tracks'
-    vector<Int_t>       NeighborTracks;
-    vector<Float_t>     NeighborTracksDistance;
-    vector<Float_t>     NeighborTracksAngles;
+    // vector<Int_t>       NeighborTracks;
+    // vector<Float_t>     NeighborTracksDistance;
+    // vector<Float_t>     NeighborTracksAngles;
     
     
     // truth information - only valid for MC data
@@ -267,13 +268,6 @@ public:
     std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
     
     
-    
-//    #ifndef __CINT__
-//    protected:
-//    std::vector<box> rois;
-//    #endif
-//
-//
 };
 #endif
 /** @} */ // end of doxygen group

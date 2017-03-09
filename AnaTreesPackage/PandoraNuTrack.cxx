@@ -28,7 +28,8 @@ coscontscore(-100),
 process_primary(-100),
 IsGENIECC1p(-100),
 mcevent_id(-100),
-truth_ccnc(-100)
+truth_ccnc(-100),
+dQtotal(-100)
 {}
 
 
@@ -121,25 +122,25 @@ void PandoraNuTrack::FlipTrack(int debug){
     start_dqdx  = end_dqdx;
     end_dqdx    = tmp_dqdx;
     
-    for (int plane = 0 ; plane < 3 ; plane++ ){
-        
-        Float_t tmp1 = dqdx_around_start[plane];
-        dqdx_around_start[plane] = dqdx_around_end[plane];
-        dqdx_around_end[plane] = tmp1;
-        
-        Float_t tmp2 = dqdx_around_start_track_associated[plane];
-        dqdx_around_start_track_associated[plane] = dqdx_around_end_track_associated[plane];
-        dqdx_around_end_track_associated[plane] = tmp2;
-    }
-    
-    Float_t     tmp3 = dqdx_around_start_total;
-    dqdx_around_start_total = dqdx_around_end_total;
-    dqdx_around_end_total = tmp3;
-    
-    Float_t     tmp4 = dqdx_around_start_track_associated_total;
-    dqdx_around_start_track_associated_total = dqdx_around_end_track_associated_total;
-    dqdx_around_end_track_associated_total = tmp4;
-    
+    //    for (int plane = 0 ; plane < 3 ; plane++ ){
+    //
+    //        Float_t tmp1 = dqdx_around_start[plane];
+    //        dqdx_around_start[plane] = dqdx_around_end[plane];
+    //        dqdx_around_end[plane] = tmp1;
+    //
+    //        Float_t tmp2 = dqdx_around_start_track_associated[plane];
+    //        dqdx_around_start_track_associated[plane] = dqdx_around_end_track_associated[plane];
+    //        dqdx_around_end_track_associated[plane] = tmp2;
+    //    }
+    //
+    //    Float_t     tmp3 = dqdx_around_start_total;
+    //    dqdx_around_start_total = dqdx_around_end_total;
+    //    dqdx_around_end_total = tmp3;
+    //
+    //    Float_t     tmp4 = dqdx_around_start_track_associated_total;
+    //    dqdx_around_start_track_associated_total = dqdx_around_end_track_associated_total;
+    //    dqdx_around_end_track_associated_total = tmp4;
+
     is_flipped  = 1;
 }
 
@@ -204,7 +205,7 @@ void PandoraNuTrack::CreateROIs(){
             default:
                 break;
         }
-//        rois.push_back(roi[plane]);
+
         
         // track-trajectory in each plane is time = slope * wire - intersect
         // where ( y-y1 = slope*(x-x1) )
@@ -213,9 +214,10 @@ void PandoraNuTrack::CreateROIs(){
         trajectory_slope[plane] = (float)(end_time - start_time) / (end_wire - start_wire);
         trajectory_intersect[plane] = end_time - trajectory_slope[plane] * end_wire;
         
-        start_box[plane] = box( start_wire - 20 , start_time - 40 , start_wire + 20 , start_time + 40 );
-        end_box[plane] = box( end_wire - 20 , end_time - 40 , end_wire + 20 , end_time + 40 );
+        //        start_box[plane] = box( start_wire - 20 , start_time - 40 , start_wire + 20 , start_time + 40 );
+        //        end_box[plane] = box( end_wire - 20 , end_time - 40 , end_wire + 20 , end_time + 40 );
     }
+    // delete geomHelper;
     
 }
 
@@ -270,59 +272,6 @@ void PandoraNuTrack::Straightness(){
 //}
 
 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool DoPrintPlanes){
-
-    cout << "\033[31m" << "~~~~~~~~~~~~~~~~~~~~~\n" << "track " << track_id << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
-    SHOW3(run , subrun , event);
-    if (DoPrintPos){
-        SHOWTVector3(start_pos);
-        SHOWTVector3(end_pos);
-    }
-    if (DoPrintPandoraNuFeatures){
-        PrintPhys(length,"cm");
-        PrintPhys(momentum,"MeV/c");
-        SHOW(distlenratio);
-        PrintPhys(theta,"radians");
-        PrintPhys(phi,"radians");
-        PrintPhys(start_dqdx,"ADC/cm");
-        PrintPhys(end_dqdx,"ADC/cm");
-        PrintPhys(tot_dqdx,"ADC/cm");
-        SHOW3( cosmicscore, coscontscore , pidpida )
-        SHOW2( cfdistance , cfdistance_start );
-    }
-    if (DoPrintPlanes){
-        SHOW3( purtruth_U , purtruth_V   , purtruth_Y );
-        for (int plane = 0 ; plane < 3; plane++) {
-            PrintPhys( CalorimetryPDG[plane] , Form(" for plane %d",plane) );
-            PrintBox(roi[plane]);
-        }
-    }
-    //    cout << "\033[33m" << NNeighborTracks << " neighboring tracks" ;
-    //    for (size_t i = 0 ; i < NNeighborTracks ; i++ ){
-    //        cout
-    //        << "\ntrack "               << NeighborTracks[i]
-    //        << ", distance: "           << NeighborTracksDistance[i]
-    //        << " cm, relative angle:"   << NeighborTracksAngles[i]
-    //        << " deg.";
-    //    }
-    //    cout << "\033[0m" << endl;
-    if ( truth_Eng>0 && truth_P>0 ){
-        cout << "MC information: " << endl;
-        SHOW ( mcevent_id );
-        SHOW2 ( process_primary , MCpdgCode );
-        PrintPhys (truth_P , "GeV/c");
-        SHOW3(truth_Eng , truth_theta , truth_phi);
-        SHOWTVector3(truth_start_pos);
-        SHOWTVector3(truth_end_pos);
-        SHOW2( truth_ccnc, IsGENIECC1p );
-    }
-
-
-}
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Float_t PandoraNuTrack::ClosestDistanceToOtherTrack( PandoraNuTrack other_track, std::string * fStartOrEnd ){
     Float_t MinDistanceToOtherTrack = 10000;
@@ -375,6 +324,60 @@ bool PandoraNuTrack::IsWireTimeAlongTrack ( Int_t plane, Int_t wire , Float_t ti
         return true;
     }
     return false;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool DoPrintPlanes){
+    
+    cout << "\033[31m" << "~~~~~~~~~~~~~~~~~~~~~\n" << "track " << track_id << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
+    SHOW3(run , subrun , event);
+    if (DoPrintPos){
+        SHOWTVector3(start_pos);
+        SHOWTVector3(end_pos);
+    }
+    if (DoPrintPandoraNuFeatures){
+        PrintPhys(length,"cm");
+        PrintPhys(momentum,"MeV/c");
+        SHOW(distlenratio);
+        PrintPhys(theta,"radians");
+        PrintPhys(phi,"radians");
+        PrintPhys(start_dqdx,"ADC/cm");
+        PrintPhys(end_dqdx,"ADC/cm");
+        PrintPhys(tot_dqdx,"ADC/cm");
+        PrintPhys(dQtotal,"ADC");
+        SHOW3( cosmicscore, coscontscore , pidpida )
+        SHOW2( cfdistance , cfdistance_start );
+    }
+    if (DoPrintPlanes){
+        SHOW3( purtruth_U , purtruth_V   , purtruth_Y );
+        for (int plane = 0 ; plane < 3; plane++) {
+            PrintPhys( CalorimetryPDG[plane] , Form(" for plane %d",plane) );
+            PrintBox(roi[plane]);
+        }
+    }
+    //    cout << "\033[33m" << NNeighborTracks << " neighboring tracks" ;
+    //    for (size_t i = 0 ; i < NNeighborTracks ; i++ ){
+    //        cout
+    //        << "\ntrack "               << NeighborTracks[i]
+    //        << ", distance: "           << NeighborTracksDistance[i]
+    //        << " cm, relative angle:"   << NeighborTracksAngles[i]
+    //        << " deg.";
+    //    }
+    //    cout << "\033[0m" << endl;
+    if ( truth_Eng>0 && truth_P>0 ){
+        cout << "MC information: " << endl;
+        SHOW ( mcevent_id );
+        SHOW2 ( process_primary , MCpdgCode );
+        PrintPhys (truth_P , "GeV/c");
+        SHOW3(truth_Eng , truth_theta , truth_phi);
+        SHOWTVector3(truth_start_pos);
+        SHOWTVector3(truth_end_pos);
+        SHOW2( truth_ccnc, IsGENIECC1p );
+    }
+    
+    
 }
 
 
