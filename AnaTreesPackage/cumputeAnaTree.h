@@ -13,7 +13,7 @@
  @{*/
 #ifndef cumputeAnaTree_H
 #define cumputeAnaTree_H
-#include "../../mySoftware/MySoftwarePackage/myIncludes.h"
+#include "LArUtil/../../UserDev/mySoftware/MySoftwarePackage/myIncludes.h"
 #include "PandoraNuTrack.h"
 #include <ostream>
 #include "TChain.h"

@@ -15,7 +15,8 @@
 #define LARG4PARTICLE_H
 
 #include <iostream>
-#include "../../mySoftware/MySoftwarePackage/myIncludes.h"
+//#include "../../mySoftware/MySoftwarePackage/myIncludes.h"
+#include "LArUtil/../../UserDev/mySoftware/MySoftwarePackage/myIncludes.h"
 
 /**
    \class LArG4Particle

@@ -15,7 +15,7 @@
 #define nuInteraction_H
 
 #include "LArUtil/Geometry.h"
-#include "../../mySoftware/MySoftwarePackage/myIncludes.h"
+#include "LArUtil/../../UserDev/mySoftware/MySoftwarePackage/myIncludes.h"
 
 /**
  \class nuInteraction

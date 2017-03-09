@@ -19,7 +19,7 @@
 #include <string>
 #include <sstream>
 
-#include "../../mySoftware/MySoftwarePackage/myIncludes.h"
+#include "LArUtil/../../UserDev/mySoftware/MySoftwarePackage/myIncludes.h"
 
 /**
    \class ImportantTools
