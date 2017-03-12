@@ -38,6 +38,7 @@
 namespace std {} using namespace std;
 
 // Header files passed as explicit arguments
+#include "AnalyzeVertex.h"
 #include "calcEventTopologies.h"
 #include "myVertex.h"
 
@@ -134,6 +135,51 @@ namespace ROOT {
 } // end of namespace ROOT
 
 namespace ROOT {
+   static TClass *AnalyzeVertex_Dictionary();
+   static void AnalyzeVertex_TClassManip(TClass*);
+   static void *new_AnalyzeVertex(void *p = 0);
+   static void *newArray_AnalyzeVertex(Long_t size, void *p);
+   static void delete_AnalyzeVertex(void *p);
+   static void deleteArray_AnalyzeVertex(void *p);
+   static void destruct_AnalyzeVertex(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::AnalyzeVertex*)
+   {
+      ::AnalyzeVertex *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::AnalyzeVertex));
+      static ::ROOT::TGenericClassInfo 
+         instance("AnalyzeVertex", "AnalyzeVertex.h", 31,
+                  typeid(::AnalyzeVertex), DefineBehavior(ptr, ptr),
+                  &AnalyzeVertex_Dictionary, isa_proxy, 4,
+                  sizeof(::AnalyzeVertex) );
+      instance.SetNew(&new_AnalyzeVertex);
+      instance.SetNewArray(&newArray_AnalyzeVertex);
+      instance.SetDelete(&delete_AnalyzeVertex);
+      instance.SetDeleteArray(&deleteArray_AnalyzeVertex);
+      instance.SetDestructor(&destruct_AnalyzeVertex);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::AnalyzeVertex*)
+   {
+      return GenerateInitInstanceLocal((::AnalyzeVertex*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::AnalyzeVertex*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *AnalyzeVertex_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const ::AnalyzeVertex*)0x0)->GetClass();
+      AnalyzeVertex_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void AnalyzeVertex_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
    // Wrappers around operator new
    static void *new_calcEventTopologies(void *p) {
       return  p ? new(p) ::calcEventTopologies : new ::calcEventTopologies;
@@ -174,6 +220,27 @@ namespace ROOT {
       ((current_t*)p)->~current_t();
    }
 } // end of namespace ROOT for class ::myVertex
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_AnalyzeVertex(void *p) {
+      return  p ? new(p) ::AnalyzeVertex : new ::AnalyzeVertex;
+   }
+   static void *newArray_AnalyzeVertex(Long_t nElements, void *p) {
+      return p ? new(p) ::AnalyzeVertex[nElements] : new ::AnalyzeVertex[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_AnalyzeVertex(void *p) {
+      delete ((::AnalyzeVertex*)p);
+   }
+   static void deleteArray_AnalyzeVertex(void *p) {
+      delete [] ((::AnalyzeVertex*)p);
+   }
+   static void destruct_AnalyzeVertex(void *p) {
+      typedef ::AnalyzeVertex current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::AnalyzeVertex
 
 namespace ROOT {
    static TClass *vectorlEvectorlEfloatgRsPgR_Dictionary();
@@ -682,6 +749,7 @@ namespace ROOT {
 namespace {
   void TriggerDictionaryInitialization_libAnalysisTreesInformation_CCQEPackage_Impl() {
     static const char* headers[] = {
+"AnalyzeVertex.h",
 "calcEventTopologies.h",
 "myVertex.h",
 0
@@ -704,7 +772,8 @@ R"DICTFWDDCLS(
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
 extern int __Cling_Autoloading_Map;
 class __attribute__((annotate("$clingAutoload$calcEventTopologies.h")))  calcEventTopologies;
-class __attribute__((annotate("$clingAutoload$calcEventTopologies.h")))  myVertex;
+class __attribute__((annotate("$clingAutoload$AnalyzeVertex.h")))  myVertex;
+class __attribute__((annotate("$clingAutoload$AnalyzeVertex.h")))  AnalyzeVertex;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
 
@@ -713,12 +782,14 @@ class __attribute__((annotate("$clingAutoload$calcEventTopologies.h")))  myVerte
 #endif
 
 #define _BACKWARD_BACKWARD_WARNING_H
+#include "AnalyzeVertex.h"
 #include "calcEventTopologies.h"
 #include "myVertex.h"
 
 #undef  _BACKWARD_BACKWARD_WARNING_H
 )DICTPAYLOAD";
     static const char* classesHeaders[]={
+"AnalyzeVertex", payloadCode, "@",
 "calcEventTopologies", payloadCode, "@",
 "myVertex", payloadCode, "@",
 nullptr};

@@ -73,9 +73,13 @@ public:
     
     // running
     bool        extract_information ();
+    void                GetRSEEntry ( int ); // get only R/S/E
     void                   GetEntry ( int );
     void              GetGENIEEntry ( int );
     
+    int    CountCloseTracksToVertex ( myVertex );
+    bool     MoreThanTwoCloseTracks ( myVertex );
+
     bool    ClusterTracksToVertices ();
     bool     ClusterGENIEToVertices ();
     bool            AnalyzeVertices ();
@@ -97,7 +101,9 @@ public:
     int     debug ;
     bool    MCmode,     IsGENIECC1p,    FoundTruthCC1p;
     Int_t   Nentries,   run, 	subrun, event;
-    Int_t   Ntracks,    c_entry;
+    Int_t   c_entry;
+    Int_t   NCC1pVertices , Nhits , Ntracks;
+
     Int_t   Nprimaries, Np,     Nmu,    Npi ,   Nn,   Nel,  ccnc;
 
     

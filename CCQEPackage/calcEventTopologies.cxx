@@ -56,8 +56,12 @@ void calcEventTopologies::InitOutputTree(){
     OutTree -> Branch("run"             ,&run               ,"run/I");
     OutTree -> Branch("subrun"          ,&subrun            ,"subrun/I");
     OutTree -> Branch("event"           ,&event             ,"event/I");
+    OutTree -> Branch("Ntracks"         ,&Ntracks           ,"Ntracks/I");
+    OutTree -> Branch("Nhits"           ,&Nhits             ,"Nhits/I");
+    OutTree -> Branch("NCC1pVertices"   ,&NCC1pVertices     ,"NCC1pVertices/I");
     
     OutTree -> Branch("tracks"              ,&tracks); // tracks information...
+    OutTree -> Branch("hits"                ,&hits); // hits information...
     OutTree -> Branch("vertices"            ,&vertices); // all vertices...
     OutTree -> Branch("CC1p_vertices"       ,&CC1p_vertices); // CC1p-vertices...
     
@@ -67,6 +71,9 @@ void calcEventTopologies::InitOutputTree(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::FillOutTree (){
+    NCC1pVertices = (int)CC1p_vertices.size();
+    Nhits = (int)hits.size();
+    Ntracks = (int)tracks.size();
     OutTree -> Fill();
     return true;
 }
@@ -106,6 +113,11 @@ void calcEventTopologies::GetGENIEEntry (int entry){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void calcEventTopologies::GetRSEEntry (int entry){
+    InTree -> GetEntry(entry);
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::GetEntry (int entry){
     InitEvent();
     
@@ -130,6 +142,9 @@ void calcEventTopologies::GetEntry (int entry){
     }
     
     c_entry = entry;
+    delete ftracks;
+    delete fhits;
+    delete finteractions;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -167,7 +182,7 @@ bool calcEventTopologies::ClusterTracksToVertices(){
     
     for (int i=0; i < Ntracks; i++){
         
-        //        if (!tracks[i].IsFullyContained) continue;
+        if (!tracks[i].IsFullyContained) continue;
         
         // skip if track was clustered to a vertex by in one of the previous loop steps
         if (TrackAlreadyIncludedInVerticesList(tracks[i].track_id)) continue;
@@ -183,7 +198,7 @@ bool calcEventTopologies::ClusterTracksToVertices(){
         FoundCloseTracks = AlreadySetPosition = false;
         
         for ( int j=0 ; j < Ntracks ; j++ ){ // i+1
-            //            if (!tracks[j].IsFullyContained) continue;
+            if (!tracks[j].IsFullyContained) continue;
             if (j!=i){
                 
                 // if this is the first time we go over these two tracks
@@ -208,7 +223,7 @@ bool calcEventTopologies::ClusterTracksToVertices(){
                         else                                    vertex_position = TVector3(-1000,-1000,-1000) ;
                         
                         c_vertex.SetPosition( vertex_position );
-                        c_vertex.SetMyLArTools (lar_tools);
+                        //                        c_vertex.SetMyLArTools (lar_tools);
                         AlreadySetPosition = true;
                     }
                 }
@@ -271,7 +286,7 @@ bool calcEventTopologies::ClusterGENIEToVertices(){
             GENIEproton = protons[0];
             
             c_vertex = myVertex( genie_interaction.muonTrack.track_id );
-            c_vertex.SetMyLArTools (lar_tools);
+            // c_vertex.SetMyLArTools (lar_tools);
             c_vertex.SetPosition( genie_interaction.vertex_position );
             c_vertex.SetRSE( genie_interaction.run, genie_interaction.subrun, genie_interaction.event );
             c_vertex.GENIECC1p = true;
@@ -289,7 +304,11 @@ bool calcEventTopologies::ClusterGENIEToVertices(){
             
             c_vertex.SetIsReconstructed();
             c_vertex.SetGENIEinfo( genie_interaction );
-            c_vertex.SetAssignTracks( genie_interaction.muonTrack , genie_interaction.protonTrack );
+            
+            float PmuonFromRange = 0.001 * lar_tools -> Get_muonMomentumFromRange( genie_interaction.muonTrack.length );
+            float PprotonFromRange = 0.001 * lar_tools -> Get_protonMomentumFromRange( genie_interaction.protonTrack.length );
+            
+            c_vertex.SetAssignTracks( genie_interaction.muonTrack , genie_interaction.protonTrack , PmuonFromRange , PprotonFromRange );
             c_vertex.TruthTopologyString = "true GENIE CC1p";
             
             vertices.push_back( c_vertex );
@@ -309,7 +328,6 @@ bool calcEventTopologies::AnalyzeVertices(){
         
         if (option.compare("CC1pTopology")==0){
             v.RemoveFarTracks( max_mu_p_distance , debug  );
-            
         }
         
         v.SortTracksByPIDA();
@@ -360,8 +378,13 @@ bool calcEventTopologies::Find2tracksVertices(){
             //        PandoraNuTrack t1 = v.ShortestTrack;
             //        PandoraNuTrack t2 = v.LongestTrack;
             // assign muon and proton tracks by PID-A
-            v.SetAssignTracks( v.SmallPIDATrack , v.LargePIDATrack );
+            float PmuonFromRange = 0.001 * lar_tools -> Get_muonMomentumFromRange( v.SmallPIDATrack.length );
+            float PprotonFromRange = 0.001 * lar_tools -> Get_protonMomentumFromRange( v.LargePIDATrack.length );
 
+            v.SetAssignTracks( v.SmallPIDATrack , v.LargePIDATrack , PmuonFromRange , PprotonFromRange );
+            
+            // account for tracks that come out from the same vertex, but are not clustered with it since they are not fully contained.
+            // if (MoreThanTwoCloseTracks( v )) continue;
             
             CC1p_vertices.push_back( v );
             CC1pVerticesID.push_back( v.vertex_id );
@@ -370,6 +393,29 @@ bool calcEventTopologies::Find2tracksVertices(){
         }
     }
     return FoundCC1pTopology;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+int calcEventTopologies::CountCloseTracksToVertex(myVertex vertex){
+    // count the number of tracks close to the vertex,
+    // that are not nesecarily fully contained,
+    // to account for tracks that come out from the same vertex,
+    // but are not clustered with it since they are not fully contained.
+    int NCloseTracks = 0;
+    for (auto t:tracks) {
+        if (t.DistanceFromPoint(vertex.position) < max_mu_p_distance){
+            NCloseTracks++;
+        }
+    }
+    return NCloseTracks;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool calcEventTopologies::MoreThanTwoCloseTracks(myVertex vertex){
+    if ( CountCloseTracksToVertex(vertex) > 2 ) return true;
+    return false;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -425,11 +471,16 @@ bool calcEventTopologies::TagGENIECC1p(){
             
             
             
-            if ( fabs((t1.truth_start_pos - t2.truth_start_pos).Mag() )<1.  //&& t1.mcevent_id!= -100
-                && t1.IsGENIECC1p && t2.IsGENIECC1p ){
+            if ( (t1.truth_start_pos - t2.truth_start_pos).Mag() < 1. // distance between the true position of the two tracks is small
+                //                && t1.IsGENIECC1p && t2.IsGENIECC1p
+                && (v.closest_genie_interaction.vertex_position - v.position).Mag() < 10 // distance from the closest genie vertex
+                && v.closest_genie_interaction.IsCC1p
+                && (t1.process_primary==1 && t2.process_primary==1)
+                ){
                 
                 Debug(3,"found true CC1p");
                 v.GENIECC1p = true;
+                v.Is1mu1pDetected = false; // I define Is1mu1pDetected as non true CC1p
                 v.TruthTopologyString = "true GENIE CC1p";
                 
             }

@@ -18,7 +18,7 @@
 #include "../../mySoftware/MySoftwarePackage/myIncludes.h"
 #include "PandoraNuTrack.h"
 #include "GENIEinteraction.h"
-#include "MyLArTools.h"
+//#include "MyLArTools.h"
 
 #define r2d TMath::RadToDeg()
 #define d2r TMath::DegToRad()
@@ -69,22 +69,25 @@ public:
 
     
     
-    void              SetMyLArTools (MyLArTools  * flar_tools) {lar_tools = flar_tools;};
-    void    SetReconstructedMomenta ();
-    void     SetReconstructedBeamPz ();
-    void         SetReconstructed_q ();
-    void   SetReconstructedFeatures ();
-    void        FixTracksDirections ();
+//    void              SetMyLArTools (MyLArTools  * flar_tools) {lar_tools = flar_tools;};
     
     
     // SETters
-    void     SetTracksRelations ();
-    bool     SetIsReconstructed ();
-    void           SetGENIEinfo (GENIEinteraction fgenie_interaction){ genie_interaction = fgenie_interaction; };
-    void        SetClosestGENIE (GENIEinteraction fgenie_interaction){ closest_genie_interaction = fgenie_interaction; };
-    void   SetReconstructedInfo ();
-    void        SetAssignTracks (PandoraNuTrack fAssignedMuonTrack, PandoraNuTrack fAssignedProtonTrack);
-    void    SetEDepAroundVertex ();
+    void         SetTracksRelations ();
+    bool         SetIsReconstructed ();
+    void               SetGENIEinfo (GENIEinteraction fgenie_interaction){ genie_interaction = fgenie_interaction; };
+    void            SetClosestGENIE (GENIEinteraction fgenie_interaction){ closest_genie_interaction = fgenie_interaction; };
+    void       SetReconstructedInfo ();
+    
+    void            SetAssignTracks (PandoraNuTrack fAssignedMuonTrack, PandoraNuTrack fAssignedProtonTrack,
+                                     float PmuonFromRange = 0, float PprotonFromRange = 0 );
+    
+    void        SetEDepAroundVertex ();
+    void    SetReconstructedMomenta ( float PmuonFromRange = 0, float PprotonFromRange = 0 );
+    void     SetReconstructedBeamPz ();
+    void         SetReconstructed_q ();
+    void   SetReconstructedFeatures ( float PmuonFromRange = 0, float PprotonFromRange = 0 );
+    void        FixTracksDirections ();
     
     
     // GETters
@@ -147,7 +150,7 @@ public:
 
 
     
-    MyLArTools  * lar_tools;
+//    MyLArTools  * lar_tools;
 };
 
 #endif

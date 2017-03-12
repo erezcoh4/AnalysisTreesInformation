@@ -6,6 +6,7 @@ from calc_tools import *
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
+import matplotlib.patches as patches
 import ROOT
 from larlite import *
 from ROOT import PandoraNuTrack
@@ -13,120 +14,67 @@ from ROOT import cumputeAnaTree
 from ROOT import ImportantTools
 from ROOT import AnalyzeTracksFile
 from ROOT import calcEventTopologies
-from ROOT import calcEventTopologies
+from ROOT import AnalyzeVertex
 import math, copy
 
 
+def get_CC1p_tracks( events=None , i=0 , debug=False ,
+                            ):
+        events.GetEntry(i)
+        vertices = [v for v in events.vertices]
+        tracks = [t for t in events.tracks]
+        hits = [hit for hit in events.hits]
+        if debug: print len(vertices),'vertices',len(tracks),'tracks',len(hits),'hits'
+            
+        TwoTracksClusters = dict()
+        TwoTracksClusters['Nclusters'] = len(vertices)
 
+        for i,v in enumerate(vertices):            
+            TwoTracksClusters['vertex %d'%i] = v
+            
+        return hits, TwoTracksClusters
+            
+    
+    
 
-def get_event_from_rse( events=None,run=0 , subrun=0 , event=0 ):
-    # return hits and tracks in this R/S/E
+def get_CC1p_tracks_from_rse( events=None ,run=0 , subrun=0 , event=0, debug=False ):
+    # return hits and only those tracks which are close enough to the vertex in this R/S/E
     for i in range(events.Nentries):
         events.GetEntry(i)
+        
+        vertices = [v for v in events.vertices]
+
+        TwoTracksClusters = dict()
+        TwoTracksClusters['Nclusters'] = len(vertices)
+        
+        for j,v in enumerate(vertices):            
+            if v.run==run and v.subrun==subrun and v.event==event:
+                tracks = [t for t in events.tracks]
+                hits = [hit for hit in events.hits]
+                if debug: print len(vertices),'vertices',len(tracks),'tracks',len(hits),'hits'                
+                TwoTracksClusters['vertex %d'%j] = v
+                return hits, v        
+    print 'did not find %d,%d,%d'%(run , subrun , event)
+    
+    
+
+
+def get_event_from_rse( events=None,run=0 , subrun=0 , event=0 ,debug=False ):
+    # return hits and tracks in this R/S/E
+    for i in range(events.Nentries):
+        if i%(float(events.Nentries)/20)==0: print '%.1f'%(float(100.*i)/events.Nentries) + '%'
+        events.GetRSEEntry(i)
         if events.run==run and events.subrun==subrun and events.event==event:
+            events.GetEntry(i)
             tracks = [t for t in events.tracks]
-            print 'tracks.size():',len(tracks)
+            if debug: print 'tracks.size():',len(tracks)
             hits = [hit for hit in events.hits]
-            print 'hits.size():',len(hits)
+            if debug: print 'hits.size():',len(hits)
             return hits, tracks
     print 'did not find %d,%d,%d'%(run , subrun , event)
 
 
 
-def draw_evd_tracks(hits,tracks,
-                    do_print=False,fontsize=20,figsize=(16,6),MCmode=True,
-                    vertex_x=None,vertex_y=None,vertex_z=None):
-    
-    # 3-planes
-    fig = plt.figure(figsize=figsize)
-    for plane in range(3):
-        ax = fig.add_subplot(1,3,plane+1)
-        hit_wire , hit_time = [] , []
-        # hits
-        for hit in hits:
-            if hit.hit_plane==plane:
-                hit_wire.append(hit.hit_wire)
-                hit_time.append(hit.hit_peakT)
-        plt.hexbin(hit_wire,hit_time,cmap='hot_r')
-        # tracks
-        for t in tracks:
-            color, label = set_color_label(t.MCpdgCode,MCmode=MCmode)
-            if plane==0:
-                start_wire,start_time = t.start_wire_u, t.start_time_u
-                end_wire,end_time = t.end_wire_u, t.end_time_u
-
-            elif plane==1:
-                start_wire,start_time = t.start_wire_v, t.start_time_v
-                end_wire,end_time = t.end_wire_v, t.end_time_v
-
-            elif plane==2:
-                start_wire,start_time = t.start_wire_y, t.start_time_y
-                end_wire,end_time = t.end_wire_y, t.end_time_y
-                
-            ax.plot( [start_wire,end_wire] , [start_time,end_time] ,label='track %d '%t.track_id+label, color=color,alpha=0.4)
-        ax.xaxis.set_major_locator(LinearLocator(4))
-        ax.yaxis.set_major_locator(LinearLocator(4))
-        set_axes(ax,x_label='wire',y_label='peak-time' if plane==0 else '',fontsize=fontsize)
-        if plane!=0: ax.yaxis.set_major_formatter( NullFormatter() )
-        if MCmode: ax.legend(loc='best',fontsize=fontsize)
-    plt.tight_layout()
-    
-    fig = plt.figure(figsize=figsize)
-    # x-y view
-    ax = fig.add_subplot(1,3,1)
-    for t in tracks:
-        color, label = set_color_label(t.MCpdgCode,MCmode=MCmode)
-        plt.plot([t.startx,t.endx],[t.starty,t.endy], color=color)
-    ax.grid(linestyle='--',alpha=0.5)
-    set_axes(ax,x_label='x [cm]' , y_label='y [cm]',fontsize=fontsize)
-    if vertex_y is not None:
-        for x,y,z in zip(vertex_x,vertex_y,vertex_z):
-            circ=plt.Circle((x,y), 8, color='green',alpha=0.4)
-            ax.add_artist(circ)
-    ax.xaxis.set_major_locator(LinearLocator(5))
-    ax.yaxis.set_major_locator(LinearLocator(5))
-
-
-    # z-y view
-    ax = fig.add_subplot(1,3,(2,3))
-    counter=0
-    for t in tracks:
-        counter+=1
-        color, label = set_color_label(t.MCpdgCode,MCmode=MCmode)
-        if do_print: print [t.track_id,t.starty,t.endy]
-        plt.plot([t.startz,t.endz],[t.starty,t.endy],
-                 label='track %d '%t.track_id+label,color=color)
-    if MCmode: ax.legend(loc='best',fontsize=fontsize)
-    ax.grid(linestyle='--',alpha=0.5)
-    set_axes(ax,x_label='z [cm]',fontsize=fontsize)
-    ax.yaxis.set_major_formatter( NullFormatter() )
-    if vertex_y is not None:
-        for x,y,z in zip(vertex_x,vertex_y,vertex_z):
-            circ=plt.Circle((z,y), 8, color='green',alpha=0.4)
-            ax.add_artist(circ)
-    ax.xaxis.set_major_locator(LinearLocator(5))
-    ax.yaxis.set_major_locator(LinearLocator(5))
-    
-    
-    # 3d - view
-    fig = plt.figure(figsize=(14,6))
-    ax = fig.gca(projection='3d')
-    for t in tracks:
-        color, label = set_color_label(t.MCpdgCode,MCmode=MCmode)
-        if do_print: print [t.track_id,t.starty,t.endy]
-        plt.plot([t.startz,t.endz],[t.startx,t.endx],[t.starty,t.endy],color=color)
-
-    ax.set_xlabel('z [cm]',labelpad = 20)
-    ax.set_ylabel('x [cm]',labelpad = 20)
-    ax.set_zlabel('y [cm]',labelpad = 20)
-
-    ax.xaxis.set_major_locator(LinearLocator(5))
-    ax.yaxis.set_major_locator(LinearLocator(5))
-    ax.zaxis.set_major_locator(LinearLocator(5))
-    if vertex_y is not None:
-        for x,y,z in zip(vertex_x,vertex_y,vertex_z):
-            ax.scatter(z , x , y, s=100, c='green', alpha=0.4)
-    plt.tight_layout()  
 
 
 def set_color_label(pdg,MCmode=True):
@@ -154,13 +102,13 @@ def set_color_label(pdg,MCmode=True):
         color = 'salmon'
         label = '$n$'
     elif pdg==-211:
-        color = 'yellow'
+        color = 'slateblue'
         label = '$\\pi^-$'
     elif pdg==211:
-        color = 'yellow'
+        color = 'slateblue'
         label = '$\\pi^+$'
     elif pdg==111:
-        color = 'yellow'
+        color = 'slateblue'
         label = '$\\pi^0$'
     elif pdg==22:
         color = 'cyan'

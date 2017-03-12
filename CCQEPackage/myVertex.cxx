@@ -171,13 +171,15 @@ bool myVertex::SetIsReconstructed(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void myVertex::SetAssignTracks(PandoraNuTrack fAssignedMuonTrack, PandoraNuTrack fAssignedProtonTrack){
+void myVertex::SetAssignTracks(PandoraNuTrack fAssignedMuonTrack,
+                               PandoraNuTrack fAssignedProtonTrack,
+                               float PmuonFromRange, float PprotonFromRange){
     
     AssignedMuonTrack = fAssignedMuonTrack;
     AssignedProtonTrack = fAssignedProtonTrack;
     FixTracksDirections ();
     SetEDepAroundVertex ();
-    SetReconstructedFeatures ();
+    SetReconstructedFeatures ( PmuonFromRange , PprotonFromRange );
 
 }
 
@@ -187,6 +189,26 @@ void myVertex::FixTracksDirections(){
     // by looking at the reconstructed vertex position
     // and comparing the start/end point of the track to the vertex position
     
+    // first fix the position of the vertex
+    float min_distance = (AssignedMuonTrack.start_pos - AssignedProtonTrack.start_pos).Mag();
+    position = 0.5*(AssignedMuonTrack.start_pos + AssignedProtonTrack.start_pos);
+    
+    if (min_distance > (AssignedMuonTrack.end_pos - AssignedProtonTrack.start_pos).Mag()){
+        min_distance = (AssignedMuonTrack.end_pos - AssignedProtonTrack.start_pos).Mag();
+        position = 0.5*(AssignedMuonTrack.end_pos + AssignedProtonTrack.start_pos);
+    }
+    
+    if (min_distance > (AssignedMuonTrack.start_pos - AssignedProtonTrack.end_pos).Mag()){
+        min_distance = (AssignedMuonTrack.start_pos - AssignedProtonTrack.end_pos).Mag();
+        position = 0.5*(AssignedMuonTrack.start_pos + AssignedProtonTrack.end_pos);
+    }
+    
+    if (min_distance > (AssignedMuonTrack.end_pos - AssignedProtonTrack.end_pos).Mag()){
+        min_distance = (AssignedMuonTrack.end_pos - AssignedProtonTrack.end_pos).Mag();
+        position = 0.5*(AssignedMuonTrack.end_pos + AssignedProtonTrack.end_pos);
+    }
+    
+    // then, flip the tracks accordingly
     if ( (AssignedMuonTrack.end_pos - position).Mag() < (AssignedMuonTrack.start_pos - position).Mag() ){
         AssignedMuonTrack.FlipTrack();
         // if (GENIECC1p) Printf("Flipped muon track");
@@ -219,19 +241,18 @@ void myVertex::SetEDepAroundVertex(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void myVertex::SetReconstructedMomenta(){
+void myVertex::SetReconstructedMomenta( float PmuonFromRange, float PprotonFromRange ){
     // reconstruct the µ and p momenta by using the minimal features possible
     // theta / phi of the reconstructed track
     // and the momentum from stopping range ( Get_protonMomentumFromRange which gives the answer in MeV/c )
     // at a later stage we can maybe use calorimetery
-    
     // p
-    reco_CC1p_Pp_3momentum = 0.001 * lar_tools -> Get_protonMomentumFromRange( AssignedProtonTrack.length );
+    reco_CC1p_Pp_3momentum = PprotonFromRange;
     reco_CC1p_Pp_3vect.SetMagThetaPhi( reco_CC1p_Pp_3momentum , AssignedProtonTrack.theta , AssignedProtonTrack.phi );
     reco_CC1p_Pp.SetVectMag ( reco_CC1p_Pp_3vect , 0.9385 );
     
     // µ
-    reco_CC1p_Pmu_3momentum = 0.001 * lar_tools -> Get_muonMomentumFromRange( AssignedMuonTrack.length );
+    reco_CC1p_Pmu_3momentum = PmuonFromRange;
     reco_CC1p_Pmu_3vect.SetMagThetaPhi( reco_CC1p_Pmu_3momentum , AssignedMuonTrack.theta , AssignedMuonTrack.phi );
     reco_CC1p_Pmu.SetVectMag ( reco_CC1p_Pmu_3vect , 0.1056 );
     
@@ -276,12 +297,12 @@ void myVertex::SetReconstructed_q(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void myVertex::SetReconstructedFeatures(){
+void myVertex::SetReconstructedFeatures( float PmuonFromRange, float PprotonFromRange ){
     
     // reconstructed distance between µ and p
     reco_mu_p_distance = AssignedMuonTrack.ClosestDistanceToOtherTrack( AssignedProtonTrack );
     
-    SetReconstructedMomenta();
+    SetReconstructedMomenta( PmuonFromRange, PprotonFromRange );
     SetReconstructedBeamPz();
     SetReconstructed_q();
 
@@ -350,7 +371,9 @@ void myVertex::Print(){
         SHOW3( muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed );
         SHOWTLorentzVector( genie_interaction.muon );
         SHOWTLorentzVector( reco_CC1p_Pmu );
-        SHOWTLorentzVector( genie_interaction.protons[0] );
+        if (genie_interaction.protons.size()>0){
+            SHOWTLorentzVector( genie_interaction.protons[0] );
+        }
         SHOWTLorentzVector( reco_CC1p_Pp );
         SHOW2(genie_interaction.theta_pq,reco_CC1p_theta_pq);
     }

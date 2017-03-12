@@ -44,8 +44,9 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'vertex_y':vertex.position.y()
                         ,'vertex_z':vertex.position.z()
                         ,'pida':[list(track.pidpida for track in vertex.tracks)]
+                        ,'track_id':[list(track.track_id for track in vertex.tracks)]
                         ,'length':[list(track.length for track in vertex.tracks)]
-                        ,'mcevent_id':[list(track.mcevent_id for track in vertex.tracks)]
+                        ,'mcevent_id':[list(track.mcevent_id for track in vertex.tracks)] if MCmode else -1000
                         ,'startx':[list(track.startx for track in vertex.tracks)] if MCmode else -1000
                         ,'starty':[list(track.starty for track in vertex.tracks)] if MCmode else -1000
                         ,'startz':[list(track.startz for track in vertex.tracks)] if MCmode else -1000
@@ -169,7 +170,16 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'closest_genie_Nel':vertex.closest_genie_interaction.Nel if MCmode else -1000
                         ,'closest_genie_Ngamma':vertex.closest_genie_interaction.Ngamma if MCmode else -1000
                         
-                        
+                        ,'closest_genie_Nnu_e':vertex.closest_genie_interaction.Nnu_e if MCmode else -1000
+                        ,'closest_genie_Nnu_mu':vertex.closest_genie_interaction.Nnu_mu if MCmode else -1000
+                        ,'closest_genie_Nmu_minus':vertex.closest_genie_interaction.Nmu_minus if MCmode else -1000
+                        ,'closest_genie_Nmu_plus':vertex.closest_genie_interaction.Nmu_plus if MCmode else -1000
+                        ,'closest_genie_Npi_minus':vertex.closest_genie_interaction.Npi_minus if MCmode else -1000
+                        ,'closest_genie_Npi_plus':vertex.closest_genie_interaction.Npi_plus if MCmode else -1000
+                        ,'closest_genie_Npi_0':vertex.closest_genie_interaction.Npi_0 if MCmode else -1000
+                        ,'closest_genie_Ne_plus':vertex.closest_genie_interaction.Ne_plus if MCmode else -1000
+                        ,'closest_genie_Ne_minus':vertex.closest_genie_interaction.Ne_minus if MCmode else -1000
+
                         
                         # features that are only relevant for genie interaction information
                         ,'truth_Ev':vertex.genie_interaction.nu.E() if vertex.Is1mu1pDetected else -1000

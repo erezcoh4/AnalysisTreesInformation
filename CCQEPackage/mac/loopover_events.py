@@ -1,7 +1,7 @@
 '''
     loop over events, find ccqe topologies, plug into pandas dataframe
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    > python mac/loopover_events.py  --option=CC1pTopology -data=MC_BNB_InTimeCOSMIC_MC -evf=0.001 -p100
+    > python mac/loopover_events.py  --option=CC1pTopology -data=ExampleDebugging -evf=1 -p1
     
     
     --------------------------------------------------------------------------------------------------------------------------------------------
