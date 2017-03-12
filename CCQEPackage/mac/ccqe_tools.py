@@ -1,8 +1,9 @@
 
-import sys; sys.path.insert(0, '../AnaTreesPackage/mac')
+import sys; sys.path.insert(0, '../AnaTreesPackage/mac'); sys.path.insert(0, 'notebooks');
 from anatrees_tools import *
 from calc_tools import *
-from ROOT import calcEventTopologies
+from tracking_tools import *
+from ROOT import calcEventTopologies, MyTrack
 
 r2d = 180./np.pi
 
@@ -23,6 +24,49 @@ ccqe_pars = dict({
                  })
 
 # ---------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------
+def attach_hits_my_tracks_to_vertex( hits_charge_dict=None, my_tracks_dict=None , vertex=None ):
+    
+    for plane in range(3):
+        
+        associated_hit_charge_this_plane = []
+        
+        my_tracks_this_plane = my_tracks_dict['my_tracks in plane %d'%plane]
+
+        for my_track in my_tracks_this_plane:
+            
+            if my_track!=0 and my_track is not None:
+                
+                my_track_object = MyTrack( plane )
+                my_track_object.color = my_track['color']
+                my_track_object.pandoraNu_track = my_track['pandoraNu_track']
+                
+                for hit in my_track['hits']:
+                    my_track_object.hits.push_back( hit )
+                    associated_hit_charge_this_plane.append( hit.hit_charge )
+                
+                vertex.my_tracks.push_back( my_track_object )
+
+        sum_hits_charge = np.sum(hits_charge_dict['hit_charge in plane %d'%plane])
+        ratio_associated_hit_charge_to_total = np.sum( associated_hit_charge_this_plane )/sum_hits_charge if sum_hits_charge>1 else 0
+
+        if plane==0:
+            vertex.associated_hit_charge_u = np.sum( associated_hit_charge_this_plane )
+            vertex.total_hit_charge_u = np.sum(hits_charge_dict['hit_charge in plane %d'%plane])
+            vertex.ratio_associated_hit_charge_to_total_u = ratio_associated_hit_charge_to_total
+        elif plane==1:
+            vertex.associated_hit_charge_v = np.sum( associated_hit_charge_this_plane )
+            vertex.total_hit_charge_v = np.sum(hits_charge_dict['hit_charge in plane %d'%plane])
+            vertex.ratio_associated_hit_charge_to_total_v = ratio_associated_hit_charge_to_total
+        elif plane==2:
+            vertex.associated_hit_charge_y = np.sum( associated_hit_charge_this_plane )
+            vertex.total_hit_charge_y = np.sum(hits_charge_dict['hit_charge in plane %d'%plane])
+            vertex.ratio_associated_hit_charge_to_total_y = ratio_associated_hit_charge_to_total
+
+# ---------------------------------------------------------------------------
+
+
 
 
 # ---------------------------------------------------------------------------
@@ -117,6 +161,19 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_omega':vertex.reco_CC1p_q.E()
                         ,'reco_CC1p_Ev_from_angles':vertex.reco_CC1p_Ev_from_angles
                         ,'reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff':vertex.reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff
+                        
+                        
+                        # my tracking
+                        ,'associated_hit_charge_u':vertex.associated_hit_charge_u
+                        ,'associated_hit_charge_v':vertex.associated_hit_charge_v
+                        ,'associated_hit_charge_y':vertex.associated_hit_charge_y
+                        ,'total_hit_charge_u':vertex.total_hit_charge_u
+                        ,'total_hit_charge_v':vertex.total_hit_charge_v
+                        ,'total_hit_charge_y':vertex.total_hit_charge_y
+                        ,'ratio_associated_hit_charge_to_total_u':vertex.ratio_associated_hit_charge_to_total_u
+                        ,'ratio_associated_hit_charge_to_total_v':vertex.ratio_associated_hit_charge_to_total_v
+                        ,'ratio_associated_hit_charge_to_total_y':vertex.ratio_associated_hit_charge_to_total_y
+
                         
                         
                         # features that are only relevant for truth information

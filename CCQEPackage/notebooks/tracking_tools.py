@@ -4,17 +4,26 @@ from ccqe_notebook_tools import *
 distance_threshold=10000 # mm
 angular_tracking_diff_max=1.046  # 0.523 rad. = 30 deg.
 
-
 #---------------------------------------------------------------------------------------------
-def get_my_tracks_ratio_charge_in_roi_per_plane( hits=None, tracks=None, plane=0, debug=0, MCmode=True , do_plot=False , fig=None , fontsize=20 , figsize=(16,6) ):
+def get_my_tracks_per_plane( hits=None, tracks=None, plane=0, debug=0, MCmode=True ):
     
-    vertex_wire , vertex_time = find_vertex_location(plane=plane,tracks=tracks)
+    vertex_wire , vertex_time = find_vertex_location( plane=plane , tracks=tracks )
     my_tracks , hit_charge = associate_hits_to_tracks( hits=hits , tracks=tracks ,
                                                       plane=plane ,MCmode=MCmode ,
                                                       vertex_wire=vertex_wire ,
                                                       vertex_time=vertex_time ,
                                                       debug=debug)
-    my_tracks = remove_double_counted_hits( hits=hits , tracks=tracks , my_tracks=my_tracks , plane=plane , debug=debug)
+    my_tracks = remove_double_counted_hits( hits=hits , tracks=tracks , my_tracks=my_tracks , plane=plane , debug=debug)    
+    return my_tracks , hit_charge
+#---------------------------------------------------------------------------------------------
+
+
+
+#---------------------------------------------------------------------------------------------
+def get_my_tracks_ratio_charge_in_roi_per_plane( hits=None, tracks=None, plane=0, debug=0, MCmode=True 
+                                                , do_plot=False , fig=None , fontsize=20 , figsize=(16,6) ):
+    
+    my_tracks , hit_charge = get_my_tracks_per_plane( hits=hits, tracks=tracks, plane=plane, debug=debug, MCmode=MCmode )
     
     if do_plot:
         plot_my_tracks( fig=fig , hits=hits , tracks=tracks , my_tracks=my_tracks ,
@@ -39,6 +48,10 @@ def get_my_tracks_ratio_charge_in_roi_per_plane( hits=None, tracks=None, plane=0
 def get_my_tracks_ratio_charge_in_roi( hits , tracks , planes=[0,1,2] , debug=0 , MCmode=True ,
                                       do_plot=False , fontsize=20,figsize=(16,6)):
     
+    ''' 
+    returns: the ratio of charge associated with tracks 
+             to total charge in roi, averaged over 3 planes
+    '''
     fig = plt.figure(figsize=figsize) if do_plot else None
     charge_ratio_per_plane = []
     
@@ -48,14 +61,41 @@ def get_my_tracks_ratio_charge_in_roi( hits , tracks , planes=[0,1,2] , debug=0 
             if hit.hit_plane==plane:
                 plane_hits.append(hit)
 
-        charge_ratio_this_plane = get_my_tracks_ratio_charge_in_roi_per_plane( hits=plane_hits, tracks=tracks, plane=plane, debug=debug, MCmode=MCmode
-                                                                             , do_plot=do_plot , fig=fig , figsize=figsize , fontsize=fontsize )
+        charge_ratio_this_plane = get_my_tracks_ratio_charge_in_roi_per_plane( hits=plane_hits, tracks=tracks
+                                                                              , plane=plane, debug=debug, MCmode=MCmode
+                                                                              , do_plot=do_plot , fig=fig 
+                                                                              , figsize=figsize , fontsize=fontsize )
         charge_ratio_per_plane.append( charge_ratio_this_plane )
     
     if do_plot: plt.tight_layout()
     if debug: print 'charge_ratio_per_plane:',charge_ratio_per_plane
     return np.average(charge_ratio_per_plane)
 #---------------------------------------------------------------------------------------------
+
+#---------------------------------------------------------------------------------------------
+def get_my_tracks_in_roi( hits , tracks , planes=[0,1,2] , debug=0 , MCmode=True ):
+    
+    ''' 
+    returns: my_tracks from hits/tracks in this event
+    '''
+    my_tracks_dict = dict()
+    hits_charge_dict = dict()
+    
+    for plane in planes:
+        plane_hits = []
+        for hit in hits:
+            if hit.hit_plane==plane:
+                plane_hits.append(hit)
+
+        my_tracks_this_plane , hit_charge = get_my_tracks_per_plane( hits=plane_hits, tracks=tracks, plane=plane
+                                                                    , debug=debug, MCmode=MCmode )        
+        my_tracks_dict['my_tracks in plane %d'%plane] = my_tracks_this_plane    
+        hits_charge_dict['hit_charge in plane %d'%plane] = hit_charge    
+    return my_tracks_dict , hits_charge_dict
+#---------------------------------------------------------------------------------------------
+
+
+
 
 ##---------------------------------------------------------------------------------------------
 #def perform_tracking(hits,tracks,planes=[0,1,2],

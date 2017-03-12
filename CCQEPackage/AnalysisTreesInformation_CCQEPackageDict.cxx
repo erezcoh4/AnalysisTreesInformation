@@ -39,6 +39,7 @@ namespace std {} using namespace std;
 
 // Header files passed as explicit arguments
 #include "AnalyzeVertex.h"
+#include "MyTrack.h"
 #include "calcEventTopologies.h"
 #include "myVertex.h"
 
@@ -60,7 +61,7 @@ namespace ROOT {
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::calcEventTopologies));
       static ::ROOT::TGenericClassInfo 
          instance("calcEventTopologies", "calcEventTopologies.h", 33,
-                  typeid(::calcEventTopologies), DefineBehavior(ptr, ptr),
+                  typeid(::calcEventTopologies), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &calcEventTopologies_Dictionary, isa_proxy, 4,
                   sizeof(::calcEventTopologies) );
       instance.SetNew(&new_calcEventTopologies);
@@ -105,7 +106,7 @@ namespace ROOT {
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::myVertex));
       static ::ROOT::TGenericClassInfo 
          instance("myVertex", "myVertex.h", 31,
-                  typeid(::myVertex), DefineBehavior(ptr, ptr),
+                  typeid(::myVertex), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &myVertex_Dictionary, isa_proxy, 4,
                   sizeof(::myVertex) );
       instance.SetNew(&new_myVertex);
@@ -150,7 +151,7 @@ namespace ROOT {
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::AnalyzeVertex));
       static ::ROOT::TGenericClassInfo 
          instance("AnalyzeVertex", "AnalyzeVertex.h", 31,
-                  typeid(::AnalyzeVertex), DefineBehavior(ptr, ptr),
+                  typeid(::AnalyzeVertex), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &AnalyzeVertex_Dictionary, isa_proxy, 4,
                   sizeof(::AnalyzeVertex) );
       instance.SetNew(&new_AnalyzeVertex);
@@ -175,6 +176,51 @@ namespace ROOT {
    }
 
    static void AnalyzeVertex_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   static TClass *MyTrack_Dictionary();
+   static void MyTrack_TClassManip(TClass*);
+   static void *new_MyTrack(void *p = 0);
+   static void *newArray_MyTrack(Long_t size, void *p);
+   static void delete_MyTrack(void *p);
+   static void deleteArray_MyTrack(void *p);
+   static void destruct_MyTrack(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const ::MyTrack*)
+   {
+      ::MyTrack *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(::MyTrack));
+      static ::ROOT::TGenericClassInfo 
+         instance("MyTrack", "MyTrack.h", 27,
+                  typeid(::MyTrack), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &MyTrack_Dictionary, isa_proxy, 4,
+                  sizeof(::MyTrack) );
+      instance.SetNew(&new_MyTrack);
+      instance.SetNewArray(&newArray_MyTrack);
+      instance.SetDelete(&delete_MyTrack);
+      instance.SetDeleteArray(&deleteArray_MyTrack);
+      instance.SetDestructor(&destruct_MyTrack);
+      return &instance;
+   }
+   TGenericClassInfo *GenerateInitInstance(const ::MyTrack*)
+   {
+      return GenerateInitInstanceLocal((::MyTrack*)0);
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const ::MyTrack*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *MyTrack_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const ::MyTrack*)0x0)->GetClass();
+      MyTrack_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void MyTrack_TClassManip(TClass* ){
    }
 
 } // end of namespace ROOT
@@ -243,6 +289,27 @@ namespace ROOT {
 } // end of namespace ROOT for class ::AnalyzeVertex
 
 namespace ROOT {
+   // Wrappers around operator new
+   static void *new_MyTrack(void *p) {
+      return  p ? new(p) ::MyTrack : new ::MyTrack;
+   }
+   static void *newArray_MyTrack(Long_t nElements, void *p) {
+      return p ? new(p) ::MyTrack[nElements] : new ::MyTrack[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_MyTrack(void *p) {
+      delete ((::MyTrack*)p);
+   }
+   static void deleteArray_MyTrack(void *p) {
+      delete [] ((::MyTrack*)p);
+   }
+   static void destruct_MyTrack(void *p) {
+      typedef ::MyTrack current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class ::MyTrack
+
+namespace ROOT {
    static TClass *vectorlEvectorlEfloatgRsPgR_Dictionary();
    static void vectorlEvectorlEfloatgRsPgR_TClassManip(TClass*);
    static void *new_vectorlEvectorlEfloatgRsPgR(void *p = 0);
@@ -257,8 +324,8 @@ namespace ROOT {
       vector<vector<float> > *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<vector<float> >));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<vector<float> >", -2, "vector", 457,
-                  typeid(vector<vector<float> >), DefineBehavior(ptr, ptr),
+         instance("vector<vector<float> >", -2, "vector", 477,
+                  typeid(vector<vector<float> >), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEvectorlEfloatgRsPgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<vector<float> >) );
       instance.SetNew(&new_vectorlEvectorlEfloatgRsPgR);
@@ -287,10 +354,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEvectorlEfloatgRsPgR(void *p) {
-      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<vector<float> > : new vector<vector<float> >;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<vector<float> > : new vector<vector<float> >;
    }
    static void *newArray_vectorlEvectorlEfloatgRsPgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<vector<float> >[nElements] : new vector<vector<float> >[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<vector<float> >[nElements] : new vector<vector<float> >[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEvectorlEfloatgRsPgR(void *p) {
@@ -320,8 +387,8 @@ namespace ROOT {
       vector<myVertex> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<myVertex>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<myVertex>", -2, "vector", 457,
-                  typeid(vector<myVertex>), DefineBehavior(ptr, ptr),
+         instance("vector<myVertex>", -2, "vector", 477,
+                  typeid(vector<myVertex>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEmyVertexgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<myVertex>) );
       instance.SetNew(&new_vectorlEmyVertexgR);
@@ -350,10 +417,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEmyVertexgR(void *p) {
-      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<myVertex> : new vector<myVertex>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<myVertex> : new vector<myVertex>;
    }
    static void *newArray_vectorlEmyVertexgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<myVertex>[nElements] : new vector<myVertex>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<myVertex>[nElements] : new vector<myVertex>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEmyVertexgR(void *p) {
@@ -383,8 +450,8 @@ namespace ROOT {
       vector<int> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<int>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<int>", -2, "vector", 457,
-                  typeid(vector<int>), DefineBehavior(ptr, ptr),
+         instance("vector<int>", -2, "vector", 477,
+                  typeid(vector<int>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEintgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<int>) );
       instance.SetNew(&new_vectorlEintgR);
@@ -413,10 +480,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEintgR(void *p) {
-      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<int> : new vector<int>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<int> : new vector<int>;
    }
    static void *newArray_vectorlEintgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<int>[nElements] : new vector<int>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<int>[nElements] : new vector<int>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEintgR(void *p) {
@@ -446,8 +513,8 @@ namespace ROOT {
       vector<hit> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<hit>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<hit>", -2, "vector", 457,
-                  typeid(vector<hit>), DefineBehavior(ptr, ptr),
+         instance("vector<hit>", -2, "vector", 477,
+                  typeid(vector<hit>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEhitgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<hit>) );
       instance.SetNew(&new_vectorlEhitgR);
@@ -476,10 +543,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEhitgR(void *p) {
-      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<hit> : new vector<hit>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<hit> : new vector<hit>;
    }
    static void *newArray_vectorlEhitgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<hit>[nElements] : new vector<hit>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<hit>[nElements] : new vector<hit>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEhitgR(void *p) {
@@ -509,8 +576,8 @@ namespace ROOT {
       vector<float> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<float>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<float>", -2, "vector", 457,
-                  typeid(vector<float>), DefineBehavior(ptr, ptr),
+         instance("vector<float>", -2, "vector", 477,
+                  typeid(vector<float>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEfloatgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<float>) );
       instance.SetNew(&new_vectorlEfloatgR);
@@ -539,10 +606,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEfloatgR(void *p) {
-      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<float> : new vector<float>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<float> : new vector<float>;
    }
    static void *newArray_vectorlEfloatgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<float>[nElements] : new vector<float>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<float>[nElements] : new vector<float>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEfloatgR(void *p) {
@@ -572,8 +639,8 @@ namespace ROOT {
       vector<TLorentzVector> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<TLorentzVector>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<TLorentzVector>", -2, "vector", 457,
-                  typeid(vector<TLorentzVector>), DefineBehavior(ptr, ptr),
+         instance("vector<TLorentzVector>", -2, "vector", 477,
+                  typeid(vector<TLorentzVector>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlETLorentzVectorgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<TLorentzVector>) );
       instance.SetNew(&new_vectorlETLorentzVectorgR);
@@ -602,10 +669,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlETLorentzVectorgR(void *p) {
-      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<TLorentzVector> : new vector<TLorentzVector>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TLorentzVector> : new vector<TLorentzVector>;
    }
    static void *newArray_vectorlETLorentzVectorgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<TLorentzVector>[nElements] : new vector<TLorentzVector>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<TLorentzVector>[nElements] : new vector<TLorentzVector>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlETLorentzVectorgR(void *p) {
@@ -635,8 +702,8 @@ namespace ROOT {
       vector<PandoraNuTrack> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<PandoraNuTrack>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<PandoraNuTrack>", -2, "vector", 457,
-                  typeid(vector<PandoraNuTrack>), DefineBehavior(ptr, ptr),
+         instance("vector<PandoraNuTrack>", -2, "vector", 477,
+                  typeid(vector<PandoraNuTrack>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEPandoraNuTrackgR_Dictionary, isa_proxy, 0,
                   sizeof(vector<PandoraNuTrack>) );
       instance.SetNew(&new_vectorlEPandoraNuTrackgR);
@@ -665,10 +732,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEPandoraNuTrackgR(void *p) {
-      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<PandoraNuTrack> : new vector<PandoraNuTrack>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<PandoraNuTrack> : new vector<PandoraNuTrack>;
    }
    static void *newArray_vectorlEPandoraNuTrackgR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<PandoraNuTrack>[nElements] : new vector<PandoraNuTrack>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<PandoraNuTrack>[nElements] : new vector<PandoraNuTrack>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEPandoraNuTrackgR(void *p) {
@@ -682,6 +749,69 @@ namespace ROOT {
       ((current_t*)p)->~current_t();
    }
 } // end of namespace ROOT for class vector<PandoraNuTrack>
+
+namespace ROOT {
+   static TClass *vectorlEMyTrackgR_Dictionary();
+   static void vectorlEMyTrackgR_TClassManip(TClass*);
+   static void *new_vectorlEMyTrackgR(void *p = 0);
+   static void *newArray_vectorlEMyTrackgR(Long_t size, void *p);
+   static void delete_vectorlEMyTrackgR(void *p);
+   static void deleteArray_vectorlEMyTrackgR(void *p);
+   static void destruct_vectorlEMyTrackgR(void *p);
+
+   // Function generating the singleton type initializer
+   static TGenericClassInfo *GenerateInitInstanceLocal(const vector<MyTrack>*)
+   {
+      vector<MyTrack> *ptr = 0;
+      static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<MyTrack>));
+      static ::ROOT::TGenericClassInfo 
+         instance("vector<MyTrack>", -2, "vector", 477,
+                  typeid(vector<MyTrack>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
+                  &vectorlEMyTrackgR_Dictionary, isa_proxy, 0,
+                  sizeof(vector<MyTrack>) );
+      instance.SetNew(&new_vectorlEMyTrackgR);
+      instance.SetNewArray(&newArray_vectorlEMyTrackgR);
+      instance.SetDelete(&delete_vectorlEMyTrackgR);
+      instance.SetDeleteArray(&deleteArray_vectorlEMyTrackgR);
+      instance.SetDestructor(&destruct_vectorlEMyTrackgR);
+      instance.AdoptCollectionProxyInfo(TCollectionProxyInfo::Generate(TCollectionProxyInfo::Pushback< vector<MyTrack> >()));
+      return &instance;
+   }
+   // Static variable to force the class initialization
+   static ::ROOT::TGenericClassInfo *_R__UNIQUE_(Init) = GenerateInitInstanceLocal((const vector<MyTrack>*)0x0); R__UseDummy(_R__UNIQUE_(Init));
+
+   // Dictionary for non-ClassDef classes
+   static TClass *vectorlEMyTrackgR_Dictionary() {
+      TClass* theClass =::ROOT::GenerateInitInstanceLocal((const vector<MyTrack>*)0x0)->GetClass();
+      vectorlEMyTrackgR_TClassManip(theClass);
+   return theClass;
+   }
+
+   static void vectorlEMyTrackgR_TClassManip(TClass* ){
+   }
+
+} // end of namespace ROOT
+
+namespace ROOT {
+   // Wrappers around operator new
+   static void *new_vectorlEMyTrackgR(void *p) {
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<MyTrack> : new vector<MyTrack>;
+   }
+   static void *newArray_vectorlEMyTrackgR(Long_t nElements, void *p) {
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<MyTrack>[nElements] : new vector<MyTrack>[nElements];
+   }
+   // Wrapper around operator delete
+   static void delete_vectorlEMyTrackgR(void *p) {
+      delete ((vector<MyTrack>*)p);
+   }
+   static void deleteArray_vectorlEMyTrackgR(void *p) {
+      delete [] ((vector<MyTrack>*)p);
+   }
+   static void destruct_vectorlEMyTrackgR(void *p) {
+      typedef vector<MyTrack> current_t;
+      ((current_t*)p)->~current_t();
+   }
+} // end of namespace ROOT for class vector<MyTrack>
 
 namespace ROOT {
    static TClass *vectorlEGENIEinteractiongR_Dictionary();
@@ -698,8 +828,8 @@ namespace ROOT {
       vector<GENIEinteraction> *ptr = 0;
       static ::TVirtualIsAProxy* isa_proxy = new ::TIsAProxy(typeid(vector<GENIEinteraction>));
       static ::ROOT::TGenericClassInfo 
-         instance("vector<GENIEinteraction>", -2, "vector", 457,
-                  typeid(vector<GENIEinteraction>), DefineBehavior(ptr, ptr),
+         instance("vector<GENIEinteraction>", -2, "vector", 477,
+                  typeid(vector<GENIEinteraction>), ::ROOT::Internal::DefineBehavior(ptr, ptr),
                   &vectorlEGENIEinteractiongR_Dictionary, isa_proxy, 0,
                   sizeof(vector<GENIEinteraction>) );
       instance.SetNew(&new_vectorlEGENIEinteractiongR);
@@ -728,10 +858,10 @@ namespace ROOT {
 namespace ROOT {
    // Wrappers around operator new
    static void *new_vectorlEGENIEinteractiongR(void *p) {
-      return  p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<GENIEinteraction> : new vector<GENIEinteraction>;
+      return  p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<GENIEinteraction> : new vector<GENIEinteraction>;
    }
    static void *newArray_vectorlEGENIEinteractiongR(Long_t nElements, void *p) {
-      return p ? ::new((::ROOT::TOperatorNewHelper*)p) vector<GENIEinteraction>[nElements] : new vector<GENIEinteraction>[nElements];
+      return p ? ::new((::ROOT::Internal::TOperatorNewHelper*)p) vector<GENIEinteraction>[nElements] : new vector<GENIEinteraction>[nElements];
    }
    // Wrapper around operator delete
    static void delete_vectorlEGENIEinteractiongR(void *p) {
@@ -750,6 +880,7 @@ namespace {
   void TriggerDictionaryInitialization_libAnalysisTreesInformation_CCQEPackage_Impl() {
     static const char* headers[] = {
 "AnalyzeVertex.h",
+"MyTrack.h",
 "calcEventTopologies.h",
 "myVertex.h",
 0
@@ -761,12 +892,12 @@ namespace {
 "/Users/erezcohen/larlite/UserDev/BasicTool/GeoAlgo",
 "/Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/AnaTreesPackage",
 "/Users/erezcohen/larlite/core",
-"/Users/erezcohen/root6/root-6.04.10/include",
+"/usr/local/Cellar/root6/6.06.02/include/root",
 "/Users/erezcohen/larlite/UserDev/AnalysisTreesInformation/CCQEPackage/",
 0
     };
-    static const char* fwdDeclCode = 
-R"DICTFWDDCLS(
+    static const char* fwdDeclCode = R"DICTFWDDCLS(
+#line 1 "libAnalysisTreesInformation_CCQEPackage dictionary forward declarations' payload"
 #pragma clang diagnostic ignored "-Wkeyword-compat"
 #pragma clang diagnostic ignored "-Wignored-attributes"
 #pragma clang diagnostic ignored "-Wreturn-type-c-linkage"
@@ -774,8 +905,10 @@ extern int __Cling_Autoloading_Map;
 class __attribute__((annotate("$clingAutoload$calcEventTopologies.h")))  calcEventTopologies;
 class __attribute__((annotate("$clingAutoload$AnalyzeVertex.h")))  myVertex;
 class __attribute__((annotate("$clingAutoload$AnalyzeVertex.h")))  AnalyzeVertex;
+class __attribute__((annotate("$clingAutoload$AnalyzeVertex.h")))  MyTrack;
 )DICTFWDDCLS";
     static const char* payloadCode = R"DICTPAYLOAD(
+#line 1 "libAnalysisTreesInformation_CCQEPackage dictionary payload"
 
 #ifndef G__VECTOR_HAS_CLASS_ITERATOR
   #define G__VECTOR_HAS_CLASS_ITERATOR 1
@@ -783,6 +916,7 @@ class __attribute__((annotate("$clingAutoload$AnalyzeVertex.h")))  AnalyzeVertex
 
 #define _BACKWARD_BACKWARD_WARNING_H
 #include "AnalyzeVertex.h"
+#include "MyTrack.h"
 #include "calcEventTopologies.h"
 #include "myVertex.h"
 
@@ -790,6 +924,7 @@ class __attribute__((annotate("$clingAutoload$AnalyzeVertex.h")))  AnalyzeVertex
 )DICTPAYLOAD";
     static const char* classesHeaders[]={
 "AnalyzeVertex", payloadCode, "@",
+"MyTrack", payloadCode, "@",
 "calcEventTopologies", payloadCode, "@",
 "myVertex", payloadCode, "@",
 nullptr};

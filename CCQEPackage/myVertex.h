@@ -18,7 +18,7 @@
 #include "../../mySoftware/MySoftwarePackage/myIncludes.h"
 #include "PandoraNuTrack.h"
 #include "GENIEinteraction.h"
-//#include "MyLArTools.h"
+#include "MyTrack.h"
 
 #define r2d TMath::RadToDeg()
 #define d2r TMath::DegToRad()
@@ -117,7 +117,10 @@ public:
     float               reco_CC1p_Ev_from_angles, reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff;
     float               dqdx_around_vertex,   dqdx_around_vertex_tracks_associated, dqdx_around_vertex_non_tracks_associated;
     
-    
+    // from my_track objects
+    float               associated_hit_charge_u, associated_hit_charge_v, associated_hit_charge_y;
+    float               total_hit_charge_u, total_hit_charge_v, total_hit_charge_y;
+    float               ratio_associated_hit_charge_to_total_u, ratio_associated_hit_charge_to_total_v, ratio_associated_hit_charge_to_total_y;
     
     TVector3            position    ;
     TVector3            reco_CC1p_Pp_3vect, reco_CC1p_Pmu_3vect;
@@ -147,10 +150,9 @@ public:
     
     std::vector<TLorentzVector> reconstructed_protons;
     std::vector<PandoraNuTrack> tracks, tracks_lengthsorted,  tracks_pidasorted , GENIEtracks, NonGENIEtracks;
-
-
     
-//    MyLArTools  * lar_tools;
+    std::vector<MyTrack> my_tracks;
+    
 };
 
 #endif
