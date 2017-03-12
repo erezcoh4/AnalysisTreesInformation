@@ -159,7 +159,8 @@ void PandoraNuTrack::CreateROIs(){
 
     // load GeometryHelper utility
     auto geomHelper = ::larutil::GeometryHelper::GetME();
-
+    SHOW2( geomHelper->WireToCm() , geomHelper->TimeToCm() );
+    
     double start_xyz[3] = {start_pos.x() , start_pos.y() , start_pos.z() };
     double end_xyz[3] = {end_pos.x() , end_pos.y() , end_pos.z() };
 
