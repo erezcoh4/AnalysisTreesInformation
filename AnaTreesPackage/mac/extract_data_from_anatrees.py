@@ -22,6 +22,7 @@
             MC_BNB_InTimeCOSMIC_MC
             BNB_5e19POT
             extBNB
+            MC_BNB_extBNB
             
     (3) relevant flags
     
