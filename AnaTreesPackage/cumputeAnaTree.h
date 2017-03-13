@@ -37,7 +37,7 @@
  doxygen documentation!
  */
 
-#define PrintHit(hit) cout << "\033[34m" << #hit << ": plane " << hit.hit_plane << ", wire " << hit.hit_wire << ", peak-time" << hit.hit_peakT << ", charge" << hit.hit_charge << "\033[0m" << endl;
+#define PrintHit(hit) cout << "\033[34m" << #hit << ": plane " << hit.hit_plane << ", wire " << hit.hit_wire << ", peak-time " << hit.hit_peakT << ", charge " << hit.hit_charge << "\033[0m" << endl;
 
 struct hit {
     
@@ -50,6 +50,11 @@ struct hit {
     : hit_plane(fplane), hit_wire(fwire), hit_peakT(fpeakT), hit_charge(fcharge)
     {}
     
+
+    
+    inline bool operator==(const hit & h) {
+        return std::tie( hit_plane, hit_wire , hit_peakT) == std::tie(h.hit_plane , h.hit_wire, h.hit_peakT);
+    }
     
 };
 
@@ -379,6 +384,9 @@ public:
 
     hit c_hit;
     std::vector<hit> hits;
+    
+    
+
 
 
 };

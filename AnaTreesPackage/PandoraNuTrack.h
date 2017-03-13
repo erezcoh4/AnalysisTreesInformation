@@ -268,6 +268,9 @@ public:
     std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
     
     
+    
+    
+    
 };
 #endif
 /** @} */ // end of doxygen group
