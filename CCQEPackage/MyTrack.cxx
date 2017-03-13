@@ -4,10 +4,10 @@
 #include "MyTrack.h"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-MyTrack::MyTrack( int p ){
+MyTrack::MyTrack( int p , PandoraNuTrack t ){
     SetPlane(p);
     if (!hits.empty()) hits.clear();
-    pandoraNu_track = PandoraNuTrack();
+    SetPandoraNuTrack( t );
     color = "";
 }
 

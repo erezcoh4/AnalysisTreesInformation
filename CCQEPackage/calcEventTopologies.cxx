@@ -544,6 +544,8 @@ bool calcEventTopologies::PerformMyTracking(){
             vertex.AllChargeInVertexROI[plane] = CollectAllChargeInROI( hits_in_plane , vertex.roi[plane] );
 
             // (3) associate hits to tracks
+            vertex.SetDistanceThreshold( 50 ); // mm
+            vertex.SetDistanceThreshold( 1.046 ); // rad.
             vertex.AssociateHitsToTracks( plane , hits_in_plane );
             
         }

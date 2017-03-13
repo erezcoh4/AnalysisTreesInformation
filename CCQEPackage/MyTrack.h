@@ -30,12 +30,14 @@ public:
 
     /// Default constructor
     MyTrack(){}
-    MyTrack( int p );
+    MyTrack( int p , PandoraNuTrack fpandoraNu_track );
     /// Default destructor
     ~MyTrack(){}
     
 
-    void    SetPlane (int p) {plane = p;};
+    void             SetPlane (int p)                       {plane = p;};
+    void    SetPandoraNuTrack (PandoraNuTrack t)            {pandoraNu_track = t;};
+    void              SetHits (std::vector<hit> fhits)      {for (auto hit:fhits) hits.push_back(hit);};
     
     int                 plane;
     std::string         color;  // matplotlib colors

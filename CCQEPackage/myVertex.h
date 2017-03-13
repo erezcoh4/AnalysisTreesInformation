@@ -71,23 +71,26 @@ public:
     // -------------------------------------------------------
     // my-tracking in 3 planes
     // -------------------------------------------------------
+    void               SetDistanceThreshold (float fDistanceThreshold = 50) {DistanceThreshold = fDistanceThreshold;}; // mm
+    void                  SetAngleThreshold (float fAngleThreshold = 1.046) {AngleThreshold = fAngleThreshold;}; // 0.523 rad. = 60 deg.
     bool                           BuildROI (int plane=0);
     bool               BuildLocationInPlane (int plane=0);
     bool              AssociateHitsToTracks (int plane, std::vector<hit> );
     bool             FindClosestHitToVertex (int plane, std::vector<hit> );
     std::vector<hit>    RemoveHitFromVector (std::vector<hit> HitsVector , hit HitToBeRemoved );
-    bool FoundCloseHitAlongTrackDirection ( hit , std::vector<hit> ,
-                                           float TrackAngle = 0 ,
-                                           float DistanceThreshold = 5 , // mm
-                                           float AngleThreshold = 1.046 // rad. (0.523 rad. = 60 deg.)
-    );
+    bool   FoundCloseHitAlongTrackDirection ( hit , std::vector<hit> , float TrackAngle = 0  );
+    std::vector<hit>           TrackMyTrack ( hit StartHit , std::vector<hit> hits , float TrackAngle , PandoraNuTrack track );
+    PandoraNuTrack        ClosestTrackToHit ( hit c_hit );
+    hit                 ClosestHitToTrack1d ( PandoraNuTrack track );
+    hit                         FindNextHit ( hit LastHit, hit CurrentHit, std::vector<hit> PossibleHits, float TrackAngle );
 
     Int_t               mu_start_wire[3], mu_start_time[3], p_start_wire[3] , p_start_time[3];
     Int_t               mu_end_wire[3], mu_end_time[3], p_end_wire[3] , p_end_time[3];
     Float_t             mu_angle[3], p_angle[3];
     Float_t             AllChargeInVertexROI[3]; // sum of charge of all hits in the vertex-roi per plane
-    MyTrack             MyTrackMuonTrack , MyTrackProtonTrack;
+    MyTrack             MyTrackMuonTrack[3] , MyTrackProtonTrack[3];
     std::vector<MyTrack> my_tracks;
+    
     // -------------------------------------------------------
     
     
