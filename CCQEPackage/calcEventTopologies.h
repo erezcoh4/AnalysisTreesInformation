@@ -19,6 +19,7 @@
 #include "PandoraNuTrack.h"
 #include "cumputeAnaTree.h"
 #include "myVertex.h"
+#include "myTrack.h"
 #include "GENIEinteraction.h"
 #include "MyLArTools.h"
 #include "LArUtil/Geometry.h"
@@ -88,7 +89,13 @@ public:
     bool FindVerticesWithCC1pTopology();
     bool        Find2tracksVertices ();
     bool               TagGENIECC1p ();
+    bool          PerformMyTracking ();
     bool                FillOutTree ();
+    
+    
+    // my tracking
+    std::vector<hit> get_hits_in_plane (int plane=0);
+    float        CollectAllChargeInROI ( std::vector<hit> hits_in_this_plane , box roi );
     
     bool TrackAlreadyIncludedInVerticesList (int ftrack_id);
     void                      Print (bool DoPrintTracks=false, bool DoVertices=false);
@@ -111,7 +118,8 @@ public:
     float   delta_phi_min,      delta_phi_max;
     std::string option;
     
-    std::vector<hit> hits;
+    std::vector<hit>            hits, hits_in_plane;
+    std::vector<MyTrack>        my_tracks[3]; // in 3 planes
     
     
     PandoraNuTrack              c_track;
@@ -131,6 +139,20 @@ public:
     
     
     MyLArTools  * lar_tools;
+    
+    // service
+    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+    bool hit_in_box( hit fhit , box fbox ){
+        int min_wire = std::min({fbox.start_wire,fbox.end_wire});
+        int max_wire = std::max({fbox.start_wire,fbox.end_wire});
+        int min_time = std::min({fbox.start_time,fbox.end_time});
+        int max_time = std::max({fbox.start_time,fbox.end_time});
+        if (min_wire < fhit.hit_wire && fhit.hit_wire < max_wire && min_time < fhit.hit_peakT && fhit.hit_peakT  < max_time){
+            return true;
+        }
+        return false;
+    }
+
 
 };
 

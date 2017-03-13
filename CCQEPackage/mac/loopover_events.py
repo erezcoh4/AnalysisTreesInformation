@@ -91,7 +91,8 @@ if "CC1p" in flags.option: #{
         # find vertices with CC1p topologies   # event_has_CC1p_topology = events.FindVerticesWithCC1pTopology()
         event_has_CC1p_topology = events.Find2tracksVertices()
         events.TagGENIECC1p()
-
+        events.PerformMyTracking()
+        
         if i%flags.print_mod==0:
             print "processed %d events,found %d 2-tracks clusters, %d 1mu1p, %d true GENIE CC1p"%(i,counter,CC1mu1p_counter,GENIECC1p_counter)
             if debug: events.Print( do_print_tracks , do_print_vertices )
@@ -101,10 +102,11 @@ if "CC1p" in flags.option: #{
         for vertex in events.CC1p_vertices: #{
             
             # perform my-tracking to look for fraction of charge deposited in vertex to track-associated charge
-            hits = events.hits
-            tracks = [vertex.AssignedMuonTrack , vertex.AssignedProtonTrack]
-            my_tracks_dict , hits_charge_dict = get_my_tracks_in_roi( hits=hits, tracks=tracks , debug=0 )
-            attach_hits_my_tracks_to_vertex( hits_charge_dict=hits_charge_dict , my_tracks_dict=my_tracks_dict , vertex=vertex )
+#            hits = events.hits
+#            tracks = [vertex.AssignedMuonTrack , vertex.AssignedProtonTrack]
+#            my_tracks_dict , hits_charge_dict = get_my_tracks_in_roi( hits=hits, tracks=tracks , debug=0 )
+#            attach_hits_my_tracks_to_vertex( hits_charge_dict=hits_charge_dict , my_tracks_dict=my_tracks_dict , vertex=vertex )
+
 #            if vertex.Is1mu1pDetected and vertex.genie_interaction.protons.size():
 #                print 'mcevent_id:',vertex.genie_interaction.mcevent_id
 #                print vertex.genie_interaction.Np,'protons in GENIE interaction'

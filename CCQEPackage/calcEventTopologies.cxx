@@ -176,7 +176,7 @@ bool calcEventTopologies::TrackAlreadyIncludedInVerticesList(int ftrack_id){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::ClusterTracksToVertices(){
-    bool    track_already_included_in_vertex=false, FoundCloseTracks , AlreadySetPosition;
+    bool    FoundCloseTracks , AlreadySetPosition;
     float   closest_distance_ij;
     TVector3 vertex_position;
     
@@ -492,6 +492,67 @@ bool calcEventTopologies::TagGENIECC1p(){
     }
     return true;
 }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+std::vector<hit> calcEventTopologies::get_hits_in_plane(int plane){
+    std::vector<hit> hits_in_this_plane;
+    for (auto hit:hits){
+        if (hit.hit_plane == plane){
+            hits_in_this_plane.push_back(hit);
+        }
+    }
+    return hits_in_this_plane;
+}
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+float calcEventTopologies::CollectAllChargeInROI( std::vector<hit> hits_in_this_plane , box roi ){
+    float total_charge_in_roi = 0;
+    for (auto hit: hits_in_this_plane){
+        if ( hit_in_box(hit,roi) ){
+            total_charge_in_roi += hit.hit_charge;
+        }
+    }
+    Debug(4,Form("total charge in roi: %.1f [ADC]",total_charge_in_roi));
+    return total_charge_in_roi;
+}
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool calcEventTopologies::PerformMyTracking(){
+    // perform my own version of tracking in each plane (U/V/Y)
+    // to ask what is the fraction of charge deposited in 2-tracks vertex
+    // that is associated with the tracks.
+    // this will provide a way to supress contributions from
+    // CC 1p-reconstructed + X-unreconstructed
+    for ( int plane = 0; plane < 3 ; plane++ ){
+        
+        hits_in_plane = get_hits_in_plane(plane);
+        
+        for (auto & vertex: CC1p_vertices){
+
+            // (1) define the vertex position and ROI in each plane
+            vertex.BuildROI( plane );
+            vertex.BuildLocationInPlane( plane );
+            
+            // (2) collect the total charge deposited in each plane
+            vertex.AllChargeInVertexROI[plane] = CollectAllChargeInROI( hits_in_plane , vertex.roi[plane] );
+
+            // (3) associate hits to tracks
+            vertex.AssociateHitsToTracks( plane , hits_in_plane );
+            
+        }
+        
+        
+    }
+    return true;
+}
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::Print(bool DoPrintTracks, bool DoVertices){

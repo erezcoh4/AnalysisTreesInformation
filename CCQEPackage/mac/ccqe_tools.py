@@ -163,16 +163,16 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff':vertex.reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff
                         
                         
-                        # my tracking
-                        ,'associated_hit_charge_u':vertex.associated_hit_charge_u
-                        ,'associated_hit_charge_v':vertex.associated_hit_charge_v
-                        ,'associated_hit_charge_y':vertex.associated_hit_charge_y
-                        ,'total_hit_charge_u':vertex.total_hit_charge_u
-                        ,'total_hit_charge_v':vertex.total_hit_charge_v
-                        ,'total_hit_charge_y':vertex.total_hit_charge_y
-                        ,'ratio_associated_hit_charge_to_total_u':vertex.ratio_associated_hit_charge_to_total_u
-                        ,'ratio_associated_hit_charge_to_total_v':vertex.ratio_associated_hit_charge_to_total_v
-                        ,'ratio_associated_hit_charge_to_total_y':vertex.ratio_associated_hit_charge_to_total_y
+#                        # my tracking
+#                        ,'associated_hit_charge_u':vertex.associated_hit_charge_u
+#                        ,'associated_hit_charge_v':vertex.associated_hit_charge_v
+#                        ,'associated_hit_charge_y':vertex.associated_hit_charge_y
+#                        ,'total_hit_charge_u':vertex.total_hit_charge_u
+#                        ,'total_hit_charge_v':vertex.total_hit_charge_v
+#                        ,'total_hit_charge_y':vertex.total_hit_charge_y
+#                        ,'ratio_associated_hit_charge_to_total_u':vertex.ratio_associated_hit_charge_to_total_u
+#                        ,'ratio_associated_hit_charge_to_total_v':vertex.ratio_associated_hit_charge_to_total_v
+#                        ,'ratio_associated_hit_charge_to_total_y':vertex.ratio_associated_hit_charge_to_total_y
 
                         
                         
