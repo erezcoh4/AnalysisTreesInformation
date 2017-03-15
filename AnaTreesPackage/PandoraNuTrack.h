@@ -115,7 +115,7 @@ public:
         intercept[plane] = fintercept;
         WireTimeAngle[plane] = atan(fslope);
     };
-    
+    void SetX1Y1X2Y2forTrack (int plane, std::vector<float> fx1x2y1y2) {x1y1x2y2[plane]=fx1x2y1y2;}; //{for(auto f:fx1x2y1y2) x1y1x2y2[plane].push_back(f);};
     
     
     
@@ -171,7 +171,9 @@ public:
         }};
     Int_t GetNSWtrigger () {return (int)swtrigger_name.size();};
     
-
+    std::vector<float> GetX1Y1X2Y2forTrack( int plane = 0 ){
+        return x1y1x2y2[plane];
+    }
     
     
     // operators
@@ -211,6 +213,7 @@ public:
     // The trkpurtruth - purity variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
     Float_t     purtruth_U  , purtruth_V    , purtruth_Y;
     Float_t     slope[3]    , intercept[3]  , WireTimeAngle[3];
+    std::vector<float> x1y1x2y2[3];
     
     TString     TopBottDir  , ForBackDir    , LefRghtDir;
 
