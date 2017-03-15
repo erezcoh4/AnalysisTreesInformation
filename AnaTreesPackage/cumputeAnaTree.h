@@ -23,6 +23,8 @@
 #include "track_vertex.h"
 #include "mutual_vertex.h"
 #include "LArG4Particle.h"
+#include "hit.h"
+#include "box.h"
 
 
 #define MAX_vertices 20
@@ -37,26 +39,6 @@
  doxygen documentation!
  */
 
-#define PrintHit(hit) cout << "\033[34m" << #hit << ": plane " << hit.hit_plane << ", wire " << hit.hit_wire << ", peak-time " << hit.hit_peakT << ", charge " << hit.hit_charge << "\033[0m" << endl;
-
-struct hit {
-    
-    Short_t hit_plane, hit_wire;
-    Float_t hit_peakT, hit_charge;
-
-    hit() { hit_plane = hit_wire = hit_peakT = hit_charge = 0; }
-    
-    hit(Short_t fplane, Short_t fwire, Float_t fpeakT, Float_t fcharge)
-    : hit_plane(fplane), hit_wire(fwire), hit_peakT(fpeakT), hit_charge(fcharge)
-    {}
-    
-
-    
-    inline bool operator==(const hit & h) {
-        return std::tie( hit_plane, hit_wire , hit_peakT) == std::tie(h.hit_plane , h.hit_wire, h.hit_peakT);
-    }
-    
-};
 
 
 class cumputeAnaTree: public myIncludes {

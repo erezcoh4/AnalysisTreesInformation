@@ -585,7 +585,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::CollectHits(){
     for(Int_t j=0 ; j<no_hits && j<kMaxHits ; j++) {
-        c_hit = hit ( hit_plane[j] , hit_wire[j] , hit_peakT[j] , hit_charge[j] );
+        c_hit = hit ( hit_plane[j] , hit_wire[j] , hit_peakT[j] , hit_charge[j] , j );
         hits.push_back(c_hit);
     }
 }

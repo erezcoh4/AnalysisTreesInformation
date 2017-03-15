@@ -16,6 +16,10 @@
 
 #include "LArUtil/Geometry.h"
 #include "LArUtil/../../UserDev/mySoftware/MySoftwarePackage/myIncludes.h"
+#include "hit.h"
+#include "box.h"
+
+//#include "cumputeAnaTree.h"
 
 /**
  \class PandoraNuTrack
@@ -23,42 +27,6 @@
  doxygen documentation!
  */
 using namespace std;
-
-#define PrintBox(box) cout << "\033[34m" << #box << ": (" << box.start_wire << "," << box.start_time << ") => (" << box.end_wire << "," << box.end_time << ")" << "\033[0m" << endl;
-
-struct box {
-    
-    int     start_wire , start_time , end_wire , end_time;
-    float   diag_slope;
-    
-    box() { start_wire = start_time = end_wire = end_time = 0; }
-    
-    box(int fstart_wire, int fstart_time, int fend_wire, int fend_time)
-    : start_wire(fstart_wire), start_time(fstart_time), end_wire(fend_wire), end_time(fend_time)
-    {
-        // order the box start and end positions
-        if (start_wire > end_wire){
-            
-            int tmp_wire= end_wire;
-            end_wire   = start_wire;
-            start_wire = tmp_wire;
-            
-        }
-        if (start_time > end_time){
-            
-            int tmp_time = end_time;
-            end_time    = start_time;
-            start_time  = tmp_time;
-            
-        }
-        diag_slope = (float)( end_time - start_time ) / ( end_wire - start_wire );
-    }
-    
-    
-};
-
-
-
 
 
 
@@ -142,6 +110,14 @@ public:
         }
     };
     
+    void    SetSlopeIntercept ( int plane = 0 , float fslope = -1000 , float fintercept = -1000 ){
+        slope[plane] = fslope;
+        intercept[plane] = fintercept;
+        WireTimeAngle[plane] = atan(fslope);
+    };
+    
+    
+    
     
     // finders
     Float_t ClosestDistanceToOtherTrack ( PandoraNuTrack other_track , std::string * StartOrEnd=nullptr );
@@ -167,10 +143,10 @@ public:
         switch (plane) {
             case 0:
 //                return residual_range_U;
-                break;
+//                break;
             case 1:
 //                return residual_range_V;
-                break;
+//                break;
             case 2:
                 return residual_range_Y;
                 break;
@@ -182,10 +158,10 @@ public:
         switch (plane) {
             case 0:
 //                return dEdx_U;
-                break;
+//                break;
             case 1:
 //                return dEdx_V;
-                break;
+//                break;
             case 2:
                 return dEdx_Y;
                 break;
@@ -196,6 +172,14 @@ public:
     Int_t GetNSWtrigger () {return (int)swtrigger_name.size();};
     
 
+    
+    
+    // operators
+    inline bool operator==(const PandoraNuTrack & t) {
+        return std::tie( run, subrun, event, track_id ) == std::tie(t.run, t.subrun, t.event, t.track_id);
+    }
+
+    
     
     // features
     bool        IsStartContained, IsEndContained, IsFullyContained;
@@ -226,7 +210,7 @@ public:
     Float_t     trajectory_slope[3], trajectory_intersect[3];
     // The trkpurtruth - purity variable is defined as the ratio of the energy of the particle that contributed most to this track in a given plane to the total energy coming from all particles that contribute to this track in that plane
     Float_t     purtruth_U  , purtruth_V    , purtruth_Y;
-    
+    Float_t     slope[3]    , intercept[3]  , WireTimeAngle[3];
     
     TString     TopBottDir  , ForBackDir    , LefRghtDir;
 

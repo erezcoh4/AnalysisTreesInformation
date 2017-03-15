@@ -21,8 +21,12 @@
 #pragma link C++ class ImportantTools+;
 #pragma link C++ class AnalyzeTracksFile+;
 #pragma link C++ class LArG4Particle+;
+#pragma link C++ class hit+;
+#pragma link C++ class box+;
 //ADD_NEW_CLASS ... do not change this line
 #endif
+
+
 
 
 
