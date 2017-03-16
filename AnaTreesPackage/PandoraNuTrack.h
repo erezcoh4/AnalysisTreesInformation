@@ -113,9 +113,13 @@ public:
     void    SetSlopeIntercept ( int plane = 0 , float fslope = -1000 , float fintercept = -1000 ){
         slope[plane] = fslope;
         intercept[plane] = fintercept;
-        WireTimeAngle[plane] = atan(fslope);
     };
-    void SetX1Y1X2Y2forTrack (int plane, std::vector<float> fx1x2y1y2) {x1y1x2y2[plane]=fx1x2y1y2;}; //{for(auto f:fx1x2y1y2) x1y1x2y2[plane].push_back(f);};
+    void SetX1Y1X2Y2forTrack (int plane, std::vector<float> fx1x2y1y2) {
+        for(auto f:fx1x2y1y2) x1y1x2y2[plane].push_back(f);
+        if (WireTimeAngle[plane]==-100)
+        WireTimeAngle[plane] = atan2(x1y1x2y2[plane][3]-x1y1x2y2[plane][1],
+                                     x1y1x2y2[plane][2]-x1y1x2y2[plane][0]);
+    };
     
     
     
@@ -172,7 +176,8 @@ public:
     Int_t GetNSWtrigger () {return (int)swtrigger_name.size();};
     
     std::vector<float> GetX1Y1X2Y2forTrack( int plane = 0 ){
-        return x1y1x2y2[plane];
+        if(!x1y1x2y2[plane].empty()) return x1y1x2y2[plane];
+        else return std::vector<float> {0,0,0,0};
     }
     
     

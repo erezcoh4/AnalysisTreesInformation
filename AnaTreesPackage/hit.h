@@ -40,7 +40,7 @@ public:
     int ClosestTrack_track_id;
     int hit_id;
     
-    hit() { hit_plane = hit_wire = hit_peakT = hit_charge = hit_id = 0; }
+    hit() { hit_plane = hit_wire = hit_peakT = hit_charge = hit_id = -100; }
     
     hit(Short_t fplane, Short_t fwire, Float_t fpeakT, Float_t fcharge, int fid=-100)
     : hit_plane(fplane), hit_wire(fwire), hit_peakT(fpeakT), hit_charge(fcharge) , hit_id(fid)
@@ -53,8 +53,12 @@ public:
     }
     inline bool InBox(box b){
         return (b.start_wire < hit_wire && hit_wire < b.end_wire && b.start_time < hit_peakT && hit_peakT < b.end_time);
-        
     }
+    bool exist(){
+        if (hit_id==hit_plane==hit_wire==(int)hit_peakT) return false;
+        return true;
+    }
+
     void Print(){
         cout << "hit " << hit_id << ", " << hit_plane << "/" << hit_wire << "/" << hit_peakT << endl;
     }
