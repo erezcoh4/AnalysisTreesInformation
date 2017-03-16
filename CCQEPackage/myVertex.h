@@ -22,13 +22,27 @@
 
 #define r2d TMath::RadToDeg()
 #define d2r TMath::DegToRad()
+#define PI TMath::Pi()
+
+//// pitch between wires is 3 mm
+//#define WireDistance(w1, w2 ) (w2-w1)*3.0
+//
+//// drift velocity ~ 1.114 mm/us = 0.557 mm/time-tick (2 time ticks = 1 us)
+//// so dt x 0.557 = dx [mm]
+//#define TimeDistance( t1, t2 ) (t2-t1)*0.557
+//
+//// return the distance between point (w1,t1) and (w2,t2) in mm
+//#define WireTimeDistance( w1 , t1, w2 , t2) sqrt(  WireDistance( w1, w2) * WireDistance( w1, w2)  +  TimeDistance( t1, t2) * TimeDistance( t1, t2) );
+
+
+
 
 /**
    \class myVertex
    User defined class myVertex ... these comments are used to generate
    doxygen documentation!
  */
-class myVertex{
+class myVertex: public myIncludes {
 
 public:
 
@@ -53,14 +67,17 @@ public:
     bool SortTracksByLength ();
     bool   SortTracksByPIDA ();
     bool    RemoveFarTracks (float max_mu_p_distance, Int_t debug );
-
-    
-    bool  SetKinematicalTopology (float min_length_long     =50,    // cm
-                                  float max_length_short    =30,    // cm
+	
+    vector<PandoraNuTrack>  NearUncontainedTracks ( vector<PandoraNuTrack> AllTracksInTheEvent , float fmax_distance=100 );
+    vector<PandoraNuTrack>  RemoveTrackFromVector ( vector<PandoraNuTrack> AllTracks , PandoraNuTrack TrackToBeRemoved );
+    vector<PandoraNuTrack> RemoveTracksFromVector ( vector<PandoraNuTrack> AllTracks , vector<PandoraNuTrack> TracksToBeRemoved );
+   
+    bool  SetKinematicalTopology (float min_length_long     =0,    // cm
+                                  float max_length_short    =3000,    // cm
                                   float delta_phi_min       =-360,  // deg.
                                   float delta_phi_max       =360,   // deg.
-                                  float PIDA_short_min      =0, float PIDA_short_max=50,
-                                  float PIDA_long_min       =0, float PIDA_long_max=50
+                                  float PIDA_short_min      =0, float PIDA_short_max=5000,
+                                  float PIDA_long_min       =0, float PIDA_long_max=0
     );
     
     
@@ -71,26 +88,48 @@ public:
     // -------------------------------------------------------
     // my-tracking in 3 planes
     // -------------------------------------------------------
-    void               SetDistanceThreshold (float fDistanceThreshold = 50) {DistanceThreshold = fDistanceThreshold;}; // mm
-    void                  SetAngleThreshold (float fAngleThreshold = 1.046) {AngleThreshold = fAngleThreshold;}; // 0.523 rad. = 60 deg.
-    bool                           BuildROI (int plane=0);
-    bool               BuildLocationInPlane (int plane=0);
-    bool              AssociateHitsToTracks (int plane, std::vector<hit> );
-    bool             FindClosestHitToVertex (int plane, std::vector<hit> );
-    std::vector<hit>    RemoveHitFromVector (std::vector<hit> HitsVector , hit HitToBeRemoved );
+    void               SetDistanceThreshold ( float fDistanceThreshold = 50.0) {HitHitDistanceThreshold = fDistanceThreshold;}; // mm
+    void                  SetAngleThreshold ( float fAngleThreshold = 1.046) {AngleThreshold = fAngleThreshold;}; // 0.523 rad. = 60 deg.
+    bool                           BuildROI ( int plane=0);
+    bool               BuildLocationInPlane ( int plane=0);
+    bool              AssociateHitsToTracks ( int plane, std::vector<hit> );
+    bool             FindClosestHitToVertex ( int plane, std::vector<hit> );
+    std::vector<hit>    RemoveHitFromVector ( std::vector<hit> HitsVector , hit HitToBeRemoved );
     bool   FoundCloseHitAlongTrackDirection ( hit , std::vector<hit> , float TrackAngle = 0  );
-    std::vector<hit>           TrackMyTrack ( hit StartHit , std::vector<hit> hits , float TrackAngle , PandoraNuTrack track );
-    PandoraNuTrack        ClosestTrackToHit ( hit c_hit );
-    hit                 ClosestHitToTrack1d ( PandoraNuTrack track );
-    hit                         FindNextHit ( hit LastHit, hit CurrentHit, std::vector<hit> PossibleHits, float TrackAngle );
-
+    std::vector<hit>           TrackMyTrack ( int plane, hit StartHit , std::vector<hit> hits , float TrackAngle , PandoraNuTrack track );
+//    int                   ClosestTrackToHit ( int plane, hit c_hit );
+    hit                 ClosestHitToTrack1d ( int plane, int wire , float peakTime , std::vector<hit> fPossibleHits, PandoraNuTrack track );
+    vector<hit>   PossibleTracksForTracking ( int plane, std::vector<hit> fPossibleHits, float TrackAngle , PandoraNuTrack track );
+    std::vector<float>  GetX1Y1X2Y2forTrack ( int plane , PandoraNuTrack t ); // return {x1,y1,x2,y2}
+    vector<float>     FindSlopeAndIntercept ( int plane, PandoraNuTrack t );
+    hit       ClosestHitToTrackHorizontally ( int plane, float peakTime, std::vector<hit> fPossibleHits, PandoraNuTrack track );
+    hit         ClosestHitToTrackVertically ( int plane, int wire , std::vector<hit> fPossibleHits, PandoraNuTrack track );
+    hit                         FindNextHit ( hit StartHit, hit LastHit, hit CurrentHit, std::vector<hit> PossibleHits, float TrackAngle );
+    bool                SetTracksParameters ( int plane);
+    bool            CollectAssociatedCharge ( int plane);
+    MyTrack                     FindMyTrack ( int plane , PandoraNuTrack pandoraNu_track ,
+                                             float track_WireTimeAngle , std::vector<hit> fPossibleHits );
+    void                    SetAllHitsInROI ( int plane, std::vector<hit> fhits);
+    void                CollectAllHitsInROI ( int plane, std::vector<hit> hits_in_this_plane );
+    
+    
+    bool                FoundClosestHitToVertex;
+    
     Int_t               mu_start_wire[3], mu_start_time[3], p_start_wire[3] , p_start_time[3];
     Int_t               mu_end_wire[3], mu_end_time[3], p_end_wire[3] , p_end_time[3];
+    
+    Float_t             AngleThreshold, HitHitDistanceThreshold;
     Float_t             mu_angle[3], p_angle[3];
     Float_t             AllChargeInVertexROI[3]; // sum of charge of all hits in the vertex-roi per plane
+    Float_t             TracksAssociatedCharge[3]; // sum of charge of all hits that are associated with my-tracks
+    Float_t             ratio_associated_hit_charge_to_total[3] , average_ratio_associated_hit_charge_to_total , max_ratio_associated_hit_charge_to_total;
+    
     MyTrack             MyTrackMuonTrack[3] , MyTrackProtonTrack[3];
+    MyTrack             MyTrackMuon_u, MyTrackMuon_v, MyTrackMuon_y, MyTrackProton_u, MyTrackProton_v, MyTrackProton_y;
     std::vector<MyTrack> my_tracks;
     
+    hit                 ClosestHitToVertex[3];
+    std::vector<hit>    AllHitsInROI_u,AllHitsInROI_v,AllHitsInROI_y;
     // -------------------------------------------------------
     
     
@@ -144,12 +183,6 @@ public:
     float               reco_CC1p_Ev_from_angles, reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff;
     float               dqdx_around_vertex,   dqdx_around_vertex_tracks_associated, dqdx_around_vertex_non_tracks_associated;
     
-//    // from my_track objects
-//    float               associated_hit_charge_u, associated_hit_charge_v, associated_hit_charge_y;
-//    float               total_hit_charge_u, total_hit_charge_v, total_hit_charge_y;
-//    float               ratio_associated_hit_charge_to_total_u, ratio_associated_hit_charge_to_total_v, ratio_associated_hit_charge_to_total_y;
-
-    
     
     TVector3            position    ;
     TVector3            reco_CC1p_Pp_3vect, reco_CC1p_Pmu_3vect;
@@ -183,19 +216,24 @@ public:
     std::vector<PandoraNuTrack> tracks, tracks_lengthsorted,  tracks_pidasorted , GENIEtracks, NonGENIEtracks;
     
     
-    hit                 ClosestHitToVertex[3];
     
     
     // service for TPC studies
     //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-    float WireTimeDistance(float w1 , float t1, float w2 , float t2){
-        // return the distance between point (w1,t1) and (w2,t2) in mm
+    float WireDistance(float w1, float w2 ){
         // pitch between wires is 3 mm
-        float wire_distance = (w1-w2)*3.0;
+        return (w2-w1)*3.0;
+    }
+    float TimeDistance(float t1, float t2 ){
         // drift velocity ~ 1.114 mm/us = 0.557 mm/time-tick (2 time ticks = 1 us)
         // so dt x 0.557 = dx [mm]
-        float time_distance = (t1-t2)*0.557;
-        return sqrt( wire_distance * wire_distance  +  time_distance * time_distance );
+        return (t2-t1)*0.557;
+    }
+    float WireTimeDistance(float w1 , float t1, float w2 , float t2){
+        // return the distance between point (w1,t1) and (w2,t2) in mm
+        float w_dis = WireDistance( w1, w2);
+        float t_dis = TimeDistance( t1, t2);
+        return sqrt(  w_dis * w_dis  +  t_dis * t_dis );
     }
     float HitHitDistance(hit h1, hit h2){
         return WireTimeDistance( (float)h1.hit_wire , (float)h1.hit_peakT , (float)h2.hit_wire , (float)h2.hit_peakT );

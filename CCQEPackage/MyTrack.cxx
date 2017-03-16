@@ -11,4 +11,15 @@ MyTrack::MyTrack( int p , PandoraNuTrack t ){
     color = "";
 }
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+float MyTrack::GetTotalChargeInHits (){
+    float total_charge=0;
+    for (auto hit:hits){
+        total_charge += hit.hit_charge;
+    }
+    return total_charge;
+}
+
+
 #endif

@@ -32,7 +32,7 @@ def get_CC1p_tracks( events=None , i=0 , debug=False ,
         for i,v in enumerate(vertices):            
             TwoTracksClusters['vertex %d'%i] = v
             
-        return hits, TwoTracksClusters
+        return hits, tracks , TwoTracksClusters 
             
     
     

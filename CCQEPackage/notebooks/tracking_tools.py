@@ -128,7 +128,7 @@ def get_my_tracks_in_roi( hits , tracks , planes=[0,1,2] , debug=0 , MCmode=True
 ##---------------------------------------------------------------------------------------------
 
 #---------------------------------------------------------------------------------------------
-def plot_hits(hits,plane,ax=None,box=None):
+def plot_hits(hits,plane,ax=None,box=None,cmap='hot_r',color='',do_add_numbers=False):
     if box is None: box = [ -1 , 10000 , -1 , 10000 ]
     hit_wire, hit_time, hit_charge , hit_number  = [] , [] , [] , []
     # hits in this plane
@@ -139,7 +139,13 @@ def plot_hits(hits,plane,ax=None,box=None):
             hit_time.append(hit.hit_peakT)
             hit_charge.append(hit.hit_charge)
     if ax is not None and hit_wire is not None and hit_time is not None and hit_charge is not None and len(hit_wire)>0:
-        ax.scatter(hit_wire,hit_time,c=hit_charge, vmin=np.min(hit_charge), vmax=np.max(hit_charge),cmap='hot_r')
+        if color == '':
+            ax.scatter(hit_wire,hit_time,c=hit_charge, vmin=np.min(hit_charge), vmax=np.max(hit_charge),cmap='hot_r')
+        else:
+            ax.scatter(hit_wire,hit_time,c=color)
+    if do_add_numbers:
+        for w,t,n in zip(hit_wire , hit_time, hit_number): ax.text( w , t , n )
+
     return hit_wire, hit_time, hit_charge , hit_number
 #---------------------------------------------------------------------------------------------
 

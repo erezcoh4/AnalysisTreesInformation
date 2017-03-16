@@ -6,6 +6,7 @@
 myVertex::myVertex(Int_t fID){
     SetVertexID(fID);
     GENIECC1p = CC1pTopology = false;
+    average_ratio_associated_hit_charge_to_total = max_ratio_associated_hit_charge_to_total = 0;
     TruthTopologyString = "not a GENIE CC1p";
 }
 
@@ -449,30 +450,76 @@ bool myVertex::BuildLocationInPlane(int plane){
         p_start_time[plane] = p_end_time[plane];
         p_end_time[plane] = tmp_time;
     }
-
+    
+    mu_angle[plane] = WireTimeAngle( (float)mu_start_wire[plane] ,  (float)mu_start_time[plane]
+                                    , (float)mu_end_wire[plane] , (float)mu_end_time[plane] );
+    AssignedMuonTrack.WireTimeAngle[plane] = mu_angle[plane];
+    
+    p_angle[plane] = WireTimeAngle( (float)p_start_wire[plane] ,  (float)p_start_time[plane]
+                                    , (float)p_end_wire[plane] , (float)p_end_time[plane] );
+    AssignedProtonTrack.WireTimeAngle[plane] = p_angle[plane];
+    
     return true;
     
 }
 
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+std::vector<PandoraNuTrack> myVertex::RemoveTrackFromVector( vector<PandoraNuTrack> TracksVector , PandoraNuTrack TrackToBeRemoved ){
+    auto element = std::find(std::begin(TracksVector), std::end(TracksVector), TrackToBeRemoved );
+    if (element!=TracksVector.end()) {
+        auto i_TrackToBeRemoved = std::distance( TracksVector.begin(), element );
+        TracksVector.erase( TracksVector.begin() + i_TrackToBeRemoved );
+        
+    }
+    return TracksVector;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+std::vector<PandoraNuTrack> myVertex::RemoveTracksFromVector( vector<PandoraNuTrack> TracksVector , vector<PandoraNuTrack> TracksToBeRemoved ){    
+    // loop over tracks to be removed
+    // and remove each of them
+    for (auto t:TracksToBeRemoved) TracksVector = RemoveTrackFromVector( TracksVector , t );
+    return TracksVector;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+vector<PandoraNuTrack> myVertex::NearUncontainedTracks( vector<PandoraNuTrack> AllTracksInTheEvent , float fMaxDistance ){
+    
+    vector<PandoraNuTrack> NonVertexTracks = RemoveTracksFromVector( AllTracksInTheEvent , tracks );
+    std::vector<PandoraNuTrack> NearTracks;
+    for (auto track:NonVertexTracks) {
+        if ( track.DistanceFromPoint(position) < fMaxDistance ){
+            NearTracks.push_back(track);
+        }
+    }
+    Debug(4,Form("NumberOfNearUncontainedTracks: %d",(int)NearTracks.size()));
+    return NearTracks;
+}
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 std::vector<hit> myVertex::RemoveHitFromVector( std::vector<hit> HitsVector , hit HitToBeRemoved ){
-    
+//    if (HitsVector.size()<1) return HitsVector;
     auto element = std::find(std::begin(HitsVector), std::end(HitsVector), HitToBeRemoved );
-    auto i_HitToBeRemoved = std::distance( HitsVector.begin(), element );
-    HitsVector.erase( HitsVector.begin() + i_HitToBeRemoved );
+    if (element!=HitsVector.end()) {
+        auto i_HitToBeRemoved = std::distance( HitsVector.begin(), element );
+        HitsVector.erase( HitsVector.begin() + i_HitToBeRemoved );
+    }
     return HitsVector;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool myVertex::FindClosestHitToVertex(int plane , std::vector<hit> possible_hits ){
+bool myVertex::FindClosestHitToVertex(int plane , std::vector<hit> fPossibleHits ){
     float DistanceToClosestHit = 1000;
-    bool FoundClosestHitToVertex = false;
+    FoundClosestHitToVertex = false;
     ClosestHitToVertex[plane] = hit();
-    for (auto hit : possible_hits){
-        float DistanceToHit = WireTimeDistance( (float)vertex_wire[plane] , (float)vertex_time[plane] , (float)hit.hit_wire , (float)hit.hit_peakT );
-        if (DistanceToHit < DistanceToClosestHit) {
-            DistanceToClosestHit = DistanceToHit;
+    for (auto hit : fPossibleHits){
+        float DistanceFromVertexToHit = WireTimeDistance( (float)vertex_wire[plane] , (float)vertex_time[plane] , (float)hit.hit_wire , (float)hit.hit_peakT );
+        if ((DistanceFromVertexToHit < DistanceToClosestHit) && (DistanceFromVertexToHit < 100)) { // do not consider start-hits that are distant from the vertex more than 10 cm
+            DistanceToClosestHit = DistanceFromVertexToHit;
             ClosestHitToVertex[plane] = hit;
             FoundClosestHitToVertex = true;
         }
@@ -484,90 +531,418 @@ bool myVertex::FindClosestHitToVertex(int plane , std::vector<hit> possible_hits
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::FoundCloseHitAlongTrackDirection( hit StartHit , std::vector<hit> PossibleHits ,
                                                 float TrackAngle ){
-    
-    for (auto hit: PossibleHits){
-        if (    ( HitHitDistance( hit , StartHit ) < DistanceThreshold )
-            &&  ( fabs( HitHitAngle( hit , StartHit ) - TrackAngle ) < AngleThreshold) ){
-            return true;
-        }
+    Debug(3, "myVertex::FoundCloseHitAlongTrackDirection()" );
+    hit NextHit = FindNextHit( StartHit , StartHit , StartHit , PossibleHits , TrackAngle );
+    if ( NextHit.exist() ) {
+        Debug(3, Form("Found Close Hit Along Track Direction(%d,%.1f)",NextHit.hit_wire,NextHit.hit_peakT) );
+        return true;
     }
     return false;
 }
 
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-hit myVertex::FindNextHit( hit LastHit, hit CurrentHit, std::vector<hit> PossibleHits, float TrackAngle ){
-    hit NextHit();
-    float DistanceToNextHit = 10000, DistanceToHit;
+hit myVertex::FindNextHit( hit StartHit, hit LastHit, hit CurrentHit, std::vector<hit> PossibleHits, float TrackAngle ){
+    Debug(3, "myVertex::FindNextHit()" );
+    hit NextHit;
+    float DistanceToNextHit = 300, DistanceToHit;
+    float AngleToHitFromStartHit , AngleToHitFromLastHit , AngleToHitFromCurrentHit;
+    
     for (auto hit:PossibleHits) {
-        if (!(hit==LastHit) && !(hit==CurrentHit)){
-            DistanceToHit = HitHitDistance ( hit , CurrentHit );
-            // CONTINUE HERE! NEED TO COMEUP WITH CLOSEST / BEST ANGLE
+        if ( !(hit==CurrentHit) ){ // (!(hit==LastHit) && !(hit==CurrentHit))
+            
+            DistanceToHit = HitHitDistance ( CurrentHit , hit );
+            AngleToHitFromStartHit = HitHitAngle ( StartHit , hit );
+            AngleToHitFromLastHit = HitHitAngle ( LastHit , hit );
+            AngleToHitFromCurrentHit = HitHitAngle ( CurrentHit , hit );
+            
+            if (debug>3 && DistanceToHit<100){
+                Printf("last-hit(%d,%.1f) current-hit(%d,%.1f) to hit(%d,%.1f)",LastHit.hit_wire,LastHit.hit_peakT,CurrentHit.hit_wire,CurrentHit.hit_peakT,hit.hit_wire,hit.hit_peakT);
+                SHOW4(DistanceToHit , AngleToHitFromStartHit , AngleToHitFromCurrentHit , AngleToHitFromLastHit );
+                SHOW4( TrackAngle, fabs( AngleToHitFromStartHit - TrackAngle ) , fabs( AngleToHitFromLastHit - TrackAngle ) , fabs( AngleToHitFromStartHit - TrackAngle ) );
+            }
+            
+            if (   ( DistanceToHit < DistanceToNextHit)
+                && ( fabs( AngleToHitFromStartHit - TrackAngle ) < AngleThreshold )
+                && (    ( fabs( AngleToHitFromLastHit - TrackAngle ) < 1.25*AngleThreshold )
+                    ||  ( fabs( AngleToHitFromCurrentHit - TrackAngle ) < 1.25*AngleThreshold ) )
+                ){
+                DistanceToNextHit = DistanceToHit;
+                NextHit = hit;
+                if (debug>3) {Printf("candidate next hit at (%d,%.1f)",NextHit.hit_wire,NextHit.hit_peakT);}
+            }
         }
     }
+    return NextHit;
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-std::vector<hit>  myVertex::TrackMyTrack( hit StartHit , std::vector<hit> hits , float TrackAngle , PandoraNuTrack track ){
+std::vector<float> myVertex::FindSlopeAndIntercept( int plane, PandoraNuTrack t ){
+    Debug(3 ,Form("myVertex::FindSlopeAndIntercept(plane %d, track %d)",plane,t.track_id));
+    float x1=0, x2=0 , y1=0 , y2=0;
+    std::vector<float> a = { -1000  , -1000 }; // (a[0] = slope , a[1] = intercept)
+    std::vector<float> x1y1x2y2 = GetX1Y1X2Y2forTrack ( plane , t);
+    x1 = x1y1x2y2[0]; y1 = x1y1x2y2[1]; x2 = x1y1x2y2[2]; y2 = x1y1x2y2[3];
+    
+    a[0] = (x2 != x1) ? (float)((y2-y1))/(x2-x1) : 1000;
+    a[1] = y2 - a[0]*x2;
+    return a;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+std::vector<float> myVertex::GetX1Y1X2Y2forTrack( int plane , PandoraNuTrack t ){
+    // this method is most relevant after fixing the tracks' directions (using the vertex position)
+    float x1=0 , y1=0 , x2=0 , y2=0;
+            if (t.track_id==AssignedMuonTrack.track_id) {
+                x1 = mu_start_wire[plane];
+                y1 = mu_start_time[plane];
+                x2 = mu_end_wire[plane];
+                y2 = mu_end_time[plane];
+            }
+            
+            else if(t.track_id==AssignedProtonTrack.track_id){
+                x1 = p_start_wire[plane];
+                y1 = p_start_time[plane];
+                x2 = p_end_wire[plane];
+                y2 = p_end_time[plane];
+            }
+            else {
+                x1 = t.roi[plane].start_wire;
+                y1 = t.roi[plane].start_time;
+                x2 = t.roi[plane].end_wire;
+                y2 = t.roi[plane].end_time;
+            }
+    if (debug>3){
+        Printf("GetX1Y1X2Y2forTrack( int plane=%d , PandoraNuTrack t=%d )",plane,t.track_id);
+        SHOW4(x1,y1,x2,y2);
+    }
+    std::vector<float> x1y1x2y2 = {x1,y1,x2,y2};
+    return x1y1x2y2;
+}
+
+////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+//int myVertex::ClosestTrackToHit( int plane , hit c_hit ){
+//    // input:   hit
+//    // return:  track-id of the closest (pandoraNu) track to the hit
+//    // point-line distance calculation referenced from [http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html]
+//    // distance from point to line = {(x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)))}/sqrt( (x2-x1)^2 + (y2-y1)^2 )
+//    
+//    
+//    int closest_track_id=-100;
+//    float x0 = c_hit.hit_wire, y0 = c_hit.hit_peakT;
+//    float x1=0 , y1=0 , x2=0 , y2=0 , DistanceToClosestTrack = 10000;
+//    float TrackLength , DistanceToTrack;
+//    
+//    for (auto t: tracks) {
+//        if ( c_hit.InBox( t.roi[plane].EnlargeBox( 5 , 20 ) ) ){
+//            
+//            std::vector<float> x1y1x2y2 = t.GetX1Y1X2Y2forTrack( plane );
+//            x1 = x1y1x2y2[0]; y1 = x1y1x2y2[1]; x2 = x1y1x2y2[2]; y2 = x1y1x2y2[3];
+//            
+//            TrackLength = WireTimeDistance( x1 , y1 , x2 , y2 );
+//            if (TrackLength==0) DistanceToTrack = 1000;
+//            else DistanceToTrack = fabs( WireDistance(x1,x2) * TimeDistance(y0,y1) - WireDistance(x0,x1) * TimeDistance(y1,y2) ) / TrackLength;
+//            //            else DistanceToTrack = fabs( (x2-x1)*(y1-y0) - (x1-x0)*(y2-y1) ) / ((x2-x1)*(x2-x1) - (y2-y1)*(y2-y1)) ;
+//            Debug(5,Form("distance of hit (%d,%.1f) to track %d is %.2f mm",c_hit.hit_wire,c_hit.hit_peakT,t.track_id,DistanceToTrack));
+//            
+//            if (DistanceToTrack < DistanceToClosestTrack){
+//                DistanceToClosestTrack = DistanceToTrack;
+//                closest_track_id = t.track_id;
+//            }
+//            
+//        }
+//        
+//    }
+//    return closest_track_id;
+//}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+hit myVertex::ClosestHitToTrackHorizontally( int plane, float peakTime, std::vector<hit> fPossibleHits, PandoraNuTrack track  ){
+    // find the closest hit horizontally - i.e. same time, different wires
+    Float_t slope = track.slope[plane] , intercept = track.intercept[plane];
+    Debug(5,Form("looking for horizontally closest hit to track %d time=%.1fwire+(%.1f) (wire=(time-(%.1f))/%.1f) at time %.1f",track.track_id,slope,intercept,intercept,slope,peakTime));
+    hit ClosestHit;
+    float DistanceToClosestHit = 1000, WireAlongTrack;
+    for (auto hit:fPossibleHits) {
+        if ( fabs( hit.hit_peakT - peakTime ) < 1 ){
+            
+            if (fabs(slope) > 0.001) {
+                WireAlongTrack = ( hit.hit_peakT - intercept ) / slope;
+            }
+            else {
+                WireAlongTrack = (fabs(slope)/slope)*1000*( hit.hit_peakT - intercept ) ;
+            }
+            float HorizontalDistanceToTrack = fabs(hit.hit_wire - WireAlongTrack) ;
+            Debug(5,Form("found at a hit in a good time: (%d,%.2f); wire along track = %.1f, Horizontal-distance=%.1f",hit.hit_wire,hit.hit_peakT,WireAlongTrack,HorizontalDistanceToTrack));
+            if (HorizontalDistanceToTrack < DistanceToClosestHit){
+                DistanceToClosestHit = HorizontalDistanceToTrack;
+                ClosestHit = hit;
+            }
+        }
+    }
+    return ClosestHit;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+hit myVertex::ClosestHitToTrackVertically( int plane, int wire, std::vector<hit> fPossibleHits, PandoraNuTrack track ){
+    // find the closest hit vertically - i.e. same wire, different peak-times
+    Float_t slope = track.slope[plane] , intercept = track.intercept[plane];
+    
+    Debug(5,Form("looking for vertically closest hit to track %d time=%.1fwire+(%.1f) ",track.track_id,slope,intercept));
+    hit ClosestHit;
+    float DistanceToClosestHit = 1000;
+    for (auto hit:fPossibleHits) {
+        if ( hit.hit_wire == wire ){
+            float TimeAlongTrack = slope * hit.hit_wire + intercept;
+            float VerticalDistanceToTrack = fabs(hit.hit_peakT - TimeAlongTrack);
+            if (VerticalDistanceToTrack < DistanceToClosestHit){
+                DistanceToClosestHit = VerticalDistanceToTrack;
+                ClosestHit = hit;
+            }
+        }
+    }
+    return ClosestHit;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+hit myVertex::ClosestHitToTrack1d( int plane, int wire , float peakTime , std::vector<hit> fPossibleHits, PandoraNuTrack track ){
+    // input: pandoraNu track
+    // return: the closest hit in 1d
+    Debug(5,Form("myVertex::ClosestHitToTrack1d( plane=%d, wire=%d , peakTime=%f , PandoraNuTrack %d , anlge = %.1f (PI/2=%.1f))",plane,wire,peakTime,track.track_id,r2d*track.WireTimeAngle[plane],r2d*PI/2));
+    if ( fabs(track.WireTimeAngle[plane] - PI/2) < PI/4 || fabs(track.WireTimeAngle[plane] + PI/2) < PI/4){
+        Debug(5,"track is vertical");
+        // if the track is vertical - look for the closest horizontally
+        return ClosestHitToTrackHorizontally( plane, peakTime , fPossibleHits, track );
+    }
+    else {
+        Debug(5,"track is horizontal");
+        // if the track is horizontal - look for the closest vertically
+        return ClosestHitToTrackVertically( plane, wire , fPossibleHits, track );
+    }
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+std::vector<hit> myVertex::TrackMyTrack( int plane, hit StartHit , std::vector<hit> fPossibleHits , float TrackAngle , PandoraNuTrack track ){
+    
+    Debug(2,"myVertex::TrackMyTrack()");
     
     hit LastHit, CurrentHit = StartHit, NextHit;
-    std::vector<hit> TrackHits, PossibleHits;
+    std::vector<hit> TrackHits, PossibleHits = fPossibleHits;
     
     // possible hits for tracking are ones that
     // (1) the track is the closest track to them
     // (2) they are the closest hits to the track in 1d (vertically if the track is horizontal / horizontally if the track is vertical)
-    for (auto hit:hits) {
-        if ( (!(hit==StartHit)) && ( ClosestTrackToHit( hit ).track_id!=track.track_id ) && (ClosestHitToTrack1d( track )==hit) ){
-            PossibleHits.push_back( hit );
-        }
-    }
-    // CONTINUE HERE: need ClosestHitToTrack1d and ClosestTrackToHit
+    
     for (int i=0; i < 1000 ; i++ ) {
+        
         TrackHits.push_back( CurrentHit );
-        NextHit = FindNextHit( LastHit, CurrentHit, PossibleHits, TrackAngle );
-
+        PossibleHits = RemoveHitFromVector( PossibleHits , CurrentHit );
+        
+        NextHit = FindNextHit( StartHit, LastHit, CurrentHit, PossibleHits, TrackAngle );
         if ( NextHit==hit() ) break; // this means I didn't find a next hit
         
         LastHit = CurrentHit;
-        PossibleHits = RemoveHitFromVector( PossibleHits , CurrentHit );
+        CurrentHit = NextHit;
+        if (debug>3){ PrintLine(); printf( "next hit: %lu ", TrackHits.size() ); PrintHit(NextHit); }
         
     }
     return TrackHits;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool myVertex::AssociateHitsToTracks( int plane, std::vector<hit> hits ){ // input hits vector is only hits in this plane
 
-    // possible hits for tracking
-    std::vector<hit> PossibleStartHits;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+std::vector<hit> myVertex::PossibleTracksForTracking( int plane, std::vector<hit> fPossibleHits,
+                                                      float TrackAngle , PandoraNuTrack track ){
+    std::vector<hit> PossibleHits;
+    for (auto hit:fPossibleHits) {
+        
+        // we want to use hits that are either the closest vertically/horizontally,
+        // or a very close (<1cm) the one that is, since sometimes a good track deposits charge in multi-hit/multi-wire pattern...
+        auto ClosestHitToTrack_in1d = ClosestHitToTrack1d( plane , hit.hit_wire , hit.hit_peakT , fPossibleHits  , track );
+        auto DistanceClosestHitToTrack_in1d = HitHitDistance( hit , ClosestHitToTrack_in1d ); // distance in mm
+        
+        if( debug>5 ){
+            PrintHit(hit);
+            SHOW2( hit.ClosestTrack_track_id, track.track_id );
+            ClosestHitToTrack_in1d.Print();
+        }
+        if (   ( hit.ClosestTrack_track_id == track.track_id )
+            && ( DistanceClosestHitToTrack_in1d < 10 )
+            ){
+            PossibleHits.push_back( hit );
+            Debug(5,"this is a good hit. appendng to PossibleHits");
+        }
+        Debug(5,"----------------------------------------");
+    }
+    return PossibleHits;
+}
+
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::SetTracksParameters( int plane ){
     
+    // find the equation that describes each track in this plane
+    for (auto &t:tracks) {
+        Debug(3,Form("find slope and intercept of track %d",t.track_id));
+        std::vector<float> a = FindSlopeAndIntercept( plane, t );
+        t.SetSlopeIntercept( plane, a[0] , a[1] );
+        std::vector<float> x1y1x2y2 = GetX1Y1X2Y2forTrack ( plane , t );
+        t.SetX1Y1X2Y2forTrack( plane, x1y1x2y2 );
+        if (t.track_id==AssignedMuonTrack.track_id)      {AssignedMuonTrack.SetSlopeIntercept( plane, a[0] , a[1] ); AssignedMuonTrack.SetX1Y1X2Y2forTrack( plane, x1y1x2y2 );}
+        if (t.track_id==AssignedProtonTrack.track_id)    {AssignedProtonTrack.SetSlopeIntercept( plane, a[0] , a[1] ); AssignedProtonTrack.SetX1Y1X2Y2forTrack( plane, x1y1x2y2 );}
+    }
+    return true;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+MyTrack myVertex::FindMyTrack( int plane , PandoraNuTrack pandoraNu_track , float track_WireTimeAngle , std::vector<hit> fPossibleHits ){
+
+    Debug(3,Form("%d/%d/%d tracking for muon track (%d, pidA=%.1f) in plane %d (angle=%.1f)",
+                 run,subrun,event,pandoraNu_track.track_id,pandoraNu_track.pidpida,plane,r2d*track_WireTimeAngle));
     
-    // my-tracking for candidate muon
+    // my-tracking for candidate muon/proton
+    MyTrack my_track = MyTrack( plane , pandoraNu_track );
+
     // (A) find the start hit
-    for (auto hit:hits) PossibleStartHits.push_back(hit);
-    bool FoundClosestHitToVertex = FindClosestHitToVertex( plane , possible_hits );
-    if (!FoundClosestHitToVertex) return false;
+    std::vector<hit> PossibleStartHits , PossibleHits;
+    PossibleStartHits = PossibleHits = PossibleTracksForTracking( plane , fPossibleHits , track_WireTimeAngle , pandoraNu_track );
+    my_track.SetPossibleHits( PossibleHits );
+    FoundClosestHitToVertex = FindClosestHitToVertex( plane , PossibleStartHits );
     
-    // (B) make sure there are close hits along track direction
-    // and if not, change start-point
-    mu_angle[plane] = WireTimeAngle( (float)mu_start_wire[plane] ,  (float)mu_start_time[plane]
-                                    , (float)mu_end_wire[plane] , (float)mu_end_time[plane] );
-    while ( FoundCloseHitAlongTrackDirection( ClosestHitToVertex[plane] , PossibleStartHits , mu_angle[plane] ) == false ){
-        PossibleStartHits = RemoveHitFromVector( PossibleStartHits , ClosestHitToVertex[plane] );
-        FindClosestHitToVertex( plane , PossibleStartHits );
-        if(debug>1){ printf("hopping to a new start-point: "); PrintHit( ClosestHitToVertex[plane] );}
+    if( debug > 5) {
+        Printf("possible start hit for track %d plane %d:",pandoraNu_track.track_id , plane);
+        for (auto hit:PossibleStartHits) PrintHit(hit);
+        Printf("Closest hit to vertex: ");
+        PrintHit( ClosestHitToVertex[plane] );
+        PrintLine();
     }
     
-    // (C) assign hits to track
-    MyTrackMuonTrack[plane] = MyTrack( plane , AssignedMuonTrack );
-    MyTrackMuonTrack[plane].SetHits ( TrackMyTrack( ClosestHitToVertex[plane] , hits , mu_angle[plane] , AssignedMuonTrack ) );
+    if (FoundClosestHitToVertex){
+        
+        // (B) make sure there are close hits along track direction
+        // and if not, change start-point
+        while ( FoundCloseHitAlongTrackDirection( ClosestHitToVertex[plane] , PossibleStartHits , track_WireTimeAngle ) == false ){
+            PossibleStartHits = RemoveHitFromVector( PossibleStartHits , ClosestHitToVertex[plane] );
+            FindClosestHitToVertex( plane , PossibleStartHits );
+            if (PossibleStartHits.size()<1 || FoundClosestHitToVertex==false) break;
+            if(debug>2){
+                printf("hopping to a new start-point (out of %lu): ",PossibleStartHits.size());
+                PrintHit( ClosestHitToVertex[plane] );
+            }
+        }
+        if ( ClosestHitToVertex[plane].exist() ){
+            // this means there is no hit that was found to be close to the vertex & with a good angle
+            // (C) assign hits to track
+            // PossibleHits = RemoveHitFromVector( PossibleHits , ClosestHitToVertex[plane] );
+            my_track.SetHits ( TrackMyTrack( plane, ClosestHitToVertex[plane] , PossibleHits , track_WireTimeAngle , pandoraNu_track ) );
+        }
+    }
+    Debug(3,Form("%d/%d/%d finished my-tracking for track %d",run,subrun,event,pandoraNu_track.track_id));
+    return my_track;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::AssociateHitsToTracks( int plane, std::vector<hit> fPossibleHits ){ // input fPossibleHits vector is only hits in this plane
+    
+    Debug(2,Form("r %d/s %d/e %d myVertex::AssociateHitsToTracks in plane %d",run,subrun,event,plane));
+//    for (auto &hit:fPossibleHits) hit.ClosestTrack_track_id = ClosestTrackToHit( plane , hit );
+    
+    
+    bool DoMuonTracking = true , DoProtonTracking = true;
+
+    if (DoMuonTracking){
+        MyTrackMuonTrack[plane] = FindMyTrack( plane , AssignedMuonTrack , mu_angle[plane] , fPossibleHits );
+    }
+    
+    if (DoProtonTracking){
+        MyTrackProtonTrack[plane] = FindMyTrack( plane , AssignedProtonTrack , p_angle[plane] , fPossibleHits );
+    }
+    
+    // remove double counting of hits
+    
+    
+    switch (plane) {
+        case 0:
+            MyTrackMuon_u = MyTrackMuonTrack[plane];
+            MyTrackProton_u = MyTrackProtonTrack[plane];
+            break;
+        case 1:
+            MyTrackMuon_v = MyTrackMuonTrack[plane];
+            MyTrackProton_v = MyTrackProtonTrack[plane];
+            break;
+        case 2:
+        default:
+            MyTrackMuon_y = MyTrackMuonTrack[plane];
+            MyTrackProton_y = MyTrackProtonTrack[plane];
+            break;
+    }
+    Debug(3,"finished myVertex::AssociateHitsToTracks\n------------------------------------");
+    return true;
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_plane ){
+    
+    std::vector<hit> hits_in_vertex_roi;
+    float total_charge_in_roi = 0;
+    
+    for (auto hit: hits_in_this_plane){
+        if ( hit.InBox( roi[plane] ) ){
+            hits_in_vertex_roi.push_back( hit );
+            total_charge_in_roi += hit.hit_charge;
+        }
+    }
+    
+    SetAllHitsInROI( plane , hits_in_vertex_roi );
+    AllChargeInVertexROI[plane] = total_charge_in_roi;
+    
+    Debug(4,Form("total charge in roi: %.1f [ADC]",total_charge_in_roi));
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetAllHitsInROI (int plane , std::vector<hit> fhits){
+    switch (plane) {
+        case 0:
+            for (auto hit:fhits) AllHitsInROI_u.push_back(hit);
+            break;
+        case 1:
+            for (auto hit:fhits) AllHitsInROI_v.push_back(hit);
+            break;
+        case 2:
+        default:
+            for (auto hit:fhits) AllHitsInROI_y.push_back(hit);
+            break;
+    }
 
     
-    // my-tracking for candidate proton
-//    p_angle[plane] = atan2( p_end_time[plane] - p_start_time[plane] , p_end_wire[plane] - p_start_wire[plane] );
-    
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::CollectAssociatedCharge(int plane){
+    float MyMuonCharge = MyTrackMuonTrack[plane].GetTotalChargeInHits();
+    float MyProtonCharge = MyTrackProtonTrack[plane].GetTotalChargeInHits();
+    TracksAssociatedCharge[plane] = MyMuonCharge + MyProtonCharge;
+    if (AllChargeInVertexROI[plane]){
+        ratio_associated_hit_charge_to_total[plane] = TracksAssociatedCharge[plane]/AllChargeInVertexROI[plane];
+    }
+    else{
+        ratio_associated_hit_charge_to_total[plane] = 1.;
+    }
+    average_ratio_associated_hit_charge_to_total += ratio_associated_hit_charge_to_total[plane] / 3.;
+    if ( ratio_associated_hit_charge_to_total[plane] > max_ratio_associated_hit_charge_to_total )  max_ratio_associated_hit_charge_to_total = ratio_associated_hit_charge_to_total[plane];
     return true;
 }
 
@@ -579,7 +954,7 @@ void myVertex::Print(){
 
     
     cout << "\033[35m" << "~~~~~\n" << "vertex " << counter_id << ", vertex-id " << vertex_id << "\n~~~~~~ "<< "\033[0m" << endl;
-    // SHOW3( run , subrun , event );
+    SHOW3( run , subrun , event );
     SHOWTVector3( position );
     for (auto t: tracks) {
         Printf("track %d (pdg %d), vertex distance %.1f cm",t.track_id,t.MCpdgCode,t.DistanceFromPoint( position ));

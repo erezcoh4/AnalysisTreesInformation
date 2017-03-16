@@ -4,6 +4,7 @@
 #include "calcEventTopologies.h"
 #include "MyLArTools.cxx"
 #include "LArUtil/GeometryHelper.h"
+#include "myVertex.h"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 calcEventTopologies::calcEventTopologies(TTree * fInTree){
@@ -23,8 +24,8 @@ calcEventTopologies::calcEventTopologies(TTree * fInTree, TTree * fOutTree,
     
     SetInTree(fInTree);
     SetOutTree(fOutTree);
-    
-    SetDebug(fdebug);
+    debug = fdebug;
+
     SetMCMode(fMCmode);
     SetMaxmupDistance(fmax_mu_p_distance);
     SetOption(foption);
@@ -150,9 +151,10 @@ void calcEventTopologies::GetEntry (int entry){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::extract_information(){
 
+
     // cluster vertices with multiple tracks
     ClusterTracksToVertices();
-
+    
     // analyse vertices
     AnalyzeVertices();
     
@@ -165,6 +167,8 @@ bool calcEventTopologies::extract_information(){
     }
     
 }
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::TrackAlreadyIncludedInVerticesList(int ftrack_id){
@@ -192,6 +196,7 @@ bool calcEventTopologies::ClusterTracksToVertices(){
         // Debug(5, Form("looking for close tracks to track %d", tracks[i].track_id));
 
         c_vertex = myVertex( tracks[i].track_id );
+        c_vertex.debug = debug ;
         c_vertex.SetRSE( tracks[i].run, tracks[i].subrun, tracks[i].event);
         c_vertex.AddTrack( tracks[i] );
         
@@ -368,7 +373,9 @@ bool calcEventTopologies::Find2tracksVertices(){
     
     bool FoundCC1pTopology = false;
     for (auto & v:vertices) {
-        if ( v.tracks.size() == 2 ){
+        if (    v.tracks.size() == 2                        // we are looking for clusters of only two tracks that are fully contained
+            &&  v.NearUncontainedTracks( tracks , max_mu_p_distance ).size() == 0       // if there is a semi-contained track, with start/end point too close to the vertex, we don't want the vertex...
+            ){
             
             // vertices with only two tracks at close proximity
             // nothing else!
@@ -508,16 +515,72 @@ std::vector<hit> calcEventTopologies::get_hits_in_plane(int plane){
 
 
 
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-float calcEventTopologies::CollectAllChargeInROI( std::vector<hit> hits_in_this_plane , box roi ){
-    float total_charge_in_roi = 0;
-    for (auto hit: hits_in_this_plane){
-        if ( hit_in_box(hit,roi) ){
-            total_charge_in_roi += hit.hit_charge;
+int calcEventTopologies::ClosestTrackToHit( int plane , hit c_hit , myVertex vertex ){
+    // input:   hit
+    // return:  track-id of the closest (pandoraNu) track to the hit
+    // point-line distance calculation referenced from [http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html]
+    // distance from point to line = {(x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)))}/sqrt( (x2-x1)^2 + (y2-y1)^2 )    
+    
+    int closest_track_id=-100;
+    float x0 = c_hit.hit_wire, y0 = c_hit.hit_peakT;
+    float x1=0 , y1=0 , x2=0 , y2=0 , DistanceToClosestTrack = 10000;
+    float TrackLength , DistanceToTrack , DistanceToFlippedTrack;
+    
+    PandoraNuTrack track;
+    if (debug>3) {  Printf("-------\nin calcEventTopologies::ClosestTrackToHit(%d,%.1f)",c_hit.hit_wire,c_hit.hit_peakT); }
+    for (auto t: tracks) {
+        
+        std::vector<float> x1y1x2y2 = t.GetX1Y1X2Y2forTrack( plane );
+        if (debug>3) { Printf("t.track_id:%d (%d)",t.track_id,t.MCpdgCode); PrintBox(t.roi[plane].EnlargeBox( 5 , 10 ) );}
+        
+        if ( c_hit.InBox( t.roi[plane].EnlargeBox( 5 , 10 ) ) ){
+            
+            x1 = x1y1x2y2[0]; y1 = x1y1x2y2[1]; x2 = x1y1x2y2[2]; y2 = x1y1x2y2[3];
+            if (debug>3) { printf("In box, ");SHOW4(x1 , y1 , x2 , y2); }
+            
+//            TrackLength = sqrt( 3.0*(x2-x1)*3.0*(x2-x1) + 0.557*(y2-y1)*0.557*(y2-y1) );
+            TrackLength = sqrt( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) );
+            
+            if (TrackLength==0) TrackLength = 0.1;
+            
+            if (debug>3){Printf("TrackLength %.2f mm",TrackLength);
+                SHOW3(3.0*(x2-x1),3.0*(x1-x0),3.0*(x2-x0));
+                SHOW3(0.557*(y1-y0),0.557*(y2-y1),0.557*(y2-y0))}
+            
+            DistanceToTrack = fabs( (x2-x1) * (y1-y0) - (x1-x0) * (y2-y1) ) / TrackLength; // 3.0*0.557*
+            if (debug>3){Printf("distance of hit (%d,%.1f) to track %d is %.2f mm",
+                                c_hit.hit_wire,c_hit.hit_peakT,t.track_id,DistanceToTrack);}
+            
+            if (t.track_id!=vertex.AssignedMuonTrack.track_id && t.track_id!=vertex.AssignedProtonTrack.track_id){
+            x1 = x1y1x2y2[0]; y2 = x1y1x2y2[1]; x2 = x1y1x2y2[2]; y1 = x1y1x2y2[3];
+            DistanceToFlippedTrack = fabs( (x2-x1) * (y1-y0) - (x1-x0) * (y2-y1) ) / TrackLength; // 3.0*0.557*
+            if (DistanceToFlippedTrack < DistanceToTrack) DistanceToTrack = DistanceToFlippedTrack;
+            if (debug>3){Printf("distance of hit (%d,%.1f) to flipped-track x1/y2 %d is %.2f mm",
+                                c_hit.hit_wire,c_hit.hit_peakT,t.track_id,DistanceToFlippedTrack);}
+            
+            
+            x1 = x1y1x2y2[2]; y1 = x1y1x2y2[1]; x2 = x1y1x2y2[0]; y2 = x1y1x2y2[3];
+            DistanceToFlippedTrack = fabs( (x2-x1) * (y1-y0) - (x1-x0) * (y2-y1) ) / TrackLength; // 3.0*0.557*
+            if (debug>3){Printf("distance of hit (%d,%.1f) to flipped-track x2/y1 %d is %.2f mm (DistanceToClosestTrack=%.1f)",
+                                c_hit.hit_wire,c_hit.hit_peakT,t.track_id,DistanceToFlippedTrack,DistanceToClosestTrack);}
+            }
+            
+            Debug(3,Form("distance of hit (%d,%.1f) to track %d is %.2f mm (DistanceToClosestTrack=%.1f)",
+                         c_hit.hit_wire,c_hit.hit_peakT,t.track_id,DistanceToTrack,DistanceToClosestTrack));
+            
+            if ( DistanceToTrack < DistanceToClosestTrack ){
+                DistanceToClosestTrack = DistanceToTrack;
+                closest_track_id = t.track_id;
+                if (debug>3) Printf("changed closest_track_id to %d (DistanceToClosestTrack=%.1f)",closest_track_id,DistanceToClosestTrack);
+            }
+            
         }
+        
     }
-    Debug(4,Form("total charge in roi: %.1f [ADC]",total_charge_in_roi));
-    return total_charge_in_roi;
+    if (debug>3) SHOW(closest_track_id);
+    return closest_track_id;
 }
 
 
@@ -530,28 +593,44 @@ bool calcEventTopologies::PerformMyTracking(){
     // that is associated with the tracks.
     // this will provide a way to supress contributions from
     // CC 1p-reconstructed + X-unreconstructed
+    
+    
     for ( int plane = 0; plane < 3 ; plane++ ){
         
         hits_in_plane = get_hits_in_plane(plane);
         
         for (auto & vertex: CC1p_vertices){
+            
 
             // (1) define the vertex position and ROI in each plane
             vertex.BuildROI( plane );
             vertex.BuildLocationInPlane( plane );
             
             // (2) collect the total charge deposited in each plane
-            vertex.AllChargeInVertexROI[plane] = CollectAllChargeInROI( hits_in_plane , vertex.roi[plane] );
+            vertex.CollectAllHitsInROI( plane , hits_in_plane );
 
             // (3) associate hits to tracks
-            vertex.SetDistanceThreshold( 50 ); // mm
-            vertex.SetDistanceThreshold( 1.046 ); // rad.
-            vertex.AssociateHitsToTracks( plane , hits_in_plane );
+            vertex.SetDistanceThreshold( 10.0 ); // mm
+            vertex.SetAngleThreshold( 0.523 ); // rad.
             
+            vertex.SetTracksParameters( plane );
+            
+            for (auto &t: tracks) t.SetX1Y1X2Y2forTrack( plane , vertex.GetX1Y1X2Y2forTrack( plane , t ) );
+            if (debug>3) { Printf("in calcEventTopologies::PerformMyTracking()  X1Y1X2Y2:");for (auto t: tracks) SHOW4(t.x1y1x2y2[plane][0],t.x1y1x2y2[plane][1],t.x1y1x2y2[plane][2],t.x1y1x2y2[plane][3]); }
+                
+            
+            for (auto &hit:hits_in_plane) hit.ClosestTrack_track_id = ClosestTrackToHit( plane , hit , vertex );
+
+            if (debug>3){
+                Printf("hits in plane %d",plane);
+                for (auto hit:hits_in_plane) Printf("%d,%.1f, ClosestTrack_track_id=%d",hit.hit_wire,hit.hit_peakT,hit.ClosestTrack_track_id);
+            }
+            
+            vertex.AssociateHitsToTracks( plane , hits_in_plane );
+            vertex.CollectAssociatedCharge( plane );
         }
-        
-        
     }
+    
     return true;
 }
 

@@ -23,6 +23,8 @@
 #include "GENIEinteraction.h"
 #include "MyLArTools.h"
 #include "LArUtil/Geometry.h"
+#include "hit.h"
+#include "box.h"
 
 
 
@@ -94,9 +96,9 @@ public:
     
     
     // my tracking
-    std::vector<hit> get_hits_in_plane (int plane=0);
-    float        CollectAllChargeInROI ( std::vector<hit> hits_in_this_plane , box roi );
-    
+    std::vector<hit> get_hits_in_plane ( int plane=0);
+    int              ClosestTrackToHit ( int plane, hit c_hit , myVertex vertex);
+
     bool TrackAlreadyIncludedInVerticesList (int ftrack_id);
     void                      Print (bool DoPrintTracks=false, bool DoVertices=false);
     
@@ -140,20 +142,6 @@ public:
     
     MyLArTools  * lar_tools;
     
-    // service
-    //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-    bool hit_in_box( hit fhit , box fbox ){
-        int min_wire = std::min({fbox.start_wire,fbox.end_wire});
-        int max_wire = std::max({fbox.start_wire,fbox.end_wire});
-        int min_time = std::min({fbox.start_time,fbox.end_time});
-        int max_time = std::max({fbox.start_time,fbox.end_time});
-        if (min_wire < fhit.hit_wire && fhit.hit_wire < max_wire && min_time < fhit.hit_peakT && fhit.hit_peakT  < max_time){
-            return true;
-        }
-        return false;
-    }
-
-
 };
 
 #endif

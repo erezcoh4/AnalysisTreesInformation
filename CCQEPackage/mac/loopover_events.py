@@ -58,7 +58,7 @@ if "CC1p" in flags.option: #{
     outfile = ROOT.TFile( outfilename ,"recreate")
     outtree = ROOT.TTree("TwoTracksTree","2-tracks clusters")
 
-    events  = calcEventTopologies( inttree , outtree, flags.option , flags.verbose , MCmode )
+    events  = calcEventTopologies( inttree , outtree, flags.option , (int)(flags.verbose) , MCmode )
     events.SetMaxmupDistance (ccqe_pars['max_mu_p_distance'] )
     events.SetMinLengthLong (ccqe_pars['min_length_long'] )
     events.SetMaxLengthShort (ccqe_pars['max_length_short'] )
@@ -79,11 +79,16 @@ if "CC1p" in flags.option: #{
     if debug: print_important("running on %d events (out of %d)"%(Nreduced,Nevents))
 
     for i in range(Nreduced): #{
-
+        
         event_has_CC1p_topology = False
         
         # get event
         events.GetEntry(i)
+        
+        # verbosity to a specific event
+        events.debug=flags.verbose if events.event == 36674 else 0
+        
+
 
         # analyze the event
         events.extract_information()
