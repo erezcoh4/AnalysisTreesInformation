@@ -47,14 +47,7 @@ public:
     
     // constructors
     cumputeAnaTree(){}
-    ~cumputeAnaTree(){
-        //        OutTree->Write();
-        //        delete OutTree;
-        //        if (MCmode){
-        //            GENIETree->Write();
-        //            delete GENIETree;
-        //        }
-    }
+    ~cumputeAnaTree(){}
     
     // construct w/ input and output TTree-s
 //    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,

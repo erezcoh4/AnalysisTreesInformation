@@ -358,15 +358,6 @@ void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool 
             PrintBox(roi[plane]);
         }
     }
-    //    cout << "\033[33m" << NNeighborTracks << " neighboring tracks" ;
-    //    for (size_t i = 0 ; i < NNeighborTracks ; i++ ){
-    //        cout
-    //        << "\ntrack "               << NeighborTracks[i]
-    //        << ", distance: "           << NeighborTracksDistance[i]
-    //        << " cm, relative angle:"   << NeighborTracksAngles[i]
-    //        << " deg.";
-    //    }
-    //    cout << "\033[0m" << endl;
     if ( truth_Eng>0 && truth_P>0 ){
         cout << "MC information: " << endl;
         SHOW ( mcevent_id );
@@ -377,7 +368,8 @@ void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool 
         SHOWTVector3(truth_end_pos);
         SHOW2( truth_ccnc, IsGENIECC1p );
     }
-    
+    cout << "\033[31m" << "~~~~~~~~~~~~~~~~~~~~~" << endl;
+
     
 }
 
