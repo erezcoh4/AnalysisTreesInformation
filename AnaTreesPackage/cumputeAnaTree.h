@@ -50,20 +50,10 @@ public:
     ~cumputeAnaTree(){}
     
     // construct w/ input and output TTree-s
-//    cumputeAnaTree (TTree * fInTree, TTree * fOutTree,
-//                    TString foption="extract all tracks information", int fdebug=0,
-//                    bool fMCmode=false, TTree * fGENIETree = nullptr, bool fDoPandoraCosmic=false);
-//    
-//    cumputeAnaTree (TChain * fInChain, TTree * fOutTree,
-//                    TString foption="extract all tracks information", int fdebug=0,
-//                    bool fMCmode=false, TTree * fGENIETree = nullptr,  bool fDoPandoraCosmic=false)
-//    {cumputeAnaTree((TTree*) fInChain, fOutTree,
-//                    foption, fdebug, fMCmode, fGENIETree, fDoPandoraCosmic);};
-    
     cumputeAnaTree (TTree * fOutTree,
                     TString foption="extract all tracks information", int fdebug=0,
                     bool fMCmode=false, TTree * fGENIETree = nullptr,
-                    bool fDoPandoraCosmic=false, bool fDo_dEdx=false);
+                    bool fDoPandoraCosmic=false, bool fDo_dEdx=false, int fMCCV=8 );
     
     
  
@@ -78,6 +68,7 @@ public:
     void             SetOption (TString foption) {option = foption;};
     void    SetDoPandoraCosmic (bool fDo)        {DoPandoraCosmic = fDo;};
     void            SetDo_dEdx (bool fDo)        {Do_dEdx = fDo;};
+    void               SetMCCV (int fMCCV=8)     {MCCV = fMCCV};
     
     
     // getters
@@ -180,7 +171,7 @@ public:
     
     
     
-    Int_t       nhits       , primary;
+    Int_t       nhits       , primary, MCCV;
     Int_t       Ntracks     , NnuInteractions   , Ncosmictracks     , Ng4particles;
     Int_t       Nymax_cosmic;
     std::vector<Float_t>    ymax_cosmictracks;

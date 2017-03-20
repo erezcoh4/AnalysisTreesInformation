@@ -876,7 +876,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
     OutFile = ROOT.TFile(TracksAnaFileName,"recreate")
     eventsTree , GENIETree  = ROOT.TTree("eventsTree","events") , ROOT.TTree("GENIETree","genie interactions")
 
-    calc = cumputeAnaTree( eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic , do_dEdx )
+    calc = cumputeAnaTree( eventsTree, Option, flags.verbose, MCmode, GENIETree , do_pandora_cosmic , do_dEdx , MCCversion )
 
 
 

@@ -58,7 +58,7 @@ if 'extract' in flags.option:
             extract_anatrees_tracks_information_from_files_list(data_type=data_type,
                                                                 last_file=last_file ,
                                                                 MCmode=MCmode,
-                                                                MCCversion=MCCversion ,
+                                                                MCCversion=MCCversion 
                                                                 )
 
     else:

@@ -45,7 +45,7 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
 cumputeAnaTree::cumputeAnaTree( TTree * fOutTree, // TTree * fInTree,
                                TString foption, int fdebug,
                                bool fMCmode, TTree * fGENIETree,
-                               bool fDoPandoraCosmic, bool fDo_dEdx){
+                               bool fDoPandoraCosmic, bool fDo_dEdx, int fMCCV){
     
     //    SetInTree(fInTree);
     SetOutTree(fOutTree);
@@ -55,6 +55,7 @@ cumputeAnaTree::cumputeAnaTree( TTree * fOutTree, // TTree * fInTree,
     if (MCmode) SetGENIETree(fGENIETree);
     SetDoPandoraCosmic(fDoPandoraCosmic);
     SetDo_dEdx(fDo_dEdx);
+    SetMCCV(fMCCV);
     //    InitInputTree();
     InitOutputTree();
     if (debug>1) Printf("option:%s, debug:%d, MCmode:%d, DoPandoraCosmic:%d",option.Data(),debug,MCmode,DoPandoraCosmic);
@@ -121,14 +122,26 @@ void cumputeAnaTree::InitInputTree(){
     
     
     // optical info
-    InTree -> SetBranchAddress("no_flashes"                                     , &no_flashes);
-    InTree -> SetBranchAddress("flash_time"                                     , &flash_time);
-    InTree -> SetBranchAddress("flash_timewidth"                                , &flash_timewidth);
-    InTree -> SetBranchAddress("flash_pe"                                       , &flash_pe);
-    InTree -> SetBranchAddress("flash_ycenter"                                  , &flash_ycenter);
-    InTree -> SetBranchAddress("flash_ywidth"                                   , &flash_ywidth);
-    InTree -> SetBranchAddress("flash_zcenter"                                  , &flash_zcenter);
-    InTree -> SetBranchAddress("flash_zwidth"                                   , &flash_zwidth);
+    if (MCCV==7){
+        InTree -> SetBranchAddress("no_flashes"                                     , &no_flashes);
+        InTree -> SetBranchAddress("flash_time"                                     , &flash_time);
+        InTree -> SetBranchAddress("flash_timewidth"                                , &flash_timewidth);
+        InTree -> SetBranchAddress("flash_pe"                                       , &flash_pe);
+        InTree -> SetBranchAddress("flash_ycenter"                                  , &flash_ycenter);
+        InTree -> SetBranchAddress("flash_ywidth"                                   , &flash_ywidth);
+        InTree -> SetBranchAddress("flash_zcenter"                                  , &flash_zcenter);
+        InTree -> SetBranchAddress("flash_zwidth"                                   , &flash_zwidth);
+    }
+    else if (MCC==8){
+        InTree -> SetBranchAddress("nfls_SimpleFlashBeam"                           , &no_flashes);
+        InTree -> SetBranchAddress("flsTime_SimpleFlashBeam"                        , &flash_time);
+        InTree -> SetBranchAddress("flsPe_SimpleFlashBeam"                          , &flash_pe);
+        InTree -> SetBranchAddress("flsYcenter_SimpleFlashBeam"                     , &flash_ycenter);
+        InTree -> SetBranchAddress("flsYwidth_SimpleFlashBeam"                      , &flash_ywidth);
+        InTree -> SetBranchAddress("flsZcenter_SimpleFlashBeam"                     , &flash_zcenter);
+        InTree -> SetBranchAddress("flsZwidth_SimpleFlashBeam"                      , &flash_zwidth);
+    }
+    
     
     // vertex
     InTree -> SetBranchAddress("nvtx_pandoraNu"                                 , &nvtx_pandoraNu);
@@ -207,9 +220,6 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("StartPointx"                                , &StartPointx);
         InTree -> SetBranchAddress("StartPointy"                                , &StartPointy);
         InTree -> SetBranchAddress("StartPointz"                                , &StartPointz);
-        
-        
-
         
         // purity
         InTree -> SetBranchAddress("trkpurtruth_pandoraNu"                      , &trkpurtruth);

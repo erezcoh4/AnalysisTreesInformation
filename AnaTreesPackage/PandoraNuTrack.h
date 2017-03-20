@@ -185,6 +185,15 @@ public:
     inline bool operator==(const PandoraNuTrack & t) {
         return std::tie( run, subrun, event, track_id ) == std::tie(t.run, t.subrun, t.event, t.track_id);
     }
+    bool IsTrackContainedSoft(){
+        if( ( start_pos.x() < 0 )    | ( start_pos.x() > 260 ) )    return false;
+        if( ( start_pos.y() < -115 ) | ( start_pos.y() > 115 ) )    return false;
+        if( ( start_pos.z() < 0 )    | ( start_pos.z() > 1050 ) )   return false;
+        if( ( end_pos.x() < 0 )    | ( end_pos.x() > 260 ) )    return false;
+        if( ( end_pos.y() < -115 ) | ( end_pos.y() > 115 ) )    return false;
+        if( ( end_pos.z() < 0 )    | ( end_pos.z() > 1050 ) )   return false;
+        return true;
+    }
 
     
     
