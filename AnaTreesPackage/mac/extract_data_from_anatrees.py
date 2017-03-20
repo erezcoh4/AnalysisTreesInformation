@@ -58,7 +58,8 @@ if 'extract' in flags.option:
             extract_anatrees_tracks_information_from_files_list(data_type=data_type,
                                                                 last_file=last_file ,
                                                                 MCmode=MCmode,
-                                                                MCCversion=MCCversion 
+                                                                MCCversion=MCCversion,
+                                                                MCCV=flags.MCCversion
                                                                 )
 
     else:
@@ -67,7 +68,8 @@ if 'extract' in flags.option:
                                                             MCmode=MCmode ,
                                                             MCCversion=MCCversion ,
                                                             do_pandora_cosmic=do_pandora_cosmic ,
-                                                            do_dEdx=do_dEdx)
+                                                            do_dEdx=do_dEdx,
+                                                            MCCV=flags.MCCversion)
 
 # ---------------------------------------------------------------------------------------
 
