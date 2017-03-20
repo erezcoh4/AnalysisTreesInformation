@@ -68,7 +68,7 @@ public:
     void             SetOption (TString foption) {option = foption;};
     void    SetDoPandoraCosmic (bool fDo)        {DoPandoraCosmic = fDo;};
     void            SetDo_dEdx (bool fDo)        {Do_dEdx = fDo;};
-    void               SetMCCV (int fMCCV=8)     {MCCV = fMCCV};
+    void               SetMCCV (int fMCCV=8)     {MCCV = fMCCV;};
     
     
     // getters
