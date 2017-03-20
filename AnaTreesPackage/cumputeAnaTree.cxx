@@ -132,7 +132,7 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("flash_zcenter"                                  , &flash_zcenter);
         InTree -> SetBranchAddress("flash_zwidth"                                   , &flash_zwidth);
     }
-    else if (MCC==8){
+    else if (MCCV==8){
         InTree -> SetBranchAddress("nfls_SimpleFlashBeam"                           , &no_flashes);
         InTree -> SetBranchAddress("flsTime_SimpleFlashBeam"                        , &flash_time);
         InTree -> SetBranchAddress("flsPe_SimpleFlashBeam"                          , &flash_pe);
