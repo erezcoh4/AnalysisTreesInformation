@@ -133,13 +133,13 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("flash_zwidth"                                   , &flash_zwidth);
     }
     else if (MCCV==8){
-        InTree -> SetBranchAddress("nfls_SimpleFlashBeam"                           , &no_flashes);
-        InTree -> SetBranchAddress("flsTime_SimpleFlashBeam"                        , &flash_time);
-        InTree -> SetBranchAddress("flsPe_SimpleFlashBeam"                          , &flash_pe);
-        InTree -> SetBranchAddress("flsYcenter_SimpleFlashBeam"                     , &flash_ycenter);
-        InTree -> SetBranchAddress("flsYwidth_SimpleFlashBeam"                      , &flash_ywidth);
-        InTree -> SetBranchAddress("flsZcenter_SimpleFlashBeam"                     , &flash_zcenter);
-        InTree -> SetBranchAddress("flsZwidth_SimpleFlashBeam"                      , &flash_zwidth);
+        InTree -> SetBranchAddress("nfls_simpleFlashBeam"                           , &nfls_simpleFlashBeam);
+        InTree -> SetBranchAddress("flsTime_simpleFlashBeam"                        , &flash_time);
+        InTree -> SetBranchAddress("flsPe_simpleFlashBeam"                          , &flash_pe);
+        InTree -> SetBranchAddress("flsYcenter_simpleFlashBeam"                     , &flash_ycenter);
+        InTree -> SetBranchAddress("flsYwidth_simpleFlashBeam"                      , &flash_ywidth);
+        InTree -> SetBranchAddress("flsZcenter_simpleFlashBeam"                     , &flash_zcenter);
+        InTree -> SetBranchAddress("flsZwidth_simpleFlashBeam"                      , &flash_zwidth);
     }
     
     
@@ -280,7 +280,7 @@ void cumputeAnaTree::InitOutputTree(){
     OutTree -> Branch("Ntracks"         ,&Ntracks           ,"Ntracks/I"); // number of contained tracks, not ntracks_pandoraNu...
     OutTree -> Branch("Ng4particles"    ,&Ng4particles      ,"Ng4particles/I"); // number of g4 particles
     
-    OutTree -> Branch("nu_interactions"     ,&nu_interactions); // neutrino interactions...
+    // OutTree -> Branch("nu_interactions"     ,&nu_interactions); // neutrino interactions...
     OutTree -> Branch("tracks"              ,&tracks); // tracks information...
     OutTree -> Branch("g4particles"         ,&g4particles); // g4 information...
     
@@ -342,6 +342,8 @@ void cumputeAnaTree::InitTrack(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::GetInTimeFlashes(){
+    
+    if (MCCV==8) no_flashes = nfls_simpleFlashBeam;
     
     if(debug>3) Printf("GetInTimeFlashes of %d flashes",no_flashes);
     

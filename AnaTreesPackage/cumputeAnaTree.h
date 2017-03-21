@@ -135,7 +135,6 @@ public:
     TString     CSVFileName , option    , CSVHeader;
     ofstream    csvfile;
 
-    int         debug;  // 0 - quiet, 1 - major functionality, > 2 - print out all sorts of shit
     bool        MCmode;
     bool        foundMuonScattering;
     bool        track_already_included;
@@ -150,6 +149,7 @@ public:
     
     // hits
     Int_t       no_hits,                no_flashes;
+    Short_t     nfls_simpleFlashBeam;
     Short_t     hit_plane[kMaxHits],    hit_wire[kMaxHits];
     Float_t     hit_peakT[kMaxHits];
     Float_t     hit_charge[kMaxHits];     //area (total charge (ADC) deposited for hit in the tdc range)
