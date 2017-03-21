@@ -235,7 +235,44 @@ bool GENIEinteraction::ComputePmissPrec(){
 
 
 
+void GENIEinteraction::SetVertexPosition (TVector3 fpos){
+    vertex_position = fpos;
+    
+    // load GeometryHelper utility
+    auto geomHelper = ::larutil::GeometryHelper::GetME();
+    double pos_xyz[3] = {fpos.x() , fpos.y() , fpos.z() };
+    // shift in time-axis due to the truncation of the waveforms
+    // (the first 2400 ADCs are removed from the waveform, The extra couple ticks could be due to a shift in the signal deconvolution)
+    double time_shift =  802;
+    
+    
+    for (int plane = 0; plane < 3; plane++){
+        
+        // geoHelper is a set of utility functions that help with geometric stuff..
+        auto const& projection2D = geomHelper->Point_3Dto2D(pos_xyz, plane);
+        int wire = (int) ( projection2D.w / geomHelper->WireToCm() );
+        int time = (int) ( projection2D.t / geomHelper->TimeToCm() ) + time_shift;
+        
+        switch (plane) {
+            case 0:
+                pos_wire_u = wire;
+                pos_time_u = time;
+                break;
+            case 1:
+                pos_wire_v = wire;
+                pos_time_v = time;
+                break;
+            case 2:
+                pos_wire_y = wire;
+                pos_time_y = time;
+                break;
+                
+            default:
+                break;
+        }
+    }
 
+}
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void GENIEinteraction::Print(bool DoPrintTracks){
 

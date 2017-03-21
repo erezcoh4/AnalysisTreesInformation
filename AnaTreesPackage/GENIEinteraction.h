@@ -71,7 +71,7 @@ public:
     // SETters
     void      SetNuMomentum (Float_t, Float_t, Float_t, Float_t );
     
-    void  SetVertexPosition (TVector3 fpos)                         {vertex_position = fpos;};
+    void  SetVertexPosition (TVector3 fpos);
     void             SetRSE (int frun , int fsubrun , int fevent)   {run=frun; subrun=fsubrun;event=fevent;};
     void            SetCCNC (int fccnc)                             {ccnc = fccnc;};
     void SetVertexContained (bool fcontained)                       {IsVertexContained = fcontained;};
@@ -81,10 +81,13 @@ public:
     Float_t                 Xb , Q2 ;
     Float_t                 theta_pq , p_over_q , Mmiss;
     Float_t                 reco_mu_p_distance;
+    
     Int_t                   run , subrun , event , ccnc, mcevent_id;
     Int_t                   Nprimaries , Nnu , Np , Nn , Npi , Nmu , Nel , Ntot , Ngamma;
     Int_t                   Nnu_e, Nnu_mu, Nmu_minus, Nmu_plus, Npi_minus, Npi_plus, Npi_0, Ne_plus, Ne_minus;
-    
+    Int_t                   pos_wire_u, pos_wire_v, pos_wire_y;
+    Int_t                   pos_time_u, pos_time_v, pos_time_y;
+
     TVector3                vertex_position;
     
     std::vector<Int_t>      pdg;          //particle type (pdg) of the GENIE particle
