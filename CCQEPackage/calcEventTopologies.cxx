@@ -20,7 +20,7 @@ calcEventTopologies::calcEventTopologies(TTree * fInTree, TTree * fOutTree,
                                          std::string foption,
                                          int fdebug,
                                          bool fMCmode,
-                                         float fmax_mu_p_distance){
+                                         float fmax_mu_p_distance, TTree * fInEventsTree){
     
     SetInTree(fInTree);
     SetOutTree(fOutTree);
@@ -34,6 +34,8 @@ calcEventTopologies::calcEventTopologies(TTree * fInTree, TTree * fOutTree,
     InitInputTree();
     InitOutputTree();
     
+    if (fInEventsTree) SetInEventsTree(fInEventsTree);
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -52,6 +54,7 @@ void calcEventTopologies::InitInputTree(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::InitOutputTree(){
+    vertices_ctr = 0;
     
     // Integer branches
     OutTree -> Branch("run"             ,&run               ,"run/I");
@@ -75,8 +78,21 @@ bool calcEventTopologies::FillOutTree (){
     NCC1pVertices = (int)CC1p_vertices.size();
     Nhits = (int)hits.size();
     Ntracks = (int)tracks.size();
+    
+    if (debug>3){
+        Printf("Filling 2-tracks clusters tree at entry %d with vertices ",(int)OutTree->GetEntries());
+        SHOWstdVector(CC1pVerticesID);
+    }
+    
     OutTree -> Fill();
     return true;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool calcEventTopologies::FillGENIEOutTree (){
+    if ((int)CC1p_vertices.size()>0){
+        return FillOutTree();
+    }
 }
 
 
@@ -108,9 +124,28 @@ void calcEventTopologies::GetGENIEEntry (int entry){
     std::vector <GENIEinteraction> * finteractions = 0;
     InTree -> SetBranchAddress("genie_interactions" , &finteractions);
     InTree -> GetEntry(entry);
+    Debug(3,"InTree -> GetEntry(entry);");
     genie_interactions = *finteractions;
-    c_entry = entry;
+    Debug(3,"got genie interactions");
+    
+    
+    std::vector <PandoraNuTrack> * ftracks = 0;
+    InEventsTree -> SetBranchAddress("tracks" , &ftracks);
 
+    std::vector <hit> * fhits = 0;
+    InEventsTree -> SetBranchAddress("hits" , &fhits);
+    
+    InEventsTree -> GetEntry(entry);
+    
+    Debug(3,"got hits and tracks");
+    hits = *fhits;
+    tracks = *ftracks;
+
+    
+    c_entry = entry;
+    delete ftracks;
+    delete fhits;
+    delete finteractions;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -158,14 +193,8 @@ bool calcEventTopologies::extract_information(){
     // analyse vertices
     AnalyzeVertices();
     
-    if (vertices.size()>0){
-        return true;
-    }
-    
-    else {
-        return false;
-    }
-    
+    // return
+    return (vertices.size()>0);
 }
 
 
@@ -180,20 +209,21 @@ bool calcEventTopologies::TrackAlreadyIncludedInVerticesList(int ftrack_id){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool calcEventTopologies::ClusterTracksToVertices(){
+    Debug(3,"calcEventTopologies::ClusterTracksToVertices()");
+    
     bool    FoundCloseTracks , AlreadySetPosition;
     float   closest_distance_ij;
     TVector3 vertex_position;
     
     for (int i=0; i < Ntracks; i++){
         
-        if (!tracks[i].IsFullyContained) continue;
+        //        if (!tracks[i].IsFullyContained) continue;
+        if (!tracks[i].IsTrackContainedSoft()) continue;
         
         // skip if track was clustered to a vertex by in one of the previous loop steps
         if (TrackAlreadyIncludedInVerticesList(tracks[i].track_id)) continue;
         // is this wrong?! we need to go over all of the tracks, even if they are included in previous cluseters.
         // however we need to avoid from counting twice!
-        
-        // Debug(5, Form("looking for close tracks to track %d", tracks[i].track_id));
 
         c_vertex = myVertex( tracks[i].track_id );
         c_vertex.debug = debug ;
@@ -203,7 +233,9 @@ bool calcEventTopologies::ClusterTracksToVertices(){
         FoundCloseTracks = AlreadySetPosition = false;
         
         for ( int j=0 ; j < Ntracks ; j++ ){ // i+1
-            if (!tracks[j].IsFullyContained) continue;
+            
+            // if (!tracks[j].IsFullyContained) continue;
+            if (!tracks[j].IsTrackContainedSoft()) continue;
             if (j!=i){
                 
                 // if this is the first time we go over these two tracks
@@ -228,7 +260,6 @@ bool calcEventTopologies::ClusterTracksToVertices(){
                         else                                    vertex_position = TVector3(-1000,-1000,-1000) ;
                         
                         c_vertex.SetPosition( vertex_position );
-                        //                        c_vertex.SetMyLArTools (lar_tools);
                         AlreadySetPosition = true;
                     }
                 }
@@ -280,42 +311,60 @@ bool calcEventTopologies::ClusterTracksToVertices(){
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool calcEventTopologies::ClusterGENIEToVertices(){
+bool calcEventTopologies::ClusterGENIEToVertices( int vertex_id ){
+
     Debug (2 , "calcEventTopologies::ClusterGENIEToVertices()");
     for (auto genie_interaction : genie_interactions){
         
-        if (genie_interaction.IsCC1p){
-      
+        float PmuonFromRange = -100 , PprotonFromRange = -100;
+        
+        if (genie_interaction.IsCC1p){ // we only consider true CC1p vertices
+
+            
             GENIEmuon = genie_interaction.muon;
             protons = genie_interaction.protons;
             GENIEproton = protons[0];
             
-            c_vertex = myVertex( genie_interaction.muonTrack.track_id );
-            // c_vertex.SetMyLArTools (lar_tools);
+            c_vertex = myVertex( vertex_id );
+            c_vertex.debug = debug ;
             c_vertex.SetPosition( genie_interaction.vertex_position );
             c_vertex.SetRSE( genie_interaction.run, genie_interaction.subrun, genie_interaction.event );
             c_vertex.GENIECC1p = true;
             
-            c_vertex.AddTrack( genie_interaction.protonTrack );
-            c_vertex.AddTrack( genie_interaction.muonTrack );
-
-
-            
+            // containment
             c_vertex.IsVertexContained = genie_interaction.IsVertexContained;
-            c_vertex.protonTrackReconstructed = genie_interaction.protonTrackReconstructed;
+            
+            // muon track
             c_vertex.muonTrackReconstructed = genie_interaction.muonTrackReconstructed;
-            c_vertex.protonTrueTrack = genie_interaction.protonTrack ;
-            c_vertex.muonTrueTrack = genie_interaction.muonTrack;
+            if (genie_interaction.muonTrackReconstructed)   {
+                c_vertex.AddTrack( genie_interaction.muonTrack );
+                c_vertex.muonTrueTrack = genie_interaction.muonTrack;
+                PmuonFromRange = 0.001 * lar_tools -> Get_muonMomentumFromRange( genie_interaction.muonTrack.length );
+                Debug( 3 , "appended muon track" );
+            }
             
-            c_vertex.SetIsReconstructed();
+            // proton track
+            c_vertex.protonTrackReconstructed = genie_interaction.protonTrackReconstructed;
+            if (genie_interaction.protonTrackReconstructed) {
+                c_vertex.AddTrack( genie_interaction.protonTrack );
+                c_vertex.protonTrueTrack = genie_interaction.protonTrack ;
+                PprotonFromRange = 0.001 * lar_tools -> Get_protonMomentumFromRange( genie_interaction.protonTrack.length );
+                Debug( 3 , "appended proton track" );
+            }
+            
+            c_vertex.SetIsReconstructed( max_mu_p_distance );
             c_vertex.SetGENIEinfo( genie_interaction );
+            c_vertex.SetClosestGENIE( genie_interaction );
             
-            float PmuonFromRange = 0.001 * lar_tools -> Get_muonMomentumFromRange( genie_interaction.muonTrack.length );
-            float PprotonFromRange = 0.001 * lar_tools -> Get_protonMomentumFromRange( genie_interaction.protonTrack.length );
             
-            c_vertex.SetAssignTracks( genie_interaction.muonTrack , genie_interaction.protonTrack , PmuonFromRange , PprotonFromRange );
-            c_vertex.TruthTopologyString = "true GENIE CC1p";
+            if (debug>3) { Printf("---------------\nfound true CC1p:\n---------------");genie_interaction.Print( true ); PrintLine();}
             
+            if( genie_interaction.muonTrackReconstructed || genie_interaction.protonTrackReconstructed ){
+                c_vertex.SetAssignTracks( genie_interaction.muonTrack , genie_interaction.protonTrack , PmuonFromRange , PprotonFromRange );
+                for (int plane=0; plane<3; plane++) c_vertex.BuildROI(plane);
+            }
+            c_vertex.TruthTopologyString = "True GENIE CC1p";
+            Debug( 3 , Form("pushing genie vertex %d in vertices",c_vertex.vertex_id) );
             vertices.push_back( c_vertex );
             FoundTruthCC1p = true;
         }
@@ -331,8 +380,10 @@ bool calcEventTopologies::AnalyzeVertices(){
     
     for (auto & v:vertices){
         
+        if (v.tracks.size()<2) continue;
+        
         if (option.compare("CC1pTopology")==0){
-            v.RemoveFarTracks( max_mu_p_distance , debug  );
+            v.RemoveFarTracks( max_mu_p_distance );
         }
         
         v.SortTracksByPIDA();
@@ -373,6 +424,9 @@ bool calcEventTopologies::Find2tracksVertices(){
     
     bool FoundCC1pTopology = false;
     for (auto & v:vertices) {
+        
+        if (debug>3) {SHOW2(v.tracks.size(), v.NearUncontainedTracks( tracks , max_mu_p_distance ).size() );} // PRINTOUT
+        
         if (    v.tracks.size() == 2                        // we are looking for clusters of only two tracks that are fully contained
             &&  v.NearUncontainedTracks( tracks , max_mu_p_distance ).size() == 0       // if there is a semi-contained track, with start/end point too close to the vertex, we don't want the vertex...
             ){
@@ -385,17 +439,22 @@ bool calcEventTopologies::Find2tracksVertices(){
             //        PandoraNuTrack t1 = v.ShortestTrack;
             //        PandoraNuTrack t2 = v.LongestTrack;
             // assign muon and proton tracks by PID-A
-            float PmuonFromRange = 0.001 * lar_tools -> Get_muonMomentumFromRange( v.SmallPIDATrack.length );
-            float PprotonFromRange = 0.001 * lar_tools -> Get_protonMomentumFromRange( v.LargePIDATrack.length );
+            auto AssignedMuonTrack = v.SmallPIDATrack;
+            auto AssignedProtonTrack = v.LargePIDATrack;
+            
+            
+            float PmuonFromRange = 0.001 * lar_tools -> Get_muonMomentumFromRange( AssignedMuonTrack.length );
+            float PprotonFromRange = 0.001 * lar_tools -> Get_protonMomentumFromRange( AssignedProtonTrack.length );
 
-            v.SetAssignTracks( v.SmallPIDATrack , v.LargePIDATrack , PmuonFromRange , PprotonFromRange );
+            v.SetAssignTracks( AssignedMuonTrack , AssignedProtonTrack , PmuonFromRange , PprotonFromRange );
             
             // account for tracks that come out from the same vertex, but are not clustered with it since they are not fully contained.
             // if (MoreThanTwoCloseTracks( v )) continue;
-            
+            v.vertex_id = vertices_ctr;
             CC1p_vertices.push_back( v );
             CC1pVerticesID.push_back( v.vertex_id );
             FoundCC1pTopology = true;
+            vertices_ctr += 1;
             
         }
     }
@@ -503,13 +562,14 @@ bool calcEventTopologies::TagGENIECC1p(){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 std::vector<hit> calcEventTopologies::get_hits_in_plane(int plane){
-    std::vector<hit> hits_in_this_plane;
+    if(!hits_in_plane[plane].empty()) hits_in_plane[plane].clear();
+    
     for (auto hit:hits){
         if (hit.hit_plane == plane){
-            hits_in_this_plane.push_back(hit);
+            hits_in_plane[plane].push_back(hit);
         }
     }
-    return hits_in_this_plane;
+    return hits_in_plane[plane];
 }
 
 
@@ -528,8 +588,7 @@ int calcEventTopologies::ClosestTrackToHit( int plane , hit c_hit , myVertex ver
     float x1=0 , y1=0 , x2=0 , y2=0 , DistanceToClosestTrack = 10000;
     float TrackLength , DistanceToTrack , DistanceToFlippedTrack;
     
-    PandoraNuTrack track;
-    if (debug>3) {  Printf("-------\nin calcEventTopologies::ClosestTrackToHit(%d,%.1f)",c_hit.hit_wire,c_hit.hit_peakT); }
+    if (debug>3) {  Printf("-------\nin calcEventTopologies::ClosestTrackToHit(%d,%d,%.1f)",c_hit.hit_plane,c_hit.hit_wire,c_hit.hit_peakT); }
     for (auto t: tracks) {
         
         std::vector<float> x1y1x2y2 = t.GetX1Y1X2Y2forTrack( plane );
@@ -540,7 +599,7 @@ int calcEventTopologies::ClosestTrackToHit( int plane , hit c_hit , myVertex ver
             x1 = x1y1x2y2[0]; y1 = x1y1x2y2[1]; x2 = x1y1x2y2[2]; y2 = x1y1x2y2[3];
             if (debug>3) { printf("In box, ");SHOW4(x1 , y1 , x2 , y2); }
             
-//            TrackLength = sqrt( 3.0*(x2-x1)*3.0*(x2-x1) + 0.557*(y2-y1)*0.557*(y2-y1) );
+            //            TrackLength = sqrt( 3.0*(x2-x1)*3.0*(x2-x1) + 0.557*(y2-y1)*0.557*(y2-y1) );
             TrackLength = sqrt( (x2-x1)*(x2-x1) + (y2-y1)*(y2-y1) );
             
             if (TrackLength==0) TrackLength = 0.1;
@@ -593,41 +652,61 @@ bool calcEventTopologies::PerformMyTracking(){
     // that is associated with the tracks.
     // this will provide a way to supress contributions from
     // CC 1p-reconstructed + X-unreconstructed
-    
-    
     for ( int plane = 0; plane < 3 ; plane++ ){
-        
-        hits_in_plane = get_hits_in_plane(plane);
-        
-        for (auto & vertex: CC1p_vertices){
-            
-
-            // (1) define the vertex position and ROI in each plane
-            vertex.BuildROI( plane );
-            vertex.BuildLocationInPlane( plane );
-            
-            // (2) collect the total charge deposited in each plane
-            vertex.CollectAllHitsInROI( plane , hits_in_plane );
-
-            // (3) associate hits to tracks
-            vertex.SetDistanceThreshold( 10.0 ); // mm
-            vertex.SetAngleThreshold( 0.523 ); // rad.
-            
-            vertex.SetTracksParameters( plane );
-            
-            for (auto &t: tracks) t.SetX1Y1X2Y2forTrack( plane , vertex.GetX1Y1X2Y2forTrack( plane , t ) );
-            if (debug>3) { Printf("in calcEventTopologies::PerformMyTracking()  X1Y1X2Y2:");for (auto t: tracks) SHOW4(t.x1y1x2y2[plane][0],t.x1y1x2y2[plane][1],t.x1y1x2y2[plane][2],t.x1y1x2y2[plane][3]); }
+        hits_in_plane[plane] = get_hits_in_plane(plane);
+        if (debug>5) {
+            Printf("hits_in_plane %d:", plane);
+            for (auto hit:hits_in_plane[plane]) hit.Print();
+        }
+    }
+    
+    if (debug>3) SHOW3(run,subrun,event);
+    
+    for (auto & vertex: CC1p_vertices){
+    
+        for ( int plane = 0; plane < 3 ; plane++ ){
                 
-            
-            for (auto &hit:hits_in_plane) hit.ClosestTrack_track_id = ClosestTrackToHit( plane , hit , vertex );
-
-            if (debug>3){
-                Printf("hits in plane %d",plane);
-                for (auto hit:hits_in_plane) Printf("%d,%.1f, ClosestTrack_track_id=%d",hit.hit_wire,hit.hit_peakT,hit.ClosestTrack_track_id);
+            if(     ( (option.compare("GENIECC1p")==0) && vertex.GENIECC1p && vertex.IsVertexReconstructed ) // GENIE
+               ||   ( (option.compare("CC1pTopology")==0) )  // MC / data
+            ){
+                
+                Debug(3,Form("performing tracking for vertex %d in plane %d",vertex.vertex_id,plane));
+                
+                // (1) define the vertex position and ROI in each plane
+                vertex.BuildROI( plane );
+                
+                if (debug>5){
+                    Printf("%d/%d/%d vertex roi in plane %d: ",run,subrun,event,plane); // PRINTOUT
+                    PrintBox(vertex.roi[plane]); // PRINTOUT
+                }
+                
+                vertex.BuildLocationInPlane( plane );
+                
+                
+                // (2) collect the total charge deposited in each plane
+                vertex.CollectAllHitsInROI( plane , hits_in_plane[plane] );
+                
+                if (debug>4){
+                    Printf("vertex %d, AllHitsInROI[%d]:",vertex.vertex_id, plane);
+                    for (auto hit:vertex.AllHitsInROI[plane]) hit.Print();
+                }
+                
+                
+                // (3) associate hits to tracks
+                vertex.SetDistanceThreshold( 10.0 ); // mm
+                vertex.SetAngleThreshold( 0.523 ); // rad.
+                
+                vertex.SetTracksParameters( plane );
+                
+                for (auto &t: tracks) t.SetX1Y1X2Y2forTrack( plane , vertex.GetX1Y1X2Y2forTrack( plane , t ) );
+                Debug(4,"looking for ClosestTrackToHit( plane , hit , vertex )");
+                for (auto &hit:vertex.AllHitsInROI[plane]) {
+                    hit.ClosestTrack_track_id = ClosestTrackToHit( plane , hit , vertex );
+                }
+                
+                vertex.AssociateHitsToTracks( plane );
+                vertex.CollectAssociatedCharge( plane );
             }
-            
-            vertex.AssociateHitsToTracks( plane , hits_in_plane );
-            vertex.CollectAssociatedCharge( plane );
         }
     }
     
@@ -646,7 +725,6 @@ void calcEventTopologies::Print(bool DoPrintTracks, bool DoVertices){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
         for (auto t: tracks) t.Print( true );
     }
-
     
     if (DoVertices && !vertices.empty()){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << vertices.size() << " vertices\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;

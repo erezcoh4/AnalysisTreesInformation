@@ -66,7 +66,7 @@ public:
     bool      IncludesTrack (Int_t ftrack_id);
     bool SortTracksByLength ();
     bool   SortTracksByPIDA ();
-    bool    RemoveFarTracks (float max_mu_p_distance, Int_t debug );
+    bool    RemoveFarTracks (float max_mu_p_distance );
 	
     vector<PandoraNuTrack>  NearUncontainedTracks ( vector<PandoraNuTrack> AllTracksInTheEvent , float fmax_distance=100 );
     vector<PandoraNuTrack>  RemoveTrackFromVector ( vector<PandoraNuTrack> AllTracks , PandoraNuTrack TrackToBeRemoved );
@@ -92,14 +92,14 @@ public:
     void                  SetAngleThreshold ( float fAngleThreshold = 1.046) {AngleThreshold = fAngleThreshold;}; // 0.523 rad. = 60 deg.
     bool                           BuildROI ( int plane=0);
     bool               BuildLocationInPlane ( int plane=0);
-    bool              AssociateHitsToTracks ( int plane, std::vector<hit> );
+    bool              AssociateHitsToTracks ( int plane=0);//, std::vector<hit> );
     bool             FindClosestHitToVertex ( int plane, std::vector<hit> );
     std::vector<hit>    RemoveHitFromVector ( std::vector<hit> HitsVector , hit HitToBeRemoved );
     bool   FoundCloseHitAlongTrackDirection ( hit , std::vector<hit> , float TrackAngle = 0  );
     std::vector<hit>           TrackMyTrack ( int plane, hit StartHit , std::vector<hit> hits , float TrackAngle , PandoraNuTrack track );
-//    int                   ClosestTrackToHit ( int plane, hit c_hit );
+    //    int                   ClosestTrackToHit ( int plane, hit c_hit );
     hit                 ClosestHitToTrack1d ( int plane, int wire , float peakTime , std::vector<hit> fPossibleHits, PandoraNuTrack track );
-    vector<hit>   PossibleTracksForTracking ( int plane, std::vector<hit> fPossibleHits, float TrackAngle , PandoraNuTrack track );
+    vector<hit>   PossibleTracksForTracking ( int plane, float TrackAngle , PandoraNuTrack track ); // , std::vector<hit> fPossibleHits
     std::vector<float>  GetX1Y1X2Y2forTrack ( int plane , PandoraNuTrack t ); // return {x1,y1,x2,y2}
     vector<float>     FindSlopeAndIntercept ( int plane, PandoraNuTrack t );
     hit       ClosestHitToTrackHorizontally ( int plane, float peakTime, std::vector<hit> fPossibleHits, PandoraNuTrack track );
@@ -108,7 +108,8 @@ public:
     bool                SetTracksParameters ( int plane);
     bool            CollectAssociatedCharge ( int plane);
     MyTrack                     FindMyTrack ( int plane , PandoraNuTrack pandoraNu_track ,
-                                             float track_WireTimeAngle , std::vector<hit> fPossibleHits );
+                                             float track_WireTimeAngle ); // , std::vector<hit> fPossibleHits );
+    void                  SetAllHitsInPlane ( int plane, std::vector<hit> fhits);
     void                    SetAllHitsInROI ( int plane, std::vector<hit> fhits);
     void                CollectAllHitsInROI ( int plane, std::vector<hit> hits_in_this_plane );
     
@@ -129,7 +130,8 @@ public:
     std::vector<MyTrack> my_tracks;
     
     hit                 ClosestHitToVertex[3];
-    std::vector<hit>    AllHitsInROI_u,AllHitsInROI_v,AllHitsInROI_y;
+    std::vector<hit>    HitsInPlane_u, HitsInPlane_v, HitsInPlane_y;
+    std::vector<hit>    AllHitsInROI[3], AllHitsInROI_u,AllHitsInROI_v,AllHitsInROI_y;
     // -------------------------------------------------------
     
     
@@ -137,7 +139,7 @@ public:
     
     // SETters
     void         SetTracksRelations ();
-    bool         SetIsReconstructed ();
+    bool         SetIsReconstructed ( float fmax_mu_p_distance = 10 );
     void               SetGENIEinfo (GENIEinteraction fgenie_interaction){ genie_interaction = fgenie_interaction; };
     void            SetClosestGENIE (GENIEinteraction fgenie_interaction){ closest_genie_interaction = fgenie_interaction; };
     void       SetReconstructedInfo ();
@@ -179,20 +181,31 @@ public:
     // CC1p reconstructed features
     float               reco_mu_p_distance;
     float               reco_CC1p_BeamPz,   reco_CC1p_theta_pq, reco_CC1p_Pp_3momentum, reco_CC1p_Pmu_3momentum;
-    float               reco_CC1p_p_over_q, reco_CC1p_Xb, reco_CC1p_W2;
-    float               reco_CC1p_Ev_from_angles, reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff;
+    float               reco_CC1p_p_over_q, reco_CC1p_Q2, reco_CC1p_Q2_from_angles;
+    float               reco_CC1p_omega;
+    float               reco_CC1p_Xb, reco_CC1p_y, reco_CC1p_W2, reco_CC1p_s;
+    float               reco_CC1p_Ev_from_angles, reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff, reco_CC1p_Ev_from_angles_Ev_from_mu_p_ratio;
+    float               reco_CC1p_alpha_p , reco_CC1p_alpha_q , reco_CC1p_alpha_mu;
+    float               reco_CC1p_Q2_from_angles_diff, reco_CC1p_Q2_from_angles_ratio;
+    
     float               dqdx_around_vertex,   dqdx_around_vertex_tracks_associated, dqdx_around_vertex_non_tracks_associated;
+    
     
     
     TVector3            position    ;
     TVector3            reco_CC1p_Pp_3vect, reco_CC1p_Pmu_3vect;
     
     
-    
     TLorentzVector      reconstructed_nu, reconstructed_muon, reconstructed_q ;
     TLorentzVector      reco_CC1p_Pnu,  reco_CC1p_Pp,   reco_CC1p_Pmu,  reco_CC1p_q;
     TLorentzVector      reco_CC1p_n_miss;
     
+    // from MCS LLHD
+    TVector3            reco_CC1p_Pmu_3vect_mcsllhd;
+    TLorentzVector      reco_CC1p_Pmu_mcsllhd, reco_CC1p_Pnu_mcsllhd, reco_CC1p_q_mcsllhd;
+    float               reco_CC1p_theta_pq_mcsllhd, reco_CC1p_BeamPz_mcsllhd;
+    float               reco_CC1p_p_over_q_mcsllhd, reco_CC1p_Q2_mcsllhd, reco_CC1p_Q2_from_angles_mcsllhd;
+    // --------
     
     box                 roi[3] , roi_u , roi_v , roi_y;
     

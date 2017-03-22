@@ -158,16 +158,20 @@ void myVertex::SetTracksRelations(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool myVertex::SetIsReconstructed(){
-    if (IsVertexContained && muonTrackReconstructed && protonTrackReconstructed){
-        IsVertexReconstructed = true;
+bool myVertex::SetIsReconstructed( float fmax_mu_p_distance ){
+    if (IsVertexContained
+        && muonTrackReconstructed && muonTrueTrack.IsTrackContainedSoft()
+        && protonTrackReconstructed && protonTrueTrack.IsTrackContainedSoft()
+        ){
         reco_mu_p_distance = muonTrueTrack.ClosestDistanceToOtherTrack( protonTrueTrack );
-        return true;
+        if (reco_mu_p_distance < fmax_mu_p_distance){
+            IsVertexReconstructed = true;
+            return true;
+        }
     }
-    else {
-        IsVertexReconstructed = false;
-        return false;
-    }
+    IsVertexReconstructed = false;
+    return false;
+    
 }
 
 
@@ -181,7 +185,7 @@ void myVertex::SetAssignTracks(PandoraNuTrack fAssignedMuonTrack,
     FixTracksDirections ();
     SetEDepAroundVertex ();
     SetReconstructedFeatures ( PmuonFromRange , PprotonFromRange );
-
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -257,6 +261,9 @@ void myVertex::SetReconstructedMomenta( float PmuonFromRange, float PprotonFromR
     reco_CC1p_Pmu_3vect.SetMagThetaPhi( reco_CC1p_Pmu_3momentum , AssignedMuonTrack.theta , AssignedMuonTrack.phi );
     reco_CC1p_Pmu.SetVectMag ( reco_CC1p_Pmu_3vect , 0.1056 );
     
+    reco_CC1p_Pmu_3vect_mcsllhd.SetMagThetaPhi( AssignedMuonTrack.mommsllhd , AssignedMuonTrack.theta , AssignedMuonTrack.phi );
+    reco_CC1p_Pmu_mcsllhd.SetVectMag ( reco_CC1p_Pmu_3vect_mcsllhd , 0.1056 );
+    
     //        PrintPhys( (AssignedMuonTrack.truth_start_pos - AssignedMuonTrack.truth_end_pos).Mag() , "cm (true length)" );
     //        PrintPhys(AssignedMuonTrack.truth_P,"GeV/c (true momentum)");
     //        PrintPhys( AssignedMuonTrack.length , "cm (reco. length)" );
@@ -272,18 +279,39 @@ void myVertex::SetReconstructedBeamPz(){
     reco_CC1p_BeamPz = reco_CC1p_Pp.Pz() + reco_CC1p_Pmu.Pz();
     reco_CC1p_Pnu = TLorentzVector( 0 , 0 , reco_CC1p_BeamPz , reco_CC1p_BeamPz );
     
+    reco_CC1p_BeamPz_mcsllhd = reco_CC1p_Pp.Pz() + reco_CC1p_Pmu_mcsllhd.Pz();
+    reco_CC1p_Pnu_mcsllhd = TLorentzVector( 0 , 0 , reco_CC1p_BeamPz_mcsllhd , reco_CC1p_BeamPz_mcsllhd );
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void myVertex::SetReconstructed_q(){
+    // [http://pdg.lbl.gov/2014/reviews/rpp2014-rev-structure-functions.pdf]
     // reconstruct the momentum transfer from minimal features of CC1p
     // and stopping range
     reco_CC1p_q = reco_CC1p_Pnu - reco_CC1p_Pmu;
+    reco_CC1p_omega = reco_CC1p_q.E();
+
+    
     // reconstructed 𝜃(p,q) based on these minimal features
     reco_CC1p_theta_pq = r2d * reco_CC1p_Pp.Vect().Angle( reco_CC1p_q.Vect() );
     reco_CC1p_p_over_q = reco_CC1p_Pp.P()/reco_CC1p_q.P();
-    reco_CC1p_Xb = - reco_CC1p_q.Mag2() / (2*0.939*reco_CC1p_q.E());
+    
+    reco_CC1p_Q2 = - reco_CC1p_q.Mag2();
+    reco_CC1p_Q2_from_angles = 4.*reco_CC1p_Pnu.E()*reco_CC1p_Pmu.E()*sin(reco_CC1p_Pmu.Theta())*sin(reco_CC1p_Pmu.Theta());
+    reco_CC1p_Q2_from_angles_diff = reco_CC1p_Q2_from_angles - reco_CC1p_Q2;
+    reco_CC1p_Q2_from_angles_ratio = fabs(reco_CC1p_Q2)>0.01 ? reco_CC1p_Q2_from_angles / reco_CC1p_Q2 : 100.*reco_CC1p_Q2_from_angles;
+    
+    
+    reco_CC1p_Xb = reco_CC1p_Q2 / (2*0.939*reco_CC1p_q.E());
     reco_CC1p_n_miss = reco_CC1p_Pp - reco_CC1p_q;
+    reco_CC1p_y = reco_CC1p_omega/reco_CC1p_Pnu.E();
+    reco_CC1p_s = reco_CC1p_Q2/(reco_CC1p_Xb*reco_CC1p_y) + 0.939*0.939 + 0.106*0.106;
+    
+    
+    reco_CC1p_alpha_p = (reco_CC1p_Pp.E()-reco_CC1p_Pp.Pz())/0.931;
+    reco_CC1p_alpha_mu = (reco_CC1p_Pmu.E()-reco_CC1p_Pmu.Pz())/0.931;
+    reco_CC1p_alpha_q = (reco_CC1p_q.E()-reco_CC1p_q.Pz())/0.931;
     
     // [from clas-note 2002-08]
     float theta_l = reco_CC1p_Pmu.Theta();
@@ -291,8 +319,18 @@ void myVertex::SetReconstructed_q(){
     float factor = 0.939 / ( 1. - cos( theta_l ) );
     reco_CC1p_Ev_from_angles = factor * ( cos( theta_l ) + cos( theta_p ) * ( sin( theta_l ) / sin( theta_p ) ) - 1. );
     reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff = reco_CC1p_Ev_from_angles - reco_CC1p_Pnu.E();
-
+    reco_CC1p_Ev_from_angles_Ev_from_mu_p_ratio = fabs(reco_CC1p_Pnu.E())>0.01 ? reco_CC1p_Ev_from_angles / reco_CC1p_Pnu.E() : 100.*reco_CC1p_Ev_from_angles;
+    
     reco_CC1p_W2 = 0.939*(0.939 + 2*(reco_CC1p_Pnu.E() - reco_CC1p_Pmu.E())) - 4*reco_CC1p_Pnu.E()*reco_CC1p_Pmu.E()*(1.-cos(theta_l));
+    
+    
+    
+    // from MCS
+    reco_CC1p_q_mcsllhd = reco_CC1p_Pnu_mcsllhd - reco_CC1p_Pmu_mcsllhd;
+    
+    reco_CC1p_theta_pq_mcsllhd = r2d * reco_CC1p_Pp.Vect().Angle( reco_CC1p_q_mcsllhd.Vect() );
+    reco_CC1p_p_over_q_mcsllhd = reco_CC1p_Pp.P()/reco_CC1p_q_mcsllhd.P();
+
 
 }
 
@@ -310,7 +348,7 @@ void myVertex::SetReconstructedFeatures( float PmuonFromRange, float PprotonFrom
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool myVertex::RemoveFarTracks(float max_mu_p_distance, Int_t debug){
+bool myVertex::RemoveFarTracks(float max_mu_p_distance ){
     // narrow down the set of tracks associated to the vertices by looking only
     // at those tracks that are close enough to the vertices
     std::vector<Int_t>          CloseEnoughTracksID;
@@ -333,6 +371,11 @@ bool myVertex::RemoveFarTracks(float max_mu_p_distance, Int_t debug){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::BuildROI(int plane){
+    
+    // for GENIE vertices in which only one track was reconstructed, build the roi based on this track
+    if (muonTrackReconstructed && !protonTrackReconstructed) {AssignedProtonTrack=AssignedMuonTrack;}
+    if (!muonTrackReconstructed && protonTrackReconstructed) {AssignedMuonTrack=AssignedProtonTrack;}
+    // -------------------------------------------------------------------------------------------------
     
     int wire_min = std::min( {AssignedMuonTrack.roi[plane].start_wire , AssignedMuonTrack.roi[plane].end_wire , AssignedProtonTrack.roi[plane].start_wire, AssignedProtonTrack.roi[plane].end_wire} );
     int wire_max = std::max( {AssignedMuonTrack.roi[plane].start_wire , AssignedMuonTrack.roi[plane].end_wire , AssignedProtonTrack.roi[plane].start_wire, AssignedProtonTrack.roi[plane].end_wire} );
@@ -756,14 +799,14 @@ std::vector<hit> myVertex::TrackMyTrack( int plane, hit StartHit , std::vector<h
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-std::vector<hit> myVertex::PossibleTracksForTracking( int plane, std::vector<hit> fPossibleHits,
+std::vector<hit> myVertex::PossibleTracksForTracking( int plane, // std::vector<hit> fPossibleHits,
                                                       float TrackAngle , PandoraNuTrack track ){
     std::vector<hit> PossibleHits;
-    for (auto hit:fPossibleHits) {
+    for (auto hit:AllHitsInROI[plane]) {
         
         // we want to use hits that are either the closest vertically/horizontally,
         // or a very close (<1cm) the one that is, since sometimes a good track deposits charge in multi-hit/multi-wire pattern...
-        auto ClosestHitToTrack_in1d = ClosestHitToTrack1d( plane , hit.hit_wire , hit.hit_peakT , fPossibleHits  , track );
+        auto ClosestHitToTrack_in1d = ClosestHitToTrack1d( plane , hit.hit_wire , hit.hit_peakT , AllHitsInROI[plane]  , track );
         auto DistanceClosestHitToTrack_in1d = HitHitDistance( hit , ClosestHitToTrack_in1d ); // distance in mm
         
         if( debug>5 ){
@@ -805,7 +848,7 @@ bool myVertex::SetTracksParameters( int plane ){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-MyTrack myVertex::FindMyTrack( int plane , PandoraNuTrack pandoraNu_track , float track_WireTimeAngle , std::vector<hit> fPossibleHits ){
+MyTrack myVertex::FindMyTrack( int plane , PandoraNuTrack pandoraNu_track , float track_WireTimeAngle ) { //, std::vector<hit> fPossibleHits ){
 
     Debug(3,Form("%d/%d/%d tracking for muon track (%d, pidA=%.1f) in plane %d (angle=%.1f)",
                  run,subrun,event,pandoraNu_track.track_id,pandoraNu_track.pidpida,plane,r2d*track_WireTimeAngle));
@@ -815,7 +858,7 @@ MyTrack myVertex::FindMyTrack( int plane , PandoraNuTrack pandoraNu_track , floa
 
     // (A) find the start hit
     std::vector<hit> PossibleStartHits , PossibleHits;
-    PossibleStartHits = PossibleHits = PossibleTracksForTracking( plane , fPossibleHits , track_WireTimeAngle , pandoraNu_track );
+    PossibleStartHits = PossibleHits = PossibleTracksForTracking( plane , track_WireTimeAngle , pandoraNu_track );
     my_track.SetPossibleHits( PossibleHits );
     FoundClosestHitToVertex = FindClosestHitToVertex( plane , PossibleStartHits );
     
@@ -852,20 +895,19 @@ MyTrack myVertex::FindMyTrack( int plane , PandoraNuTrack pandoraNu_track , floa
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-bool myVertex::AssociateHitsToTracks( int plane, std::vector<hit> fPossibleHits ){ // input fPossibleHits vector is only hits in this plane
+bool myVertex::AssociateHitsToTracks( int plane ){//, std::vector<hit> fPossibleHits ){ // input fPossibleHits vector is only hits in this plane
     
     Debug(2,Form("r %d/s %d/e %d myVertex::AssociateHitsToTracks in plane %d",run,subrun,event,plane));
-//    for (auto &hit:fPossibleHits) hit.ClosestTrack_track_id = ClosestTrackToHit( plane , hit );
     
     
     bool DoMuonTracking = true , DoProtonTracking = true;
 
     if (DoMuonTracking){
-        MyTrackMuonTrack[plane] = FindMyTrack( plane , AssignedMuonTrack , mu_angle[plane] , fPossibleHits );
+        MyTrackMuonTrack[plane] = FindMyTrack( plane , AssignedMuonTrack , mu_angle[plane] );
     }
     
     if (DoProtonTracking){
-        MyTrackProtonTrack[plane] = FindMyTrack( plane , AssignedProtonTrack , p_angle[plane] , fPossibleHits );
+        MyTrackProtonTrack[plane] = FindMyTrack( plane , AssignedProtonTrack , p_angle[plane] );
     }
     
     // remove double counting of hits
@@ -886,6 +928,7 @@ bool myVertex::AssociateHitsToTracks( int plane, std::vector<hit> fPossibleHits 
             MyTrackProton_y = MyTrackProtonTrack[plane];
             break;
     }
+    
     Debug(3,"finished myVertex::AssociateHitsToTracks\n------------------------------------");
     return true;
 }
@@ -896,8 +939,13 @@ void myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_pla
     
     std::vector<hit> hits_in_vertex_roi;
     float total_charge_in_roi = 0;
+    if (debug>5) {
+        Printf("myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_plane )");
+        for (auto hit: hits_in_this_plane) hit.Print();
+    }
     
     for (auto hit: hits_in_this_plane){
+        
         if ( hit.InBox( roi[plane] ) ){
             hits_in_vertex_roi.push_back( hit );
             total_charge_in_roi += hit.hit_charge;
@@ -913,21 +961,38 @@ void myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_pla
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void myVertex::SetAllHitsInROI (int plane , std::vector<hit> fhits){
+
     switch (plane) {
         case 0:
-            for (auto hit:fhits) AllHitsInROI_u.push_back(hit);
+            for (auto hit:fhits) {AllHitsInROI[plane].push_back(hit); AllHitsInROI_u.push_back(hit);}
             break;
         case 1:
-            for (auto hit:fhits) AllHitsInROI_v.push_back(hit);
+            for (auto hit:fhits) {AllHitsInROI[plane].push_back(hit); AllHitsInROI_v.push_back(hit);}
             break;
         case 2:
         default:
-            for (auto hit:fhits) AllHitsInROI_y.push_back(hit);
+            for (auto hit:fhits) {AllHitsInROI[plane].push_back(hit); AllHitsInROI_y.push_back(hit);}
             break;
     }
-
-    
 }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetAllHitsInPlane (int plane , std::vector<hit> fhits){
+    switch (plane) {
+        case 0:
+            for (auto hit:fhits) HitsInPlane_u.push_back(hit);
+            break;
+        case 1:
+            for (auto hit:fhits) HitsInPlane_v.push_back(hit);
+            break;
+        case 2:
+        default:
+            for (auto hit:fhits) HitsInPlane_y.push_back(hit);
+            break;
+    }
+}
+
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -949,11 +1014,8 @@ bool myVertex::CollectAssociatedCharge(int plane){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void myVertex::Print(){
-    //    if(GENIECC1p && IsVertexReconstructed) Printf("in Print");
-    //    if(GENIECC1p && IsVertexReconstructed) SHOW2( reco_CC1p_Pmu.Phi() , reco_CC1p_Pmu.Theta());
-
     
-    cout << "\033[35m" << "~~~~~\n" << "vertex " << counter_id << ", vertex-id " << vertex_id << "\n~~~~~~ "<< "\033[0m" << endl;
+    cout << "\033[35m" << "~~~~~~~~~~~~~~\n vertex " << vertex_id << "\n~~~~~~~~~~~~~~"<< "\033[0m" << endl;
     SHOW3( run , subrun , event );
     SHOWTVector3( position );
     for (auto t: tracks) {
@@ -962,46 +1024,46 @@ void myVertex::Print(){
     
     // tracks
     if (!tracks.empty()){
-        cout << "\033[33m" << tracks.size() << " tracks in vertex " << "\033[37m" << endl;
+        cout << "\033[33m" << tracks.size() << " tracks in vertex " << "\033[30m" << endl;
         for (auto t: tracks) {
-            if (t.track_id!=-100){
-                t.Print( true );
-            }
-            else{
-                Printf("unidentified/non-reconstructed track. continuing...");
-            }
+            if (t.track_id!=-100)   t.Print( true , true, true );
+            else                    Printf("unidentified/non-reconstructed track. continuing...");
         }
 
         // inter-tracks distances
-        cout << "\033[33m" << tracks.size()*tracks.size() << " inter-tracks distances " << "\033[37m" << endl;
+        cout << "\033[33m" << tracks.size()*tracks.size() << " inter-tracks distances " << "\033[30m" << endl;
         for(auto vec : tracks_distances) {
             for(auto x : vec)
             std::cout << setprecision(2) << x << "\t";
             std::cout << std::endl;
         }
     }
-    cout << "topology: " << TopologyString << endl;
+    else {
+        cout << "\033[33m" << "no reconstructed tracks in vertex " << "\033[30m" << endl;
+    }
+    //    cout << "topology: " << TopologyString << endl;
     cout << "truth topology: " << TruthTopologyString << endl;
+    SHOW(GENIECC1p);
     if (GENIECC1p){
         cout << "This vertex is a GENIE true CC1p" << endl;
         SHOW3( muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed );
+        
+        // muon
         SHOWTLorentzVector( genie_interaction.muon );
-        SHOWTLorentzVector( reco_CC1p_Pmu );
-        if (genie_interaction.protons.size()>0){
-            SHOWTLorentzVector( genie_interaction.protons[0] );
-        }
-        SHOWTLorentzVector( reco_CC1p_Pp );
-        SHOW2(genie_interaction.theta_pq,reco_CC1p_theta_pq);
+        if (!tracks.empty()) SHOWTLorentzVector( reco_CC1p_Pmu );
+        
+        // proton
+        if (genie_interaction.protons.size()>0) SHOWTLorentzVector( genie_interaction.protons[0] );
+        if (!tracks.empty()) SHOWTLorentzVector( reco_CC1p_Pp );
+        
+        // theta (p,q)
+        SHOW(genie_interaction.theta_pq);
+        if (!tracks.empty()) SHOW(reco_CC1p_theta_pq);
     }
 
-    for (int plane = 0 ; plane<3 ; plane ++ ){
-        PrintBox(roi[plane]);
-    }
+    if (!tracks.empty()) for (int plane = 0 ; plane<3 ; plane ++ ) PrintBox(roi[plane]);
+    SHOW3(AllHitsInROI_u.size(),AllHitsInROI_v.size(),AllHitsInROI_y.size());
     
-    //    Printf("truth muon");
-    //    SHOW4( genie_interaction.muon.Phi() , AssignedMuonTrack.truth_phi , AssignedMuonTrack.phi , reco_CC1p_Pmu.Phi() );
-    //    SHOW4( genie_interaction.muon.Theta() , AssignedMuonTrack.truth_theta , AssignedMuonTrack.theta  , reco_CC1p_Pmu.Theta() );
-
 }
 
 

@@ -18,6 +18,7 @@
                                                         BNB_5e19POT
                                                         extBNB
                                                         MC_BNB_InTimeCOSMIC_MC
+                                                        MC_BNB_extBNB
                                                             
         -evf                    events fraction         (default 0.01)
         -mccv/--MCCversion      MCC-version             (default 7)
@@ -27,17 +28,15 @@
     
 '''
 from ccqe_tools import *
-
-
-do_print_tracks , do_print_vertices = True if debug>2 else False, True if debug>4 else False
+do_print_tracks , do_print_vertices = True if debug>2 else False, True if debug>6 else False
 
 
 
 
 
 
-if 'Truth' not in flags.option and 'Topology' not in flags.option:
-    print 'you have to choose Truth / Topology...'
+if 'Topology' not in flags.option:
+    print 'you have to choose Topology...'
     exit(0)
 
 
@@ -58,18 +57,17 @@ if "CC1p" in flags.option: #{
     outfile = ROOT.TFile( outfilename ,"recreate")
     outtree = ROOT.TTree("TwoTracksTree","2-tracks clusters")
 
-    events  = calcEventTopologies( inttree , outtree, flags.option , (int)(flags.verbose) , MCmode )
+    events  = calcEventTopologies( inttree , outtree, flags.option , debug , MCmode )
     events.SetMaxmupDistance (ccqe_pars['max_mu_p_distance'] )
-    events.SetMinLengthLong (ccqe_pars['min_length_long'] )
-    events.SetMaxLengthShort (ccqe_pars['max_length_short'] )
-    events.SetDetaPhiMin (ccqe_pars['delta_phi_min'] )
-    events.SetDetaPhiMax (ccqe_pars['delta_phi_max'] )
-    events.SetPIDAShortMin (ccqe_pars['PIDA_short_min'])
-    events.SetPIDAShortMax (ccqe_pars['PIDA_short_max'])
-    events.SetPIDALongMin (ccqe_pars['PIDA_long_min'])
-    events.SetPIDALongMax (ccqe_pars['PIDA_long_max'])
-    
-
+    events.debug = debug
+    #    events.SetMinLengthLong (ccqe_pars['min_length_long'] )
+    #    events.SetMaxLengthShort (ccqe_pars['max_length_short'] )
+    #    events.SetDetaPhiMin (ccqe_pars['delta_phi_min'] )
+    #    events.SetDetaPhiMax (ccqe_pars['delta_phi_max'] )
+    #    events.SetPIDAShortMin (ccqe_pars['PIDA_short_min'])
+    #    events.SetPIDAShortMax (ccqe_pars['PIDA_short_max'])
+    #    events.SetPIDALongMin (ccqe_pars['PIDA_long_min'])
+    #    events.SetPIDALongMax (ccqe_pars['PIDA_long_max'])
     events.SetOption ( flags.option )
 
 
@@ -86,10 +84,8 @@ if "CC1p" in flags.option: #{
         events.GetEntry(i)
         
         # verbosity to a specific event
-        events.debug=flags.verbose if events.event == 36674 else 0
+        # events.debug=debug if events.event == 137796 else 0
         
-
-
         # analyze the event
         events.extract_information()
         
@@ -100,25 +96,11 @@ if "CC1p" in flags.option: #{
         
         if i%flags.print_mod==0:
             print "processed %d events,found %d 2-tracks clusters, %d 1mu1p, %d true GENIE CC1p"%(i,counter,CC1mu1p_counter,GENIECC1p_counter)
-            if debug: events.Print( do_print_tracks , do_print_vertices )
+            if events.debug: events.Print( do_print_tracks , do_print_vertices )
         
         if event_has_CC1p_topology is not True: continue
     
         for vertex in events.CC1p_vertices: #{
-            
-            # perform my-tracking to look for fraction of charge deposited in vertex to track-associated charge
-#            hits = events.hits
-#            tracks = [vertex.AssignedMuonTrack , vertex.AssignedProtonTrack]
-#            my_tracks_dict , hits_charge_dict = get_my_tracks_in_roi( hits=hits, tracks=tracks , debug=0 )
-#            attach_hits_my_tracks_to_vertex( hits_charge_dict=hits_charge_dict , my_tracks_dict=my_tracks_dict , vertex=vertex )
-
-#            if vertex.Is1mu1pDetected and vertex.genie_interaction.protons.size():
-#                print 'mcevent_id:',vertex.genie_interaction.mcevent_id
-#                print vertex.genie_interaction.Np,'protons in GENIE interaction'
-#                print vertex.genie_interaction.protons.size()
-#                print vertex.genie_interaction.protons.at(0).P()
-
-            if vertex.GENIECC1p: vertex.SetCounterID( GENIECC1p_counter )
             
             stream_vertex_to_file( vertex , outcsvname , MCmode=MCmode )
             

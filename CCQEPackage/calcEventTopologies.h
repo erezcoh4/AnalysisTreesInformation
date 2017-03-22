@@ -47,13 +47,15 @@ public:
                         std::string o="CC1pTopology",
                         int fdebug=0,
                         bool fMCmode=false,
-                        float fmax_mu_p_distance=10);
+                        float fmax_mu_p_distance=10,
+                        TTree * fInEventsTree = nullptr);
 
     
     
     
     // setters
     void                  SetInTree (TTree * tree)       {InTree = tree;};
+    void            SetInEventsTree (TTree * tree)       {InEventsTree = tree;};
     void                 SetOutTree (TTree * tree)       {OutTree = tree;};
     void                  SetMCMode (bool _mc_mode)      {MCmode = _mc_mode;};
     void          SetMaxmupDistance (float fmax)         {max_mu_p_distance = fmax;};
@@ -84,7 +86,7 @@ public:
     bool     MoreThanTwoCloseTracks ( myVertex );
 
     bool    ClusterTracksToVertices ();
-    bool     ClusterGENIEToVertices ();
+    bool     ClusterGENIEToVertices ( int vertex_id );
     bool            AnalyzeVertices ();
     bool      FindGENIECC1pVertices ();
     bool      FindTruthCC1pVertices ();
@@ -93,6 +95,7 @@ public:
     bool               TagGENIECC1p ();
     bool          PerformMyTracking ();
     bool                FillOutTree ();
+    bool           FillGENIEOutTree ();
     
     
     // my tracking
@@ -105,10 +108,11 @@ public:
     // getters
     PandoraNuTrack         GetTrack ( int i )        {return tracks.at(i);};
     
-    TTree * InTree , * OutTree;
+    TTree * InTree , * InEventsTree, * OutTree;
    
-    int     debug ;
     bool    MCmode,     IsGENIECC1p,    FoundTruthCC1p;
+    
+    Int_t   vertices_ctr;
     Int_t   Nentries,   run, 	subrun, event;
     Int_t   c_entry;
     Int_t   NCC1pVertices , Nhits , Ntracks;
@@ -120,7 +124,7 @@ public:
     float   delta_phi_min,      delta_phi_max;
     std::string option;
     
-    std::vector<hit>            hits, hits_in_plane;
+    std::vector<hit>            hits, hits_in_plane[3];
     std::vector<MyTrack>        my_tracks[3]; // in 3 planes
     
     

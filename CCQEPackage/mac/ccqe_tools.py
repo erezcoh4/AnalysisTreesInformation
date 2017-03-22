@@ -4,6 +4,9 @@ from anatrees_tools import *
 from calc_tools import *
 from tracking_tools import *
 from ROOT import calcEventTopologies, MyTrack
+from matplotlib import ticker
+import scipy.optimize as optimize
+
 
 r2d = 180./np.pi
 
@@ -71,7 +74,7 @@ def attach_hits_my_tracks_to_vertex( hits_charge_dict=None, my_tracks_dict=None 
 
 # ---------------------------------------------------------------------------
 def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
-    
+
     data = pd.DataFrame({
                         # event features
                         'run':vertex.run
@@ -79,133 +82,173 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'event':vertex.event
                         
                         # 2-tracks vertex features
-                        ,'counter_id':vertex.counter_id
-                        ,'delta_phi':r2d*np.abs(vertex.reco_CC1p_Pp.Phi()-vertex.reco_CC1p_Pmu.Phi())
-                        ,'delta_theta':r2d*np.abs(vertex.reco_CC1p_Pp.Theta()-vertex.reco_CC1p_Pmu.Theta())
-                        ,'distance':vertex.distances_ij
-                        ,'2_tracks_angle':vertex.GetAngleBetween2tracks()
+                        ,'vertex_id':vertex.vertex_id
                         ,'vertex_x':vertex.position.x()
                         ,'vertex_y':vertex.position.y()
                         ,'vertex_z':vertex.position.z()
-                        ,'pida':[list(track.pidpida for track in vertex.tracks)]
-                        ,'track_id':[list(track.track_id for track in vertex.tracks)]
-                        ,'length':[list(track.length for track in vertex.tracks)]
-                        ,'mcevent_id':[list(track.mcevent_id for track in vertex.tracks)] if MCmode else -1000
+                        ,'pida':[list(track.pidpida for track in vertex.tracks)] if vertex.tracks.size()>0 else -1000
+                        ,'track_id':[list(track.track_id for track in vertex.tracks)] if vertex.tracks.size()>0 else -1000
+                        ,'length':[list(track.length for track in vertex.tracks)] if vertex.tracks.size()>0 else -1000
+                        ,'mcevent_id':[list(track.mcevent_id for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0 else -1000
                         ,'startx':[list(track.startx for track in vertex.tracks)] if MCmode else -1000
                         ,'starty':[list(track.starty for track in vertex.tracks)] if MCmode else -1000
+                        ,'endy':[list(track.endy for track in vertex.tracks)] if MCmode else -1000
                         ,'startz':[list(track.startz for track in vertex.tracks)] if MCmode else -1000
 
                         # single tracks features
                         # sort by length
-                        ,'theta_short':vertex.ShortestTrack.theta
-                        ,'theta_long':vertex.LongestTrack.theta
-                        ,'l_short':vertex.ShortestTrack.length
-                        ,'l_long':vertex.LongestTrack.length
-                        ,'cfdistance_short':vertex.ShortestTrack.cfdistance
-                        ,'cfdistance_long':vertex.LongestTrack.cfdistance
-                        ,'PIDA_short':vertex.ShortestTrack.pidpida
-                        ,'PIDA_long':vertex.LongestTrack.pidpida
-                        ,'starty_short':vertex.ShortestTrack.starty
-                        ,'starty_long':vertex.LongestTrack.starty
-                        ,'endy_short':vertex.ShortestTrack.endy
-                        ,'endy_long':vertex.LongestTrack.endy
-                        ,'cosmicscore_short':vertex.ShortestTrack.cosmicscore
-                        ,'cosmicscore_long':vertex.LongestTrack.cosmicscore
-                        ,'coscontscore_short':vertex.ShortestTrack.coscontscore
-                        ,'coscontscore_long':vertex.LongestTrack.coscontscore
-                        ,'cfdistance_short':vertex.ShortestTrack.cfdistance
-                        ,'cfdistance_long':vertex.LongestTrack.cfdistance
+                        ,'theta_short':vertex.ShortestTrack.theta if vertex.tracks.size()>0 else -1000
+                        ,'theta_long':vertex.LongestTrack.theta if vertex.tracks.size()>0 else -1000
+                        ,'l_short':vertex.ShortestTrack.length if vertex.tracks.size()>0 else -1000
+                        ,'l_long':vertex.LongestTrack.length if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_short':vertex.ShortestTrack.cfdistance if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_long':vertex.LongestTrack.cfdistance if vertex.tracks.size()>0 else -1000
+                        ,'PIDA_short':vertex.ShortestTrack.pidpida if vertex.tracks.size()>0 else -1000
+                        ,'PIDA_long':vertex.LongestTrack.pidpida if vertex.tracks.size()>0 else -1000
+#                        ,'startz_short':vertex.ShortestTrack.startz if vertex.tracks.size()>0 else -1000
+#                        ,'startz_long':vertex.LongestTrack.startz if vertex.tracks.size()>0 else -1000
+#                        ,'endz_short':vertex.ShortestTrack.endz if vertex.tracks.size()>0 else -1000
+#                        ,'endz_long':vertex.LongestTrack.endz if vertex.tracks.size()>0 else -1000
+#                        ,'starty_short':vertex.ShortestTrack.starty if vertex.tracks.size()>0 else -1000
+#                        ,'starty_long':vertex.LongestTrack.starty if vertex.tracks.size()>0 else -1000
+#                        ,'endy_short':vertex.ShortestTrack.endy if vertex.tracks.size()>0 else -1000
+#                        ,'endy_long':vertex.LongestTrack.endy if vertex.tracks.size()>0 else -1000
+                        ,'cosmicscore_short':vertex.ShortestTrack.cosmicscore if vertex.tracks.size()>0 else -1000
+                        ,'cosmicscore_long':vertex.LongestTrack.cosmicscore if vertex.tracks.size()>0 else -1000
+                        ,'coscontscore_short':vertex.ShortestTrack.coscontscore if vertex.tracks.size()>0 else -1000
+                        ,'coscontscore_long':vertex.LongestTrack.coscontscore if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_short':vertex.ShortestTrack.cfdistance if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_long':vertex.LongestTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         
                         # sort by pida
-                        ,'theta_large_pida':vertex.LargePIDATrack.theta
-                        ,'theta_small_pida':vertex.SmallPIDATrack.theta
-                        ,'l_large_pida':vertex.LargePIDATrack.length
-                        ,'l_small_pida':vertex.SmallPIDATrack.length
-                        ,'cfdistance_large_pida':vertex.LargePIDATrack.cfdistance
-                        ,'cfdistance_small_pida':vertex.SmallPIDATrack.cfdistance
-                        ,'PIDA_large_pida':vertex.LargePIDATrack.pidpida
-                        ,'PIDA_small_pida':vertex.SmallPIDATrack.pidpida
-                        ,'starty_large_pida':vertex.LargePIDATrack.starty
-                        ,'starty_small_pida':vertex.SmallPIDATrack.starty
-                        ,'cosmicscore_large_pida':vertex.LargePIDATrack.cosmicscore
-                        ,'cosmicscore_small_pida':vertex.SmallPIDATrack.cosmicscore
-                        ,'coscontscore_large_pida':vertex.LargePIDATrack.coscontscore
-                        ,'coscontscore_small_pida':vertex.SmallPIDATrack.coscontscore
-                        ,'cfdistance_large_pida':vertex.LargePIDATrack.cfdistance
-                        ,'cfdistance_small_pida':vertex.SmallPIDATrack.cfdistance
-                        ,'dqdx_around_vertex':vertex.dqdx_around_vertex
-                        ,'dqdx_around_vertex_tracks_associated':vertex.dqdx_around_vertex_tracks_associated
-                        ,'dqdx_around_vertex_non_tracks_associated':vertex.dqdx_around_vertex_non_tracks_associated
-                        
+                        ,'theta_large_pida':vertex.LargePIDATrack.theta if vertex.tracks.size()>0 else -1000
+                        ,'theta_small_pida':vertex.SmallPIDATrack.theta if vertex.tracks.size()>0 else -1000
+                        ,'l_large_pida':vertex.LargePIDATrack.length if vertex.tracks.size()>0 else -1000
+                        ,'l_small_pida':vertex.SmallPIDATrack.length if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_large_pida':vertex.LargePIDATrack.cfdistance if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_small_pida':vertex.SmallPIDATrack.cfdistance if vertex.tracks.size()>0 else -1000
+                        ,'PIDA_large_pida':vertex.LargePIDATrack.pidpida if vertex.tracks.size()>0 else -1000
+                        ,'PIDA_small_pida':vertex.SmallPIDATrack.pidpida if vertex.tracks.size()>0 else -1000
+#                        ,'starty_large_pida':vertex.LargePIDATrack.starty if vertex.tracks.size()>0 else -1000
+#                        ,'starty_small_pida':vertex.SmallPIDATrack.starty if vertex.tracks.size()>0 else -1000
+                        ,'cosmicscore_large_pida':vertex.LargePIDATrack.cosmicscore if vertex.tracks.size()>0 else -1000
+                        ,'cosmicscore_small_pida':vertex.SmallPIDATrack.cosmicscore if vertex.tracks.size()>0 else -1000
+                        ,'coscontscore_large_pida':vertex.LargePIDATrack.coscontscore if vertex.tracks.size()>0 else -1000
+                        ,'coscontscore_small_pida':vertex.SmallPIDATrack.coscontscore if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_large_pida':vertex.LargePIDATrack.cfdistance if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_small_pida':vertex.SmallPIDATrack.cfdistance if vertex.tracks.size()>0 else -1000
+
+                        # assigned tracks
+                        ,'cfdistance_assigned_muon':vertex.AssignedMuonTrack.cfdistance if vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_assigned_proton':vertex.AssignedProtonTrack.cfdistance if vertex.tracks.size()>0 else -1000
+                        ,'PIDA_assigned_muon':vertex.AssignedMuonTrack.pidpida if vertex.tracks.size()>0 else -1000
+                        ,'PIDA_assigned_proton':vertex.AssignedProtonTrack.pidpida if vertex.tracks.size()>0 else -1000
+                        ,'starty_assigned_muon':vertex.AssignedMuonTrack.starty if vertex.tracks.size()>0 else -1000
+                        ,'starty_assigned_proton':vertex.AssignedProtonTrack.starty if vertex.tracks.size()>0 else -1000
+                        ,'endy_assigned_muon':vertex.AssignedMuonTrack.endy if vertex.tracks.size()>0 else -1000
+                        ,'endy_assigned_proton':vertex.AssignedProtonTrack.endy if vertex.tracks.size()>0 else -1000
+                        ,'startz_assigned_muon':vertex.AssignedMuonTrack.startz if vertex.tracks.size()>0 else -1000
+                        ,'startz_assigned_proton':vertex.AssignedProtonTrack.startz if vertex.tracks.size()>0 else -1000
+                        ,'endz_assigned_muon':vertex.AssignedMuonTrack.endz if vertex.tracks.size()>0 else -1000
+                        ,'endz_assigned_proton':vertex.AssignedProtonTrack.endz if vertex.tracks.size()>0 else -1000
+                        ,'startx_assigned_muon':vertex.AssignedMuonTrack.startx if vertex.tracks.size()>0 else -1000
+                        ,'startx_assigned_proton':vertex.AssignedProtonTrack.startx if vertex.tracks.size()>0 else -1000
+                        ,'endx_assigned_muon':vertex.AssignedMuonTrack.endx if vertex.tracks.size()>0 else -1000
+                        ,'endx_assigned_proton':vertex.AssignedProtonTrack.endx if vertex.tracks.size()>0 else -1000
+                        ,'momrange_assigned_muon':vertex.AssignedMuonTrack.momrange if vertex.tracks.size()>0 else -1000
+                        ,'momrange_assigned_proton':vertex.AssignedProtonTrack.momrange if vertex.tracks.size()>0 else -1000
+                        ,'mommsllhd_assigned_muon':vertex.AssignedMuonTrack.mommsllhd if vertex.tracks.size()>0 else -1000
+                        ,'mommsllhd_assigned_proton':vertex.AssignedProtonTrack.mommsllhd if vertex.tracks.size()>0 else -1000
+                        ,'ratio_momrange_mommsllhd_assigned_muon':(vertex.AssignedMuonTrack.momrange/vertex.AssignedMuonTrack.mommsllhd) if vertex.tracks.size()>0 and vertex.AssignedMuonTrack.mommsllhd!=0 else -1000
+                        ,'ratio_momrange_mommsllhd_assigned_proton':(vertex.AssignedProtonTrack.momrange/vertex.AssignedProtonTrack.mommsllhd) if vertex.tracks.size()>0 and vertex.AssignedProtonTrack.mommsllhd!=0 else -1000
+
                         
                         # cc1p reconstructed featues
-                        ,'reco_CC1p_Pp':vertex.reco_CC1p_Pp.P()
-                        ,'reco_CC1p_Pp_x':vertex.reco_CC1p_Pp.Px()
-                        ,'reco_CC1p_Pp_y':vertex.reco_CC1p_Pp.Py()
-                        ,'reco_CC1p_Pp_z':vertex.reco_CC1p_Pp.Pz()
-                        ,'reco_CC1p_Pmu':vertex.reco_CC1p_Pmu.P()
-                        ,'reco_CC1p_Pmu_x':vertex.reco_CC1p_Pmu.Px()
-                        ,'reco_CC1p_Pmu_y':vertex.reco_CC1p_Pmu.Py()
-                        ,'reco_CC1p_Pmu_z':vertex.reco_CC1p_Pmu.Pz()
-                        ,'reco_CC1p_Pt':( vertex.reco_CC1p_Pmu + vertex.reco_CC1p_Pp ).Pt()
-                        ,'reco_CC1p_q':vertex.reco_CC1p_q.P()
-                        ,'reco_CC1p_q_x':vertex.reco_CC1p_q.Px()
-                        ,'reco_CC1p_q_y':vertex.reco_CC1p_q.Py()
-                        ,'reco_CC1p_q_z':vertex.reco_CC1p_q.Pz()
-                        ,'reco_CC1p_Ev':vertex.reco_CC1p_Pnu.E()
-                        ,'reco_CC1p_W2':vertex.reco_CC1p_W2
-                        ,'reco_CC1p_theta_pq':vertex.reco_CC1p_theta_pq
-                        ,'reco_CC1p_p_over_q':vertex.reco_CC1p_p_over_q
-                        ,'reco_CC1p_n_miss':vertex.reco_CC1p_n_miss.P()
-                        ,'reco_CC1p_Xb':vertex.reco_CC1p_Xb
-                        ,'reco_CC1p_omega':vertex.reco_CC1p_q.E()
-                        ,'reco_CC1p_Ev_from_angles':vertex.reco_CC1p_Ev_from_angles
-                        ,'reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff':vertex.reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff
+                        ,'distance':vertex.distances_ij if vertex.tracks.size()>1 else -1000
+                        ,'delta_phi':r2d*np.abs(vertex.reco_CC1p_Pp.Phi()-vertex.reco_CC1p_Pmu.Phi()) if vertex.tracks.size()>1 else -1000
+                        ,'delta_theta':r2d*np.abs(vertex.reco_CC1p_Pp.Theta()-vertex.reco_CC1p_Pmu.Theta()) if vertex.tracks.size()>1 else -1000
+                        ,'2_tracks_angle':vertex.GetAngleBetween2tracks() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pp':vertex.reco_CC1p_Pp.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pp_x':vertex.reco_CC1p_Pp.Px() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pp_y':vertex.reco_CC1p_Pp.Py() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pp_z':vertex.reco_CC1p_Pp.Pz() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_p':vertex.reco_CC1p_alpha_p if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pmu':vertex.reco_CC1p_Pmu.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pmu_x':vertex.reco_CC1p_Pmu.Px() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pmu_y':vertex.reco_CC1p_Pmu.Py() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pmu_z':vertex.reco_CC1p_Pmu.Pz() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_mu':vertex.reco_CC1p_alpha_mu if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_q':vertex.reco_CC1p_alpha_q if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pt':( vertex.reco_CC1p_Pmu + vertex.reco_CC1p_Pp ).Pt() if vertex.tracks.size()>0 else -1000
+                        ,'reco_CC1p_q':vertex.reco_CC1p_q.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_q_x':vertex.reco_CC1p_q.Px() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_q_y':vertex.reco_CC1p_q.Py() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_q_z':vertex.reco_CC1p_q.Pz() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev':vertex.reco_CC1p_Pnu.E() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_W2':vertex.reco_CC1p_W2 if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_theta_pq':vertex.reco_CC1p_theta_pq if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_theta_pq_mcsllhd':vertex.reco_CC1p_theta_pq_mcsllhd if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_p_over_q':vertex.reco_CC1p_p_over_q if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_p_over_q_mcsllhd':vertex.reco_CC1p_p_over_q_mcsllhd if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_n_miss':vertex.reco_CC1p_n_miss.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Xb':vertex.reco_CC1p_Xb if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_y':vertex.reco_CC1p_y if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_s':vertex.reco_CC1p_s if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2':vertex.reco_CC1p_Q2 if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_mcsllhd':vertex.reco_CC1p_Q2_mcsllhd if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_from_angles':vertex.reco_CC1p_Q2_from_angles if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_from_angles_mcsllhd':vertex.reco_CC1p_Q2_from_angles_mcsllhd if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_from_angles_diff':vertex.reco_CC1p_Q2_from_angles_diff if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_from_angles_ratio':vertex.reco_CC1p_Q2_from_angles_ratio if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_omega':vertex.reco_CC1p_omega if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_from_angles':vertex.reco_CC1p_Ev_from_angles if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff':vertex.reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_from_angles_Ev_from_mu_p_ratio':vertex.reco_CC1p_Ev_from_angles_Ev_from_mu_p_ratio if vertex.tracks.size()>1 else -1000
                         
                         
                         # my tracking
-                        
-                        ,'associated_hit_charge_u':vertex.TracksAssociatedCharge[0]
-                        ,'associated_hit_charge_v':vertex.TracksAssociatedCharge[1]
-                        ,'associated_hit_charge_y':vertex.TracksAssociatedCharge[2]
-                        ,'total_hit_charge_u':vertex.AllChargeInVertexROI[0]
-                        ,'total_hit_charge_v':vertex.AllChargeInVertexROI[1]
-                        ,'total_hit_charge_y':vertex.AllChargeInVertexROI[2]
-                        ,'ratio_associated_hit_charge_to_total_u':vertex.ratio_associated_hit_charge_to_total[0]
-                        ,'ratio_associated_hit_charge_to_total_v':vertex.ratio_associated_hit_charge_to_total[1]
-                        ,'ratio_associated_hit_charge_to_total_y':vertex.ratio_associated_hit_charge_to_total[2]
-                        ,'average_ratio_associated_hit_charge_to_total':vertex.average_ratio_associated_hit_charge_to_total
+                        ,'associated_hit_charge_u':vertex.TracksAssociatedCharge[0] if vertex.tracks.size()>0 else -1000
+                        ,'associated_hit_charge_v':vertex.TracksAssociatedCharge[1] if vertex.tracks.size()>0 else -1000
+                        ,'associated_hit_charge_y':vertex.TracksAssociatedCharge[2] if vertex.tracks.size()>0 else -1000
+                        ,'total_hit_charge_u':vertex.AllChargeInVertexROI[0] if vertex.tracks.size()>0 else -1000
+                        ,'total_hit_charge_v':vertex.AllChargeInVertexROI[1] if vertex.tracks.size()>0 else -1000
+                        ,'total_hit_charge_y':vertex.AllChargeInVertexROI[2] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_u':vertex.ratio_associated_hit_charge_to_total[0] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_v':vertex.ratio_associated_hit_charge_to_total[1] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_y':vertex.ratio_associated_hit_charge_to_total[2] if vertex.tracks.size()>0 else -1000
+                        ,'average_ratio_associated_hit_charge_to_total':vertex.average_ratio_associated_hit_charge_to_total if vertex.tracks.size()>0 else -1000
                         
                         
                         # features that are only relevant for truth information
-                        ,'pdg':[list(track.MCpdgCode for track in vertex.tracks)] if MCmode else -1000
-                        ,'truth_startx':[list(track.truth_startx for track in vertex.tracks)] if MCmode else -1000
-                        ,'truth_starty':[list(track.truth_starty for track in vertex.tracks)] if MCmode else -1000
-                        ,'truth_startz':[list(track.truth_startz for track in vertex.tracks)] if MCmode else -1000
-                        ,'process_primary':[list(track.process_primary for track in vertex.tracks)] if MCmode else -1000
+                        ,'pdg':[list(track.MCpdgCode for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0  else -1000
+                        ,'truth_startx':[list(track.truth_startx for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'truth_starty':[list(track.truth_starty for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'truth_startz':[list(track.truth_startz for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'truth_endy':[list(track.truth_endy for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'process_primary':[list(track.process_primary for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0 else -1000
                         
-                        ,'pdg_large_pida':vertex.LargePIDATrack.MCpdgCode if MCmode else -1000
-                        ,'pdg_small_pida':vertex.SmallPIDATrack.MCpdgCode if MCmode else -1000
-                        ,'pdg_long':vertex.LongestTrack.MCpdgCode if MCmode else -1000
-                        ,'pdg_short':vertex.ShortestTrack.MCpdgCode if MCmode else -1000
+                        ,'pdg_large_pida':vertex.LargePIDATrack.MCpdgCode if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'pdg_small_pida':vertex.SmallPIDATrack.MCpdgCode if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'pdg_long':vertex.LongestTrack.MCpdgCode if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'pdg_short':vertex.ShortestTrack.MCpdgCode if MCmode and vertex.tracks.size()>0 else -1000
                         
-                        ,'l_proton':vertex.protonTrueTrack.length if MCmode else -1000
-                        ,'l_muon':vertex.muonTrueTrack.length if MCmode else -1000
-                        ,'starty_proton':vertex.protonTrueTrack.starty if MCmode else -1000
-                        ,'starty_muon':vertex.muonTrueTrack.starty if MCmode else -1000
+                        ,'l_proton':vertex.protonTrueTrack.length if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'l_muon':vertex.muonTrueTrack.length if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'starty_proton':vertex.protonTrueTrack.starty if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'starty_muon':vertex.muonTrueTrack.starty if MCmode and vertex.tracks.size()>0  else -1000
                         
-                        ,'proton_track_is_flipped':vertex.protonTrueTrack.is_flipped if MCmode else -1000
-                        ,'muon_track_is_flipped':vertex.muonTrueTrack.is_flipped if MCmode else -1000
+#                        ,'proton_track_is_flipped':vertex.protonTrueTrack.is_flipped if MCmode and vertex.tracks.size()>0 else -1000
+#                        ,'muon_track_is_flipped':vertex.muonTrueTrack.is_flipped if MCmode and vertex.tracks.size()>0 else -1000
                         
-                        ,'cosmicscore_proton':vertex.protonTrueTrack.cosmicscore if MCmode else -1000
-                        ,'cosmicscore_muon':vertex.muonTrueTrack.cosmicscore if MCmode else -1000
-                        ,'coscontscore_proton':vertex.protonTrueTrack.coscontscore if MCmode else -1000
-                        ,'coscontscore_muon':vertex.muonTrueTrack.coscontscore if MCmode else -1000
+                        ,'cosmicscore_proton':vertex.protonTrueTrack.cosmicscore if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'cosmicscore_muon':vertex.muonTrueTrack.cosmicscore if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'coscontscore_proton':vertex.protonTrueTrack.coscontscore if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'coscontscore_muon':vertex.muonTrueTrack.coscontscore if MCmode and vertex.tracks.size()>0 else -1000
                         
-                        ,'cfdistance_proton':vertex.protonTrueTrack.cfdistance if MCmode else -1000
-                        ,'cfdistance_muon':vertex.muonTrueTrack.cfdistance if MCmode else -1000
-                        ,'PIDA_proton':vertex.protonTrueTrack.pidpida if MCmode else -1000
-                        ,'PIDA_muon':vertex.muonTrueTrack.pidpida if MCmode else -1000
+                        ,'cfdistance_proton':vertex.protonTrueTrack.cfdistance if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'cfdistance_muon':vertex.muonTrueTrack.cfdistance if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'PIDA_proton':vertex.protonTrueTrack.pidpida if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'PIDA_muon':vertex.muonTrueTrack.pidpida if MCmode and vertex.tracks.size()>0 else -1000
                         ,'GENIECC1p':vertex.GENIECC1p if MCmode else -1000
                         ,'Is1mu1p':vertex.Is1mu1pDetected if MCmode else -1000
                         ,'IsVertexContained':vertex.IsVertexContained if MCmode else -1000
@@ -266,6 +309,9 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'truth_q_z':vertex.genie_interaction.q.Pz() if vertex.Is1mu1pDetected else -1000
                         ,'truth_theta_pq':vertex.genie_interaction.theta_pq if vertex.Is1mu1pDetected else -1000
                         ,'truth_p_over_q':vertex.genie_interaction.p_over_q if vertex.Is1mu1pDetected else -1000
+                        ,'truth_Q2':vertex.genie_interaction.Q2 if vertex.Is1mu1pDetected else -1000
+                        ,'truth_W2':(0.939*(0.939 + 2*(vertex.genie_interaction.nu.E() - vertex.genie_interaction.muon.E()))
+                                     - 4*vertex.genie_interaction.nu.E()*vertex.genie_interaction.muon.E()*(1.-np.cos(vertex.genie_interaction.muon.Theta()))) if vertex.Is1mu1pDetected else -1000
                         ,'truth_Xb':vertex.genie_interaction.Xb if vertex.Is1mu1pDetected else -1000
                         ,'truth_omega':vertex.genie_interaction.q.E() if vertex.Is1mu1pDetected else -1000
 
