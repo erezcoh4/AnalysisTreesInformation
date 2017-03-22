@@ -194,6 +194,8 @@ public:
     Float_t     trkstartz_pandoraNu[MAX_tracks]     , trkendx_pandoraNu[MAX_tracks]         , trkendy_pandoraNu[MAX_tracks];
     Float_t     trkendz_pandoraNu[MAX_tracks]       , trktheta_pandoraNu[MAX_tracks]        , trkphi_pandoraNu[MAX_tracks];
     
+    Float_t     trkmomrange_pandoraNu[MAX_tracks]   , trkmommsllhd_pandoraNu[MAX_tracks]; // track momentum from range / MCS llhd
+    
     // x/y/z positions
     Float_t     trkxyz_pandoraNu[MAX_tracks][3][2000][3];
     // calorimetery

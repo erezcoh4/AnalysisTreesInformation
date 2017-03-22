@@ -249,13 +249,15 @@ void PandoraNuTrack::Straightness(){
     
 }
 
-////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//void PandoraNuTrack::Momentum(){
-//    
-//    // this is true only if this track was a proton
-//    
-//    
-//}
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void PandoraNuTrack::SetMomentum(Float_t fmomrange, Float_t fmommsllhd ){
+
+    // this is true only if this track was a muon
+    momrange = fmomrange;
+    mommsllhd = fmommsllhd;
+    momeavgrangellhd = 0.5*(fmommsllhd+fmomrange);
+
+}
 
 ////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 //void PandoraNuTrack::AddNeighborTrack( Int_t ftrack_id , Float_t fClosestDistance , Float_t fangle ){
@@ -340,7 +342,9 @@ void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool 
     }
     if (DoPrintPandoraNuFeatures){
         PrintPhys(length,"cm");
-        PrintPhys(momentum,"MeV/c");
+        PrintPhys(momrange,"MeV/c momentum from range");
+        PrintPhys(mommsllhd,"MeV/c momentum from MCS LLHD");
+        PrintPhys(momeavgrangellhd,"MeV/c momentum from MCS LLHD and range");
         SHOW(distlenratio);
         PrintPhys(theta,"radians");
         PrintPhys(phi,"radians");

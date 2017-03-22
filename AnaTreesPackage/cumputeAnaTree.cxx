@@ -88,6 +88,10 @@ void cumputeAnaTree::InitInputTree(){
     InTree -> SetBranchAddress("trkstartx_pandoraNu"                            , &trkstartx_pandoraNu);
     InTree -> SetBranchAddress("trkstarty_pandoraNu"                            , &trkstarty_pandoraNu);
     InTree -> SetBranchAddress("trkstartz_pandoraNu"                            , &trkstartz_pandoraNu);
+
+    InTree -> SetBranchAddress("trkmomrange_pandoraNu"                          , &trkmomrange_pandoraNu);
+    InTree -> SetBranchAddress("trkmommsllhd_pandoraNu"                         , &trkmommsllhd_pandoraNu);
+    
     InTree -> SetBranchAddress("trkendx_pandoraNu"                              , &trkendx_pandoraNu);
     InTree -> SetBranchAddress("trkendy_pandoraNu"                              , &trkendy_pandoraNu);
     InTree -> SetBranchAddress("trkendz_pandoraNu"                              , &trkendz_pandoraNu);
@@ -533,7 +537,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
         Debug(4,"made some Calorimetry ...");
         c_track.Straightness();
         Debug(4,"calculated the Straightness of the track ...");
-        // c_track.Momentum();
+        c_track.SetMomentum( trkmomrange_pandoraNu[j] , trkmommsllhd_pandoraNu[j] );
         // Debug(4,"calculated the Momentum of the track ...");
         c_track.SetCalorimetryPDG( trkpidpdg_pandoraNu[j] );
         Debug(4,"set track pid pdg ...");

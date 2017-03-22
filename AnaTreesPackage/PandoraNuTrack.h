@@ -50,7 +50,7 @@ public:
     void       CreateROIs ();
     void      Calorimetry ();
     void     Straightness ();
-    void         Momentum ();
+    void      SetMomentum (Float_t,Float_t);
     
     
     
@@ -211,6 +211,7 @@ public:
     TVector3    start_pos   , end_pos   ;
     
     Float_t     length      , theta     , phi , distlenratio , momentum;
+    Float_t     momrange    , mommsllhd , momeavgrangellhd;
     Float_t     start_dqdx  , end_dqdx  , tot_dqdx , avg_dqdx;
     Float_t     dqdx_diff   , dqdx_ratio;
     Float_t     dQtotal;
