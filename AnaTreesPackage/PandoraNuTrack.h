@@ -185,13 +185,15 @@ public:
     inline bool operator==(const PandoraNuTrack & t) {
         return std::tie( run, subrun, event, track_id ) == std::tie(t.run, t.subrun, t.event, t.track_id);
     }
-    bool IsTrackContainedSoft(){
-        if( ( start_pos.x() < 3 )    | ( start_pos.x() > 250 ) )    return false;
-        if( ( start_pos.y() < -115 ) | ( start_pos.y() > 115 ) )    return false;
-        if( ( start_pos.z() < 0 )    | ( start_pos.z() > 1050 ) )   return false;
-        if( ( end_pos.x() < 3 )    | ( end_pos.x() > 250 ) )    return false;
-        if( ( end_pos.y() < -115 ) | ( end_pos.y() > 115 ) )    return false;
-        if( ( end_pos.z() < 5 )    | ( end_pos.z() > 1045 ) )   return false;
+    bool IsTrackContainedSoft(float max_FV_y = 115,
+                              float min_FV_z = 5, float max_FV_z = 1045,
+                              float min_FV_x = 3, float max_FV_x = 250){
+        if( ( start_pos.x() < min_FV_x )    | ( start_pos.x() > max_FV_x ) )    return false;
+        if( ( start_pos.y() < -max_FV_y )   | ( start_pos.y() > max_FV_y ) )    return false;
+        if( ( start_pos.z() < min_FV_z )    | ( start_pos.z() > max_FV_z ) )    return false;
+        if( ( end_pos.x() < min_FV_x )      | ( end_pos.x() > max_FV_x ) )      return false;
+        if( ( end_pos.y() < -max_FV_y )     | ( end_pos.y() > max_FV_y ) )      return false;
+        if( ( end_pos.z() < min_FV_z )      | ( end_pos.z() > max_FV_z ) )      return false;
         return true;
     }
 
