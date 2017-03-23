@@ -121,10 +121,11 @@ public:
     
     Float_t             AngleThreshold, HitHitDistanceThreshold;
     Float_t             mu_angle[3], p_angle[3];
-    Float_t             AllChargeInVertexROI[3]; // sum of charge of all hits in the vertex-roi per plane
+    Float_t             AllChargeInVertexROI[3], AllChargeInVertexROI_enlarged_20_100[3]; // sum of charge of all hits in the vertex-roi per plane
     Float_t             TracksAssociatedCharge[3]; // sum of charge of all hits that are associated with my-tracks
     Float_t             ratio_associated_hit_charge_to_total[3] , average_ratio_associated_hit_charge_to_total , max_ratio_associated_hit_charge_to_total;
-    
+    Float_t             ratio_associated_hit_charge_to_total_enlarged_20_100[3];
+
     MyTrack             MyTrackMuonTrack[3] , MyTrackProtonTrack[3];
     MyTrack             MyTrackMuon_u, MyTrackMuon_v, MyTrackMuon_y, MyTrackProton_u, MyTrackProton_v, MyTrackProton_y;
     std::vector<MyTrack> my_tracks;
@@ -185,12 +186,13 @@ public:
     float               reco_CC1p_omega;
     float               reco_CC1p_Xb, reco_CC1p_y, reco_CC1p_W2, reco_CC1p_s;
     float               reco_CC1p_Ev_from_angles, reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff, reco_CC1p_Ev_from_angles_Ev_from_mu_p_ratio;
-    float               reco_CC1p_alpha_p , reco_CC1p_alpha_q , reco_CC1p_alpha_mu;
+    float               reco_CC1p_alpha_p , reco_CC1p_alpha_q , reco_CC1p_alpha_mu, reco_CC1p_alpha_miss;
     float               reco_CC1p_Q2_from_angles_diff, reco_CC1p_Q2_from_angles_ratio;
-    
+    float               reco_CC1p_Ev_with_binding, reco_CC1p_Ev_with_binding_diff, reco_CC1p_Ev_with_binding_ratio;
+
     float               dqdx_around_vertex,   dqdx_around_vertex_tracks_associated, dqdx_around_vertex_non_tracks_associated;
     
-    
+    float               truth_alpha_q, truth_alpha_p, truth_alpha_mu, truth_alpha_miss;
     
     TVector3            position    ;
     TVector3            reco_CC1p_Pp_3vect, reco_CC1p_Pmu_3vect;

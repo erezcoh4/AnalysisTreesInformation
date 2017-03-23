@@ -178,6 +178,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Pmu_y':vertex.reco_CC1p_Pmu.Py() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_z':vertex.reco_CC1p_Pmu.Pz() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_mu':vertex.reco_CC1p_alpha_mu if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_miss':vertex.reco_CC1p_alpha_miss if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_q':vertex.reco_CC1p_alpha_q if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pt':( vertex.reco_CC1p_Pmu + vertex.reco_CC1p_Pp ).Pt() if vertex.tracks.size()>0 else -1000
                         ,'reco_CC1p_q':vertex.reco_CC1p_q.P() if vertex.tracks.size()>1 else -1000
@@ -193,6 +194,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_n_miss':vertex.reco_CC1p_n_miss.P() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Xb':vertex.reco_CC1p_Xb if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_y':vertex.reco_CC1p_y if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_yXb':(vertex.reco_CC1p_y*vertex.reco_CC1p_Xb) if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_s':vertex.reco_CC1p_s if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Q2':vertex.reco_CC1p_Q2 if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Q2_mcsllhd':vertex.reco_CC1p_Q2_mcsllhd if vertex.tracks.size()>1 else -1000
@@ -204,6 +206,9 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Ev_from_angles':vertex.reco_CC1p_Ev_from_angles if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff':vertex.reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Ev_from_angles_Ev_from_mu_p_ratio':vertex.reco_CC1p_Ev_from_angles_Ev_from_mu_p_ratio if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_with_binding':vertex.reco_CC1p_Ev_with_binding if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_with_binding_diff':vertex.reco_CC1p_Ev_with_binding_diff if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_with_binding_ratio':vertex.reco_CC1p_Ev_with_binding_ratio if vertex.tracks.size()>1 else -1000
                         
                         
                         # my tracking
@@ -213,9 +218,15 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'total_hit_charge_u':vertex.AllChargeInVertexROI[0] if vertex.tracks.size()>0 else -1000
                         ,'total_hit_charge_v':vertex.AllChargeInVertexROI[1] if vertex.tracks.size()>0 else -1000
                         ,'total_hit_charge_y':vertex.AllChargeInVertexROI[2] if vertex.tracks.size()>0 else -1000
+                        ,'total_hit_charge_u_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[0] if vertex.tracks.size()>0 else -1000
+                        ,'total_hit_charge_v_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[1] if vertex.tracks.size()>0 else -1000
+                        ,'total_hit_charge_y_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[2] if vertex.tracks.size()>0 else -1000
                         ,'ratio_associated_hit_charge_to_total_u':vertex.ratio_associated_hit_charge_to_total[0] if vertex.tracks.size()>0 else -1000
                         ,'ratio_associated_hit_charge_to_total_v':vertex.ratio_associated_hit_charge_to_total[1] if vertex.tracks.size()>0 else -1000
                         ,'ratio_associated_hit_charge_to_total_y':vertex.ratio_associated_hit_charge_to_total[2] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_u_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[0] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_v_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[1] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_y_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[2] if vertex.tracks.size()>0 else -1000
                         ,'average_ratio_associated_hit_charge_to_total':vertex.average_ratio_associated_hit_charge_to_total if vertex.tracks.size()>0 else -1000
                         
                         
@@ -236,9 +247,6 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'l_muon':vertex.muonTrueTrack.length if MCmode and vertex.tracks.size()>0 else -1000
                         ,'starty_proton':vertex.protonTrueTrack.starty if MCmode and vertex.tracks.size()>0 else -1000
                         ,'starty_muon':vertex.muonTrueTrack.starty if MCmode and vertex.tracks.size()>0  else -1000
-                        
-#                        ,'proton_track_is_flipped':vertex.protonTrueTrack.is_flipped if MCmode and vertex.tracks.size()>0 else -1000
-#                        ,'muon_track_is_flipped':vertex.muonTrueTrack.is_flipped if MCmode and vertex.tracks.size()>0 else -1000
                         
                         ,'cosmicscore_proton':vertex.protonTrueTrack.cosmicscore if MCmode and vertex.tracks.size()>0 else -1000
                         ,'cosmicscore_muon':vertex.muonTrueTrack.cosmicscore if MCmode and vertex.tracks.size()>0 else -1000
@@ -283,7 +291,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
 
                         
                         # features that are only relevant for genie interaction information
-                        ,'truth_Ev':vertex.genie_interaction.nu.E() if vertex.Is1mu1pDetected else -1000
+                        ,'truth_Ev':vertex.genie_interaction.nu.E() if MCmode else -1000
                         
                         ,'Nprimaries':vertex.genie_interaction.Nprimaries if vertex.Is1mu1pDetected else -1000
                         ,'truth_Np':vertex.genie_interaction.protons.size() if vertex.Is1mu1pDetected else -1000
@@ -314,6 +322,10 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                                      - 4*vertex.genie_interaction.nu.E()*vertex.genie_interaction.muon.E()*(1.-np.cos(vertex.genie_interaction.muon.Theta()))) if vertex.Is1mu1pDetected else -1000
                         ,'truth_Xb':vertex.genie_interaction.Xb if vertex.Is1mu1pDetected else -1000
                         ,'truth_omega':vertex.genie_interaction.q.E() if vertex.Is1mu1pDetected else -1000
+                        ,'truth_alpha_p':vertex.truth_alpha_p if vertex.tracks.size()>1 else -1000
+                        ,'truth_alpha_q':vertex.truth_alpha_q if vertex.tracks.size()>1 else -1000
+                        ,'truth_alpha_mu':vertex.truth_alpha_mu if vertex.tracks.size()>1 else -1000
+                        ,'truth_alpha_miss':vertex.truth_alpha_miss if vertex.tracks.size()>1 else -1000
 
                         
                         },

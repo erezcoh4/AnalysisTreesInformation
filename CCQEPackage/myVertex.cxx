@@ -308,10 +308,19 @@ void myVertex::SetReconstructed_q(){
     reco_CC1p_y = reco_CC1p_omega/reco_CC1p_Pnu.E();
     reco_CC1p_s = reco_CC1p_Q2/(reco_CC1p_Xb*reco_CC1p_y) + 0.939*0.939 + 0.106*0.106;
     
-    
-    reco_CC1p_alpha_p = (reco_CC1p_Pp.E()-reco_CC1p_Pp.Pz())/0.931;
-    reco_CC1p_alpha_mu = (reco_CC1p_Pmu.E()-reco_CC1p_Pmu.Pz())/0.931;
-    reco_CC1p_alpha_q = (reco_CC1p_q.E()-reco_CC1p_q.Pz())/0.931;
+    // LC momentum fraction
+    reco_CC1p_alpha_p = (reco_CC1p_Pp.E()-reco_CC1p_Pp.Vect().Dot(reco_CC1p_q.Vect()))/0.931;
+    reco_CC1p_alpha_mu = (reco_CC1p_Pmu.E()-reco_CC1p_Pmu.Vect().Dot(reco_CC1p_q.Vect()))/0.931;
+    reco_CC1p_alpha_q = (reco_CC1p_q.E()-reco_CC1p_q.P())/0.931;
+    reco_CC1p_alpha_miss = reco_CC1p_alpha_p - reco_CC1p_alpha_q;
+
+    if (genie_interaction.protons.size()>0){
+        truth_alpha_p = (genie_interaction.protons[0].E()-genie_interaction.protons[0].Vect().Dot(genie_interaction.q.Vect()))/0.931;
+    }
+    truth_alpha_mu = (genie_interaction.muon.Vect().Dot(genie_interaction.q.Vect()))/0.931;
+    truth_alpha_q = (genie_interaction.q.E()-genie_interaction.q.P())/0.931;
+    truth_alpha_miss = truth_alpha_p - truth_alpha_q;
+
     
     // [from clas-note 2002-08]
     float theta_l = reco_CC1p_Pmu.Theta();
@@ -320,6 +329,19 @@ void myVertex::SetReconstructed_q(){
     reco_CC1p_Ev_from_angles = factor * ( cos( theta_l ) + cos( theta_p ) * ( sin( theta_l ) / sin( theta_p ) ) - 1. );
     reco_CC1p_Ev_from_angles_Ev_from_mu_p_diff = reco_CC1p_Ev_from_angles - reco_CC1p_Pnu.E();
     reco_CC1p_Ev_from_angles_Ev_from_mu_p_ratio = fabs(reco_CC1p_Pnu.E())>0.01 ? reco_CC1p_Ev_from_angles / reco_CC1p_Pnu.E() : 100.*reco_CC1p_Ev_from_angles;
+    
+    
+    float E_l = reco_CC1p_Pmu.E();
+    float k_l = reco_CC1p_Pmu.P();
+    float epsilon = 0.01;
+    reco_CC1p_Ev_with_binding = (2*(0.939-epsilon)*E_l
+                                 + 0.939*0.939
+                                 - (0.939-epsilon)*(0.939-epsilon)
+                                 - 0.106*0.106 )/( 2*(0.939-epsilon-E_l+k_l*cos(theta_l) ) );
+    
+    reco_CC1p_Ev_with_binding_diff = reco_CC1p_Ev_with_binding - reco_CC1p_Pnu.E();
+    reco_CC1p_Ev_with_binding_ratio = fabs(reco_CC1p_Pnu.E())>0.01 ? reco_CC1p_Ev_with_binding/reco_CC1p_Pnu.E() : 100*reco_CC1p_Ev_with_binding;
+    
     
     reco_CC1p_W2 = 0.939*(0.939 + 2*(reco_CC1p_Pnu.E() - reco_CC1p_Pmu.E())) - 4*reco_CC1p_Pnu.E()*reco_CC1p_Pmu.E()*(1.-cos(theta_l));
     
@@ -848,7 +870,7 @@ bool myVertex::SetTracksParameters( int plane ){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-MyTrack myVertex::FindMyTrack( int plane , PandoraNuTrack pandoraNu_track , float track_WireTimeAngle ) { //, std::vector<hit> fPossibleHits ){
+MyTrack myVertex::FindMyTrack( int plane , PandoraNuTrack pandoraNu_track , float track_WireTimeAngle ) {
 
     Debug(3,Form("%d/%d/%d tracking for muon track (%d, pidA=%.1f) in plane %d (angle=%.1f)",
                  run,subrun,event,pandoraNu_track.track_id,pandoraNu_track.pidpida,plane,r2d*track_WireTimeAngle));
@@ -938,7 +960,7 @@ bool myVertex::AssociateHitsToTracks( int plane ){//, std::vector<hit> fPossible
 void myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_plane ){
     
     std::vector<hit> hits_in_vertex_roi;
-    float total_charge_in_roi = 0;
+    float total_charge_in_roi = 0 , total_charge_in_roi_enlarged_20_100 = 0;
     if (debug>5) {
         Printf("myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_plane )");
         for (auto hit: hits_in_this_plane) hit.Print();
@@ -946,16 +968,22 @@ void myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_pla
     
     for (auto hit: hits_in_this_plane){
         
-        if ( hit.InBox( roi[plane] ) ){
-            hits_in_vertex_roi.push_back( hit );
-            total_charge_in_roi += hit.hit_charge;
+        if ( hit.InBox( roi[plane].EnlargeBox( 20 , 100 ) ) ){
+            total_charge_in_roi_enlarged_20_100 += hit.hit_charge;
+            
+            if ( hit.InBox( roi[plane] ) ){
+                hits_in_vertex_roi.push_back( hit );
+                total_charge_in_roi += hit.hit_charge;
+            }
         }
+        
     }
     
     SetAllHitsInROI( plane , hits_in_vertex_roi );
     AllChargeInVertexROI[plane] = total_charge_in_roi;
+    AllChargeInVertexROI_enlarged_20_100[plane] = total_charge_in_roi_enlarged_20_100;
     
-    Debug(4,Form("total charge in roi: %.1f [ADC]",total_charge_in_roi));
+    Debug(4,Form("total charge in roi: %.1f, in enlarged box %.1f [ADC]",total_charge_in_roi,total_charge_in_roi_enlarged_20_100));
 }
 
 
@@ -1002,12 +1030,19 @@ bool myVertex::CollectAssociatedCharge(int plane){
     TracksAssociatedCharge[plane] = MyMuonCharge + MyProtonCharge;
     if (AllChargeInVertexROI[plane]){
         ratio_associated_hit_charge_to_total[plane] = TracksAssociatedCharge[plane]/AllChargeInVertexROI[plane];
-    }
-    else{
+    } else {
         ratio_associated_hit_charge_to_total[plane] = 1.;
     }
     average_ratio_associated_hit_charge_to_total += ratio_associated_hit_charge_to_total[plane] / 3.;
     if ( ratio_associated_hit_charge_to_total[plane] > max_ratio_associated_hit_charge_to_total )  max_ratio_associated_hit_charge_to_total = ratio_associated_hit_charge_to_total[plane];
+    
+    if (AllChargeInVertexROI_enlarged_20_100[plane]){
+        ratio_associated_hit_charge_to_total_enlarged_20_100[plane] = TracksAssociatedCharge[plane]/AllChargeInVertexROI_enlarged_20_100[plane];
+    } else {
+        ratio_associated_hit_charge_to_total_enlarged_20_100[plane] = 1.;
+    }
+
+    
     return true;
 }
 
