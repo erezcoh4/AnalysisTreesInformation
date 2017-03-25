@@ -298,7 +298,7 @@ void myVertex::SetReconstructed_q(){
     reco_CC1p_p_over_q = reco_CC1p_Pp.P()/reco_CC1p_q.P();
     
     reco_CC1p_Q2 = - reco_CC1p_q.Mag2();
-    reco_CC1p_Q2_from_angles = 4.*reco_CC1p_Pnu.E()*reco_CC1p_Pmu.E()*sin(reco_CC1p_Pmu.Theta())*sin(reco_CC1p_Pmu.Theta());
+    reco_CC1p_Q2_from_angles = 4.*reco_CC1p_Pnu.E()*reco_CC1p_Pmu.E()*sin(0.5*reco_CC1p_Pmu.Theta())*sin(0.5*reco_CC1p_Pmu.Theta());
     reco_CC1p_Q2_from_angles_diff = reco_CC1p_Q2_from_angles - reco_CC1p_Q2;
     reco_CC1p_Q2_from_angles_ratio = fabs(reco_CC1p_Q2)>0.01 ? reco_CC1p_Q2_from_angles / reco_CC1p_Q2 : 100.*reco_CC1p_Q2_from_angles;
     
@@ -960,7 +960,7 @@ bool myVertex::AssociateHitsToTracks( int plane ){//, std::vector<hit> fPossible
 void myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_plane ){
     
     std::vector<hit> hits_in_vertex_roi;
-    float total_charge_in_roi = 0 , total_charge_in_roi_enlarged_20_100 = 0;
+    float total_charge_in_roi = 0 , total_charge_in_roi_enlarged_20_100 = 0, total_charge_in_roi_enlarged_40_200 = 0;
     if (debug>5) {
         Printf("myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_plane )");
         for (auto hit: hits_in_this_plane) hit.Print();
@@ -968,12 +968,16 @@ void myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_pla
     
     for (auto hit: hits_in_this_plane){
         
-        if ( hit.InBox( roi[plane].EnlargeBox( 20 , 100 ) ) ){
-            total_charge_in_roi_enlarged_20_100 += hit.hit_charge;
-            
-            if ( hit.InBox( roi[plane] ) ){
-                hits_in_vertex_roi.push_back( hit );
-                total_charge_in_roi += hit.hit_charge;
+        if ( hit.InBox( roi[plane].EnlargeBox( 40 , 200 ) ) ){
+            total_charge_in_roi_enlarged_40_200 += hit.hit_charge;
+        
+            if ( hit.InBox( roi[plane].EnlargeBox( 20 , 100 ) ) ){
+                total_charge_in_roi_enlarged_20_100 += hit.hit_charge;
+                
+                if ( hit.InBox( roi[plane] ) ){
+                    hits_in_vertex_roi.push_back( hit );
+                    total_charge_in_roi += hit.hit_charge;
+                }
             }
         }
         
@@ -982,8 +986,9 @@ void myVertex::CollectAllHitsInROI( int plane, std::vector<hit> hits_in_this_pla
     SetAllHitsInROI( plane , hits_in_vertex_roi );
     AllChargeInVertexROI[plane] = total_charge_in_roi;
     AllChargeInVertexROI_enlarged_20_100[plane] = total_charge_in_roi_enlarged_20_100;
+    AllChargeInVertexROI_enlarged_40_200[plane] = total_charge_in_roi_enlarged_40_200;
     
-    Debug(4,Form("total charge in roi: %.1f, in enlarged box %.1f [ADC]",total_charge_in_roi,total_charge_in_roi_enlarged_20_100));
+    Debug(4,Form("total charge in roi: %.1f, in enlarged box %.1f/%.1f [ADC]",total_charge_in_roi,total_charge_in_roi_enlarged_20_100,total_charge_in_roi_enlarged_40_200));
 }
 
 
@@ -1025,9 +1030,11 @@ void myVertex::SetAllHitsInPlane (int plane , std::vector<hit> fhits){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::CollectAssociatedCharge(int plane){
+    
     float MyMuonCharge = MyTrackMuonTrack[plane].GetTotalChargeInHits();
     float MyProtonCharge = MyTrackProtonTrack[plane].GetTotalChargeInHits();
     TracksAssociatedCharge[plane] = MyMuonCharge + MyProtonCharge;
+    
     if (AllChargeInVertexROI[plane]){
         ratio_associated_hit_charge_to_total[plane] = TracksAssociatedCharge[plane]/AllChargeInVertexROI[plane];
     } else {
@@ -1042,6 +1049,11 @@ bool myVertex::CollectAssociatedCharge(int plane){
         ratio_associated_hit_charge_to_total_enlarged_20_100[plane] = 1.;
     }
 
+    if (AllChargeInVertexROI_enlarged_40_200[plane]){
+        ratio_associated_hit_charge_to_total_enlarged_40_200[plane] = TracksAssociatedCharge[plane]/AllChargeInVertexROI_enlarged_40_200[plane];
+    } else {
+        ratio_associated_hit_charge_to_total_enlarged_40_200[plane] = 1.;
+    }
     
     return true;
 }

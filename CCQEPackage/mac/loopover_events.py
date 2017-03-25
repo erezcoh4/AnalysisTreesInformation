@@ -1,7 +1,7 @@
 '''
     loop over events, find ccqe topologies, plug into pandas dataframe
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    > python mac/loopover_events.py  --option=CC1pTopology -data=ExampleDebugging -evf=1 -p1
+    > python mac/loopover_events.py  --option=CC1pTopology -mccv=8 -data=MC_BNB_extBNB -evf=1 -p1
     
     
     --------------------------------------------------------------------------------------------------------------------------------------------

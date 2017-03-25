@@ -113,10 +113,10 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
 #                        ,'starty_long':vertex.LongestTrack.starty if vertex.tracks.size()>0 else -1000
 #                        ,'endy_short':vertex.ShortestTrack.endy if vertex.tracks.size()>0 else -1000
 #                        ,'endy_long':vertex.LongestTrack.endy if vertex.tracks.size()>0 else -1000
-                        ,'cosmicscore_short':vertex.ShortestTrack.cosmicscore if vertex.tracks.size()>0 else -1000
-                        ,'cosmicscore_long':vertex.LongestTrack.cosmicscore if vertex.tracks.size()>0 else -1000
-                        ,'coscontscore_short':vertex.ShortestTrack.coscontscore if vertex.tracks.size()>0 else -1000
-                        ,'coscontscore_long':vertex.LongestTrack.coscontscore if vertex.tracks.size()>0 else -1000
+#                        ,'cosmicscore_short':vertex.ShortestTrack.cosmicscore if vertex.tracks.size()>0 else -1000
+#                        ,'cosmicscore_long':vertex.LongestTrack.cosmicscore if vertex.tracks.size()>0 else -1000
+#                        ,'coscontscore_short':vertex.ShortestTrack.coscontscore if vertex.tracks.size()>0 else -1000
+#                        ,'coscontscore_long':vertex.LongestTrack.coscontscore if vertex.tracks.size()>0 else -1000
                         ,'cfdistance_short':vertex.ShortestTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         ,'cfdistance_long':vertex.LongestTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         
@@ -168,15 +168,19 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'delta_phi':r2d*np.abs(vertex.reco_CC1p_Pp.Phi()-vertex.reco_CC1p_Pmu.Phi()) if vertex.tracks.size()>1 else -1000
                         ,'delta_theta':r2d*np.abs(vertex.reco_CC1p_Pp.Theta()-vertex.reco_CC1p_Pmu.Theta()) if vertex.tracks.size()>1 else -1000
                         ,'2_tracks_angle':vertex.GetAngleBetween2tracks() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ep':vertex.reco_CC1p_Pp.E() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pp':vertex.reco_CC1p_Pp.P() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pp_x':vertex.reco_CC1p_Pp.Px() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pp_y':vertex.reco_CC1p_Pp.Py() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pp_z':vertex.reco_CC1p_Pp.Pz() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pp_theta':vertex.reco_CC1p_Pp.Theta() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_p':vertex.reco_CC1p_alpha_p if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Emu':vertex.reco_CC1p_Pmu.E() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu':vertex.reco_CC1p_Pmu.P() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_x':vertex.reco_CC1p_Pmu.Px() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_y':vertex.reco_CC1p_Pmu.Py() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_z':vertex.reco_CC1p_Pmu.Pz() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pmu_theta':vertex.reco_CC1p_Pmu.Theta() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_mu':vertex.reco_CC1p_alpha_mu if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_miss':vertex.reco_CC1p_alpha_miss if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_q':vertex.reco_CC1p_alpha_q if vertex.tracks.size()>1 else -1000
@@ -227,6 +231,9 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'ratio_associated_hit_charge_to_total_u_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[0] if vertex.tracks.size()>0 else -1000
                         ,'ratio_associated_hit_charge_to_total_v_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[1] if vertex.tracks.size()>0 else -1000
                         ,'ratio_associated_hit_charge_to_total_y_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[2] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_u_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[0] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_v_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[1] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_associated_hit_charge_to_total_y_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[2] if vertex.tracks.size()>0 else -1000
                         ,'average_ratio_associated_hit_charge_to_total':vertex.average_ratio_associated_hit_charge_to_total if vertex.tracks.size()>0 else -1000
                         
                         

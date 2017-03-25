@@ -121,10 +121,11 @@ public:
     
     Float_t             AngleThreshold, HitHitDistanceThreshold;
     Float_t             mu_angle[3], p_angle[3];
-    Float_t             AllChargeInVertexROI[3], AllChargeInVertexROI_enlarged_20_100[3]; // sum of charge of all hits in the vertex-roi per plane
+    Float_t             AllChargeInVertexROI[3], AllChargeInVertexROI_enlarged_20_100[3], AllChargeInVertexROI_enlarged_40_200[3]; // sum of charge of all hits in the vertex-roi per plane
     Float_t             TracksAssociatedCharge[3]; // sum of charge of all hits that are associated with my-tracks
     Float_t             ratio_associated_hit_charge_to_total[3] , average_ratio_associated_hit_charge_to_total , max_ratio_associated_hit_charge_to_total;
     Float_t             ratio_associated_hit_charge_to_total_enlarged_20_100[3];
+    Float_t             ratio_associated_hit_charge_to_total_enlarged_40_200[3];
 
     MyTrack             MyTrackMuonTrack[3] , MyTrackProtonTrack[3];
     MyTrack             MyTrackMuon_u, MyTrackMuon_v, MyTrackMuon_y, MyTrackProton_u, MyTrackProton_v, MyTrackProton_y;
