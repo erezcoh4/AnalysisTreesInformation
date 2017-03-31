@@ -105,18 +105,6 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'cfdistance_long':vertex.LongestTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         ,'PIDA_short':vertex.ShortestTrack.pidpida if vertex.tracks.size()>0 else -1000
                         ,'PIDA_long':vertex.LongestTrack.pidpida if vertex.tracks.size()>0 else -1000
-#                        ,'startz_short':vertex.ShortestTrack.startz if vertex.tracks.size()>0 else -1000
-#                        ,'startz_long':vertex.LongestTrack.startz if vertex.tracks.size()>0 else -1000
-#                        ,'endz_short':vertex.ShortestTrack.endz if vertex.tracks.size()>0 else -1000
-#                        ,'endz_long':vertex.LongestTrack.endz if vertex.tracks.size()>0 else -1000
-#                        ,'starty_short':vertex.ShortestTrack.starty if vertex.tracks.size()>0 else -1000
-#                        ,'starty_long':vertex.LongestTrack.starty if vertex.tracks.size()>0 else -1000
-#                        ,'endy_short':vertex.ShortestTrack.endy if vertex.tracks.size()>0 else -1000
-#                        ,'endy_long':vertex.LongestTrack.endy if vertex.tracks.size()>0 else -1000
-#                        ,'cosmicscore_short':vertex.ShortestTrack.cosmicscore if vertex.tracks.size()>0 else -1000
-#                        ,'cosmicscore_long':vertex.LongestTrack.cosmicscore if vertex.tracks.size()>0 else -1000
-#                        ,'coscontscore_short':vertex.ShortestTrack.coscontscore if vertex.tracks.size()>0 else -1000
-#                        ,'coscontscore_long':vertex.LongestTrack.coscontscore if vertex.tracks.size()>0 else -1000
                         ,'cfdistance_short':vertex.ShortestTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         ,'cfdistance_long':vertex.LongestTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         
@@ -129,8 +117,6 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'cfdistance_small_pida':vertex.SmallPIDATrack.cfdistance if vertex.tracks.size()>0 else -1000
                         ,'PIDA_large_pida':vertex.LargePIDATrack.pidpida if vertex.tracks.size()>0 else -1000
                         ,'PIDA_small_pida':vertex.SmallPIDATrack.pidpida if vertex.tracks.size()>0 else -1000
-#                        ,'starty_large_pida':vertex.LargePIDATrack.starty if vertex.tracks.size()>0 else -1000
-#                        ,'starty_small_pida':vertex.SmallPIDATrack.starty if vertex.tracks.size()>0 else -1000
                         ,'cosmicscore_large_pida':vertex.LargePIDATrack.cosmicscore if vertex.tracks.size()>0 else -1000
                         ,'cosmicscore_small_pida':vertex.SmallPIDATrack.cosmicscore if vertex.tracks.size()>0 else -1000
                         ,'coscontscore_large_pida':vertex.LargePIDATrack.coscontscore if vertex.tracks.size()>0 else -1000
@@ -300,35 +286,39 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         # features that are only relevant for genie interaction information
                         ,'truth_Ev':vertex.genie_interaction.nu.E() if MCmode else -1000
                         
-                        ,'Nprimaries':vertex.genie_interaction.Nprimaries if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Np':vertex.genie_interaction.protons.size() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Nn':vertex.genie_interaction.neutrons.size() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Npi':vertex.genie_interaction.Npi if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Nmu':vertex.genie_interaction.Nmu if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Nel':vertex.genie_interaction.Nel if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Ngamma':vertex.genie_interaction.Ngamma if vertex.Is1mu1pDetected else -1000
+                        ,'Nprimaries':vertex.genie_interaction.Nprimaries if MCmode else -1000
+                        ,'truth_Np':vertex.genie_interaction.protons.size() if MCmode else -1000
+                        ,'truth_Nn':vertex.genie_interaction.neutrons.size() if MCmode else -1000
+                        ,'truth_Npi':vertex.genie_interaction.Npi if MCmode else -1000
+                        ,'truth_Nmu':vertex.genie_interaction.Nmu if MCmode else -1000
+                        ,'truth_Nel':vertex.genie_interaction.Nel if MCmode else -1000
+                        ,'truth_Ngamma':vertex.genie_interaction.Ngamma if MCmode else -1000
 
-                        ,'truth_Pp':vertex.genie_interaction.protons.at(0).P() if vertex.Is1mu1pDetected and vertex.genie_interaction.protons.size()>0 else -1000
-                        ,'truth_Pp_x':vertex.genie_interaction.protons.at(0).Px() if vertex.Is1mu1pDetected and vertex.genie_interaction.protons.size()>0 else -1000
-                        ,'truth_Pp_y':vertex.genie_interaction.protons.at(0).Py() if vertex.Is1mu1pDetected and vertex.genie_interaction.protons.size()>0 else -1000
-                        ,'truth_Pp_z':vertex.genie_interaction.protons.at(0).Pz() if vertex.Is1mu1pDetected and vertex.genie_interaction.protons.size()>0 else -1000
+                        ,'truth_Ep':vertex.genie_interaction.protons.at(0).E() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
+                        ,'truth_Pp':vertex.genie_interaction.protons.at(0).P() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
+                        ,'truth_Pp_x':vertex.genie_interaction.protons.at(0).Px() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
+                        ,'truth_Pp_y':vertex.genie_interaction.protons.at(0).Py() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
+                        ,'truth_Pp_z':vertex.genie_interaction.protons.at(0).Pz() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
+                        ,'truth_alpha_p':(vertex.genie_interaction.protons.at(0).E()-vertex.genie_interaction.protons.at(0).Pz())/0.931 if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
                         
-                        ,'truth_Pmu':vertex.genie_interaction.muon.P() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Pmu_x':vertex.genie_interaction.muon.Px() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Pmu_y':vertex.genie_interaction.muon.Py() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Pmu_z':vertex.genie_interaction.muon.Pz() if vertex.Is1mu1pDetected else -1000
+                        ,'truth_Emu':vertex.genie_interaction.muon.E() if MCmode else -1000
+                        ,'truth_Pmu':vertex.genie_interaction.muon.P() if MCmode else -1000
+                        ,'truth_Pmu_x':vertex.genie_interaction.muon.Px() if MCmode else -1000
+                        ,'truth_Pmu_y':vertex.genie_interaction.muon.Py() if MCmode else -1000
+                        ,'truth_Pmu_z':vertex.genie_interaction.muon.Pz() if MCmode else -1000
+                        ,'truth_alpha_mu':(vertex.genie_interaction.muon.E()-vertex.genie_interaction.muon.Pz())/0.931 if MCmode else -1000
                         
-                        ,'truth_q':vertex.genie_interaction.q.P() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_q_x':vertex.genie_interaction.q.Px() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_q_y':vertex.genie_interaction.q.Py() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_q_z':vertex.genie_interaction.q.Pz() if vertex.Is1mu1pDetected else -1000
-                        ,'truth_theta_pq':vertex.genie_interaction.theta_pq if vertex.Is1mu1pDetected else -1000
-                        ,'truth_p_over_q':vertex.genie_interaction.p_over_q if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Q2':vertex.genie_interaction.Q2 if vertex.Is1mu1pDetected else -1000
+                        ,'truth_q':vertex.genie_interaction.q.P() if MCmode else -1000
+                        ,'truth_q_x':vertex.genie_interaction.q.Px() if MCmode else -1000
+                        ,'truth_q_y':vertex.genie_interaction.q.Py() if MCmode else -1000
+                        ,'truth_q_z':vertex.genie_interaction.q.Pz() if MCmode else -1000
+                        ,'truth_theta_pq':vertex.genie_interaction.theta_pq if MCmode else -1000
+                        ,'truth_p_over_q':vertex.genie_interaction.p_over_q if MCmode else -1000
+                        ,'truth_Q2':vertex.genie_interaction.Q2 if MCmode else -1000
                         ,'truth_W2':(0.939*(0.939 + 2*(vertex.genie_interaction.nu.E() - vertex.genie_interaction.muon.E()))
-                                     - 4*vertex.genie_interaction.nu.E()*vertex.genie_interaction.muon.E()*(1.-np.cos(vertex.genie_interaction.muon.Theta()))) if vertex.Is1mu1pDetected else -1000
-                        ,'truth_Xb':vertex.genie_interaction.Xb if vertex.Is1mu1pDetected else -1000
-                        ,'truth_omega':vertex.genie_interaction.q.E() if vertex.Is1mu1pDetected else -1000
+                                     - 4*vertex.genie_interaction.nu.E()*vertex.genie_interaction.muon.E()*(1.-np.cos(vertex.genie_interaction.muon.Theta()))) if MCmode else -1000
+                        ,'truth_Xb':vertex.genie_interaction.Xb if MCmode else -1000
+                        ,'truth_omega':vertex.genie_interaction.q.E() if MCmode else -1000
                         ,'truth_alpha_p':vertex.truth_alpha_p if vertex.tracks.size()>1 else -1000
                         ,'truth_alpha_q':vertex.truth_alpha_q if vertex.tracks.size()>1 else -1000
                         ,'truth_alpha_mu':vertex.truth_alpha_mu if vertex.tracks.size()>1 else -1000

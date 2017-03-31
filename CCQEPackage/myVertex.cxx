@@ -164,10 +164,10 @@ bool myVertex::SetIsReconstructed( float fmax_mu_p_distance ){
         && protonTrackReconstructed && protonTrueTrack.IsTrackContainedSoft()
         ){
         reco_mu_p_distance = muonTrueTrack.ClosestDistanceToOtherTrack( protonTrueTrack );
-        if (reco_mu_p_distance < fmax_mu_p_distance){
+//        if (reco_mu_p_distance < fmax_mu_p_distance){
             IsVertexReconstructed = true;
             return true;
-        }
+//        }
     }
     IsVertexReconstructed = false;
     return false;
@@ -309,16 +309,25 @@ void myVertex::SetReconstructed_q(){
     reco_CC1p_s = reco_CC1p_Q2/(reco_CC1p_Xb*reco_CC1p_y) + 0.939*0.939 + 0.106*0.106;
     
     // LC momentum fraction
-    reco_CC1p_alpha_p = (reco_CC1p_Pp.E()-reco_CC1p_Pp.Vect().Dot(reco_CC1p_q.Vect()))/0.931;
-    reco_CC1p_alpha_mu = (reco_CC1p_Pmu.E()-reco_CC1p_Pmu.Vect().Dot(reco_CC1p_q.Vect()))/0.931;
-    reco_CC1p_alpha_q = (reco_CC1p_q.E()-reco_CC1p_q.P())/0.931;
+    reco_CC1p_alpha_p = (reco_CC1p_Pp.E()-reco_CC1p_Pp.Pz())/0.931;
+    // (reco_CC1p_Pp.E()-reco_CC1p_Pp.Vect().Dot(reco_CC1p_q.Vect()))/0.931;
+    
+    reco_CC1p_alpha_mu = (reco_CC1p_Pmu.E()-reco_CC1p_Pmu.Pz())/0.931;
+    // (reco_CC1p_Pmu.E()-reco_CC1p_Pmu.Vect().Dot(reco_CC1p_q.Vect()))/0.931;
+    
+    reco_CC1p_alpha_q = (reco_CC1p_q.E()-reco_CC1p_q.Pz())/0.931;
+    // (reco_CC1p_q.E()-reco_CC1p_q.P())/0.931;
+    
     reco_CC1p_alpha_miss = reco_CC1p_alpha_p - reco_CC1p_alpha_q;
-
+    
+    // truth information for MC
     if (genie_interaction.protons.size()>0){
-        truth_alpha_p = (genie_interaction.protons[0].E()-genie_interaction.protons[0].Vect().Dot(genie_interaction.q.Vect()))/0.931;
+        truth_alpha_p = (genie_interaction.protons[0].E()-genie_interaction.protons[0].Pz())/0.931;
+        // (genie_interaction.protons[0].E()-genie_interaction.protons[0].Vect().Dot(genie_interaction.q.Vect()))/0.931;
     }
-    truth_alpha_mu = (genie_interaction.muon.Vect().Dot(genie_interaction.q.Vect()))/0.931;
-    truth_alpha_q = (genie_interaction.q.E()-genie_interaction.q.P())/0.931;
+    truth_alpha_mu = (genie_interaction.muon.E() - genie_interaction.muon.Pz())/0.931;
+    // (genie_interaction.muon.Vect().Dot(genie_interaction.q.Vect()))/0.931;
+    truth_alpha_q = (genie_interaction.q.E() - genie_interaction.q.Pz())/0.931;
     truth_alpha_miss = truth_alpha_p - truth_alpha_q;
 
     

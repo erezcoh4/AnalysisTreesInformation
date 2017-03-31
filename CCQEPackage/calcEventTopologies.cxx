@@ -718,8 +718,8 @@ bool calcEventTopologies::PerformMyTracking(){
 void calcEventTopologies::Print(bool DoPrintTracks, bool DoVertices){
     Printf("\n\t[%.1f%%]\n",100.*(float)c_entry/Nentries);
     
-    if (option.compare("GENIECC1p")!=0) SHOW3( run , subrun , event );
-    
+    if (option.compare("GENIECC1p")!=0) {SHOW3( run , subrun , event );}
+    else { SHOW3( run , subrun , event );}
     
     if (DoPrintTracks && !tracks.empty()){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;

@@ -59,7 +59,7 @@ if "CC1p" in flags.option: #{
         
         # get event
         genie.GetGENIEEntry(i)
-        # genie.debug = int(flags.verbose) if genie.genie_interactions.size()>0 and genie.genie_interactions[0].event == 137796 else 0
+        genie.debug = int(flags.verbose) if genie.genie_interactions.size()>0 and genie.genie_interactions[0].event == 138443 else 0
     
         # analyze the event
         genie.ClusterGENIEToVertices( counter )
@@ -67,7 +67,7 @@ if "CC1p" in flags.option: #{
         genie.CC1p_vertices = genie.vertices
         genie.PerformMyTracking( )
 
-        if i%flags.print_mod==0:
+        if i%flags.print_mod==0 or genie.debug>4:
             print "processed %d events, found %d CC1p, %d reconstructed"%(i,counter,reco_counter)
             if genie.debug: genie.Print( do_print_tracks , do_print_vertices  )
 
