@@ -201,6 +201,24 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Ev_with_binding_ratio':vertex.reco_CC1p_Ev_with_binding_ratio if vertex.tracks.size()>1 else -1000
                         
                         
+                        ,'reco_CC1p_Ev_fromE':vertex.reco_CC1p_Pnu_fromE.E() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_miss_fromE':vertex.reco_CC1p_alpha_miss_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_q_fromE':vertex.reco_CC1p_alpha_q_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_q_fromE':vertex.reco_CC1p_q_fromE.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_q_x_fromE':vertex.reco_CC1p_q_fromE.Px() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_q_y_fromE':vertex.reco_CC1p_q_fromE.Py() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_q_z_fromE':vertex.reco_CC1p_q_fromE.Pz() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_W2_fromE':vertex.reco_CC1p_W2_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_theta_pq_fromE':vertex.reco_CC1p_theta_pq_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_p_over_q_fromE':vertex.reco_CC1p_p_over_q_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_n_miss_fromE':vertex.reco_CC1p_n_miss_fromE.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Xb_fromE':vertex.reco_CC1p_Xb_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_y_fromE':vertex.reco_CC1p_y_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_s_fromE':vertex.reco_CC1p_s_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_fromE':vertex.reco_CC1p_Q2_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_omega_fromE':vertex.reco_CC1p_omega_fromE if vertex.tracks.size()>1 else -1000
+
+                        
                         # my tracking
                         ,'associated_hit_charge_u':vertex.TracksAssociatedCharge[0] if vertex.tracks.size()>0 else -1000
                         ,'associated_hit_charge_v':vertex.TracksAssociatedCharge[1] if vertex.tracks.size()>0 else -1000

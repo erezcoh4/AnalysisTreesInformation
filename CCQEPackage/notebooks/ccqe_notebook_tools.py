@@ -18,6 +18,28 @@ from ROOT import AnalyzeVertex
 import math, copy
 
 
+def sample_in_FV(sample=None, max_FV_y = 110,
+                 min_FV_z = 5, max_FV_z = 1045,
+                 min_FV_x = 3, max_FV_x = 250):
+    sample_in_FV = sample[ 
+                              (np.abs(sample['starty_assigned_muon']) < max_FV_y)        
+                            & (np.abs(sample['starty_assigned_proton']) < max_FV_y)
+                            & (np.abs(sample['endy_assigned_muon']) < max_FV_y)        
+                            & (np.abs(sample['endy_assigned_proton']) < max_FV_y)
+                            
+                            & ((sample['startz_assigned_muon'] > min_FV_z) & (sample['startz_assigned_muon'] < max_FV_z) )
+                            & ((sample['startz_assigned_proton'] > min_FV_z) & (sample['startz_assigned_proton'] < max_FV_z) )                            
+                            & ((sample['endz_assigned_muon'] > min_FV_z) & (sample['endz_assigned_muon'] < max_FV_z) )
+                            & ((sample['endz_assigned_proton'] > min_FV_z) & (sample['endz_assigned_proton'] < max_FV_z) )
+
+                            & ((sample['startx_assigned_muon'] > min_FV_x) & (sample['startx_assigned_muon'] < max_FV_x) )
+                            & ((sample['startx_assigned_proton'] > min_FV_x) & (sample['startx_assigned_proton'] < max_FV_x) )                            
+                            & ((sample['endx_assigned_muon'] > min_FV_x) & (sample['endx_assigned_muon'] < max_FV_x) )
+                            & ((sample['endx_assigned_proton'] > min_FV_x) & (sample['endx_assigned_proton'] < max_FV_x) )
+                           ]
+    return sample_in_FV
+
+
 def get_CC1p_tracks( events=None , i=0 , debug=False ,
                             ):
         events.GetEntry(i)

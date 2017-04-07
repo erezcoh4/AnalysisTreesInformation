@@ -191,6 +191,14 @@ public:
     float               reco_CC1p_Q2_from_angles_diff, reco_CC1p_Q2_from_angles_ratio;
     float               reco_CC1p_Ev_with_binding, reco_CC1p_Ev_with_binding_diff, reco_CC1p_Ev_with_binding_ratio;
 
+    
+    float               reco_CC1p_BeamE;
+    float               reco_CC1p_theta_pq_fromE,   reco_CC1p_p_over_q_fromE, reco_CC1p_Q2_fromE;
+    float               reco_CC1p_omega_fromE;
+    float               reco_CC1p_Xb_fromE, reco_CC1p_y_fromE, reco_CC1p_W2_fromE, reco_CC1p_s_fromE;
+    float               reco_CC1p_alpha_q_fromE, reco_CC1p_alpha_miss_fromE;
+    
+    
     float               dqdx_around_vertex,   dqdx_around_vertex_tracks_associated, dqdx_around_vertex_non_tracks_associated;
     
     float               truth_alpha_q, truth_alpha_p, truth_alpha_mu, truth_alpha_miss;
@@ -201,7 +209,8 @@ public:
     
     TLorentzVector      reconstructed_nu, reconstructed_muon, reconstructed_q ;
     TLorentzVector      reco_CC1p_Pnu,  reco_CC1p_Pp,   reco_CC1p_Pmu,  reco_CC1p_q;
-    TLorentzVector      reco_CC1p_n_miss;
+    TLorentzVector      reco_CC1p_n_miss;    
+    TLorentzVector      reco_CC1p_Pnu_fromE, reco_CC1p_q_fromE, reco_CC1p_n_miss_fromE;
     
     // from MCS LLHD
     TVector3            reco_CC1p_Pmu_3vect_mcsllhd;

@@ -282,6 +282,9 @@ void myVertex::SetReconstructedBeamPz(){
     reco_CC1p_BeamPz_mcsllhd = reco_CC1p_Pp.Pz() + reco_CC1p_Pmu_mcsllhd.Pz();
     reco_CC1p_Pnu_mcsllhd = TLorentzVector( 0 , 0 , reco_CC1p_BeamPz_mcsllhd , reco_CC1p_BeamPz_mcsllhd );
     
+    reco_CC1p_BeamE = reco_CC1p_Pp.E() - reco_CC1p_Pp.Mag() + reco_CC1p_Pmu.E();
+    reco_CC1p_Pnu_fromE = TLorentzVector( 0 , 0 , reco_CC1p_BeamE , reco_CC1p_BeamE );
+    
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -292,11 +295,12 @@ void myVertex::SetReconstructed_q(){
     reco_CC1p_q = reco_CC1p_Pnu - reco_CC1p_Pmu;
     reco_CC1p_omega = reco_CC1p_q.E();
 
+    reco_CC1p_q_fromE = reco_CC1p_Pnu_fromE - reco_CC1p_Pmu;
+    reco_CC1p_omega_fromE = reco_CC1p_q_fromE.E();
     
     // reconstructed 𝜃(p,q) based on these minimal features
     reco_CC1p_theta_pq = r2d * reco_CC1p_Pp.Vect().Angle( reco_CC1p_q.Vect() );
-    reco_CC1p_p_over_q = reco_CC1p_Pp.P()/reco_CC1p_q.P();
-    
+    reco_CC1p_p_over_q = reco_CC1p_Pp.P()/reco_CC1p_q.P();    
     reco_CC1p_Q2 = - reco_CC1p_q.Mag2();
     reco_CC1p_Q2_from_angles = 4.*reco_CC1p_Pnu.E()*reco_CC1p_Pmu.E()*sin(0.5*reco_CC1p_Pmu.Theta())*sin(0.5*reco_CC1p_Pmu.Theta());
     reco_CC1p_Q2_from_angles_diff = reco_CC1p_Q2_from_angles - reco_CC1p_Q2;
@@ -307,6 +311,17 @@ void myVertex::SetReconstructed_q(){
     reco_CC1p_n_miss = reco_CC1p_Pp - reco_CC1p_q;
     reco_CC1p_y = reco_CC1p_omega/reco_CC1p_Pnu.E();
     reco_CC1p_s = reco_CC1p_Q2/(reco_CC1p_Xb*reco_CC1p_y) + 0.939*0.939 + 0.106*0.106;
+
+    // from energy
+    reco_CC1p_theta_pq_fromE = r2d * reco_CC1p_Pp.Vect().Angle( reco_CC1p_q_fromE.Vect() );
+    reco_CC1p_p_over_q_fromE = reco_CC1p_Pp.P()/reco_CC1p_q_fromE.P();
+    reco_CC1p_Q2_fromE = - reco_CC1p_q_fromE.Mag2();
+    reco_CC1p_Xb_fromE = reco_CC1p_Q2_fromE / (2*0.939*reco_CC1p_q_fromE.E());
+    reco_CC1p_n_miss_fromE = reco_CC1p_Pp - reco_CC1p_q_fromE;
+    reco_CC1p_y_fromE = reco_CC1p_omega_fromE/reco_CC1p_Pnu_fromE.E();
+    reco_CC1p_s_fromE = reco_CC1p_Q2_fromE/(reco_CC1p_Xb_fromE*reco_CC1p_y_fromE) + 0.939*0.939 + 0.106*0.106;
+
+    
     
     // LC momentum fraction
     reco_CC1p_alpha_p = (reco_CC1p_Pp.E()-reco_CC1p_Pp.Pz())/0.931;
@@ -316,9 +331,11 @@ void myVertex::SetReconstructed_q(){
     // (reco_CC1p_Pmu.E()-reco_CC1p_Pmu.Vect().Dot(reco_CC1p_q.Vect()))/0.931;
     
     reco_CC1p_alpha_q = (reco_CC1p_q.E()-reco_CC1p_q.Pz())/0.931;
+    reco_CC1p_alpha_q_fromE = (reco_CC1p_q_fromE.E()-reco_CC1p_q_fromE.Pz())/0.931;
     // (reco_CC1p_q.E()-reco_CC1p_q.P())/0.931;
     
     reco_CC1p_alpha_miss = reco_CC1p_alpha_p - reco_CC1p_alpha_q;
+    reco_CC1p_alpha_miss_fromE = reco_CC1p_alpha_p - reco_CC1p_alpha_q_fromE;
     
     // truth information for MC
     if (genie_interaction.protons.size()>0){
@@ -353,6 +370,7 @@ void myVertex::SetReconstructed_q(){
     
     
     reco_CC1p_W2 = 0.939*(0.939 + 2*(reco_CC1p_Pnu.E() - reco_CC1p_Pmu.E())) - 4*reco_CC1p_Pnu.E()*reco_CC1p_Pmu.E()*(1.-cos(theta_l));
+    reco_CC1p_W2_fromE = 0.939*(0.939 + 2*(reco_CC1p_Pnu_fromE.E() - reco_CC1p_Pmu.E())) - 4*reco_CC1p_Pnu_fromE.E()*reco_CC1p_Pmu.E()*(1.-cos(theta_l));
     
     
     
