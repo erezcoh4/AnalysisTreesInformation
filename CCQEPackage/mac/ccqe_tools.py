@@ -125,6 +125,8 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'cfdistance_small_pida':vertex.SmallPIDATrack.cfdistance if vertex.tracks.size()>0 else -1000
 
                         # assigned tracks
+                        ,'l_assigned_muon':vertex.AssignedMuonTrack.length if vertex.tracks.size()>0 else -1000
+                        ,'l_assigned_proton':vertex.AssignedProtonTrack.length if vertex.tracks.size()>0 else -1000
                         ,'cfdistance_assigned_muon':vertex.AssignedMuonTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         ,'cfdistance_assigned_proton':vertex.AssignedProtonTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         ,'PIDA_assigned_muon':vertex.AssignedMuonTrack.pidpida if vertex.tracks.size()>0 else -1000
@@ -216,7 +218,15 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_y_fromE':vertex.reco_CC1p_y_fromE if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_s_fromE':vertex.reco_CC1p_s_fromE if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Q2_fromE':vertex.reco_CC1p_Q2_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_fromE_from_angles_diff':(vertex.reco_CC1p_Q2_from_angles-vertex.reco_CC1p_Q2_fromE) if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_fromE_from_angles_ratio':(vertex.reco_CC1p_Q2_from_angles/vertex.reco_CC1p_Q2_fromE) if vertex.tracks.size()>1 and np.abs(vertex.reco_CC1p_Q2_fromE)>0 else -1000
+
                         ,'reco_CC1p_omega_fromE':vertex.reco_CC1p_omega_fromE if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_fromE_from_angles_Ev_from_mu_p_diff':(vertex.reco_CC1p_Ev_from_angles-vertex.reco_CC1p_Ev_fromE) if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_fromE_from_angles_Ev_from_mu_p_ratio':(vertex.reco_CC1p_Ev_from_angles//vertex.reco_CC1p_Ev_fromE) if vertex.tracks.size()>1 and vertex.reco_CC1p_Ev_fromE>0 else -1000
+                        ,'reco_CC1p_Ev_fromE_with_binding_diff':(vertex.reco_CC1p_Ev_with_binding-vertex.reco_CC1p_Ev_fromE) if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Ev_fromE_with_binding_ratio':(vertex.reco_CC1p_Ev_with_binding/vertex.reco_CC1p_Ev_fromE) if vertex.tracks.size()>1 and vertex.reco_CC1p_Ev_fromE>0 else -1000
+                        ,'reco_CC1p_Mmiss_fromE':(vertex.reco_CC1p_n_miss_fromE - ROOT.TLorentzVector(0,0,0,0.939)).Mag() if vertex.tracks.size()>1 else -1000
 
                         
                         # my tracking

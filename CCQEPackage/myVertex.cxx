@@ -284,6 +284,7 @@ void myVertex::SetReconstructedBeamPz(){
     
     reco_CC1p_BeamE = reco_CC1p_Pp.E() - reco_CC1p_Pp.Mag() + reco_CC1p_Pmu.E();
     reco_CC1p_Pnu_fromE = TLorentzVector( 0 , 0 , reco_CC1p_BeamE , reco_CC1p_BeamE );
+    reco_CC1p_Ev_fromE = reco_CC1p_BeamE;
     
 }
 
@@ -376,7 +377,6 @@ void myVertex::SetReconstructed_q(){
     
     // from MCS
     reco_CC1p_q_mcsllhd = reco_CC1p_Pnu_mcsllhd - reco_CC1p_Pmu_mcsllhd;
-    
     reco_CC1p_theta_pq_mcsllhd = r2d * reco_CC1p_Pp.Vect().Angle( reco_CC1p_q_mcsllhd.Vect() );
     reco_CC1p_p_over_q_mcsllhd = reco_CC1p_Pp.P()/reco_CC1p_q_mcsllhd.P();
 

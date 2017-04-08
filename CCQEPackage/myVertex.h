@@ -192,7 +192,7 @@ public:
     float               reco_CC1p_Ev_with_binding, reco_CC1p_Ev_with_binding_diff, reco_CC1p_Ev_with_binding_ratio;
 
     
-    float               reco_CC1p_BeamE;
+    float               reco_CC1p_BeamE, reco_CC1p_Ev_fromE;
     float               reco_CC1p_theta_pq_fromE,   reco_CC1p_p_over_q_fromE, reco_CC1p_Q2_fromE;
     float               reco_CC1p_omega_fromE;
     float               reco_CC1p_Xb_fromE, reco_CC1p_y_fromE, reco_CC1p_W2_fromE, reco_CC1p_s_fromE;
