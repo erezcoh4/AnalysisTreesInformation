@@ -18,6 +18,17 @@ from ROOT import AnalyzeVertex
 import math, copy
 
 
+# ------------------------------------------------
+def find_a_straight_line( x_array , y_array ):
+    [x0,x1] = x_array
+    [y0,y1] = y_array
+    slope = (y1-y0)/(x1-x0)
+    intercept = y1 - slope*x1
+    return slope,intercept
+# ------------------------------------------------
+
+
+# ------------------------------------------------
 def sample_in_FV(sample=None, max_FV_y = 110,
                  min_FV_z = 5, max_FV_z = 1045,
                  min_FV_x = 3, max_FV_x = 250):
@@ -38,8 +49,11 @@ def sample_in_FV(sample=None, max_FV_y = 110,
                             & ((sample['endx_assigned_proton'] > min_FV_x) & (sample['endx_assigned_proton'] < max_FV_x) )
                            ]
     return sample_in_FV
+# ------------------------------------------------
 
 
+
+# ------------------------------------------------
 def get_CC1p_tracks( events=None , i=0 , debug=False ,
                             ):
         events.GetEntry(i)
@@ -55,10 +69,13 @@ def get_CC1p_tracks( events=None , i=0 , debug=False ,
             TwoTracksClusters['vertex %d'%i] = v
             
         return hits, tracks , TwoTracksClusters 
+# ------------------------------------------------
+
             
     
     
 
+# ------------------------------------------------
 def get_CC1p_tracks_from_rse( events=None ,run=0 , subrun=0 , event=0, debug=False ):
     # return hits and only those tracks which are close enough to the vertex in this R/S/E
     for i in range(events.Nentries):
@@ -77,6 +94,8 @@ def get_CC1p_tracks_from_rse( events=None ,run=0 , subrun=0 , event=0, debug=Fal
                 TwoTracksClusters['vertex %d'%j] = v
                 return hits, v        
     print 'did not find %d,%d,%d'%(run , subrun , event)
+# ------------------------------------------------
+
     
     
 

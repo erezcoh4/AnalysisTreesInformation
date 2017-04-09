@@ -324,6 +324,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
 
                         ,'truth_Ep':vertex.genie_interaction.protons.at(0).E() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
                         ,'truth_Pp':vertex.genie_interaction.protons.at(0).P() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
+                        ,'truth_Pp_theta':vertex.genie_interaction.protons.at(0).Theta() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
                         ,'truth_Pp_x':vertex.genie_interaction.protons.at(0).Px() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
                         ,'truth_Pp_y':vertex.genie_interaction.protons.at(0).Py() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
                         ,'truth_Pp_z':vertex.genie_interaction.protons.at(0).Pz() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
@@ -331,6 +332,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         
                         ,'truth_Emu':vertex.genie_interaction.muon.E() if MCmode else -1000
                         ,'truth_Pmu':vertex.genie_interaction.muon.P() if MCmode else -1000
+                        ,'truth_Pmu_theta':vertex.genie_interaction.muon.Theta() if MCmode else -1000
                         ,'truth_Pmu_x':vertex.genie_interaction.muon.Px() if MCmode else -1000
                         ,'truth_Pmu_y':vertex.genie_interaction.muon.Py() if MCmode else -1000
                         ,'truth_Pmu_z':vertex.genie_interaction.muon.Pz() if MCmode else -1000
