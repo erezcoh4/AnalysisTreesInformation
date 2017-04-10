@@ -1,7 +1,7 @@
 '''
     loop over true CC1p from GENIE, find ccqe pairs, plug into pandas dataframe
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    python mac/loopover_trueCC1p.py  -data=MC_BNB_extBNB --option=GENIECC1p -mccv=8 -evf=0.001 -p100
+    python mac/loopover_trueCC1p.py  -data=MC_BNB_extBNB --option=GENIECC1p -mccv=8 -evf=1 -p1000
     
     
     --------------------------------------------------------------------------------------------------------------------------------------------

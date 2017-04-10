@@ -22,4 +22,17 @@ float MyTrack::GetTotalChargeInHits (){
 }
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+float MyTrack::GetTotalChargeInHitsInROI (box roi){
+    float total_charge=0;
+    for (auto hit:hits){
+        if (hit.InBox( roi )){
+            total_charge += hit.hit_charge;
+        }
+    }
+    return total_charge;
+}
+
+
+
 #endif

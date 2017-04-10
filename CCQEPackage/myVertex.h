@@ -122,11 +122,13 @@ public:
     Float_t             AngleThreshold, HitHitDistanceThreshold;
     Float_t             mu_angle[3], p_angle[3];
     Float_t             AllChargeInVertexROI[3], AllChargeInVertexROI_enlarged_20_100[3], AllChargeInVertexROI_enlarged_40_200[3]; // sum of charge of all hits in the vertex-roi per plane
+    Float_t             dQtotROI_20x40_AroundVertex[3], dQassociatedROI_20x40_AroundVertex[3];
     Float_t             TracksAssociatedCharge[3]; // sum of charge of all hits that are associated with my-tracks
     Float_t             ratio_associated_hit_charge_to_total[3] , average_ratio_associated_hit_charge_to_total , max_ratio_associated_hit_charge_to_total;
     Float_t             ratio_associated_hit_charge_to_total_enlarged_20_100[3];
     Float_t             ratio_associated_hit_charge_to_total_enlarged_40_200[3];
-
+    Float_t             ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[3];
+    
     MyTrack             MyTrackMuonTrack[3] , MyTrackProtonTrack[3];
     MyTrack             MyTrackMuon_u, MyTrackMuon_v, MyTrackMuon_y, MyTrackProton_u, MyTrackProton_v, MyTrackProton_y;
     std::vector<MyTrack> my_tracks;
@@ -192,25 +194,43 @@ public:
     float               reco_CC1p_Ev_with_binding, reco_CC1p_Ev_with_binding_diff, reco_CC1p_Ev_with_binding_ratio;
 
     
+    // momentum correction from p(mu)/theta(mu) and p(p) / theta(p) correlations
+    float               reco_CC1p_Ev_corrected;
+    float               reco_CC1p_theta_pq_corrected,   reco_CC1p_p_over_q_corrected, reco_CC1p_Q2_corrected;
+    float               reco_CC1p_omega_corrected;
+    float               reco_CC1p_Xb_corrected, reco_CC1p_y_corrected, reco_CC1p_W2_corrected, reco_CC1p_s_corrected;
+    float               reco_CC1p_alpha_q_corrected, reco_CC1p_alpha_p_corrected, reco_CC1p_alpha_miss_corrected;
+    // --- - - --- -- - -- -- -- -- --- -- - --- - -- - -- -- -- --- - -- - --- - - -- - -- -
+
+    // Tp + Eµ
     float               reco_CC1p_BeamE, reco_CC1p_Ev_fromE;
     float               reco_CC1p_theta_pq_fromE,   reco_CC1p_p_over_q_fromE, reco_CC1p_Q2_fromE;
     float               reco_CC1p_omega_fromE;
     float               reco_CC1p_Xb_fromE, reco_CC1p_y_fromE, reco_CC1p_W2_fromE, reco_CC1p_s_fromE;
     float               reco_CC1p_alpha_q_fromE, reco_CC1p_alpha_miss_fromE;
-    
+    // --- - - --- -- - -- -- -- -- --- -- - --- - -- - -- -- -- --- - -- - --- - - -- - -- -
+
     
     float               dqdx_around_vertex,   dqdx_around_vertex_tracks_associated, dqdx_around_vertex_non_tracks_associated;
-    
     float               truth_alpha_q, truth_alpha_p, truth_alpha_mu, truth_alpha_miss;
     
     TVector3            position    ;
-    TVector3            reco_CC1p_Pp_3vect, reco_CC1p_Pmu_3vect;
+    TVector3            reco_CC1p_Pp_3vect, reco_CC1p_Pmu_3vect, reco_CC1p_Pp_3vect_corrected, reco_CC1p_Pmu_3vect_corrected;
     
     
     TLorentzVector      reconstructed_nu, reconstructed_muon, reconstructed_q ;
     TLorentzVector      reco_CC1p_Pnu,  reco_CC1p_Pp,   reco_CC1p_Pmu,  reco_CC1p_q;
     TLorentzVector      reco_CC1p_n_miss;    
+    // Tp + Eµ
     TLorentzVector      reco_CC1p_Pnu_fromE, reco_CC1p_q_fromE, reco_CC1p_n_miss_fromE;
+
+    
+    
+    // momentum correction from p(mu)/theta(mu) and p(p) / theta(p) correlations
+    TLorentzVector      reco_CC1p_Pp_corrected,  reco_CC1p_Pmu_corrected,  reco_CC1p_q_corrected;
+    TLorentzVector      reco_CC1p_Pnu_corrected, reco_CC1p_n_miss_corrected;
+    // --- - - --- -- - -- -- -- -- --- -- - --- - -- - -- -- -- --- - -- - --- - - -- - -- -
+    
     
     // from MCS LLHD
     TVector3            reco_CC1p_Pmu_3vect_mcsllhd;
@@ -219,7 +239,7 @@ public:
     float               reco_CC1p_p_over_q_mcsllhd, reco_CC1p_Q2_mcsllhd, reco_CC1p_Q2_from_angles_mcsllhd;
     // --------
     
-    box                 roi[3] , roi_u , roi_v , roi_y;
+    box                 roi[3] , roi_u , roi_v , roi_y, Roi_20x40_AroundVertex[3];
     
 
     PandoraNuTrack      muonTrueTrack,  protonTrueTrack;

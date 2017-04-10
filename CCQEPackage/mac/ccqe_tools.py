@@ -229,6 +229,24 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Mmiss_fromE':(vertex.reco_CC1p_n_miss_fromE - ROOT.TLorentzVector(0,0,0,0.939)).Mag() if vertex.tracks.size()>1 else -1000
 
                         
+                        # Pmu reco. correction
+                        ,'reco_CC1p_Pmu_corrected':vertex.reco_CC1p_Pmu_corrected if vertex.tracks.size()>1  else -1000
+                        ,'reco_CC1p_Pp_corrected':vertex.reco_CC1p_Pp_corrected if vertex.tracks.size()>1  else -1000
+                        ,'reco_CC1p_Ev_corrected':vertex.reco_CC1p_Pnu_corrected.E() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_miss_corrected':vertex.reco_CC1p_alpha_miss_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_q_corrected':vertex.reco_CC1p_alpha_q_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_q_corrected':vertex.reco_CC1p_q_corrected.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_W2_corrected':vertex.reco_CC1p_W2_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_theta_pq_corrected':vertex.reco_CC1p_theta_pq_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_p_over_q_corrected':vertex.reco_CC1p_p_over_q_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_n_miss_corrected':vertex.reco_CC1p_n_miss_corrected.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Xb_corrected':vertex.reco_CC1p_Xb_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_y_corrected':vertex.reco_CC1p_y_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_s_corrected':vertex.reco_CC1p_s_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_corrected':vertex.reco_CC1p_Q2_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_corrected_from_angles_diff':(vertex.reco_CC1p_Q2_from_angles-vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Q2_corrected_from_angles_ratio':(vertex.reco_CC1p_Q2_from_angles/vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 and np.abs(vertex.reco_CC1p_Q2_corrected)>0 else -1000
+                        
                         # my tracking
                         ,'associated_hit_charge_u':vertex.TracksAssociatedCharge[0] if vertex.tracks.size()>0 else -1000
                         ,'associated_hit_charge_v':vertex.TracksAssociatedCharge[1] if vertex.tracks.size()>0 else -1000
@@ -249,6 +267,9 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'ratio_associated_hit_charge_to_total_v_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[1] if vertex.tracks.size()>0 else -1000
                         ,'ratio_associated_hit_charge_to_total_y_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[2] if vertex.tracks.size()>0 else -1000
                         ,'average_ratio_associated_hit_charge_to_total':vertex.average_ratio_associated_hit_charge_to_total if vertex.tracks.size()>0 else -1000
+                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_u':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[0] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_v':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[1] if vertex.tracks.size()>0 else -1000
+                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_y':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[2] if vertex.tracks.size()>0 else -1000
                         
                         
                         # features that are only relevant for truth information

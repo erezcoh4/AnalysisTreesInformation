@@ -35,11 +35,14 @@ public:
     ~MyTrack(){}
     
 
-    void              SetPlane (int p)                       {plane = p;};
-    void     SetPandoraNuTrack (PandoraNuTrack t)            {pandoraNu_track = t;};
-    void               SetHits (std::vector<hit> fhits)      {for (auto hit:fhits) hits.push_back(hit);};
-    void       SetPossibleHits (std::vector<hit> fhits)      {for (auto hit:fhits) possible_hits.push_back(hit);};
-    float GetTotalChargeInHits ();
+    void                   SetPlane (int p)                       {plane = p;};
+    void          SetPandoraNuTrack (PandoraNuTrack t)            {pandoraNu_track = t;};
+    void                    SetHits (std::vector<hit> fhits)      {for (auto hit:fhits) hits.push_back(hit);};
+    void            SetPossibleHits (std::vector<hit> fhits)      {for (auto hit:fhits) possible_hits.push_back(hit);};
+    
+    float      GetTotalChargeInHits ();
+    float GetTotalChargeInHitsInROI (box roi);
+    
     int                 plane;
     std::string         color;  // matplotlib colors
     PandoraNuTrack      pandoraNu_track;
