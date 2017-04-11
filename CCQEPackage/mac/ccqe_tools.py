@@ -156,6 +156,8 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'delta_phi':r2d*np.abs(vertex.reco_CC1p_Pp.Phi()-vertex.reco_CC1p_Pmu.Phi()) if vertex.tracks.size()>1 else -1000
                         ,'delta_theta':r2d*np.abs(vertex.reco_CC1p_Pp.Theta()-vertex.reco_CC1p_Pmu.Theta()) if vertex.tracks.size()>1 else -1000
                         ,'2_tracks_angle':vertex.GetAngleBetween2tracks() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_l_proton':vertex.AssignedProtonTrack.length if MCmode and vertex.tracks.size()>0 else -1000
+                        ,'reco_CC1p_l_muon':vertex.AssignedMuonTrack.length if MCmode and vertex.tracks.size()>0 else -1000
                         ,'reco_CC1p_Ep':vertex.reco_CC1p_Pp.E() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pp':vertex.reco_CC1p_Pp.P() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pp_x':vertex.reco_CC1p_Pp.Px() if vertex.tracks.size()>1 else -1000
@@ -246,6 +248,8 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Q2_corrected':vertex.reco_CC1p_Q2_corrected if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Q2_corrected_from_angles_diff':(vertex.reco_CC1p_Q2_from_angles-vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Q2_corrected_from_angles_ratio':(vertex.reco_CC1p_Q2_from_angles/vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 and np.abs(vertex.reco_CC1p_Q2_corrected)>0 else -1000
+                        ,'reco_CC1p_Pt_corrected':( vertex.reco_CC1p_Pmu_corrected + vertex.reco_CC1p_Pp_corrected ).Pt() if vertex.tracks.size()>0 else -1000
+
                         
                         # my tracking
                         ,'associated_hit_charge_u':vertex.TracksAssociatedCharge[0] if vertex.tracks.size()>0 else -1000
@@ -350,7 +354,10 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'truth_Pp_y':vertex.genie_interaction.protons.at(0).Py() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
                         ,'truth_Pp_z':vertex.genie_interaction.protons.at(0).Pz() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
                         ,'truth_alpha_p':(vertex.genie_interaction.protons.at(0).E()-vertex.genie_interaction.protons.at(0).Pz())/0.931 if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
-                        
+
+                        ,'truth_l_muon':(vertex.muonTrueTrack.truth_start_pos-vertex.muonTrueTrack.truth_end_pos).Mag() if MCmode else -1000
+                        ,'truth_l_proton':(vertex.protonTrueTrack.truth_start_pos-vertex.protonTrueTrack.truth_end_pos).Mag() if MCmode else -1000
+
                         ,'truth_Emu':vertex.genie_interaction.muon.E() if MCmode else -1000
                         ,'truth_Pmu':vertex.genie_interaction.muon.P() if MCmode else -1000
                         ,'truth_Pmu_theta':vertex.genie_interaction.muon.Theta() if MCmode else -1000
