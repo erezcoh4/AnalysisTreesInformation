@@ -921,7 +921,7 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     c_genie_interaction.SetCCNC( ccnc_truth[n] );
     
     c_genie_interaction.SetVertexPosition( TVector3(nuvtxx_truth[n] , nuvtxy_truth[n] , nuvtxz_truth[n]) );
-    c_genie_interaction.SetVertexContained( VertexContained( c_genie_interaction.vertex_position ) );
+    c_genie_interaction.SetVertexContained( VertexContainedSoft( c_genie_interaction.vertex_position ) );
     
     for ( Int_t primary = 0 ; primary < genie_no_primaries ; primary ++ ) {
         PandoraNuTrack primary_pandoraNutrack;
@@ -1007,8 +1007,7 @@ bool cumputeAnaTree::VertexContained(TVector3 v){
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool cumputeAnaTree::VertexContainedSoft(TVector3 v){
-    
-    if (debug>4) {Printf("checking if softly contained: "); SHOW3(v.x(),v.y(),v.z());}
+    if (debug>4) {Printf("checking if softly contained, in the active volume of the detector: "); SHOW3(v.x(),v.y(),v.z());}
     // check if contained
     if( ( v.x() < 0 )    | ( v.x() > 260 ) )   return false;
     if( ( v.y() < -120 ) | ( v.y() > 120 ) )  return false;
