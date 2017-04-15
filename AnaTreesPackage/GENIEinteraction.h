@@ -56,7 +56,7 @@ public:
                              ,Float_t fmass=-1000
                              ,Int_t fND=-1000
                              ,Int_t fmother=-1000
-                             ,Int_t track_reconstructed=-1000
+                             ,bool track_reconstructed=false
                              ,Int_t ftrackID=-1000
                              ,PandoraNuTrack fprimarPandoraNuTrack=PandoraNuTrack()
                              );
