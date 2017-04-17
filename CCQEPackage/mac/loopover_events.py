@@ -42,6 +42,8 @@ if 'Topology' not in flags.option:
 
 if "CC1p" in flags.option: #{
 
+    start_event = flags.run
+    print 'start at event',start_event
     MCmode = True if 'MC' in flags.DataType else False
     infilename = tracks_anafile_name( ListName = MCCversion + "_" + flags.DataType  + "_AnalysisTrees" )
     outfilename = tracks_anafile_name( ListName = MCCversion + "_" + flags.DataType  + "_2TracksClusters" )
@@ -76,7 +78,7 @@ if "CC1p" in flags.option: #{
 
     if debug: print_important("running on %d events (out of %d)"%(Nreduced,Nevents))
 
-    for i in range(Nreduced): #{
+    for i in range(start_event,Nreduced): #{
         
         event_has_CC1p_topology = False
         
@@ -84,7 +86,7 @@ if "CC1p" in flags.option: #{
         events.GetEntry(i)
         
         # verbosity to a specific event
-        # events.debug=debug if events.event == 137796 else 0
+        events.debug=debug if events.event == 138443 else 0
         
         # analyze the event
         events.extract_information()

@@ -492,7 +492,11 @@ bool calcEventTopologies::TagGENIECC1p(){
     // after selection cuts applied
     // This method is independent of the tracks-sorting algorithm in the vertex
     for (auto & v:CC1p_vertices){
-        v.GENIECC1p = v.Is1mu1pDetected = false;
+        v.Non1mu1p = true;
+        v.GENIECC1p = false;
+        v.Is1mu1pDetected = false;
+        v.BothTracksAreGENIECC1p = false;
+        v.TruthTopologyString = "unknown vertex";
         
         PandoraNuTrack t1 = v.AssignedMuonTrack;
         PandoraNuTrack t2 = v.AssignedProtonTrack;
@@ -503,6 +507,8 @@ bool calcEventTopologies::TagGENIECC1p(){
         
             Debug(3,"found 1mu-1p detected");
             v.Is1mu1pDetected = true;
+            v.Non1mu1p = false;
+            v.TruthTopologyString = "1 muon - 1 proton";
             
             // match the proper GENIE interaction
             GENIEinteraction c_genie_interaction;
@@ -538,16 +544,17 @@ bool calcEventTopologies::TagGENIECC1p(){
             
             
             if ( (t1.truth_start_pos - t2.truth_start_pos).Mag() < 1. // distance between the true position of the two tracks is small
-                //                && t1.IsGENIECC1p && t2.IsGENIECC1p
                 && (v.closest_genie_interaction.vertex_position - v.position).Mag() < 10 // distance from the closest genie vertex
-                && v.closest_genie_interaction.IsCC1p
+                && (v.closest_genie_interaction.IsCC1p)
                 && (t1.process_primary==1 && t2.process_primary==1)
+                && (t1.IsGENIECC1p && t2.IsGENIECC1p)
                 ){
                 
                 Debug(3,"found true CC1p");
                 v.GENIECC1p = true;
                 v.Is1mu1pDetected = false; // I define Is1mu1pDetected as non true CC1p
                 v.TruthTopologyString = "true GENIE CC1p";
+                v.BothTracksAreGENIECC1p = true;
                 
             }
 

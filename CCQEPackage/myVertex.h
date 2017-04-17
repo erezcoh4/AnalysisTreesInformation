@@ -168,7 +168,7 @@ public:
     // variables
     TString             TopologyString , TruthTopologyString ;
 
-    bool                Is1mu1pDetected , GENIECC1p,  CC1pTopology; // , TruthCC1p deprecated
+    bool                Is1mu1pDetected , GENIECC1p,  CC1pTopology, BothTracksAreGENIECC1p, Non1mu1p; 
     bool                IsVertexContained, muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed;
 
     Int_t               counter_id, vertex_id,  Ntracks , run , subrun , event;
@@ -199,7 +199,7 @@ public:
     float               reco_CC1p_theta_pq_corrected,   reco_CC1p_p_over_q_corrected, reco_CC1p_Q2_corrected;
     float               reco_CC1p_omega_corrected;
     float               reco_CC1p_Xb_corrected, reco_CC1p_y_corrected, reco_CC1p_W2_corrected, reco_CC1p_s_corrected;
-    float               reco_CC1p_alpha_q_corrected, reco_CC1p_alpha_p_corrected, reco_CC1p_alpha_miss_corrected;
+    float               reco_CC1p_alpha_q_corrected, reco_CC1p_alpha_p_corrected, reco_CC1p_alpha_miss_corrected, reco_CC1p_alpha_mu_corrected;
     // --- - - --- -- - -- -- -- -- --- -- - --- - -- - -- -- -- --- - -- - --- - - -- - -- -
 
     // Tp + Eµ

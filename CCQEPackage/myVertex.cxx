@@ -5,7 +5,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 myVertex::myVertex(Int_t fID){
     SetVertexID(fID);
-    GENIECC1p = CC1pTopology = false;
+    GENIECC1p = CC1pTopology = BothTracksAreGENIECC1p = Non1mu1p = false;
     average_ratio_associated_hit_charge_to_total = max_ratio_associated_hit_charge_to_total = 0;
     TruthTopologyString = "not a GENIE CC1p";
 }
@@ -183,7 +183,7 @@ void myVertex::SetAssignTracks(PandoraNuTrack fAssignedMuonTrack,
     AssignedMuonTrack = fAssignedMuonTrack;
     AssignedProtonTrack = fAssignedProtonTrack;
     FixTracksDirections ();
-    SetEDepAroundVertex ();
+    //    SetEDepAroundVertex ();
     SetReconstructedFeatures ( PmuonFromRange , PprotonFromRange );
     
 }
@@ -193,35 +193,54 @@ void myVertex::FixTracksDirections(){
     // for CC1p events, we can fix the directions of the track
     // by looking at the reconstructed vertex position
     // and comparing the start/end point of the track to the vertex position
+    float start_start_distance = (AssignedMuonTrack.start_pos - AssignedProtonTrack.start_pos).Mag();
+    float end_start_distance = (AssignedMuonTrack.end_pos - AssignedProtonTrack.start_pos).Mag();
+    float start_end_distance = (AssignedMuonTrack.start_pos - AssignedProtonTrack.end_pos).Mag();
+    float end_end_distance = (AssignedMuonTrack.end_pos - AssignedProtonTrack.end_pos).Mag();
+    float min_distance = std::min({start_start_distance, end_start_distance, start_end_distance, end_end_distance});
     
     // first fix the position of the vertex
-    float min_distance = (AssignedMuonTrack.start_pos - AssignedProtonTrack.start_pos).Mag();
-    position = 0.5*(AssignedMuonTrack.start_pos + AssignedProtonTrack.start_pos);
-    
-    if (min_distance > (AssignedMuonTrack.end_pos - AssignedProtonTrack.start_pos).Mag()){
-        min_distance = (AssignedMuonTrack.end_pos - AssignedProtonTrack.start_pos).Mag();
+    if (min_distance == start_start_distance){
+        position = 0.5*(AssignedMuonTrack.start_pos + AssignedProtonTrack.start_pos);
+    }
+    else if (min_distance == end_start_distance){
         position = 0.5*(AssignedMuonTrack.end_pos + AssignedProtonTrack.start_pos);
     }
-    
-    if (min_distance > (AssignedMuonTrack.start_pos - AssignedProtonTrack.end_pos).Mag()){
-        min_distance = (AssignedMuonTrack.start_pos - AssignedProtonTrack.end_pos).Mag();
+    else if (min_distance == start_end_distance){
         position = 0.5*(AssignedMuonTrack.start_pos + AssignedProtonTrack.end_pos);
     }
-    
-    if (min_distance > (AssignedMuonTrack.end_pos - AssignedProtonTrack.end_pos).Mag()){
-        min_distance = (AssignedMuonTrack.end_pos - AssignedProtonTrack.end_pos).Mag();
+    else if (min_distance == end_end_distance){
         position = 0.5*(AssignedMuonTrack.end_pos + AssignedProtonTrack.end_pos);
+    }
+    
+    if (debug>4 && genie_interaction.IsCC1p && IsVertexReconstructed){
+        SHOW4( start_start_distance, end_start_distance, start_end_distance, end_end_distance );
+        SHOW( min_distance );
     }
     
     // then, flip the tracks accordingly
     if ( (AssignedMuonTrack.end_pos - position).Mag() < (AssignedMuonTrack.start_pos - position).Mag() ){
+        Debug(4,"Flipping muon track");
         AssignedMuonTrack.FlipTrack();
-        // if (GENIECC1p) Printf("Flipped muon track");
     }
     if ( (AssignedProtonTrack.end_pos - position).Mag() < (AssignedProtonTrack.start_pos - position).Mag() ){
+        Debug(4,"Flipping proton track");
         AssignedProtonTrack.FlipTrack();
-        // if (GENIECC1p) Printf("Flipped proton track");
     }
+    
+    // -- - --- -- -- --- - - -- -- -- - -- - -- -- -- - -- -- - - -- - - -- - -- - -- - - - -- - - -- - - -
+    // muon angle is better reconstructed than proton angle
+    // since the muon is longer and more 'pronounced' in the detector
+    // hence, we can use the muon angle to correct the proton angle:
+    // flip proton track - based on \theta_muon-\theta_proton correlation
+    // the MC correlation is a band around
+    // 𝜽(p) = -𝜽(µ)/𝛑 + 1
+    // so if 𝜽(p) is too far from this correlation we can flip the p-track
+    if (fabs( AssignedProtonTrack.theta - (-AssignedMuonTrack.theta/3.1415 + 1.)) > 1.){
+        AssignedProtonTrack.FlipTrack();
+    }
+        
+    
 }
 
 
@@ -269,12 +288,44 @@ void myVertex::SetReconstructedMomenta( float PmuonFromRange, float PprotonFromR
     //        PrintPhys( AssignedMuonTrack.length , "cm (reco. length)" );
     //        PrintPhys(reco_CC1p_Pmu_3momentum,"GeV/c (reco. momentum from stopping range)");
     
+    
+    // from Ev_form_momenta_vs_Ev_from_energies.ipynb
+    // p
+    //    530 theta(p)<pi/4
+    //    reco_CC1p_Pp_corrected = reco_CC1p_Pp_corrected+(829.467268*power(reco_CC1p_Pp_theta , -0.000145)+-828.787001)-(272.517358*power(reco_CC1p_Pp_theta , -0.000166)+-272.006880)
+    //    384 pi/4<theta(p)
+    //    reco_CC1p_Pp_corrected = reco_CC1p_Pp_corrected+(-373.647151*power(reco_CC1p_Pp_theta , 0.000654)+374.240938)-(-167.943634*power(reco_CC1p_Pp_theta , 0.000747)+168.395327)
+    // µ
+    //    163 theta(mu)>pi/2
+    //    reco_CC1p_Pmu_corrected = reco_CC1p_Pmu_corrected+(239.285823*power(reco_CC1p_Pmu_theta , -0.000924)+-238.823596)-(94.431539*power(reco_CC1p_Pmu_theta , -0.000762)+-94.194473)
+    //    550 pi/6<theta(mu)<pi/2
+    //    reco_CC1p_Pmu_corrected = reco_CC1p_Pmu_corrected+(0.399575*power(reco_CC1p_Pmu_theta , -1.167177)+0.154257)-(0.098050*power(reco_CC1p_Pmu_theta , -0.762805)+0.145517)
+    //    201 theta(mu)<pi/6
+    //    reco_CC1p_Pmu_corrected = reco_CC1p_Pmu_corrected+(2487.389498*power(reco_CC1p_Pmu_theta , -0.000175)+-2486.692171)-(322.878637*power(reco_CC1p_Pmu_theta , -0.000389)+-322.613939)
+    
     // momentum correction from p(mu)/theta(mu) and p(p) / theta(p) correlations
-    float Pp_corrected = reco_CC1p_Pp_3momentum + (0.623295/sqrt(9.992560 * reco_CC1p_Pp.Theta()) + 0.451352) - (0.236163/sqrt(19.029820 * reco_CC1p_Pp.Theta()) + 0.465819);
+    float Pp_corrected , Pmu_corrected;
+    if (reco_CC1p_Pp.Theta() < 3.1415/4) {
+        Pp_corrected = reco_CC1p_Pp_3momentum+(829.467268*pow(reco_CC1p_Pp.Theta() , -0.000145)+-828.787001)-(272.517358*pow(reco_CC1p_Pp.Theta() , -0.000166)+(-272.006880));
+    }
+    else {
+        Pp_corrected = reco_CC1p_Pp_3momentum+(-373.647151*pow(reco_CC1p_Pp.Theta() , 0.000654)+374.240938)-(-167.943634*pow(reco_CC1p_Pp.Theta() , 0.000747)+168.395327);
+    }
     reco_CC1p_Pp_3vect_corrected.SetMagThetaPhi( Pp_corrected , AssignedProtonTrack.theta , AssignedProtonTrack.phi );
     reco_CC1p_Pp_corrected.SetVectMag ( reco_CC1p_Pp_3vect_corrected , 0.938 );
     
-    float Pmu_corrected = reco_CC1p_Pmu_3momentum + (0.895556/sqrt(1.024280 * reco_CC1p_Pmu.Theta()) -0.319795) - (0.079959/sqrt(0.638376 * reco_CC1p_Pmu.Theta()) + 0.184049);
+    
+    
+    
+    if ( reco_CC1p_Pmu.Theta() > 3.1415/2 ) {
+        Pmu_corrected = reco_CC1p_Pmu_3momentum+(239.285823*pow(reco_CC1p_Pmu.Theta() , -0.000924)+-238.823596)-(94.431539*pow(reco_CC1p_Pmu.Theta() , -0.000762)+(-94.194473));
+    }
+    else if ( 3.1415/6 < reco_CC1p_Pmu.Theta() &&  reco_CC1p_Pp.Theta() < 3.1415/2){
+        Pmu_corrected = reco_CC1p_Pmu_3momentum+(0.399575*pow(reco_CC1p_Pmu.Theta() , -1.167177)+0.154257)-(0.098050*pow(reco_CC1p_Pmu.Theta() , -0.762805)+0.145517);
+    }
+    else {
+        Pmu_corrected = reco_CC1p_Pmu_3momentum+(2487.389498*pow(reco_CC1p_Pmu.Theta() , -0.000175)+(-2486.692171))-(322.878637*pow(reco_CC1p_Pmu.Theta() , -0.000389)+ (-322.613939));
+    }
     reco_CC1p_Pmu_3vect_corrected.SetMagThetaPhi( Pmu_corrected , AssignedMuonTrack.theta , AssignedMuonTrack.phi );
     reco_CC1p_Pmu_corrected.SetVectMag ( reco_CC1p_Pmu_3vect_corrected , 0.1056 );
 }
@@ -390,6 +441,7 @@ void myVertex::SetReconstructed_q(){
     reco_CC1p_n_miss_corrected = reco_CC1p_Pp_corrected - reco_CC1p_q_corrected;
     reco_CC1p_y_corrected = reco_CC1p_omega_corrected/reco_CC1p_Pnu_corrected.E();
     reco_CC1p_s_corrected = reco_CC1p_Q2_corrected/(reco_CC1p_Xb_corrected*reco_CC1p_y_corrected) + 0.939*0.939 + 0.106*0.106;
+    reco_CC1p_alpha_mu_corrected = (reco_CC1p_Pmu_corrected.E()-reco_CC1p_Pmu_corrected.Pz())/0.931;
     reco_CC1p_alpha_q_corrected = (reco_CC1p_q_corrected.E()-reco_CC1p_q_corrected.Pz())/0.931;
     reco_CC1p_alpha_p_corrected = (reco_CC1p_Pp_corrected.E()-reco_CC1p_Pp_corrected.Pz())/0.931;
     reco_CC1p_alpha_miss_corrected = reco_CC1p_alpha_p_corrected - reco_CC1p_alpha_q_corrected;

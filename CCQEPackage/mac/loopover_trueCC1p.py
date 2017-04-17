@@ -31,6 +31,8 @@ if 'GENIE' not in flags.option:
 
 if "CC1p" in flags.option: #{
 
+    start_event = flags.run
+    print 'start at event',start_event
     MCmode = True
     infilename = tracks_anafile_name( ListName = MCCversion + "_" + flags.DataType  + "_AnalysisTrees" )
     print_filename( infilename , "input events file")
@@ -48,19 +50,19 @@ if "CC1p" in flags.option: #{
     outtree = ROOT.TTree("GENIETwoTracksTree","2-tracks clusters")
 
     genie  = calcEventTopologies( inttree , outtree, flags.option , debug , MCmode , ccqe_pars['max_mu_p_distance'], inteventstree )
-    genie.debug = debug
+    genie.debug = int(flags.verbose)
     
     Nevents , Nreduced = genie.Nentries , int(flags.evnts_frac*genie.Nentries)
     counter , contained_counter , reco_counter , reco_close_counter = 0 , 0 , 0 , 0
 
     if debug: print_important("running on %d events (out of %d)"%(Nreduced,Nevents))
 
-    for i in range(Nreduced): #{
+    for i in range(start_event,Nreduced): #{
         
         # get event
         genie.GetGENIEEntry(i)
         genie.debug = int(flags.verbose) if genie.genie_interactions.size()>0 and genie.genie_interactions[0].event == 138443 else 0
-    
+
         # analyze the event
         genie.ClusterGENIEToVertices( counter )
         genie.AnalyzeVertices()

@@ -232,11 +232,15 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
 
                         
                         # Pmu reco. correction
-                        ,'reco_CC1p_Pmu_corrected':vertex.reco_CC1p_Pmu_corrected if vertex.tracks.size()>1  else -1000
-                        ,'reco_CC1p_Pp_corrected':vertex.reco_CC1p_Pp_corrected if vertex.tracks.size()>1  else -1000
+                        ,'reco_CC1p_Pmu_corrected':vertex.reco_CC1p_Pmu_corrected.P() if vertex.tracks.size()>1  else -1000
+                        ,'reco_CC1p_Emu_corrected':vertex.reco_CC1p_Pmu_corrected.E() if vertex.tracks.size()>1  else -1000
+                        ,'reco_CC1p_Pp_corrected':vertex.reco_CC1p_Pp_corrected.P() if vertex.tracks.size()>1  else -1000
+                        ,'reco_CC1p_Ep_corrected':vertex.reco_CC1p_Pp_corrected.E() if vertex.tracks.size()>1  else -1000
                         ,'reco_CC1p_Ev_corrected':vertex.reco_CC1p_Pnu_corrected.E() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_miss_corrected':vertex.reco_CC1p_alpha_miss_corrected if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_q_corrected':vertex.reco_CC1p_alpha_q_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_p_corrected':vertex.reco_CC1p_alpha_p_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_alpha_mu_corrected':vertex.reco_CC1p_alpha_mu_corrected if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_q_corrected':vertex.reco_CC1p_q_corrected.P() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_W2_corrected':vertex.reco_CC1p_W2_corrected if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_theta_pq_corrected':vertex.reco_CC1p_theta_pq_corrected if vertex.tracks.size()>1 else -1000
@@ -246,6 +250,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_y_corrected':vertex.reco_CC1p_y_corrected if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_s_corrected':vertex.reco_CC1p_s_corrected if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Q2_corrected':vertex.reco_CC1p_Q2_corrected if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_omega_corrected':vertex.reco_CC1p_omega_corrected if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Q2_corrected_from_angles_diff':(vertex.reco_CC1p_Q2_from_angles-vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Q2_corrected_from_angles_ratio':(vertex.reco_CC1p_Q2_from_angles/vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 and np.abs(vertex.reco_CC1p_Q2_corrected)>0 else -1000
                         ,'reco_CC1p_Pt_corrected':( vertex.reco_CC1p_Pmu_corrected + vertex.reco_CC1p_Pp_corrected ).Pt() if vertex.tracks.size()>0 else -1000
@@ -304,7 +309,9 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'PIDA_proton':vertex.protonTrueTrack.pidpida if MCmode and vertex.tracks.size()>0 else -1000
                         ,'PIDA_muon':vertex.muonTrueTrack.pidpida if MCmode and vertex.tracks.size()>0 else -1000
                         ,'GENIECC1p':vertex.GENIECC1p if MCmode else -1000
+                        ,'BothTracksAreGENIECC1p':vertex.BothTracksAreGENIECC1p if MCmode else -1000
                         ,'Is1mu1p':vertex.Is1mu1pDetected if MCmode else -1000
+                        ,'Non1mu1p':vertex.Non1mu1p if MCmode else -1000
                         ,'IsVertexContained':vertex.IsVertexContained if MCmode else -1000
                         ,'IsMuonReconstructed':vertex.muonTrackReconstructed if MCmode else -1000
                         ,'IsProtonReconstructed':vertex.protonTrackReconstructed if MCmode else -1000
