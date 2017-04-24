@@ -166,11 +166,11 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Pp_theta':vertex.reco_CC1p_Pp.Theta() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_p':vertex.reco_CC1p_alpha_p if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Emu':vertex.reco_CC1p_Pmu.E() if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_Pmu':vertex.reco_CC1p_Pmu.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pmu':vertex.reco_CC1p_Pmu.P() if vertex.muonTrackReconstructed or vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_x':vertex.reco_CC1p_Pmu.Px() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_y':vertex.reco_CC1p_Pmu.Py() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_z':vertex.reco_CC1p_Pmu.Pz() if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_Pmu_theta':vertex.reco_CC1p_Pmu.Theta() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Pmu_theta':vertex.reco_CC1p_Pmu.Theta() if vertex.muonTrackReconstructed or vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_mu':vertex.reco_CC1p_alpha_mu if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_miss':vertex.reco_CC1p_alpha_miss if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_q':vertex.reco_CC1p_alpha_q if vertex.tracks.size()>1 else -1000
@@ -216,6 +216,9 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_theta_pq_fromE':vertex.reco_CC1p_theta_pq_fromE if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_p_over_q_fromE':vertex.reco_CC1p_p_over_q_fromE if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_n_miss_fromE':vertex.reco_CC1p_n_miss_fromE.P() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_n_miss_x_fromE':vertex.reco_CC1p_n_miss_fromE.Px() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_n_miss_y_fromE':vertex.reco_CC1p_n_miss_fromE.Py() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_n_miss_z_fromE':vertex.reco_CC1p_n_miss_fromE.Pz() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Xb_fromE':vertex.reco_CC1p_Xb_fromE if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_y_fromE':vertex.reco_CC1p_y_fromE if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_s_fromE':vertex.reco_CC1p_s_fromE if vertex.tracks.size()>1 else -1000
@@ -377,6 +380,10 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'truth_q_x':vertex.genie_interaction.q.Px() if MCmode else -1000
                         ,'truth_q_y':vertex.genie_interaction.q.Py() if MCmode else -1000
                         ,'truth_q_z':vertex.genie_interaction.q.Pz() if MCmode else -1000
+                        ,'truth_n_miss':vertex.genie_interaction.n_miss.P() if MCmode else -1000
+                        ,'truth_n_miss_x':vertex.genie_interaction.n_miss.Px() if MCmode else -1000
+                        ,'truth_n_miss_y':vertex.genie_interaction.n_miss.Py() if MCmode else -1000
+                        ,'truth_n_miss_z':vertex.genie_interaction.n_miss.Pz() if MCmode else -1000
                         ,'truth_theta_pq':vertex.genie_interaction.theta_pq if MCmode else -1000
                         ,'truth_p_over_q':vertex.genie_interaction.p_over_q if MCmode else -1000
                         ,'truth_Q2':vertex.genie_interaction.Q2 if MCmode else -1000

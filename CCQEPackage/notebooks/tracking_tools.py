@@ -4,6 +4,10 @@ from ccqe_notebook_tools import *
 distance_threshold=10000 # mm
 angular_tracking_diff_max=1.046  # 0.523 rad. = 30 deg.
 
+
+
+
+
 #---------------------------------------------------------------------------------------------
 def get_my_tracks_per_plane( hits=None, tracks=None, plane=0, debug=0, MCmode=True ):
     
@@ -186,7 +190,8 @@ def plot_my_tracks(fig=None,hits=None , tracks=None , my_tracks=None , figsize=N
     for t in tracks:
         color, label = set_color_label(t.MCpdgCode,MCmode=MCmode)
         t_start_wire , t_start_time , t_end_wire , t_end_time = get_t_start_end(t,plane)
-        ax.plot( [t_start_wire,t_end_wire] , [t_start_time,t_end_time] ,label='track %d '%t.track_id+label, 
+        ax.plot( [t_start_wire,t_end_wire] , [t_start_time,t_end_time] 
+                ,label='track %d '%t.track_id+label, 
                 color=color,alpha=0.5)
             
         t_start_wire_min = np.min([t_start_wire , t_end_wire , t_start_wire_min])
@@ -598,7 +603,8 @@ def find_next_hit_in_track(plane,current_hit,
 def draw_evd_tracks(hits,tracks,
                     do_print=False,fontsize=20,figsize=(16,6),MCmode=True,
                     do_spatial_view=False,
-                    vertex_x=None,vertex_y=None,vertex_z=None):
+                    vertex_x=None,vertex_y=None,vertex_z=None,
+                    legend_loc='bbox',do_add_PfromRange=False, xlim=None, ylim=None ):
     
     
     # 3-planes
@@ -611,23 +617,37 @@ def draw_evd_tracks(hits,tracks,
         # tracks
         t_start_wire_min , t_end_wire_max , t_start_time_min , t_end_time_max= 8256 , 0 , 9500 , 0
         for t in tracks:
-            color, label = set_color_label(t.MCpdgCode,MCmode=MCmode)
+            color, label = set_color_label(t , MCmode=MCmode, do_add_PfromRange=do_add_PfromRange)
+            
             t_start_wire , t_start_time , t_end_wire , t_end_time = get_t_start_end(t,plane)
             t_start_wire_min = np.min([t_start_wire , t_end_wire , t_start_wire_min])
             t_end_wire_max   = np.max([t_start_wire , t_end_wire , t_end_wire_max])
             t_start_time_min = np.min([t_start_time , t_end_time , t_start_time_min])
             t_end_time_max   = np.max([t_start_time , t_end_time , t_end_time_max])
 
-            ax.plot( [t_start_wire,t_end_wire] , [t_start_time,t_end_time] ,label='track %d '%t.track_id+label, color=color,alpha=0.4)
-            ax.set_title('%s plane'%('u' if plane==0 else 'v' if plane==1 else 'y'),y=0.95)
+            ax.plot( [t_start_wire,t_end_wire] , [t_start_time,t_end_time] 
+                    ,label='track %d '%t.track_id+label, color=color,alpha=0.4)
+            ax.set_title('(%d/%d/%d) %s plane'%(t.run,t.subrun,t.event,('u' if plane==0 else 'v' if plane==1 else 'y')),y=0.95)
         
-        ax.set_xlim( t_start_wire_min - 8 , t_end_wire_max + 8 )
-        ax.set_ylim( t_start_time_min - 20 , t_end_time_max + 20 )
+        if xlim is None:
+            ax.set_xlim( t_start_wire_min - 8 , t_end_wire_max + 8 )
+        else: 
+            ax.set_xlim( xlim[plane] )
+        if ylim is None:
+            ax.set_ylim( t_start_time_min - 20 , t_end_time_max + 20 )
+        else: 
+            ax.set_ylim( ylim[plane] )
+
+
         ax.xaxis.set_major_locator(LinearLocator(4))
         ax.yaxis.set_major_locator(LinearLocator(4))
         set_axes(ax,x_label='wire',y_label='peak-time' if plane==0 else '',fontsize=fontsize)
         if plane!=0: ax.yaxis.set_major_formatter( NullFormatter() )
-        if MCmode and plane==0: ax.legend(loc='best',fontsize=fontsize)
+        if MCmode and plane==2:
+            if legend_loc!='bbox':
+                ax.legend(loc='best',fontsize=fontsize)
+            else:
+                ax.legend(bbox_to_anchor=(1.05,1) ,loc=2 ,borderaxespad=0.,fontsize=fontsize)
     plt.tight_layout()
     
     if do_spatial_view is False: return

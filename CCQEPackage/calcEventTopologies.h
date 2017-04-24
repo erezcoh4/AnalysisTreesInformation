@@ -40,7 +40,7 @@ public:
     
     
     /// Default constructor
-    calcEventTopologies(){};
+//    calcEventTopologies(){};
     ~calcEventTopologies(){}
     calcEventTopologies( TTree * fInTree );
     calcEventTopologies( TTree * fInTree,TTree * fOutTree,

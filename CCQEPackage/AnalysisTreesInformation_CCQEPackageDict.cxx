@@ -48,8 +48,6 @@ namespace std {} using namespace std;
 namespace ROOT {
    static TClass *calcEventTopologies_Dictionary();
    static void calcEventTopologies_TClassManip(TClass*);
-   static void *new_calcEventTopologies(void *p = 0);
-   static void *newArray_calcEventTopologies(Long_t size, void *p);
    static void delete_calcEventTopologies(void *p);
    static void deleteArray_calcEventTopologies(void *p);
    static void destruct_calcEventTopologies(void *p);
@@ -64,8 +62,6 @@ namespace ROOT {
                   typeid(::calcEventTopologies), DefineBehavior(ptr, ptr),
                   &calcEventTopologies_Dictionary, isa_proxy, 4,
                   sizeof(::calcEventTopologies) );
-      instance.SetNew(&new_calcEventTopologies);
-      instance.SetNewArray(&newArray_calcEventTopologies);
       instance.SetDelete(&delete_calcEventTopologies);
       instance.SetDeleteArray(&deleteArray_calcEventTopologies);
       instance.SetDestructor(&destruct_calcEventTopologies);
@@ -226,13 +222,6 @@ namespace ROOT {
 } // end of namespace ROOT
 
 namespace ROOT {
-   // Wrappers around operator new
-   static void *new_calcEventTopologies(void *p) {
-      return  p ? new(p) ::calcEventTopologies : new ::calcEventTopologies;
-   }
-   static void *newArray_calcEventTopologies(Long_t nElements, void *p) {
-      return p ? new(p) ::calcEventTopologies[nElements] : new ::calcEventTopologies[nElements];
-   }
    // Wrapper around operator delete
    static void delete_calcEventTopologies(void *p) {
       delete ((::calcEventTopologies*)p);
