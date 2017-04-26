@@ -257,7 +257,7 @@ public:
     // truth information - only valid for MC data
     Int_t       MCpdgCode;
     Float_t     truth_Eng , truth_P , truth_Mass , truth_KE;
-    Float_t     truth_theta         , truth_phi;
+    Float_t     truth_theta         , truth_phi  , truth_length;
     Float_t     truth_startx        , truth_starty , truth_startz , truth_endx , truth_endy , truth_endz;
     TVector3    truth_start_pos     , truth_end_pos;
     

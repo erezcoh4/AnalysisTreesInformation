@@ -268,7 +268,7 @@ public:
     Int_t       geant_list_size , no_primaries;
     Int_t       pdg[kMaxPrimaries]  , process_primary[kMaxPrimaries]        , Mother[kMaxPrimaries];
     Float_t     Eng[kMaxPrimaries]  , P[kMaxPrimaries]  , Mass[kMaxPrimaries]   , KE[kMaxPrimaries];
-    Float_t     theta[kMaxPrimaries], phi[kMaxPrimaries];
+    Float_t     theta[kMaxPrimaries], phi[kMaxPrimaries], pathlen[kMaxPrimaries];
     Float_t     StartPointx[kMaxPrimaries]  , StartPointy[kMaxPrimaries]    , StartPointz[kMaxPrimaries];
     Float_t     EndPointx[kMaxPrimaries]    , EndPointy[kMaxPrimaries]      , EndPointz[kMaxPrimaries];
     /// ---------------------------------

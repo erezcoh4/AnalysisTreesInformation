@@ -215,6 +215,7 @@ void cumputeAnaTree::InitInputTree(){
         InTree -> SetBranchAddress("Eng"                                        , &Eng);
         InTree -> SetBranchAddress("theta"                                      , &theta);
         InTree -> SetBranchAddress("phi"                                        , &phi);
+        InTree -> SetBranchAddress("pathlen"                                    , &pathlen);
         InTree -> SetBranchAddress("process_primary"                            , &process_primary);
         
         InTree -> SetBranchAddress("Mother"                                     , &Mother);
@@ -557,7 +558,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     FoundMCtrack = true;
                     c_track.SetMCpdgCode(pdg[ig4]);
                     c_track.SetProcessPrimary(process_primary[ig4]);
-                    // energy
+                    // energy, momentum....
                     c_track.truth_P     = P[ig4];
                     c_track.truth_Eng   = Eng[ig4];
                     c_track.truth_Mass  = Mass[ig4];
@@ -565,6 +566,8 @@ void cumputeAnaTree::GetPandoraNuTracks(){
                     // angles
                     c_track.truth_theta = theta[ig4];
                     c_track.truth_phi   = phi[ig4];
+                    // length
+                    c_track.truth_length= pathlen[ig4];
                     // positions
                     c_track.SetTruthStartPos( TVector3( StartPointx[ig4] , StartPointy[ig4] , StartPointz[ig4] ) );
                     c_track.SetTruthEndPos( TVector3( EndPointx[ig4] , EndPointy[ig4] , EndPointz[ig4] ) );
