@@ -165,7 +165,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Pp_z':vertex.reco_CC1p_Pp.Pz() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pp_theta':vertex.reco_CC1p_Pp.Theta() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_alpha_p':vertex.reco_CC1p_alpha_p if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_Emu':vertex.reco_CC1p_Pmu.E() if vertex.tracks.size()>1 else -1000
+                        ,'reco_CC1p_Emu':vertex.reco_CC1p_Pmu.E() if vertex.muonTrackReconstructed or vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu':vertex.reco_CC1p_Pmu.P() if vertex.muonTrackReconstructed or vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_x':vertex.reco_CC1p_Pmu.Px() if vertex.tracks.size()>1 else -1000
                         ,'reco_CC1p_Pmu_y':vertex.reco_CC1p_Pmu.Py() if vertex.tracks.size()>1 else -1000

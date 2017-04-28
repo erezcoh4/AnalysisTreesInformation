@@ -341,7 +341,7 @@ void myVertex::SetReconstructedBeamPz(){
     reco_CC1p_BeamPz_mcsllhd = reco_CC1p_Pp.Pz() + reco_CC1p_Pmu_mcsllhd.Pz();
     reco_CC1p_Pnu_mcsllhd = TLorentzVector( 0 , 0 , reco_CC1p_BeamPz_mcsllhd , reco_CC1p_BeamPz_mcsllhd );
     
-    reco_CC1p_BeamE = reco_CC1p_Pp.E() - reco_CC1p_Pp.Mag() + reco_CC1p_Pmu.E(); // Tp + Eµ
+    reco_CC1p_BeamE = reco_CC1p_Pp.E() + (reco_CC1p_Pmu.E() - reco_CC1p_Pp.Mag()) + 0.040 ; // Tp + Eµ + E(binding)
     reco_CC1p_Pnu_fromE = TLorentzVector( 0 , 0 , reco_CC1p_BeamE , reco_CC1p_BeamE );
     reco_CC1p_Ev_fromE = reco_CC1p_BeamE;
 
