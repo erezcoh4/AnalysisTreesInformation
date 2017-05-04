@@ -24,6 +24,147 @@ LAr_density = 1.396 # [g/cm^3]
 Mmuon = 105.6 # [MeV/c^2]
 
 
+
+
+figures_size = (8,4)
+figures_fontsize = 15
+markers_size = 6
+
+#---------------------------------------------------------------------------------------------
+# April-30, 2017
+def get_fraction_in_cut( data=None , cut_var='distance', mul=1 , xmin=0.1, xmax=10 , Nbins=10 ,  cut_type= 'max' ):
+    x_array = np.linspace(xmin,xmax,Nbins)
+    frac , frac_err = [] , []
+    denominator = len(data)
+    
+    for x in x_array:
+        if cut_type is 'max':
+            reduced = data[mul*data[cut_var]<x]
+        elif cut_type is 'min':
+            reduced = data[mul*data[cut_var]>x]
+        numerator = float(len(reduced))
+        
+        frac.append(100 * numerator / denominator)
+        frac_err.append( frac[-1] * np.sqrt(1./numerator + 1./denominator) ) if numerator>0 else frac_err.append( frac[-1]/np.sqrt(denominator) )
+
+    return np.array(x_array), np.array(frac) , np.array(frac_err)
+#---------------------------------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------------------------------
+# April-30, 2017
+def get_fraction_in_symmetriccut( data=None , cut_var='delta_phi', mul=1,xcenter=0.1, delta_x_min=0, delta_x_max=100 , Nbins=10 ):
+    delta_x_array = np.linspace(delta_x_min,delta_x_max,Nbins)
+    frac , frac_err = [] , []
+    denominator = len(data)
+    
+    for delta_x in delta_x_array:
+        reduced = data[np.abs(mul*data[cut_var]-xcenter)<delta_x]
+        numerator = float(len(reduced))
+        frac.append(100 * numerator / denominator)
+        frac_err.append( frac[-1] * np.sqrt(1./numerator + 1./denominator) ) if numerator>0 else frac_err.append( frac[-1]/np.sqrt(denominator) )
+    
+    return np.array(delta_x_array), np.array(frac) , np.array(frac_err)
+#---------------------------------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------------------------------
+# April-30, 2017
+def plot_cut_samples (samples=None,labels=None,
+                      cut_name='maximal distance between tracks',mul=1,
+                      cut_var ='distance',
+                      cut_type= 'max',
+                      x_label = 'maximal tracks distance [cm]', y_label='% of sample',
+                      xcenter=0,figsize=figures_size,fontsize=35,
+                      xmin=0.1, xmax=10 , Nbins=10, do_add_legend=True, ax=None,ticks_color='white'):
+    do_return_fig = False
+    if ax is None:
+        do_return_fig = True
+        fig,ax=plt.subplots(figsize=figsize)
+    for sample,label in zip(samples,labels):
+        if cut_type=='max' or cut_type=='min':
+            x , frac , frac_err = get_fraction_in_cut( data=sample , cut_var=cut_var , mul=mul , cut_type=cut_type , xmin=xmin, xmax=xmax , Nbins=Nbins )
+        elif cut_type=='symmetric':
+            x , frac , frac_err = get_fraction_in_symmetriccut( data=sample , cut_var=cut_var , mul=mul , xcenter=xcenter, delta_x_min=xmin, delta_x_max=xmax , Nbins=Nbins )
+        plt.errorbar(x , y=frac, yerr=frac_err , fmt='o' , markersize=markers_size , label=label)
+    if do_add_legend:
+        ax.legend(fontsize=figures_fontsize,loc='best')
+    ax.set_ylim(0,101)
+    ax.set_xlim(xmin,xmax)
+    set_axes(ax,x_label=x_label,y_label=y_label,fontsize=fontsize,ticks_color=ticks_color)
+    ax.grid(linestyle='--',alpha=0.75)
+    plt.tight_layout()
+#---------------------------------------------------------------------------------------------
+
+
+
+#---------------------------------------------------------------------------------------------
+# April-30, 2017
+def plot_feature_2tracks_clusters(samples=None,labels=None,
+                                  var='l_long',
+                                  x_label='$l_{long}$ [cm]',mul=1,
+                                  bins=np.linspace(0,300,100),fontsize=figures_fontsize,
+                                  fig=None,do_add_legend=False,figsize=figures_size,legend_fontsize=25,
+                                  Nh=2,Nw=2,i=None,ticks_color='white'):
+    if i is not None and fig is not None:
+        ax = fig.add_subplot(Nh,Nw,i)
+    else:
+        fig,ax = plt.subplots(figsize=figsize)
+    max_h=0
+    for sample,label in zip(samples,labels):
+        h,bins,_=plt.hist(mul*sample[var],normed=1,label=label,bins=bins,histtype='step',linewidth=3)
+        if np.max(h)>max_h:
+            max_h=np.max(h)
+    if do_add_legend:
+        ax.legend(fontsize=legend_fontsize)
+    set_axes(ax,x_label=x_label,fontsize=fontsize,ticks_color=ticks_color)
+    ax.set_xlim(np.min(bins),np.max(bins))
+    ax.set_ylim(0,1.05*max_h)
+    ax.grid(linestyle='--',alpha=0.75)
+    ax.xaxis.set_major_locator(LinearLocator(5));ax.yaxis.set_major_locator(LinearLocator(4))
+    ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
+    ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+    plt.tight_layout()
+#---------------------------------------------------------------------------------------------
+
+
+
+#---------------------------------------------------------------------------------------------
+# April-30, 2017
+def plot_feature_2tracks_clusters_2d(samples=None,plottype='hist',labels=None,cmaps=None,colors=None,
+                                     varx='l_long', vary='l_short',
+                                     x_label='$l_{long}$ [cm]',y_label='$l_{short}$ [cm]',mulx=1,muly=1,
+                                     bins=50,fontsize=figures_fontsize,
+                                     fig=None,do_add_legend=False,figsize=figures_size,ticks_color='white'):
+    
+    if plottype=='hist': fig = plt.figure(figsize=figsize)
+    elif plottype=='scatter': fig,ax = plt.subplots(figsize=figsize)
+    
+    for i,sample,label,cmap,color in zip(range(len(samples)),samples,labels,cmaps,colors):
+        if len(sample)<1: continue
+        
+        if plottype=='hist':
+            ax=fig.add_subplot(2,2,i+1)
+            plot_2d_hist(mulx*sample[varx],muly*sample[vary],bins=bins,ax=ax,cmap=cmap,ticks_color=ticks_color)
+            ax.set_title(label,y=1.02,fontsize=fontsize)
+            set_axes(ax,x_label=x_label if i==2 or i==3 else '',y_label=y_label if i==0 or i==2 else '',fontsize=fontsize)
+            ax.grid(linestyle='--',alpha=0.75)
+            ax.xaxis.set_major_locator(LinearLocator(5));ax.yaxis.set_major_locator(LinearLocator(4))
+        
+        
+        elif plottype=='scatter':
+            ax.scatter(mulx*sample[varx],muly*sample[vary],color=color)
+
+    if plottype=='scatter':
+        ax.set_title(label,y=1.02,fontsize=fontsize)
+        set_axes(ax,x_label=x_label,y_label=y_label,fontsize=fontsize,ticks_color='white')
+        ax.grid(linestyle='--',alpha=0.75)
+        ax.xaxis.set_major_locator(LinearLocator(5));ax.yaxis.set_major_locator(LinearLocator(4))
+    plt.tight_layout()
+#---------------------------------------------------------------------------------------------
+
+
+
 #---------------------------------------------------------------------------------------------
 # April 19 2017
 def muon_momontum_from_range(length , debug=0 ):
