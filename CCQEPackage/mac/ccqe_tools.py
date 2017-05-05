@@ -396,6 +396,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'truth_alpha_mu':vertex.truth_alpha_mu if vertex.tracks.size()>1 else -1000
                         ,'truth_alpha_miss':vertex.truth_alpha_miss if vertex.tracks.size()>1 else -1000
 
+                        ,'truth_Pt':(vertex.genie_interaction.protons.at(0)+vertex.genie_interaction.muon).Pt() if MCmode and vertex.genie_interaction.protons.size()>0 else -1000
                         
                         },
                         index=[0])
