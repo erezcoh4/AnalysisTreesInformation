@@ -70,7 +70,7 @@ def get_fraction_in_symmetriccut( data=None , cut_var='delta_phi', mul=1,xcenter
 
 #---------------------------------------------------------------------------------------------
 # April-30, 2017
-def plot_cut_samples (samples=None,labels=None,
+def plot_cut_samples (samples=None,labels=None,colors=None,
                       cut_name='maximal distance between tracks',mul=1,
                       cut_var ='distance',
                       cut_type= 'max',
@@ -81,12 +81,12 @@ def plot_cut_samples (samples=None,labels=None,
     if ax is None:
         do_return_fig = True
         fig,ax=plt.subplots(figsize=figsize)
-    for sample,label in zip(samples,labels):
+    for sample,label,color in zip(samples,labels,colors):
         if cut_type=='max' or cut_type=='min':
             x , frac , frac_err = get_fraction_in_cut( data=sample , cut_var=cut_var , mul=mul , cut_type=cut_type , xmin=xmin, xmax=xmax , Nbins=Nbins )
         elif cut_type=='symmetric':
             x , frac , frac_err = get_fraction_in_symmetriccut( data=sample , cut_var=cut_var , mul=mul , xcenter=xcenter, delta_x_min=xmin, delta_x_max=xmax , Nbins=Nbins )
-        plt.errorbar(x , y=frac, yerr=frac_err , fmt='o' , markersize=markers_size , label=label)
+        plt.errorbar(x , y=frac, yerr=frac_err , fmt='o' , markersize=markers_size , label=label, color=color)
     if do_add_legend:
         ax.legend(fontsize=figures_fontsize,loc='best')
     ax.set_ylim(0,101)
@@ -100,7 +100,7 @@ def plot_cut_samples (samples=None,labels=None,
 
 #---------------------------------------------------------------------------------------------
 # April-30, 2017
-def plot_feature_2tracks_clusters(samples=None,labels=None,
+def plot_feature_2tracks_clusters(samples=None,labels=None,colors=None,
                                   var='l_long',
                                   x_label='$l_{long}$ [cm]',mul=1,
                                   bins=np.linspace(0,300,100),fontsize=figures_fontsize,
@@ -111,8 +111,8 @@ def plot_feature_2tracks_clusters(samples=None,labels=None,
     else:
         fig,ax = plt.subplots(figsize=figsize)
     max_h=0
-    for sample,label in zip(samples,labels):
-        h,bins,_=plt.hist(mul*sample[var],normed=1,label=label,bins=bins,histtype='step',linewidth=3)
+    for sample,label,color in zip(samples,labels,colors):
+        h,bins,_=plt.hist(mul*sample[var],normed=1,label=label,bins=bins,histtype='step',linewidth=3,color=color)
         if np.max(h)>max_h:
             max_h=np.max(h)
     if do_add_legend:
