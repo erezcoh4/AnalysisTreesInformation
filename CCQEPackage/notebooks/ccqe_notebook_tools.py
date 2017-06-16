@@ -70,13 +70,45 @@ def get_fraction_in_symmetriccut( data=None , cut_var='delta_phi', mul=1,xcenter
 
 #---------------------------------------------------------------------------------------------
 # April-30, 2017
+def plot_feature_2tracks_clusters(samples=None,labels=None,colors=None,
+                                  var='l_long',
+                                  x_label='$l_{long}$ [cm]',mul=1,
+                                  bins=np.linspace(0,300,100),fontsize=figures_fontsize,
+                                  fig=None,do_add_legend=False,figsize=figures_size,legend_fontsize=25,
+                                  Nh=2,Nw=2,i=None,ticks_color='white',legend_loc='upper center'):
+    if i is not None and fig is not None:
+        ax = fig.add_subplot(Nh,Nw,i)
+    else:
+        fig,ax = plt.subplots(figsize=figsize)
+    max_h=0
+    for sample,label,color in zip(samples,labels,colors):
+        h,bins,_=plt.hist(mul*sample[var],normed=1,label=label,bins=bins,histtype='step',linewidth=3,color=color)
+        if np.max(h)>max_h:
+            max_h=np.max(h)
+    if do_add_legend:
+        ax.legend(fontsize=legend_fontsize,loc=legend_loc)
+    set_axes(ax,x_label=x_label,fontsize=fontsize,ticks_color=ticks_color)
+    ax.set_xlim(np.min(bins),np.max(bins))
+    ax.set_ylim(0,1.05*max_h)
+    ax.grid(linestyle='--',alpha=0.75)
+    ax.xaxis.set_major_locator(LinearLocator(5));ax.yaxis.set_major_locator(LinearLocator(4))
+    ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
+    ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
+    plt.tight_layout()
+    return ax
+#---------------------------------------------------------------------------------------------
+
+
+#---------------------------------------------------------------------------------------------
+# April-30, 2017
 def plot_cut_samples (samples=None,labels=None,colors=None,
                       cut_name='maximal distance between tracks',mul=1,
                       cut_var ='distance',
                       cut_type= 'max',
                       x_label = 'maximal tracks distance [cm]', y_label='% of sample',
                       xcenter=0,figsize=figures_size,fontsize=35,
-                      xmin=0.1, xmax=10 , Nbins=10, do_add_legend=True, ax=None,ticks_color='white'):
+                      xmin=0.1, xmax=10 , Nbins=10, do_add_legend=True, legend_loc='best',legend_fontsize=35,
+                      ax=None,ticks_color='white'):
     do_return_fig = False
     if ax is None:
         do_return_fig = True
@@ -88,44 +120,15 @@ def plot_cut_samples (samples=None,labels=None,colors=None,
             x , frac , frac_err = get_fraction_in_symmetriccut( data=sample , cut_var=cut_var , mul=mul , xcenter=xcenter, delta_x_min=xmin, delta_x_max=xmax , Nbins=Nbins )
         plt.errorbar(x , y=frac, yerr=frac_err , fmt='o' , markersize=markers_size , label=label, color=color)
     if do_add_legend:
-        ax.legend(fontsize=figures_fontsize,loc='best')
+        ax.legend(fontsize=legend_fontsize,loc=legend_loc)
     ax.set_ylim(0,101)
     ax.set_xlim(xmin,xmax)
-    set_axes(ax,x_label=x_label,y_label=y_label,fontsize=fontsize,ticks_color=ticks_color)
+    set_axes(ax,x_label=x_label,y_label=y_label,fontsize=fontsize,ticks_color=ticks_color,yticks=[20,40,60,80,100])
     ax.grid(linestyle='--',alpha=0.75)
     plt.tight_layout()
+    return ax
 #---------------------------------------------------------------------------------------------
 
-
-
-#---------------------------------------------------------------------------------------------
-# April-30, 2017
-def plot_feature_2tracks_clusters(samples=None,labels=None,colors=None,
-                                  var='l_long',
-                                  x_label='$l_{long}$ [cm]',mul=1,
-                                  bins=np.linspace(0,300,100),fontsize=figures_fontsize,
-                                  fig=None,do_add_legend=False,figsize=figures_size,legend_fontsize=25,
-                                  Nh=2,Nw=2,i=None,ticks_color='white'):
-    if i is not None and fig is not None:
-        ax = fig.add_subplot(Nh,Nw,i)
-    else:
-        fig,ax = plt.subplots(figsize=figsize)
-    max_h=0
-    for sample,label,color in zip(samples,labels,colors):
-        h,bins,_=plt.hist(mul*sample[var],normed=1,label=label,bins=bins,histtype='step',linewidth=3,color=color)
-        if np.max(h)>max_h:
-            max_h=np.max(h)
-    if do_add_legend:
-        ax.legend(fontsize=legend_fontsize)
-    set_axes(ax,x_label=x_label,fontsize=fontsize,ticks_color=ticks_color)
-    ax.set_xlim(np.min(bins),np.max(bins))
-    ax.set_ylim(0,1.05*max_h)
-    ax.grid(linestyle='--',alpha=0.75)
-    ax.xaxis.set_major_locator(LinearLocator(5));ax.yaxis.set_major_locator(LinearLocator(4))
-    ax.xaxis.set_major_formatter(ticker.FormatStrFormatter('%.0f'))
-    ax.yaxis.set_major_formatter(ticker.FormatStrFormatter('%.2f'))
-    plt.tight_layout()
-#---------------------------------------------------------------------------------------------
 
 
 
