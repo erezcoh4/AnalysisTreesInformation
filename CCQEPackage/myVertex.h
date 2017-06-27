@@ -168,6 +168,7 @@ public:
     // variables
     TString             TopologyString , TruthTopologyString ;
 
+    bool                IsGENIECC_1p_200MeVc_0pi; // a CC event with 1 p w/ momentum > 200 MeV/c and no π-s
     bool                Is1mu1pDetected , GENIECC1p,  CC1pTopology, BothTracksAreGENIECC1p, Non1mu1p; 
     bool                IsVertexContained, muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed;
 

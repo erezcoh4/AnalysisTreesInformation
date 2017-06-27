@@ -38,9 +38,6 @@ class calcEventTopologies: public myIncludes {
 public:
     
     
-    
-    /// Default constructor
-//    calcEventTopologies(){};
     ~calcEventTopologies(){}
     calcEventTopologies( TTree * fInTree );
     calcEventTopologies( TTree * fInTree,TTree * fOutTree,
@@ -93,6 +90,7 @@ public:
     bool FindVerticesWithCC1pTopology();
     bool        Find2tracksVertices ();
     bool               TagGENIECC1p ();
+    bool      Tag_CC_1p_200MeVc_0pi ();
     bool          PerformMyTracking ();
     bool                FillOutTree ();
     bool           FillGENIEOutTree ();
@@ -110,6 +108,7 @@ public:
     
     TTree * InTree , * InEventsTree, * OutTree;
    
+    
     bool    MCmode,     IsGENIECC1p,    FoundTruthCC1p;
     
     Int_t   vertices_ctr;
@@ -132,7 +131,7 @@ public:
     std::vector<PandoraNuTrack> tracks,     protonTracks;
     
     myVertex                    c_vertex;
-    std::vector<myVertex>       vertices,   CC1p_vertices;
+    std::vector<myVertex>       vertices,   mup_vertices, CC1p_vertices, CC_1p_200MeVc_0pi_vertices;
     std::vector<int>            CC1pVerticesID;
 
 

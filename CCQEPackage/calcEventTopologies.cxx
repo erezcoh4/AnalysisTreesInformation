@@ -96,7 +96,6 @@ bool calcEventTopologies::FillGENIEOutTree (){
 }
 
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void calcEventTopologies::InitEvent(){
     
@@ -196,7 +195,6 @@ bool calcEventTopologies::extract_information(){
     // return
     return (vertices.size()>0);
 }
-
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -462,7 +460,6 @@ bool calcEventTopologies::Find2tracksVertices(){
 }
 
 
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 int calcEventTopologies::CountCloseTracksToVertex(myVertex vertex){
     // count the number of tracks close to the vertex,
@@ -567,6 +564,92 @@ bool calcEventTopologies::TagGENIECC1p(){
 }
 
 
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool calcEventTopologies::Tag_CC_1p_200MeVc_0pi(){
+    // for events-tree, in which we only have tracks information
+    // and cluster vertices, we need to tag GENIE true-CC1p vertices
+    // which will enable us to then ask what is the purity of the sample
+    // after selection cuts applied
+    // This method is independent of the tracks-sorting algorithm in the vertex
+    for (auto & v:CC1p_vertices){
+        v.Non1mu1p = true;
+        v.GENIECC1p = false;
+        v.Is1mu1pDetected = false;
+        v.BothTracksAreGENIECC1p = false;
+        v.TruthTopologyString = "unknown vertex";
+        
+        PandoraNuTrack t1 = v.AssignedMuonTrack;
+        PandoraNuTrack t2 = v.AssignedProtonTrack;
+        
+        if (    (t1.MCpdgCode==13 && t2.MCpdgCode==2212)
+            ||  (t1.MCpdgCode==2212 && t2.MCpdgCode==13)  ){
+            
+            
+            Debug(3,"found 1mu-1p detected");
+            v.Is1mu1pDetected = true;
+            v.Non1mu1p = false;
+            v.TruthTopologyString = "1 muon - 1 proton";
+            
+            // match the proper GENIE interaction
+            GENIEinteraction c_genie_interaction;
+            bool MatchedGENIEinteraction = false;
+            for (auto genie_interaction : genie_interactions){
+                if (genie_interaction.mcevent_id == t1.mcevent_id){
+                    c_genie_interaction = genie_interaction;
+                    MatchedGENIEinteraction = true;
+                    break;
+                }
+            }
+            if (MatchedGENIEinteraction){
+                v.SetGENIEinfo( c_genie_interaction );
+            }
+            
+            
+            if ( t1.MCpdgCode==2212 && t2.MCpdgCode==13 ){
+                Debug(4,Form("found the p (track %d) and mu (track %d) in this 1mu-1p",t1.track_id,t2.track_id));
+                v.protonTrueTrack = t1;
+                v.muonTrueTrack = t2;
+                v.muonTrackReconstructed = v.protonTrackReconstructed = v.IsVertexReconstructed = true;
+            }
+            else if ( t1.MCpdgCode==13 && t2.MCpdgCode==2212 ){
+                Debug(4,Form("found the p (track %d) and mu (track %d) in this 1mu-1p",t2.track_id,t1.track_id));
+                v.muonTrueTrack = t1;
+                v.protonTrueTrack = t2;
+                v.muonTrackReconstructed = v.protonTrackReconstructed = v.IsVertexReconstructed = true;
+            }
+            else{
+                Debug(4,Form("could not find p and mu in this 1mu-1p - pdg codes are %d/%d",t2.MCpdgCode,t1.MCpdgCode));
+            }
+            
+            
+            
+            if ( (t1.truth_start_pos - t2.truth_start_pos).Mag() < 1. // distance between the true position of the two tracks is small
+                && (v.closest_genie_interaction.vertex_position - v.position).Mag() < 10 // distance from the closest genie vertex
+                && (v.closest_genie_interaction.IsCC1p)
+                && (t1.process_primary==1 && t2.process_primary==1)
+                && (t1.IsGENIECC1p && t2.IsGENIECC1p)
+                ){
+                
+                Debug(3,"found true CC1p");
+                v.GENIECC1p = true;
+                v.Is1mu1pDetected = false; // I define Is1mu1pDetected as non true CC1p
+                v.TruthTopologyString = "true GENIE CC1p";
+                v.BothTracksAreGENIECC1p = true;
+                
+            }
+            
+        }
+        
+        
+        
+    }
+    return true;
+}
+
+
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 std::vector<hit> calcEventTopologies::get_hits_in_plane(int plane){
     if(!hits_in_plane[plane].empty()) hits_in_plane[plane].clear();
@@ -578,9 +661,6 @@ std::vector<hit> calcEventTopologies::get_hits_in_plane(int plane){
     }
     return hits_in_plane[plane];
 }
-
-
-
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -648,8 +728,6 @@ int calcEventTopologies::ClosestTrackToHit( int plane , hit c_hit , myVertex ver
     if (debug>3) SHOW(closest_track_id);
     return closest_track_id;
 }
-
-
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
