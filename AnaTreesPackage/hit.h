@@ -36,6 +36,7 @@ public:
     
     Short_t hit_plane, hit_wire;
     Float_t hit_peakT, hit_charge;
+    Short_t hit_trkKey; //is this hit associated with a reco track,  if so associate a unique track key ID?
     
     int ClosestTrack_track_id;
     int hit_id;
@@ -60,7 +61,8 @@ public:
     }
 
     void Print(){
-        cout << "hit " << hit_id << ", " << hit_plane << "/" << hit_wire << "/" << hit_peakT << endl;
+        cout << "hit " << hit_id << ", " << hit_plane << "/" << hit_wire << "/" << hit_peakT ;
+        cout << "\t trkKey: " << hit_trkKey << endl;
     }
     
     

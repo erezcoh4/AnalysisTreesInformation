@@ -62,19 +62,20 @@ public:
                              );
 
     vector<size_t> sort_by_momentum_magnitude(const vector<TVector3> &v);
-    bool       SortNucleons ();
-    bool  ComputeKinematics ();
-    bool   ComputePmissPrec ();
-    bool           FindCC1p ();
+    bool            SortNucleons ();
+    bool       ComputeKinematics ();
+    bool        ComputePmissPrec ();
+    bool                FindCC1p ();
+    bool   FindCC_1p_200MeVc_0pi ();
     
     
     // SETters
-    void      SetNuMomentum (Float_t, Float_t, Float_t, Float_t );
+    void            SetNuMomentum (Float_t, Float_t, Float_t, Float_t );
     
-    void  SetVertexPosition (TVector3 fpos);
-    void             SetRSE (int frun , int fsubrun , int fevent)   {run=frun; subrun=fsubrun;event=fevent;};
-    void            SetCCNC (int fccnc)                             {ccnc = fccnc;};
-    void SetVertexContained (bool fcontained)                       {IsVertexContained = fcontained;};
+    void        SetVertexPosition (TVector3 fpos);
+    void                   SetRSE (int frun , int fsubrun , int fevent)   {run=frun; subrun=fsubrun;event=fevent;};
+    void                  SetCCNC (int fccnc)                             {ccnc = fccnc;};
+    void       SetVertexContained (bool fcontained)                       {IsVertexContained = fcontained;};
     
     
     
@@ -113,7 +114,7 @@ public:
     
     
     // booleans on the genie interaction
-    bool                       IsVertexContained,  IsCC1p; // topology of the interaction: CC1p;
+    bool                       IsVertexContained,  IsCC1p , IsCC_1p_200MeVc_0pi; // topology of the interaction: CC1p;
     bool                       muonTrackReconstructed, protonTrackReconstructed;
     std::vector<PandoraNuTrack> tracks; // pandoraNu tracks that are associated with the genie interacion
     

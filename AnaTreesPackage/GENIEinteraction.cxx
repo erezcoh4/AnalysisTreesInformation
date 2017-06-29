@@ -171,6 +171,29 @@ bool GENIEinteraction::FindCC1p(){
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool GENIEinteraction::FindCC_1p_200MeVc_0pi(){
+    Int_t Np_200MeVc = 0 , Nn_200MeVc = 0;
+    for (auto Pp : p3vect){
+        if (Pp.Mag()>=0.2) Np_200MeVc++;
+    }
+    for (auto Pn : n3vect){
+        if (Pn.Mag()>=0.2) Nn_200MeVc++;
+    }
+    
+    if ( ccnc==0 && Nmu==1 && Np_200MeVc==1 && Npi==0 && Nn_200MeVc==0 && Nel==0 && Ngamma==0 ){
+        IsCC_1p_200MeVc_0pi = true;
+        for (auto & t : tracks){
+            t.IsGENIECC_1p_200MeVc_0pi = true;
+        }
+        return true;
+    }
+    IsCC_1p_200MeVc_0pi = false;
+    return false;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool GENIEinteraction::SortNucleons(){
     
 
@@ -292,10 +315,13 @@ void GENIEinteraction::Print(bool DoPrintTracks){
     SHOW( Np );
     SHOW2 ( Nn , Npi );
     SHOW3( Nmu , Nel , Ngamma );
-    SHOW3( ccnc , IsCC1p , IsVertexContained );
-    if (IsCC1p){
-        SHOW2( muonTrackReconstructed, protonTrackReconstructed );
-    }
+    SHOW2( ccnc , IsVertexContained );
+    
+    SHOW(IsCC1p);
+    if (IsCC1p) SHOW2( muonTrackReconstructed, protonTrackReconstructed );
+    
+    SHOW( IsCC_1p_200MeVc_0pi );
+    if ( IsCC_1p_200MeVc_0pi ) SHOW2( muonTrackReconstructed, protonTrackReconstructed );
 
     if(DoPrintTracks && !tracks.empty()){
         cout << "\033[33m" << "--------------\n" << tracks.size() << " pandoraNu tracks in GENIE interaction " << mcevent_id << "\n--------------" <<  "\033[37m" << endl;

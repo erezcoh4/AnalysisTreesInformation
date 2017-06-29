@@ -27,6 +27,7 @@ cosmicscore(-100),
 coscontscore(-100),
 process_primary(-100),
 IsGENIECC1p(-100),
+IsGENIECC_1p_200MeVc_0pi(-100),
 mcevent_id(-100),
 truth_ccnc(-100),
 dQtotal(-100)
@@ -48,7 +49,6 @@ PandoraNuTrack::PandoraNuTrack (
                                 ,Float_t ftheta
                                 ,Float_t fphi
                                 ){
-
     SetRun(frun);
     SetSubrun(fsubrun);
     SetEvent(fevent);
@@ -59,8 +59,7 @@ PandoraNuTrack::PandoraNuTrack (
     SetTheta(ftheta);
     SetPhi(fphi);
     // NNeighborTracks = 0;
-    IsGENIECC1p = IsStartContained = IsEndContained = IsFullyContained = false;
-    
+    IsGENIECC1p = IsStartContained = IsEndContained = IsFullyContained = IsGENIECC_1p_200MeVc_0pi = false;
 }
 
 
@@ -372,6 +371,7 @@ void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool 
         SHOWTVector3(truth_start_pos);
         SHOWTVector3(truth_end_pos);
         SHOW2( truth_ccnc, IsGENIECC1p );
+        SHOW( IsGENIECC_1p_200MeVc_0pi );
     }
     cout << "\033[31m" << "~~~~~~~~~~~~~~~~~~~~~" << endl;
 

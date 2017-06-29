@@ -17,7 +17,7 @@ from ROOT import AnalyzeTracksFile
 # -------------------------
 max_trk_vtx_distance = 10 # [cm], this distance needs to be decided form vertex reconstruction resolution
 first_file  = flags.run
-splitjobs   = 1000 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
+splitjobs   = 1 if flags.NumberOfRuns==0 else flags.NumberOfRuns # splitting the jobs: 0-10, 10-20, 20-30,....
 last_file   = first_file + splitjobs
 MCCversion  = "MCC%d"%flags.MCCversion
 
@@ -203,7 +203,7 @@ def rois_features_file_name( ListName , first_file = 0 , last_file = 0 ):
 
 # ----------------------------------------------------------------------------------------------------
 def tracks_anafile_name( ListName , first_file = 0 , last_file = 0 ):
-    if first_file>=last_file:
+    if last_file==(first_file+1) or first_file >= last_file:
         return eventsfiles_path + "/" + "Events_" + ListName + ".root"
     else:
         return eventsfiles_path + "/" + "Events_" + ListName + "_anatreefiles_%d_to_%d.root"%(first_file,last_file)

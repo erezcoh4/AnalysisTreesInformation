@@ -111,6 +111,7 @@ public:
     void    GetEnergyDeposition ( int j );
     void     GetSoftwareTrigger ();
     void          TagCC1pTracks ();
+    void          TagCC_1p_200MeVc_0pi_Tracks ();
     bool          WireTimeInBox (int w, int t, box b); // returns true if the wire/time point is in the box
     bool    AssociateHitsTracks ();
     void            CollectHits ();

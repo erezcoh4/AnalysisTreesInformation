@@ -81,7 +81,7 @@ public:
     };
     void     SetTruthEndPos (TVector3 pos)  {
         truth_end_pos = pos; truth_endx=truth_end_pos.x(); truth_endy=truth_end_pos.y(); truth_endz=truth_end_pos.z();};
-
+    
     void       SetCosScores (Float_t fcscore, Float_t fccscore)
     {cosmicscore = fcscore; coscontscore = fccscore;};
     
@@ -90,7 +90,7 @@ public:
     
     void     SetTrackPurity (Float_t fpurtruth_U, Float_t fpurtruth_V, Float_t fpurtruth_Y)
     { purtruth_U = fpurtruth_U; purtruth_V = fpurtruth_V; purtruth_Y = fpurtruth_Y ;};
-
+    
     void           Set_dqdx (Float_t, Float_t, Float_t, Int_t);
     void       SetFlashInfo (Float_t fcftime, Float_t fcftimewidth, Float_t fcfzcenter, Float_t fcfzwidth, Float_t fcfycenter, Float_t fcfywidth, Float_t fcftotalpe, Float_t fcfdistance);
     
@@ -100,15 +100,15 @@ public:
     void           Set_dEdx (vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> ,
                              vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> ,
                              vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t>  );
-
+    
     void    SetCalorimetry_Y (vector<Float_t> , vector<Float_t> , vector<Float_t> , vector<Float_t>   );
     
-    void   SetSWtrigger (std::string * fswtrigger_name, bool * fswtrigger_triggered){
-        for (size_t i=0 ; i < (int)(sizeof(fswtrigger_triggered)/sizeof(fswtrigger_triggered[0])) ; i++ ) {
-            swtrigger_name.push_back(fswtrigger_name[i]);
-            swtrigger_triggered.push_back(fswtrigger_triggered[i]);
-        }
-    };
+    //    void   SetSWtrigger (std::string * fswtrigger_name, bool * fswtrigger_triggered){
+    //        for (size_t i=0 ; i < (int)(sizeof(fswtrigger_triggered)/sizeof(fswtrigger_triggered[0])) ; i++ ) {
+    //            swtrigger_name.push_back(fswtrigger_name[i]);
+    //            swtrigger_triggered.push_back(fswtrigger_triggered[i]);
+    //        }
+    //    };
     
     void    SetSlopeIntercept ( int plane = 0 , float fslope = -1000 , float fintercept = -1000 ){
         slope[plane] = fslope;
@@ -117,8 +117,8 @@ public:
     void SetX1Y1X2Y2forTrack (int plane, std::vector<float> fx1x2y1y2) {
         for(auto f:fx1x2y1y2) x1y1x2y2[plane].push_back(f);
         if (WireTimeAngle[plane]==-100)
-        WireTimeAngle[plane] = atan2(x1y1x2y2[plane][3]-x1y1x2y2[plane][1],
-                                     x1y1x2y2[plane][2]-x1y1x2y2[plane][0]);
+            WireTimeAngle[plane] = atan2(x1y1x2y2[plane][3]-x1y1x2y2[plane][1],
+                                         x1y1x2y2[plane][2]-x1y1x2y2[plane][0]);
     };
     
     
@@ -127,8 +127,8 @@ public:
     Float_t ClosestDistanceToOtherTrack ( PandoraNuTrack other_track , std::string * StartOrEnd=nullptr );
     Float_t           DistanceFromPoint ( TVector3 position , std::string * StartOrEnd=nullptr );
     bool           IsWireTimeAlongTrack ( Int_t fplane, Int_t fwire , Float_t fPeakTime );
-
-
+    
+    
     
     // getters
     TVector3    GetStartPos (){return start_pos;};
@@ -146,11 +146,11 @@ public:
     std::vector<Float_t> GetTrackLengthVector (int plane) {
         switch (plane) {
             case 0:
-//                return residual_range_U;
-//                break;
+                //                return residual_range_U;
+                //                break;
             case 1:
-//                return residual_range_V;
-//                break;
+                //                return residual_range_V;
+                //                break;
             case 2:
                 return residual_range_Y;
                 break;
@@ -161,11 +161,11 @@ public:
     std::vector<Float_t> GetTrack_dEdxVector  (int plane) {
         switch (plane) {
             case 0:
-//                return dEdx_U;
-//                break;
+                //                return dEdx_U;
+                //                break;
             case 1:
-//                return dEdx_V;
-//                break;
+                //                return dEdx_V;
+                //                break;
             case 2:
                 return dEdx_Y;
                 break;
@@ -173,7 +173,7 @@ public:
                 return dEdx_Y;
                 break;
         }};
-    Int_t GetNSWtrigger () {return (int)swtrigger_name.size();};
+    //    Int_t GetNSWtrigger () {return (int)swtrigger_name.size();};
     
     std::vector<float> GetX1Y1X2Y2forTrack( int plane = 0 ){
         if(!x1y1x2y2[plane].empty()) return x1y1x2y2[plane];
@@ -196,7 +196,7 @@ public:
         if( ( end_pos.z() < min_FV_z )      | ( end_pos.z() > max_FV_z ) )      return false;
         return true;
     }
-
+    
     
     
     // features
@@ -233,7 +233,7 @@ public:
     std::vector<float> x1y1x2y2[3];
     
     TString     TopBottDir  , ForBackDir    , LefRghtDir;
-
+    
     Int_t       start_wire_u, start_wire_v, start_wire_y;
     Int_t       start_time_u, start_time_v, start_time_y;
     Int_t       end_wire_u, end_wire_v, end_wire_y;
@@ -246,7 +246,7 @@ public:
     // std::vector <Float_t> track_dx_U, residual_range_U, dEdx_U , Edep_U, dqdx_U;
     // std::vector <Float_t> track_dx_V, residual_range_V, dEdx_V , Edep_V, dqdx_V;
     std::vector <Float_t> track_dx_Y, residual_range_Y, dEdx_Y , Edep_Y, dqdx_Y;
-
+    
     
     // tracks which are closer than TracsMinDistance, at the same event, are labled as 'neighbor-tracks'
     // vector<Int_t>       NeighborTracks;
@@ -262,14 +262,14 @@ public:
     TVector3    truth_start_pos     , truth_end_pos;
     
     // true CC1p (GENIE interaction)
-    bool        IsGENIECC1p;
+    bool        IsGENIECC1p, IsGENIECC_1p_200MeVc_0pi;
     Int_t       mcevent_id;
-
     
     
-    // software trigger
-    std::vector<std::string> swtrigger_name;       // the name of the trigger algorithm
-    std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
+    
+    //    // software trigger
+    //    std::vector<std::string> swtrigger_name;       // the name of the trigger algorithm
+    //    std::vector<bool>        swtrigger_triggered;  // true = event is triggered; false = event is not triggered based on the relative algorithm logic
     
     
     

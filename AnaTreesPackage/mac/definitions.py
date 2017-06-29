@@ -30,16 +30,19 @@ option = flags.option
 
 # paths
 # -------------------------
-if flags.worker=="erez":
+if flags.worker=="erez":#{
     
     Path            = "/Users/erezcohen/Desktop/uBoone/AnalysisTreesAna"
     PlotPath        = "/Users/erezcohen/Desktop/"
 
-elif flags.worker=="uboone":
+#}
+
+elif flags.worker=="uboone":#{
     
     Path            = "/uboone/app/users/ecohen/AnalysisTreesAna"
     PlotPath        = "/uboone/app/users/ecohen/"
 
+#}
 
 GBDTmodel_path      = Path + "/GBDTmodels"
 passedGBDT_path     = Path + "/PassedGBDTFiles"

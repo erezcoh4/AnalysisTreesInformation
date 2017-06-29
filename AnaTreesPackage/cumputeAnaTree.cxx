@@ -28,6 +28,7 @@ bool cumputeAnaTree::extract_information(bool fDo){ // main event loop....
         GetTruthInformation();
         Debug(3,"Got Truth Information");
         TagCC1pTracks();
+        TagCC_1p_200MeVc_0pi_Tracks();
     }
 
     // if we want to collect vertices, these should be uncommented in
@@ -606,6 +607,7 @@ void cumputeAnaTree::GetPandoraNuTracks(){
 void cumputeAnaTree::CollectHits(){
     for(Int_t j=0 ; j<no_hits && j<kMaxHits ; j++) {
         c_hit = hit ( hit_plane[j] , hit_wire[j] , hit_peakT[j] , hit_charge[j] , j );
+        c_hit.hit_trkKey = hit_plane[j];
         hits.push_back(c_hit);
     }
 }
@@ -977,7 +979,9 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     c_genie_interaction.ComputePmissPrec();
     if(debug>3) Printf("computed p(miss) and p(rec)");
     c_genie_interaction.FindCC1p();
-    if(debug>3) Printf("found GENIE cc1p");
+    if(debug>3) Printf("finished FindCC1p()");
+    c_genie_interaction.FindCC_1p_200MeVc_0pi();
+    if(debug>3) Printf("finished FindCC_1p_200MeVc_0pi()");
 
     
     
@@ -1194,6 +1198,40 @@ void cumputeAnaTree::TagCC1pTracks(){
         }
     }
 }
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void cumputeAnaTree::TagCC_1p_200MeVc_0pi_Tracks(){
+    if(debug>3) Printf("cumputeAnaTree::TagCC1pTracks()");
+    
+    // Match pandoraNu tracks to true-CC_1p_200MeVc_0pi (GENIE interactions),
+    // and if they come from GENIE-CC_1p_200MeVc_0pi, tag them as comming form
+    // this CC_1p_200MeVc_0pi.
+    // Add the CC_1p_200MeVc_0pi id (mcevts_truth number) so that we know later if
+    // the proton and the muon came from the same CC_1p_200MeVc_0pi
+    
+    // loop over all tracks reconstructed in this event
+    for (auto & pandoraNu_track:tracks){
+        if(!genie_interactions.empty()){
+            // loop over all tracks in all GENIE neutrino interactions
+            for (auto & genie_interaction:genie_interactions){
+                for (auto & genie_interaction_reconstructed_track: genie_interaction.tracks) {
+                    // match reconstructed track from the GENIE neutrino interaction to the pandoraNu track at interest
+                    if (genie_interaction_reconstructed_track.track_id == pandoraNu_track.track_id){
+                        // if match, flag the track as true (GENIE) CC1p or not
+                        if (genie_interaction.IsCC_1p_200MeVc_0pi==true){
+                            pandoraNu_track.IsGENIECC_1p_200MeVc_0pi = true;
+                            pandoraNu_track.mcevent_id = genie_interaction.mcevent_id;
+                            
+                            genie_interaction_reconstructed_track.IsGENIECC_1p_200MeVc_0pi = true;
+                            genie_interaction_reconstructed_track.mcevent_id = genie_interaction.mcevent_id;
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -1416,11 +1454,18 @@ void cumputeAnaTree::PrintData(int entry){
     }
     if(!cosmic_tracks.empty()){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << cosmic_tracks.size() << " pandoraCosmic tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
-        
         for (auto t: cosmic_tracks) {
             t.Print();
         }
     }
+    
+//    if(!hits.empty()){
+//        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << hits.size() << " hits\n\n" << "xxxxxxxxxxxxxx"<< "\033[30m" << endl;
+//        for (auto hit: hits) {
+//            hit.Print();
+//        }
+//    }
+
     if(!tracks.empty()){
         cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << tracks.size() << " pandoraNu tracks\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
         
