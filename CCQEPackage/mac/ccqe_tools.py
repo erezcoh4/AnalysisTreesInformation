@@ -7,8 +7,34 @@ from ROOT import calcEventTopologies, MyTrack
 from matplotlib import ticker
 import scipy.optimize as optimize
 
-
+# constants
 r2d = 180./np.pi
+
+# globals
+pair_types = ['all','1mu-1p','other pairs','cosmic','CC 1p 0pi']
+
+# -- - - - -- - - - -- - - -- - - -- - - -- - -- - - - - -- - - -- -- -- - - -
+# July-9
+def count_vertex( vertex , counters , fractions ):#{
+    counters['all'] += 1
+    if vertex.Is1mu1p:#{
+        counters['1mu-1p'] += 1
+        if vertex.IsGENIECC_1p_200MeVc_0pi:#{
+            counters['CC 1p 0pi'] += 1
+        #}
+    #}
+    elif vertex.Non1mu1p:#{
+        counters['other pairs'] += 1
+    #}
+    elif vertex.IsCosmic:#{
+        counters['cosmic'] += 1
+    #}
+    for pair_type in pair_types: #{
+        fractions[pair_type] = 100.0*float(counters[pair_type])/counters['all']
+    #}
+#}
+
+
 
 # ---------------------------------------------------------------------------
 # global constants for CC1p analysis
@@ -107,7 +133,7 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'PIDA_long':vertex.LongestTrack.pidpida if vertex.tracks.size()>0 else -1000
                         ,'cfdistance_short':vertex.ShortestTrack.cfdistance if vertex.tracks.size()>0 else -1000
                         ,'cfdistance_long':vertex.LongestTrack.cfdistance if vertex.tracks.size()>0 else -1000
-                        
+
                         # sort by pida
                         ,'theta_large_pida':vertex.LargePIDATrack.theta if vertex.tracks.size()>0 else -1000
                         ,'theta_small_pida':vertex.SmallPIDATrack.theta if vertex.tracks.size()>0 else -1000
@@ -233,57 +259,57 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'reco_CC1p_Ev_fromE_with_binding_ratio':(vertex.reco_CC1p_Ev_with_binding/vertex.reco_CC1p_Ev_fromE) if vertex.tracks.size()>1 and vertex.reco_CC1p_Ev_fromE>0 else -1000
                         ,'reco_CC1p_Mmiss_fromE':(vertex.reco_CC1p_n_miss_fromE - ROOT.TLorentzVector(0,0,0,0.939)).Mag() if vertex.tracks.size()>1 else -1000
 
-                        
-                        # Pmu reco. correction
-                        ,'reco_CC1p_Pmu_corrected':vertex.reco_CC1p_Pmu_corrected.P() if vertex.tracks.size()>1  else -1000
-                        ,'reco_CC1p_Emu_corrected':vertex.reco_CC1p_Pmu_corrected.E() if vertex.tracks.size()>1  else -1000
-                        ,'reco_CC1p_Pp_corrected':vertex.reco_CC1p_Pp_corrected.P() if vertex.tracks.size()>1  else -1000
-                        ,'reco_CC1p_Ep_corrected':vertex.reco_CC1p_Pp_corrected.E() if vertex.tracks.size()>1  else -1000
-                        ,'reco_CC1p_Ev_corrected':vertex.reco_CC1p_Pnu_corrected.E() if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_alpha_miss_corrected':vertex.reco_CC1p_alpha_miss_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_alpha_q_corrected':vertex.reco_CC1p_alpha_q_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_alpha_p_corrected':vertex.reco_CC1p_alpha_p_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_alpha_mu_corrected':vertex.reco_CC1p_alpha_mu_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_q_corrected':vertex.reco_CC1p_q_corrected.P() if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_W2_corrected':vertex.reco_CC1p_W2_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_theta_pq_corrected':vertex.reco_CC1p_theta_pq_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_p_over_q_corrected':vertex.reco_CC1p_p_over_q_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_n_miss_corrected':vertex.reco_CC1p_n_miss_corrected.P() if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_Xb_corrected':vertex.reco_CC1p_Xb_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_y_corrected':vertex.reco_CC1p_y_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_s_corrected':vertex.reco_CC1p_s_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_Q2_corrected':vertex.reco_CC1p_Q2_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_omega_corrected':vertex.reco_CC1p_omega_corrected if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_Q2_corrected_from_angles_diff':(vertex.reco_CC1p_Q2_from_angles-vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 else -1000
-                        ,'reco_CC1p_Q2_corrected_from_angles_ratio':(vertex.reco_CC1p_Q2_from_angles/vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 and np.abs(vertex.reco_CC1p_Q2_corrected)>0 else -1000
-                        ,'reco_CC1p_Pt_corrected':( vertex.reco_CC1p_Pmu_corrected + vertex.reco_CC1p_Pp_corrected ).Pt() if vertex.tracks.size()>0 else -1000
 
-                        
-                        # my tracking
-                        ,'associated_hit_charge_u':vertex.TracksAssociatedCharge[0] if vertex.tracks.size()>0 else -1000
-                        ,'associated_hit_charge_v':vertex.TracksAssociatedCharge[1] if vertex.tracks.size()>0 else -1000
-                        ,'associated_hit_charge_y':vertex.TracksAssociatedCharge[2] if vertex.tracks.size()>0 else -1000
-                        ,'total_hit_charge_u':vertex.AllChargeInVertexROI[0] if vertex.tracks.size()>0 else -1000
-                        ,'total_hit_charge_v':vertex.AllChargeInVertexROI[1] if vertex.tracks.size()>0 else -1000
-                        ,'total_hit_charge_y':vertex.AllChargeInVertexROI[2] if vertex.tracks.size()>0 else -1000
-                        ,'total_hit_charge_u_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[0] if vertex.tracks.size()>0 else -1000
-                        ,'total_hit_charge_v_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[1] if vertex.tracks.size()>0 else -1000
-                        ,'total_hit_charge_y_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[2] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_u':vertex.ratio_associated_hit_charge_to_total[0] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_v':vertex.ratio_associated_hit_charge_to_total[1] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_y':vertex.ratio_associated_hit_charge_to_total[2] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_u_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[0] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_v_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[1] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_y_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[2] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_u_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[0] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_v_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[1] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_associated_hit_charge_to_total_y_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[2] if vertex.tracks.size()>0 else -1000
-                        ,'average_ratio_associated_hit_charge_to_total':vertex.average_ratio_associated_hit_charge_to_total if vertex.tracks.size()>0 else -1000
-                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_u':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[0] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_v':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[1] if vertex.tracks.size()>0 else -1000
-                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_y':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[2] if vertex.tracks.size()>0 else -1000
-                        
-                        
+#                        # Pmu reco. correction
+#                        ,'reco_CC1p_Pmu_corrected':vertex.reco_CC1p_Pmu_corrected.P() if vertex.tracks.size()>1  else -1000
+#                        ,'reco_CC1p_Emu_corrected':vertex.reco_CC1p_Pmu_corrected.E() if vertex.tracks.size()>1  else -1000
+#                        ,'reco_CC1p_Pp_corrected':vertex.reco_CC1p_Pp_corrected.P() if vertex.tracks.size()>1  else -1000
+#                        ,'reco_CC1p_Ep_corrected':vertex.reco_CC1p_Pp_corrected.E() if vertex.tracks.size()>1  else -1000
+#                        ,'reco_CC1p_Ev_corrected':vertex.reco_CC1p_Pnu_corrected.E() if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_alpha_miss_corrected':vertex.reco_CC1p_alpha_miss_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_alpha_q_corrected':vertex.reco_CC1p_alpha_q_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_alpha_p_corrected':vertex.reco_CC1p_alpha_p_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_alpha_mu_corrected':vertex.reco_CC1p_alpha_mu_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_q_corrected':vertex.reco_CC1p_q_corrected.P() if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_W2_corrected':vertex.reco_CC1p_W2_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_theta_pq_corrected':vertex.reco_CC1p_theta_pq_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_p_over_q_corrected':vertex.reco_CC1p_p_over_q_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_n_miss_corrected':vertex.reco_CC1p_n_miss_corrected.P() if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_Xb_corrected':vertex.reco_CC1p_Xb_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_y_corrected':vertex.reco_CC1p_y_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_s_corrected':vertex.reco_CC1p_s_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_Q2_corrected':vertex.reco_CC1p_Q2_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_omega_corrected':vertex.reco_CC1p_omega_corrected if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_Q2_corrected_from_angles_diff':(vertex.reco_CC1p_Q2_from_angles-vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 else -1000
+#                        ,'reco_CC1p_Q2_corrected_from_angles_ratio':(vertex.reco_CC1p_Q2_from_angles/vertex.reco_CC1p_Q2_corrected) if vertex.tracks.size()>1 and np.abs(vertex.reco_CC1p_Q2_corrected)>0 else -1000
+#                        ,'reco_CC1p_Pt_corrected':( vertex.reco_CC1p_Pmu_corrected + vertex.reco_CC1p_Pp_corrected ).Pt() if vertex.tracks.size()>0 else -1000
+#
+#                        
+#                        # my tracking
+#                        ,'associated_hit_charge_u':vertex.TracksAssociatedCharge[0] if vertex.tracks.size()>0 else -1000
+#                        ,'associated_hit_charge_v':vertex.TracksAssociatedCharge[1] if vertex.tracks.size()>0 else -1000
+#                        ,'associated_hit_charge_y':vertex.TracksAssociatedCharge[2] if vertex.tracks.size()>0 else -1000
+#                        ,'total_hit_charge_u':vertex.AllChargeInVertexROI[0] if vertex.tracks.size()>0 else -1000
+#                        ,'total_hit_charge_v':vertex.AllChargeInVertexROI[1] if vertex.tracks.size()>0 else -1000
+#                        ,'total_hit_charge_y':vertex.AllChargeInVertexROI[2] if vertex.tracks.size()>0 else -1000
+#                        ,'total_hit_charge_u_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[0] if vertex.tracks.size()>0 else -1000
+#                        ,'total_hit_charge_v_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[1] if vertex.tracks.size()>0 else -1000
+#                        ,'total_hit_charge_y_enlarged_20_100':vertex.AllChargeInVertexROI_enlarged_20_100[2] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_u':vertex.ratio_associated_hit_charge_to_total[0] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_v':vertex.ratio_associated_hit_charge_to_total[1] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_y':vertex.ratio_associated_hit_charge_to_total[2] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_u_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[0] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_v_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[1] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_y_enlarged_20_100':vertex.ratio_associated_hit_charge_to_total_enlarged_20_100[2] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_u_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[0] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_v_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[1] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_associated_hit_charge_to_total_y_enlarged_40_200':vertex.ratio_associated_hit_charge_to_total_enlarged_40_200[2] if vertex.tracks.size()>0 else -1000
+#                        ,'average_ratio_associated_hit_charge_to_total':vertex.average_ratio_associated_hit_charge_to_total if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_u':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[0] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_v':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[1] if vertex.tracks.size()>0 else -1000
+#                        ,'ratio_dQassociated_dQtot_ROI_20x40_AroundVertex_y':vertex.ratio_dQassociated_dQtot_ROI_20x40_AroundVertex[2] if vertex.tracks.size()>0 else -1000
+#                        
+#                        
                         # features that are only relevant for truth information
                         ,'pdg':[list(track.MCpdgCode for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0  else -1000
                         ,'truth_startx':[list(track.truth_startx for track in vertex.tracks)] if MCmode and vertex.tracks.size()>0 else -1000
@@ -311,15 +337,14 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
                         ,'cfdistance_muon':vertex.muonTrueTrack.cfdistance if MCmode and vertex.tracks.size()>0 else -1000
                         ,'PIDA_proton':vertex.protonTrueTrack.pidpida if MCmode and vertex.tracks.size()>0 else -1000
                         ,'PIDA_muon':vertex.muonTrueTrack.pidpida if MCmode and vertex.tracks.size()>0 else -1000
-                        ,'GENIECC1p':vertex.GENIECC1p if MCmode else -1000
-                        ,'BothTracksAreGENIECC1p':vertex.BothTracksAreGENIECC1p if MCmode else -1000
-                        ,'Is1mu1p':vertex.Is1mu1pDetected if MCmode else -1000
-                        ,'Non1mu1p':vertex.Non1mu1p if MCmode else -1000
-                        ,'IsVertexContained':vertex.IsVertexContained if MCmode else -1000
-                        ,'IsMuonReconstructed':vertex.muonTrackReconstructed if MCmode else -1000
-                        ,'IsProtonReconstructed':vertex.protonTrackReconstructed if MCmode else -1000
-                        ,'IsVertexReconstructed':vertex.IsVertexReconstructed if MCmode else -1000
                         
+                        # truth topology of the event
+                        ,'all':True if MCmode else -1000
+                        ,'1mu-1p':vertex.Is1mu1p if MCmode else -1000
+                        ,'CC 1p 0pi':vertex.IsGENIECC_1p_200MeVc_0pi if MCmode else -1000
+                        ,'other pairs':vertex.Non1mu1p if MCmode else -1000
+                        ,'cosmic':vertex.IsCosmic if MCmode else -1000
+
                         # closest GENIE interaction
                         ,'closest_genie_distance':(vertex.closest_genie_interaction.vertex_position-vertex.position).Mag() if MCmode else -1000
                         ,'closest_genie_Ev':vertex.closest_genie_interaction.nu.E() if MCmode else -1000

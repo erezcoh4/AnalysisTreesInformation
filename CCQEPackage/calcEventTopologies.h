@@ -72,6 +72,9 @@ public:
     void              InitInputTree ();
     void             InitOutputTree ();
     void                  InitEvent ();
+    void              ClearVertices ();
+    void            ClearHitsTracks ();
+    void               FillVertices (std::vector<myVertex>);
     
     // running
     bool        extract_information ();
@@ -87,10 +90,10 @@ public:
     bool            AnalyzeVertices ();
     bool      FindGENIECC1pVertices ();
     bool      FindTruthCC1pVertices ();
-    bool FindVerticesWithCC1pTopology();
+    bool FindVerticesWithGoodTopology ();
     bool        Find2tracksVertices ();
     bool               TagGENIECC1p ();
-    bool      Tag_CC_1p_200MeVc_0pi ();
+    bool                TagVertices ();
     bool          PerformMyTracking ();
     bool                FillOutTree ();
     bool           FillGENIEOutTree ();
@@ -101,7 +104,7 @@ public:
     int              ClosestTrackToHit ( int plane, hit c_hit , myVertex vertex);
 
     bool TrackAlreadyIncludedInVerticesList (int ftrack_id);
-    void                      Print (bool DoPrintTracks=false, bool DoVertices=false);
+    void                      Print (bool DoPrintGENIE=false, bool DoPrintTracks=false, bool DoVertices=false);
     
     // getters
     PandoraNuTrack         GetTrack ( int i )        {return tracks.at(i);};

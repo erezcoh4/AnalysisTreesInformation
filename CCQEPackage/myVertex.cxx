@@ -5,10 +5,106 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 myVertex::myVertex(Int_t fID){
     SetVertexID(fID);
-    GENIECC1p = CC1pTopology = BothTracksAreGENIECC1p = Non1mu1p = false;
+    GENIECC1p = CCQETopology = BothTracksAreGENIECC1p = Non1mu1p = false;
     average_ratio_associated_hit_charge_to_total = max_ratio_associated_hit_charge_to_total = 0;
     TruthTopologyString = "not a GENIE CC1p";
 }
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::Initiate(){
+    
+    Is1mu1p                     = false;
+    IsGENIECC_1p_200MeVc_0pi    = false;
+    Non1mu1p                    = false;
+    IsCosmic                    = false;
+    TruthTopologyString         = "unknown vertex";
+    return true;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetAs1mu1p(){
+    Debug(3,"a µp pair");
+    Is1mu1p                     = true;
+    IsGENIECC_1p_200MeVc_0pi    = false;
+    Non1mu1p                    = false;
+    IsCosmic                    = false;
+    TruthTopologyString = "true µp pair";
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetAsCC_1p_200MeVc_0pi(){
+    Debug(3,"a true CC 1p 0π");
+    Is1mu1p                     = true;
+    IsGENIECC_1p_200MeVc_0pi    = true;
+    Non1mu1p                    = false;
+    IsCosmic                    = false;
+    TruthTopologyString = "true CC 1p 0π";
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetAsNon1mu1p(){
+    Debug(3,"a true non-µp pair");
+    Is1mu1p                     = false;
+    IsGENIECC_1p_200MeVc_0pi    = false;
+    Non1mu1p                    = true;
+    IsCosmic                    = false;
+    TruthTopologyString = "true non-µp pair";
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetAsCosmic(){
+    Debug(3,"a cosmic pair");
+    Is1mu1pDetected             = false;
+    IsGENIECC_1p_200MeVc_0pi    = false;
+    Non1mu1p                    = false;
+    IsCosmic                    = true;
+    TruthTopologyString = "cosmic pair";
+}
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool myVertex::MatchGenieInteraction ( std::vector<GENIEinteraction> fgenie_interactions , PandoraNuTrack ftrack ){
+    // match the proper GENIE interaction
+    GENIEinteraction c_genie_interaction;
+    bool MatchedGENIEinteraction = false;
+    for (auto genie_interaction : fgenie_interactions){
+        if (genie_interaction.mcevent_id == ftrack.mcevent_id){
+            c_genie_interaction = genie_interaction;
+            MatchedGENIEinteraction = true;
+            break;
+        }
+    }
+    if (MatchedGENIEinteraction){
+        SetGENIEinfo( c_genie_interaction );
+    }
+    return MatchedGENIEinteraction;
+}
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetMuonProtonTracks( PandoraNuTrack track_a , PandoraNuTrack track_b ){
+    Debug(4,Form("p: track %d, mu: track %d in 1mu-1p", track_a.track_id , track_b.track_id));
+    protonTrueTrack = track_a;
+    muonTrueTrack = track_b;
+    muonTrackReconstructed = protonTrackReconstructed = IsVertexReconstructed = true;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+void myVertex::SetMuonProton( PandoraNuTrack t1 , PandoraNuTrack t2 ){
+    if ( t1.MCpdgCode==2212 && t2.MCpdgCode==13 ){
+        SetMuonProtonTracks( t1 , t2 );
+    }
+    else if ( t1.MCpdgCode==13 && t2.MCpdgCode==2212 ){
+        SetMuonProtonTracks( t2 , t1 );
+    }
+    else{
+        Debug(4,Form("could not find p and mu in this 1mu-1p - pdg codes are %d/%d",t2.MCpdgCode,t1.MCpdgCode));
+    }
+}
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void myVertex::AddTrack (PandoraNuTrack ftrack){
@@ -27,8 +123,6 @@ void myVertex::AddTrack (PandoraNuTrack ftrack){
     }
 
 }
-
-
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::IncludesTrack (Int_t ftrack_id){
@@ -93,7 +187,7 @@ bool myVertex::SetKinematicalTopology(float min_length_long,
     // (2) they are closer than 10 cm
     // (3) their azimuthal angular difference corresponds to QE ~ 180 (delta_phi_min < delta_phi < delta_phi_max)
     
-    CC1pTopology = false;
+    CCQETopology = false;
     TopologyString = "just a weird topology";
     if (
         tracks.size() == 2
@@ -103,8 +197,8 @@ bool myVertex::SetKinematicalTopology(float min_length_long,
         && (PIDA_short_min < ShortestTrack.pidpida && ShortestTrack.pidpida < PIDA_short_max)
         && (PIDA_long_min < LongestTrack.pidpida && LongestTrack.pidpida < PIDA_long_max)
         ){
-        CC1pTopology = true;
-        TopologyString = "CC1p topology";
+        CCQETopology = true;
+        TopologyString = "CCQE topology";
         return true;
     }
     
@@ -1191,7 +1285,7 @@ bool myVertex::CollectAssociatedCharge(int plane){
 void myVertex::Print(){
     
     cout << "\033[35m" << "~~~~~~~~~~~~~~\n vertex " << vertex_id << "\n~~~~~~~~~~~~~~"<< "\033[0m" << endl;
-    SHOW3( run , subrun , event );
+    // SHOW3( run , subrun , event );
     SHOWTVector3( position );
     for (auto t: tracks) {
         Printf("track %d (pdg %d), vertex distance %.1f cm",t.track_id,t.MCpdgCode,t.DistanceFromPoint( position ));
@@ -1208,8 +1302,7 @@ void myVertex::Print(){
         // inter-tracks distances
         cout << "\033[33m" << tracks.size()*tracks.size() << " inter-tracks distances " << "\033[30m" << endl;
         for(auto vec : tracks_distances) {
-            for(auto x : vec)
-            std::cout << setprecision(2) << x << "\t";
+            for(auto x : vec) std::cout << setprecision(2) << x << "\t";
             std::cout << std::endl;
         }
     }
@@ -1218,9 +1311,9 @@ void myVertex::Print(){
     }
     //    cout << "topology: " << TopologyString << endl;
     cout << "truth topology: " << TruthTopologyString << endl;
-    SHOW(GENIECC1p);
-    if (GENIECC1p){
-        cout << "This vertex is a GENIE true CC1p" << endl;
+    SHOW2(GENIECC1p,IsGENIECC_1p_200MeVc_0pi);
+    if (IsGENIECC_1p_200MeVc_0pi){
+        cout << "This vertex is a GENIE true CC_1p_200MeVc_0pi" << endl;
         SHOW3( muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed );
         
         // muon

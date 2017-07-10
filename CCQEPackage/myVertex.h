@@ -24,17 +24,6 @@
 #define d2r TMath::DegToRad()
 #define PI TMath::Pi()
 
-//// pitch between wires is 3 mm
-//#define WireDistance(w1, w2 ) (w2-w1)*3.0
-//
-//// drift velocity ~ 1.114 mm/us = 0.557 mm/time-tick (2 time ticks = 1 us)
-//// so dt x 0.557 = dx [mm]
-//#define TimeDistance( t1, t2 ) (t2-t1)*0.557
-//
-//// return the distance between point (w1,t1) and (w2,t2) in mm
-//#define WireTimeDistance( w1 , t1, w2 , t2) sqrt(  WireDistance( w1, w2) * WireDistance( w1, w2)  +  TimeDistance( t1, t2) * TimeDistance( t1, t2) );
-
-
 
 
 /**
@@ -79,9 +68,15 @@ public:
                                   float PIDA_short_min      =0, float PIDA_short_max=5000,
                                   float PIDA_long_min       =0, float PIDA_long_max=0
     );
-    
-    
-    
+    bool                Initiate ();
+    void              SetAs1mu1p ();
+    void  SetAsCC_1p_200MeVc_0pi ();
+    void           SetAsNon1mu1p ();
+    void             SetAsCosmic ();
+    bool   MatchGenieInteraction ( std::vector<GENIEinteraction> , PandoraNuTrack );
+    void     SetMuonProtonTracks ( PandoraNuTrack , PandoraNuTrack );
+    void           SetMuonProton ( PandoraNuTrack , PandoraNuTrack );
+
     vector<size_t>        sort_l (const vector<PandoraNuTrack> &v);
     vector<size_t>     sort_pida (const vector<PandoraNuTrack> &v);
 
@@ -160,16 +155,16 @@ public:
     
     
     // GETters
-    bool     IsCC1pTopology () {return CC1pTopology;};
+    bool     IsCCQETopology () {return CCQETopology;};
     float  GetAngleBetween2tracks ();
     
 
     
     // variables
     TString             TopologyString , TruthTopologyString ;
+    bool                Is1mu1p,    IsGENIECC_1p_200MeVc_0pi,   Non1mu1p,   IsCosmic;
 
-    bool                IsGENIECC_1p_200MeVc_0pi; // a CC event with 1 p w/ momentum > 200 MeV/c and no π-s
-    bool                Is1mu1pDetected , GENIECC1p,  CC1pTopology, BothTracksAreGENIECC1p, Non1mu1p; 
+    bool                Is1mu1pDetected , GENIECC1p,  CCQETopology, BothTracksAreGENIECC1p;
     bool                IsVertexContained, muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed;
 
     Int_t               counter_id, vertex_id,  Ntracks , run , subrun , event;
@@ -238,7 +233,7 @@ public:
     TLorentzVector      reco_CC1p_Pmu_mcsllhd, reco_CC1p_Pnu_mcsllhd, reco_CC1p_q_mcsllhd;
     float               reco_CC1p_theta_pq_mcsllhd, reco_CC1p_BeamPz_mcsllhd;
     float               reco_CC1p_p_over_q_mcsllhd, reco_CC1p_Q2_mcsllhd, reco_CC1p_Q2_from_angles_mcsllhd;
-    // --------
+    // --------------------------------------------------------------------------------------------------------
     
     box                 roi[3] , roi_u , roi_v , roi_y, Roi_20x40_AroundVertex[3];
     
