@@ -1,7 +1,7 @@
 '''
     extract data from analysis trees
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    python $AnalysisTreesAna/mac/extract_data_from_anatrees.py --option=extractExampleDebugging -mccv=8 -ff=1 -p1 -v3
+    python $AnalysisTreesAna/mac/extract_data_from_anatrees.py --option=extractExampleDebugging -mccv=8 -nruns=2 -p1 -v3
  
  
  --------------------------------------------------------------------------------------------------------------------------------------------

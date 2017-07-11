@@ -882,6 +882,7 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
 
 
     i_file = 0
+    print "reading data from :\n",files
     for file in files: #{
         
         print_filename( file , "reading analysistree data from file (%.2f MB)"%filesize_in_MB(file) )
@@ -900,9 +901,9 @@ def extract_anatrees_tracks_information_from_files_list(data_type="BNB_5e19POT",
                    
         del in_chain
         in_file.Close()
-        print_filename( file , "finished extracting anatrees information from file %d out of %d"%(i_file,len(files)-1) )
-        print_line()
         i_file += 1
+        print_filename( file , "finished extracting anatrees information from file %d out of %d"%(i_file,len(files)) ) # len(files)-1
+        print_line()
     #}
     
     print 'finished collecting data.'
