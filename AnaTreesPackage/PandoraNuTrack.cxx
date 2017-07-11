@@ -258,22 +258,6 @@ void PandoraNuTrack::SetMomentum(Float_t fmomrange, Float_t fmommsllhd ){
 
 }
 
-////....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//void PandoraNuTrack::AddNeighborTrack( Int_t ftrack_id , Float_t fClosestDistance , Float_t fangle ){
-//    
-//    NNeighborTracks++ ;
-//    
-//    NeighborTracks.push_back( ftrack_id );
-//    
-//    NeighborTracksDistance.push_back( fClosestDistance );
-//
-//    NeighborTracksAngles.push_back( fangle );
-//    
-//    
-//
-//}
-
-
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 Float_t PandoraNuTrack::ClosestDistanceToOtherTrack( PandoraNuTrack other_track, std::string * fStartOrEnd ){
     Float_t MinDistanceToOtherTrack = 10000;
@@ -333,8 +317,12 @@ bool PandoraNuTrack::IsWireTimeAlongTrack ( Int_t plane, Int_t wire , Float_t ti
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool DoPrintPlanes){
     
-    cout << "\033[31m" << "~~~~~~~~~~~~~~~~~~~~~\n" << "track " << track_id << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
-    SHOW3(run , subrun , event);
+    cout << "\033[31m"
+    << "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" << endl
+    << "track " << track_id << endl
+    << "-------------------"
+    << "\033[0m" << endl;
+    // SHOW3(run , subrun , event);
     if (DoPrintPos){
         SHOWTVector3(start_pos);
         SHOWTVector3(end_pos);
@@ -362,7 +350,7 @@ void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool 
         }
     }
     if ( truth_Eng>0 && truth_P>0 ){
-        cout << "MC information: " << endl;
+        cout << "MC information \n..................." << endl;
         SHOW ( mcevent_id );
         SHOW2 ( process_primary , MCpdgCode );
         PrintPhys (truth_P , "GeV/c");
@@ -373,9 +361,9 @@ void PandoraNuTrack::Print(bool DoPrintPos, bool DoPrintPandoraNuFeatures, bool 
         SHOW2( truth_ccnc, IsGENIECC1p );
         SHOW( IsGENIECC_1p_200MeVc_0pi );
     }
-    cout << "\033[31m" << "~~~~~~~~~~~~~~~~~~~~~" << endl;
-
-    
+    cout << "\033[31m"
+    << "vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv"
+    << "\033[0m" << endl;
 }
 
 

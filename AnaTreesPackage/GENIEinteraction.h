@@ -67,6 +67,7 @@ public:
     bool        ComputePmissPrec ();
     bool                FindCC1p ();
     bool   FindCC_1p_200MeVc_0pi ();
+    bool       FindCC_1p_200MeVc ();
     
     
     // SETters
@@ -115,13 +116,22 @@ public:
     
     // booleans on the genie interaction
     bool                       IsVertexContained,  IsCC1p , IsCC_1p_200MeVc_0pi; // topology of the interaction: CC1p;
+    bool                       IsCC_1p_200MeVc; // an interaction with at least 1 muon and 1 proton > 200 MeV/c
     bool                       muonTrackReconstructed, protonTrackReconstructed;
     std::vector<PandoraNuTrack> tracks; // pandoraNu tracks that are associated with the genie interacion
     
     PandoraNuTrack              muonTrack, protonTrack;
     std::vector<PandoraNuTrack> protonTracks;
 
-    
+    bool IsContained(float max_y = 120,
+                     float min_z = 0, float max_z = 1050,
+                     float min_x = 0, float max_x = 260){
+        if( ( vertex_position.x() < min_x )    | ( vertex_position.x() > max_x ) )    return false;
+        if( ( vertex_position.y() < -max_y )   | ( vertex_position.y() > max_y ) )    return false;
+        if( ( vertex_position.z() < min_z )    | ( vertex_position.z() > max_z ) )    return false;
+        return true;
+    }
+
 };
 #endif
 /** @} */ // end of doxygen group

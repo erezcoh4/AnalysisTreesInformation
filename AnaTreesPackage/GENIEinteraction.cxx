@@ -9,7 +9,9 @@
 GENIEinteraction::GENIEinteraction():
 Xb(-100),
 Q2(-100),
-ccnc(-100)
+ccnc(-100),
+IsCC_1p_200MeVc_0pi(false),
+IsCC_1p_200MeVc(false)
 {}
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -22,7 +24,7 @@ GENIEinteraction::GENIEinteraction( Int_t fmcevent_id, Int_t fNprimaries ){
     Np = Nn = Npi = Nmu = Nel = Ntot = Nnu = Ngamma = 0;
     Nnu_e = Nnu_mu = Nmu_minus = Nmu_plus = Npi_minus = Npi_plus = Npi_0 = Ne_plus = Ne_minus = 0;
     ccnc = -100;
-    IsCC1p = false;
+    IsCC_1p_200MeVc = IsCC_1p_200MeVc_0pi = false;
 }
 
 
@@ -52,16 +54,10 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                                    ,PandoraNuTrack fprimarPandoraNuTrack
                                    ){
     
-    pdg.push_back(fpdg);
-    Eng.push_back(fEng);
-    ND.push_back(fND);
-    mother.push_back(fmother);
-    status_code.push_back(fstatus_code);
-    
     momentum.SetVectM( TVector3 ( fPx , fPy , fPz ) , fmass );
     
     
-    switch (pdg.back()) { // interaction neutrino
+    switch (fpdg) { // interaction neutrino
             
         case 12: // ν(e)
             nu = momentum;
@@ -80,7 +76,13 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
     }
     
     
-    if (status_code.back()==1) { // status code 0 particles are unstable or do not exit the nucleus and are thus irrelevant
+    if (fstatus_code==1) { // status code 0 particles are unstable or do not exit the nucleus and are thus irrelevant
+        
+        pdg.push_back(fpdg);
+        Eng.push_back(fEng);
+        ND.push_back(fND);
+        mother.push_back(fmother);
+        status_code.push_back(fstatus_code);
         
         Ntot++;
         if (track_reconstructed){
@@ -150,9 +152,6 @@ bool GENIEinteraction::AddPrimary ( // GENIE information is for outside of the n
                 break;
         }
     }
-
-    
-    
     return true;
 }
 
@@ -167,6 +166,24 @@ bool GENIEinteraction::FindCC1p(){
     IsCC1p = false;
     return false;
 }
+
+
+
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+bool GENIEinteraction::FindCC_1p_200MeVc(){
+    Int_t Np_200MeVc = 0;
+    for (auto Pp : p3vect){
+        if (Pp.Mag()>=0.2) Np_200MeVc++;
+    }
+    if ( ccnc==0 && Nmu>=1 && Np_200MeVc>=1 ){
+        IsCC_1p_200MeVc = true;
+        return true;
+    }
+    IsCC_1p_200MeVc = false;
+    return false;
+}
+
 
 
 
@@ -258,6 +275,7 @@ bool GENIEinteraction::ComputePmissPrec(){
 
 
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void GENIEinteraction::SetVertexPosition (TVector3 fpos){
     vertex_position = fpos;
     
@@ -296,11 +314,15 @@ void GENIEinteraction::SetVertexPosition (TVector3 fpos){
     }
 
 }
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void GENIEinteraction::Print(bool DoPrintTracks){
 
     cout << "\033[31m" << "GENIE interaction " << mcevent_id << "\n~~~~~~~~~~~~~~~~~~~~~ "<< "\033[0m" << endl;
     SHOW(mcevent_id);
+    SHOWTVector3(vertex_position);
+    if (!IsContained()) Printf("vertex not contained!");
+    SHOWstdVector( pdg );
     SHOWTLorentzVector(nu);
     SHOWTLorentzVector(muon);
     SHOWTLorentzVector(q);
@@ -312,22 +334,29 @@ void GENIEinteraction::Print(bool DoPrintTracks){
     
     
     SHOW( Nprimaries );
-    SHOW( Np );
-    SHOW2 ( Nn , Npi );
+    SHOW3( Np , Nn , Npi );
     SHOW3( Nmu , Nel , Ngamma );
     SHOW2( ccnc , IsVertexContained );
     
-    SHOW(IsCC1p);
-    if (IsCC1p) SHOW2( muonTrackReconstructed, protonTrackReconstructed );
+    //    SHOW(IsCC1p);
+    //    if (IsCC1p) SHOW2( muonTrackReconstructed, protonTrackReconstructed );
+    SHOW( IsCC_1p_200MeVc );
+    if ( IsCC_1p_200MeVc ) {
+        SHOW2( muonTrackReconstructed, protonTrackReconstructed );
+        SHOW2( muonTrack.IsTrackContainedSoft() , protonTrack.IsTrackContainedSoft() );
+    }
     
     SHOW( IsCC_1p_200MeVc_0pi );
-    if ( IsCC_1p_200MeVc_0pi ) SHOW2( muonTrackReconstructed, protonTrackReconstructed );
+    if ( IsCC_1p_200MeVc_0pi ) {
+        SHOW2( muonTrackReconstructed, protonTrackReconstructed );
+        SHOW2( muonTrack.IsTrackContainedSoft() , protonTrack.IsTrackContainedSoft() );
+    }
 
     if(DoPrintTracks && !tracks.empty()){
         cout << "\033[33m" << "--------------\n" << tracks.size() << " pandoraNu tracks in GENIE interaction " << mcevent_id << "\n--------------" <<  "\033[37m" << endl;
         SHOWstdVector( trackID );
         for (auto t: tracks) {
-            t.Print();
+            t.Print(true);
         }
     }
 

@@ -187,7 +187,7 @@ public:
     }
     bool IsTrackContainedSoft(float max_FV_y = 115,
                               float min_FV_z = 5, float max_FV_z = 1045,
-                              float min_FV_x = 3, float max_FV_x = 250){
+                              float min_FV_x = 3, float max_FV_x = 257){
         if( ( start_pos.x() < min_FV_x )    | ( start_pos.x() > max_FV_x ) )    return false;
         if( ( start_pos.y() < -max_FV_y )   | ( start_pos.y() > max_FV_y ) )    return false;
         if( ( start_pos.z() < min_FV_z )    | ( start_pos.z() > max_FV_z ) )    return false;
@@ -246,12 +246,6 @@ public:
     // std::vector <Float_t> track_dx_U, residual_range_U, dEdx_U , Edep_U, dqdx_U;
     // std::vector <Float_t> track_dx_V, residual_range_V, dEdx_V , Edep_V, dqdx_V;
     std::vector <Float_t> track_dx_Y, residual_range_Y, dEdx_Y , Edep_Y, dqdx_Y;
-    
-    
-    // tracks which are closer than TracsMinDistance, at the same event, are labled as 'neighbor-tracks'
-    // vector<Int_t>       NeighborTracks;
-    // vector<Float_t>     NeighborTracksDistance;
-    // vector<Float_t>     NeighborTracksAngles;
     
     
     // truth information - only valid for MC data

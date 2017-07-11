@@ -980,6 +980,8 @@ bool cumputeAnaTree::GetGENIEInformation(int n){
     if(debug>3) Printf("computed p(miss) and p(rec)");
     c_genie_interaction.FindCC1p();
     if(debug>3) Printf("finished FindCC1p()");
+    c_genie_interaction.FindCC_1p_200MeVc();
+    if(debug>3) Printf("finished FindCC_1p_200MeVc()");
     c_genie_interaction.FindCC_1p_200MeVc_0pi();
     if(debug>3) Printf("finished FindCC_1p_200MeVc_0pi()");
 
@@ -1436,10 +1438,9 @@ void cumputeAnaTree::GetPandoraCosmicTracks(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 void cumputeAnaTree::PrintData(int entry){
     
-    PrintLine();
     // printf("\t[%.1f%%]\t",100.*(float)entry/Nentries);
     // SHOW(entry);
-    SHOW3(run , subrun , event);
+    PrintLine();    SHOW3( run , subrun , event );      PrintLine();
     //    if(!nu_interactions.empty()){
     //        cout << "\033[33m" << "xxxxxxxxxxxxxx\n\n" << nu_interactions.size() << " neutrino interactions\n\n" << "xxxxxxxxxxxxxx"<< "\033[37m" << endl;
     //        for (auto nu_interaction: nu_interactions) {
