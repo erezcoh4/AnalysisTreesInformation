@@ -1,7 +1,8 @@
 '''
     loop over true CC1p from GENIE, find ccqe pairs, plug into pandas dataframe
     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    python mac/loopover_trueCC1p.py  -data=MC_BNB_extBNB --option=GENIEmup -mccv=8 -evf=1 -p1000
+    python mac/loopover_genie.py  -data=MC_BNB_extBNB --option=GENIEmup -mccv=8 -evf=0.001 -p1000
+    python mac/loopover_genie.py  -data=ExampleDebugging --option=GENIEmup -mccv=8 -evf=1 -p1
     
     
     --------------------------------------------------------------------------------------------------------------------------------------------
@@ -24,11 +25,6 @@ do_print_tracks , do_print_vertices = True if debug>2 else False, True if debug>
 
 
 
-if 'GENIE' not in flags.option:
-    print 'you have to choose GENIE...'
-    exit(0)
-
-
 # ----- June 19, 2017 ----- #
 # find mu-p pairs from GENIE level
 if "mup" in flags.option: #{
@@ -49,7 +45,7 @@ if "mup" in flags.option: #{
     inteventstree = infile.Get("eventsTree")
     
     outfile = ROOT.TFile( outfilename ,"recreate")
-    outtree = ROOT.TTree("GENIETwoTracksTree","2-tracks clusters")
+    outtree = ROOT.TTree("GENIEpairsTree","track pairs")
     
     genie = calcEventTopologies( inttree , outtree, flags.option , debug , MCmode , ccqe_pars['max_mu_p_distance'], inteventstree )
     genie.debug = int(flags.verbose)
@@ -67,20 +63,19 @@ if "mup" in flags.option: #{
         # analyze the event
         genie.ClusterGENIEToVertices( counter )
         genie.AnalyzeVertices()
-        genie.mup_vertices = genie.vertices
         genie.PerformMyTracking()
         
         if i%flags.print_mod==0 or genie.debug>4:
-            print "processed %d events, found %d muon-proton, %d reconstructed"%(i,counter,reco_counter)
+            print "processed %d events so far, found %d muon-proton, %d reconstructed"%(i+1,counter,reco_counter)
             if genie.debug: genie.Print( do_print_tracks , do_print_vertices  )
         
-        for vertex in genie.CC1p_vertices: #{
+        for vertex in genie.vertices: #{
             stream_vertex_to_file( vertex , outcsvname , MCmode=MCmode )
             
             # counters
             counter += 1
-            if vertex.IsVertexContained: contained_counter += 1
-            if vertex.IsVertexReconstructed: reco_counter += 1
+            if vertex.IsVertexContained:        contained_counter += 1
+            if vertex.IsVertexReconstructed:    reco_counter += 1
             if vertex.IsVertexReconstructed and vertex.reco_mu_p_distance < ccqe_pars['max_mu_p_distance'] : reco_close_counter += 1
             if debug and i%flags.print_mod==0: print_line()
         #}
@@ -90,11 +85,10 @@ if "mup" in flags.option: #{
     infile.Close()
     print 'processed %d events'%Nreduced
     print_filename(outcsvname,
-                   "%d CC1p GENIE vertices, %d reconstructed, %d closer than %.0f cm (%.1f MB)"
+                   "%d mu-p GENIE vertices, %d reconstructed, %d closer than %.0f cm (%.1f MB)"
                    %(counter,reco_counter,reco_close_counter,ccqe_pars['max_mu_p_distance'],filesize_in_MB(outcsvname)) )
-                   outtree.Write()
-                   outfile.Close()
-
+    outtree.Write()
+    outfile.Close()
 #}
 
 

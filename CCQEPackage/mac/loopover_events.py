@@ -34,7 +34,7 @@ from ccqe_tools import *
 
 
 hyperparameters = dict( {
-                       'Perform My-Tracking':False,
+                       'Perform My-Tracking':True,
                        'print genie interactions':True if debug>1 else False,
                        'print tracks':True if debug>1 else False,
                        'print vertices':True if debug>1 else False,
@@ -81,8 +81,8 @@ if "Topology" in flags.option or "topology" in flags.option: #{
         # find events with good topology: pairs of tracks reconstructed at close proximity
         pair_in_event = events.Find2tracksVertices()
         if pair_in_event is not True: #{
-            if events.debug:#{
-                print 'no detected pairs in this event!'
+            if events.debug and i==0 or i%flags.print_mod==0:#{
+                if events.debug>1: print 'no detected pairs in this event!'
                 events.Print( hyperparameters['print genie interactions']
                              ,hyperparameters['print tracks']
                              ,hyperparameters['print vertices'] )

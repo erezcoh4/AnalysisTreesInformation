@@ -45,7 +45,7 @@ void calcEventTopologies::InitInputTree(){
     InTree -> SetBranchAddress("subrun"     , &subrun);
     InTree -> SetBranchAddress("event"      , &event);
     
-    if (option.compare("GENIECC1p")!=0){
+    if (option.find("GENIE") == std::string::npos){
         InTree -> SetBranchAddress("Ntracks"    , &Ntracks);
     }
     Nentries = InTree -> GetEntries();
@@ -310,8 +310,8 @@ bool calcEventTopologies::ClusterGENIEToVertices( int vertex_id ){
         
         float PmuonFromRange = -100 , PprotonFromRange = -100;
         
-        if (genie_interaction.IsCC1p){ // we only consider true CC1p vertices
-
+        //        if (genie_interaction.IsCC1p){ // we only consider true CC1p vertices
+        if (genie_interaction.IsCC_1p_200MeVc){ // an interaction with at least 1 muon and 1 proton > 200 MeV/c
             
             GENIEmuon = genie_interaction.muon;
             protons = genie_interaction.protons;
@@ -355,8 +355,7 @@ bool calcEventTopologies::ClusterGENIEToVertices( int vertex_id ){
                 c_vertex.SetAssignTracks( genie_interaction.muonTrack , genie_interaction.protonTrack , PmuonFromRange , PprotonFromRange );
                 for (int plane=0; plane<3; plane++) c_vertex.BuildROI(plane);
             }
-            c_vertex.TruthTopologyString = "True GENIE CC1p";
-            Debug( 3 , Form("pushing genie vertex %d in vertices",c_vertex.vertex_id) );
+            c_vertex.SetAs1mu1p();
             vertices.push_back( c_vertex );
             FoundTruthCC1p = true;
         }
@@ -730,51 +729,51 @@ bool calcEventTopologies::PerformMyTracking(){
     
     if (debug>3) SHOW3(run,subrun,event);
     
-    for (auto & vertex: CC1p_vertices){
-    
+    for (auto & vertex: vertices){
+        
         for ( int plane = 0; plane < 3 ; plane++ ){
-                
-            if(     ( (option.compare("GENIECC1p")==0) && vertex.GENIECC1p && vertex.IsVertexReconstructed ) // GENIE
-               ||   ( (option.compare("CC1pTopology")==0) )  // MC / data
-            ){
-                
-                Debug(3,Form("performing tracking for vertex %d in plane %d",vertex.vertex_id,plane));
-                
-                // (1) define the vertex position and ROI in each plane
-                vertex.BuildROI( plane );
-                
-                if (debug>5){
-                    Printf("%d/%d/%d vertex roi in plane %d: ",run,subrun,event,plane); // PRINTOUT
-                    PrintBox(vertex.roi[plane]); // PRINTOUT
-                }
-                
-                vertex.BuildLocationInPlane( plane );
-                
-                
-                // (2) collect the total charge deposited in each plane
-                vertex.CollectAllHitsInROI( plane , hits_in_plane[plane] );
-                
-                if (debug>4){
-                    Printf("vertex %d, AllHitsInROI[%d]:",vertex.vertex_id, plane);
-                    for (auto hit:vertex.AllHitsInROI[plane]) hit.Print();
-                }
-                
-                
-                // (3) associate hits to tracks
-                vertex.SetDistanceThreshold( 10.0 ); // mm
-                vertex.SetAngleThreshold( 0.523 ); // rad.
-                
-                vertex.SetTracksParameters( plane );
-                
-                for (auto &t: tracks) t.SetX1Y1X2Y2forTrack( plane , vertex.GetX1Y1X2Y2forTrack( plane , t ) );
-                Debug(4,"looking for ClosestTrackToHit( plane , hit , vertex )");
-                for (auto &hit:vertex.AllHitsInROI[plane]) {
-                    hit.ClosestTrack_track_id = ClosestTrackToHit( plane , hit , vertex );
-                }
-                
-                vertex.AssociateHitsToTracks( plane );
-                vertex.CollectAssociatedCharge( plane );
+            
+            //            if(     ( (option.compare("GENIECC1p")==0) && vertex.GENIECC1p && vertex.IsVertexReconstructed ) // GENIE
+            //               ||   ( (option.compare("CC1pTopology")==0) )  // MC / data
+            //            ){
+            
+            Debug(3,Form("performing tracking for vertex %d in plane %d",vertex.vertex_id,plane));
+            
+            // (1) define the vertex position and ROI in each plane
+            vertex.BuildROI( plane );
+            
+            if (debug>5){
+                Printf("%d/%d/%d vertex roi in plane %d: ",run,subrun,event,plane); // PRINTOUT
+                PrintBox(vertex.roi[plane]); // PRINTOUT
             }
+            
+            vertex.BuildLocationInPlane( plane );
+            
+            
+            // (2) collect the total charge deposited in each plane
+            vertex.CollectAllHitsInROI( plane , hits_in_plane[plane] );
+            
+            if (debug>4){
+                Printf("vertex %d, AllHitsInROI[%d]:",vertex.vertex_id, plane);
+                for (auto hit:vertex.AllHitsInROI[plane]) hit.Print();
+            }
+            
+            
+            // (3) associate hits to tracks
+            vertex.SetDistanceThreshold( 10.0 ); // mm
+            vertex.SetAngleThreshold( 0.523 ); // rad.
+            
+            vertex.SetTracksParameters( plane );
+            
+            for (auto &t: tracks) t.SetX1Y1X2Y2forTrack( plane , vertex.GetX1Y1X2Y2forTrack( plane , t ) );
+            Debug(4,"looking for ClosestTrackToHit( plane , hit , vertex )");
+            for (auto &hit:vertex.AllHitsInROI[plane]) {
+                hit.ClosestTrack_track_id = ClosestTrackToHit( plane , hit , vertex );
+            }
+            
+            vertex.AssociateHitsToTracks( plane );
+            vertex.CollectAssociatedCharge( plane );
+            //            }
         }
     }
     
