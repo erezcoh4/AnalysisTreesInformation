@@ -117,13 +117,13 @@ void calcEventTopologies::GetGENIEEntry (int entry){
     Debug ( 2 , "calcEventTopologies::GetGENIEEntry" );
     InitEvent();
     
-    std::vector <GENIEinteraction> * finteractions = 0;
-    InTree -> SetBranchAddress("genie_interactions" , &finteractions);
-    InTree -> GetEntry(entry);
-    Debug(3,"InTree -> GetEntry(entry);");
-    genie_interactions = *finteractions;
-    Debug(3,"got genie interactions");
-    
+//    std::vector <GENIEinteraction> * finteractions = 0;
+//    InTree -> SetBranchAddress("genie_interactions" , &finteractions);
+//    InTree -> GetEntry(entry);
+//    Debug(3,"InTree -> GetEntry(entry);");
+//    genie_interactions = *finteractions;
+//    Debug(3,"got genie interactions");
+//    delete finteractions;    
     
     std::vector <PandoraNuTrack> * ftracks = 0;
     InEventsTree -> SetBranchAddress("tracks" , &ftracks);
@@ -141,7 +141,7 @@ void calcEventTopologies::GetGENIEEntry (int entry){
     c_entry = entry;
     delete ftracks;
     delete fhits;
-    delete finteractions;
+
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
