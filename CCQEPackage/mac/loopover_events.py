@@ -34,10 +34,10 @@ from ccqe_tools import *
 
 
 hyperparameters = dict( {
-                       'Perform My-Tracking':True,
-                       'print genie interactions':True if debug>1 else False,
-                       'print tracks':True if debug>1 else False,
-                       'print vertices':True if debug>1 else False,
+                       'Perform My-Tracking':True
+                       ,'print genie interactions':False#True if debug>1 else False
+                       ,'print tracks':False #True if debug>1 else False
+                       ,'print vertices':True if debug>1 else False
                        } )
 
 

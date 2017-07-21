@@ -66,19 +66,18 @@ void myVertex::SetAsCosmic(){
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 bool myVertex::MatchGenieInteraction ( std::vector<GENIEinteraction> fgenie_interactions , PandoraNuTrack ftrack ){
     // match the proper GENIE interaction
-    GENIEinteraction c_genie_interaction;
-    bool MatchedGENIEinteraction = false;
     for (auto genie_interaction : fgenie_interactions){
-        if (genie_interaction.mcevent_id == ftrack.mcevent_id){
-            c_genie_interaction = genie_interaction;
-            MatchedGENIEinteraction = true;
-            break;
+        
+        // check mc-event id (maybe has a bug?)
+        //        if (genie_interaction.mcevent_id == ftrack.mcevent_id){
+        
+        // check if the track is close enough to a GENIE vertex
+        if ( (ftrack.truth_start_pos - genie_interaction.vertex_position).Mag() < 1.) {
+            SetGENIEinfo( genie_interaction );
+            return true;
         }
     }
-    if (MatchedGENIEinteraction){
-        SetGENIEinfo( c_genie_interaction );
-    }
-    return MatchedGENIEinteraction;
+    return false;
 }
 
 
@@ -1285,8 +1284,10 @@ bool myVertex::CollectAssociatedCharge(int plane){
 void myVertex::Print(){
     
     cout << "\033[35m" << "~~~~~~~~~~~~~~\n vertex " << vertex_id << "\n~~~~~~~~~~~~~~"<< "\033[0m" << endl;
+    if (Is1mu1p) Printf("1mu-1p vertex!");
     // SHOW3( run , subrun , event );
     SHOWTVector3( position );
+    
     for (auto t: tracks) {
         Printf("track %d (pdg %d), vertex distance %.1f cm",t.track_id,t.MCpdgCode,t.DistanceFromPoint( position ));
     }
@@ -1312,6 +1313,15 @@ void myVertex::Print(){
     //    cout << "topology: " << TopologyString << endl;
     cout << "truth topology: " << TruthTopologyString << endl;
     SHOW2(GENIECC1p,IsGENIECC_1p_200MeVc_0pi);
+    
+    // GENIE interaction features
+    if (Is1mu1p){
+        genie_interaction.Print();
+    }
+//    SHOWTLorentzVector( genie_interaction.muon );
+//    SHOW( genie_interaction.nu.E() );
+//    if ( genie_interaction.protons.size()) SHOW( genie_interaction.protons.at(0).P() );
+    
     if (IsGENIECC_1p_200MeVc_0pi){
         cout << "This vertex is a GENIE true CC_1p_200MeVc_0pi" << endl;
         SHOW3( muonTrackReconstructed, protonTrackReconstructed, IsVertexReconstructed );

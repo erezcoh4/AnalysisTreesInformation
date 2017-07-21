@@ -347,7 +347,14 @@ def stream_vertex_to_file( vertex=None , outcsvname='' , MCmode=True ):
 
                         # closest GENIE interaction
                         ,'closest_genie_distance':(vertex.closest_genie_interaction.vertex_position-vertex.position).Mag() if MCmode else -1000
+                        
                         ,'closest_genie_Ev':vertex.closest_genie_interaction.nu.E() if MCmode else -1000
+                        ,'closest_genie_Q2':vertex.closest_genie_interaction.Q2 if MCmode else -1000
+                        ,'closest_genie_Pt':vertex.closest_genie_interaction.Q2 if MCmode else -1000
+                        ,'closest_genie_Pt':(vertex.closest_genie_interaction.protons.at(0)+vertex.closest_genie_interaction.muon).Pt() if MCmode and vertex.closest_genie_interaction.protons.size()>0 else -1000
+                        ,'closest_genie_theta_pq':vertex.closest_genie_interaction.theta_pq if MCmode else -1000
+                        ,'closest_genie_Pmu':vertex.closest_genie_interaction.muon.P() if MCmode else -1000
+                        ,'closest_genie_Pp':vertex.closest_genie_interaction.protons.at(0).P() if MCmode and vertex.closest_genie_interaction.protons.size()>0 else -1000
                         
                         ,'closest_genie_x':vertex.closest_genie_interaction.vertex_position.x() if MCmode else -1000
                         ,'closest_genie_y':vertex.closest_genie_interaction.vertex_position.y() if MCmode else -1000
